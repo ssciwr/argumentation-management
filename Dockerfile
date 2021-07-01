@@ -86,10 +86,12 @@ RUN git clone --depth 1 https://github.com/clab/fast_align.git \
 
 # install moses - this takes ages unfortunately
 # not very happy with the manual boost path
-RUN git clone --depth 1 --branch RELEASE-4.0 https://github.com/moses-smt/mosesdecoder.git \
-   && cd mosesdecoder \
-   && ./bjam --prefix=/usr/lib/x86_64-linux-gnu -j4 \
-   && export MOSES_DIR=$(pwd)
+# also not very happy with the ancient version
+# commenting this out for now as I am not sure if they need moses - mgiza does not need it apparently
+# RUN git clone --depth 1 --branch RELEASE-4.0 https://github.com/moses-smt/mosesdecoder.git \
+#    && cd mosesdecoder \
+#    && ./bjam --prefix=/usr/lib/x86_64-linux-gnu -j4 \
+#    && export MOSES_DIR=$(pwd)
 
 ## install alignment-scripts - there are no versions/branches unfortunately
 RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git \
