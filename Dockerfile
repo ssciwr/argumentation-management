@@ -94,5 +94,4 @@ RUN git clone --depth 1 https://github.com/clab/fast_align.git \
 #    && export MOSES_DIR=$(pwd)
 
 ## install alignment-scripts - there are no versions/branches unfortunately
-RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git \
-   && pwd
+RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git 
