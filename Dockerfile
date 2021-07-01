@@ -49,14 +49,6 @@ RUN wget https://downloads.sourceforge.net/project/cwb/cwb/cwb-3.4-beta/cwb-3.4.
     && make all PLATFORM=linux SITE=standard \
     && make install
 
-# get sample corpus
-RUN wget http://cwb.sourceforge.net/temp/DemoCorpus-German-1.0.tar.gz \
-    && mkdir /home/jovyan/cwb \
-    && mv DemoCorpus-German-1.0.tar.gz /home/jovyan/cwb/. \
-    && cd /home/jovyan/cwb \
-    && tar xzvf DemoCorpus-German-1.0.tar.gz \
-    && rm DemoCorpus-German-1.0.tar.gz
-
 # install the python dependencies and cwb-ccc
 # stay with conda for consistency
 RUN conda install -c conda-forge python=3.6 \
@@ -104,3 +96,13 @@ ENV FASTALIGN_DIR=/home/jovyan/fast_align
 
 ## install alignment-scripts - there are no versions/branches unfortunately
 RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git
+
+# get sample corpus
+USER root
+# RUN wget http://cwb.sourceforge.net/temp/DemoCorpus-German-1.0.tar.gz \
+#       && tar xzvf DemoCorpus-German-1.0.tar.gz \
+#       && rm DemoCorpus-German-1.0.tar.gz
+ADD http://cwb.sourceforge.net/temp/DemoCorpus-German-1.0.tar.gz /usr/local/cwb-3.4.22/
+RUN cd /usr/local/cwb-3.4.22/ \
+        && tar xzvf DemoCorpus-German-1.0.tar.gz \
+        && rm DemoCorpus-German-1.0.tar.gz
