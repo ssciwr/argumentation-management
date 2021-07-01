@@ -49,16 +49,24 @@ RUN wget https://downloads.sourceforge.net/project/cwb/cwb/cwb-3.4-beta/cwb-3.4.
     && make all PLATFORM=linux SITE=standard \
     && make install
 
+# get sample corpus
+RUN wget http://cwb.sourceforge.net/temp/DemoCorpus-German-1.0.tar.gz \
+    && mkdir /home/jovyan/cwb \
+    && mv DemoCorpus-German-1.0.tar.gz /home/jovyan/cwb/. \
+    && cd /home/jovyan/cwb \
+    && tar xzvf DemoCorpus-German-1.0.tar.gz \
+    && rm DemoCorpus-German-1.0.tar.gz
+
 # install the python dependencies and cwb-ccc
 # stay with conda for consistency
 RUN conda install -c conda-forge python=3.6 \
     && conda install -c \
-        conda-forge \
-        cython \
+       conda-forge \
+       cython \
     && conda clean -a -q -y
 USER jovyan
-# or should I use jovyan? root?
-RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-python
+RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-ccc
+# RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-python
 
 # install the other tools that are planned to be used
 # we should probably set up conda environments so that different toolchains
@@ -87,7 +95,7 @@ ENV FASTALIGN_DIR=/home/jovyan/fast_align
 
 # install moses - this takes ages unfortunately
 # not very happy with the manual boost path
-# also not very happy with the ancient version
+# also not very happy with the ancient version of moses
 # commenting this out for now as I am not sure if they need moses - mgiza does not need it apparently
 # RUN git clone --depth 1 --branch RELEASE-4.0 https://github.com/moses-smt/mosesdecoder.git \
 #    && cd mosesdecoder \
