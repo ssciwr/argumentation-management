@@ -70,9 +70,9 @@ RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.
    && cmake . \
    && make \
    && make install \
-   && cd .. \
-   && export MGIZA_DIR=$(pwd)
-   # not sure if these environment variables persist
+   && cd ..
+ENV MGIZA_DIR=/home/jovyan/mgiza
+# not sure if these environment variables persist with the correct directory
 
 # install fastalign - there are no versions/branches unfortunately
 RUN git clone --depth 1 https://github.com/clab/fast_align.git \
@@ -81,8 +81,9 @@ RUN git clone --depth 1 https://github.com/clab/fast_align.git \
    && cd build \
    && cmake .. \
    && make \
-   && cd ../.. \
-   && export FASTALIGN_DIR=$(pwd)
+   && cd ../..
+ENV FASTALIGN_DIR=/home/jovyan/fast_align
+# not sure if these environment variables persist with the correct directory
 
 # install moses - this takes ages unfortunately
 # not very happy with the manual boost path
@@ -90,8 +91,8 @@ RUN git clone --depth 1 https://github.com/clab/fast_align.git \
 # commenting this out for now as I am not sure if they need moses - mgiza does not need it apparently
 # RUN git clone --depth 1 --branch RELEASE-4.0 https://github.com/moses-smt/mosesdecoder.git \
 #    && cd mosesdecoder \
-#    && ./bjam --prefix=/usr/lib/x86_64-linux-gnu -j4 \
-#    && export MOSES_DIR=$(pwd)
+#    && ./bjam --prefix=/usr/lib/x86_64-linux-gnu -j4
+# ENV MOSES_DIR=/home/jovyan/mosesdecoder
 
 ## install alignment-scripts - there are no versions/branches unfortunately
-RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git 
+RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git
