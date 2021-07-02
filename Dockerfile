@@ -3,21 +3,8 @@ FROM jupyter/base-notebook
 USER root
 # Create a non-root user
 # there is already jovyan, so no need for this
-# ARG username=inga-temp
-# ARG uid=1100
-# ARG gid=100
-# ENV USER $username
-# ENV UID $uid
-# ENV GID $gid
-# ENV HOME /home/$USER
-# RUN adduser --disabled-password \
-#   --gecos "Non-root user" \
-#   --uid $UID \
-#   --gid $GID \
-#   --home $HOME \
-#   $USER
 
-# install dependencies for cwb, and tools (moses, fastalign)
+# install dependencies for cwb and tools (moses, fastalign)
 # I'd like to keep this separate from the python part
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install --no-install-recommends -y \
         autoconf \
@@ -58,11 +45,15 @@ RUN conda install -c conda-forge python=3.6 \
     && conda clean -a -q -y
 USER jovyan
 RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-ccc
-# RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-python
+# Apparently the file size of the demo corpus is too large,
+# so instead it will be uploaded to the running container
+# COPY /DemoCorpus-German.tgz /home/jovyan/
 
 # install the other tools that are planned to be used
 # we should probably set up conda environments so that different toolchains
 # can be activated for different users
+# refrain from submodules at this point until it is clear what they will use
+# (varying dependencies)
 
 # install m-giza
 RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
@@ -72,7 +63,6 @@ RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.
    && make install \
    && cd ..
 ENV MGIZA_DIR=/home/jovyan/mgiza
-# not sure if these environment variables persist with the correct directory
 
 # install fastalign - there are no versions/branches unfortunately
 RUN git clone --depth 1 https://github.com/clab/fast_align.git \
@@ -83,7 +73,6 @@ RUN git clone --depth 1 https://github.com/clab/fast_align.git \
    && make \
    && cd ../..
 ENV FASTALIGN_DIR=/home/jovyan/fast_align
-# not sure if these environment variables persist with the correct directory
 
 # install moses - this takes ages unfortunately
 # not very happy with the manual boost path
@@ -96,13 +85,3 @@ ENV FASTALIGN_DIR=/home/jovyan/fast_align
 
 ## install alignment-scripts - there are no versions/branches unfortunately
 RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git
-
-# get sample corpus
-USER root
-# RUN wget http://cwb.sourceforge.net/temp/DemoCorpus-German-1.0.tar.gz \
-#       && tar xzvf DemoCorpus-German-1.0.tar.gz \
-#       && rm DemoCorpus-German-1.0.tar.gz
-ADD http://cwb.sourceforge.net/temp/DemoCorpus-German-1.0.tar.gz /usr/local/cwb-3.4.22/
-RUN cd /usr/local/cwb-3.4.22/ \
-        && tar xzvf DemoCorpus-German-1.0.tar.gz \
-        && rm DemoCorpus-German-1.0.tar.gz
