@@ -2,21 +2,9 @@ FROM jupyter/base-notebook
 
 USER root
 # Create a non-root user
-# ARG username=inga-temp
-# ARG uid=1100
-# ARG gid=100
-# ENV USER $username
-# ENV UID $uid
-# ENV GID $gid
-# ENV HOME /home/$USER
-# RUN adduser --disabled-password \
-#   --gecos "Non-root user" \
-#   --uid $UID \
-#   --gid $GID \
-#   --home $HOME \
-#   $USER
+# there is already jovyan, so no need for this
 
-# install dependencies for cwb
+# install dependencies for cwb and tools (moses, fastalign)
 # I'd like to keep this separate from the python part
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install --no-install-recommends -y \
         autoconf \
@@ -29,6 +17,12 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -
         make \
         wget \
         libreadline-dev \
+        git \
+        libboost-all-dev \
+        libgoogle-perftools-dev \
+        libsparsehash-dev \
+        build-essential \
+        cmake \
     && apt-get clean \
     && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/*
@@ -40,21 +34,54 @@ RUN wget https://downloads.sourceforge.net/project/cwb/cwb/cwb-3.4-beta/cwb-3.4.
     && cd cwb-3.4.22 \
     && make clean \
     && make all PLATFORM=linux SITE=standard \
-    && make install \
-    && pwd \
-    && ls /usr/local/cwb-3.4.22
+    && make install
 
 # install the python dependencies and cwb-ccc
 # stay with conda for consistency
-RUN conda install -c conda-forge python=3.6 && \
-    conda install -c conda-forge \
-        cython \
+RUN conda install -c conda-forge python=3.6 \
+    && conda install -c \
+       conda-forge \
+       cython \
     && conda clean -a -q -y
-# USER inga-temp
 USER jovyan
-# or should I use jovyan? root?
-RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-python
+RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-ccc
+# Apparently the file size of the demo corpus is too large,
+# so instead it will be uploaded to the running container
+# COPY /DemoCorpus-German.tgz /home/jovyan/
 
 # install the other tools that are planned to be used
-# we should probably set up conda environments so that different toolboxes
+# we should probably set up conda environments so that different toolchains
 # can be activated for different users
+# refrain from submodules at this point until it is clear what they will use
+# (varying dependencies)
+
+# install m-giza
+RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
+   && cd mgiza/mgizapp \
+   && cmake . \
+   && make \
+   && make install \
+   && cd ..
+ENV MGIZA_DIR=/home/jovyan/mgiza
+
+# install fastalign - there are no versions/branches unfortunately
+RUN git clone --depth 1 https://github.com/clab/fast_align.git \
+   && cd fast_align \
+   && mkdir build \
+   && cd build \
+   && cmake .. \
+   && make \
+   && cd ../..
+ENV FASTALIGN_DIR=/home/jovyan/fast_align
+
+# install moses - this takes ages unfortunately
+# not very happy with the manual boost path
+# also not very happy with the ancient version of moses
+# commenting this out for now as I am not sure if they need moses - mgiza does not need it apparently
+# RUN git clone --depth 1 --branch RELEASE-4.0 https://github.com/moses-smt/mosesdecoder.git \
+#    && cd mosesdecoder \
+#    && ./bjam --prefix=/usr/lib/x86_64-linux-gnu -j4
+# ENV MOSES_DIR=/home/jovyan/mosesdecoder
+
+## install alignment-scripts - there are no versions/branches unfortunately
+RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git
