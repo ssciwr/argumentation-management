@@ -1,4 +1,4 @@
-FROM jupyter/base-notebook
+FROM jupyter/base-notebook:584f43f06586
 
 USER root
 # Create a non-root user
@@ -34,7 +34,9 @@ RUN wget https://downloads.sourceforge.net/project/cwb/cwb/cwb-3.4-beta/cwb-3.4.
     && cd cwb-3.4.22 \
     && make clean \
     && make all PLATFORM=linux SITE=standard \
-    && make install
+    && make install \
+    && cd .. \
+    && rm -rf cwb-3.4.22
 
 # install the python dependencies and cwb-ccc
 # stay with conda for consistency
@@ -42,12 +44,10 @@ RUN conda install -c conda-forge python=3.6 \
     && conda install -c \
        conda-forge \
        cython \
+       jupyter-resource-usage \
     && conda clean -a -q -y
 USER jovyan
 RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-ccc
-# Apparently the file size of the demo corpus is too large,
-# so instead it will be uploaded to the running container
-# COPY /DemoCorpus-German.tgz /home/jovyan/
 
 # install the other tools that are planned to be used
 # we should probably set up conda environments so that different toolchains
