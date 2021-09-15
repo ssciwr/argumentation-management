@@ -1,3 +1,5 @@
 # Corpus and argumentation
 
 *This is a project for an embedded workflow to analyse argumentation structures in different languages and across different input media and is currently under development.*
+
+The aim of the project “Corpus and Argumentation” is to create an infrastructure for analyzing text corpora to develop an explanatory model of argumentation management in written and spoken texts across languages. The model will predict translation strategies for linguistic constructions in argumentative discourse. Such constructions substantially vary in different languages, being more problematic for human and machine translation compared to informative texts. The model will contribute to the argumentation and translation theory and provide a framework for evaluating and improving the quality of human and automated translation of argumentative texts, making impact on translation industry and computer-assisted translation technologies.
