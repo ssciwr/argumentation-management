@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![GitHub Workflow Status](https://github.com/ssciwr/argumentation-management/actions/workflows/ci.yml/badge.svg)
-[![Actions Status](https://github.com/ssciwr/argumentation-management/workflows/ci.yml/badge.svg)](https://github.com/ssciwr/argumentation-management/actions)
 
 *This is a project for an embedded workflow to analyse argumentation structures in different languages and across different input media and is currently under development.*
 
