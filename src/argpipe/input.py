@@ -21,13 +21,22 @@ class clean_input:
         """Requesting the resource using the provided URI."""
         resource = rq.get(inputURI, allow_redirects=True)
         # Check here that response is 200
-        # print(resource)
+        print(resource.status_code)
+        f = open('test_aerzteblatt2.html', 'wb')
+        f.write(resource.content)
+        f.close
         return resource.content
 
     def clean_tags(self, resource):
         """Clean html file and remove xml tags."""
         soup = BS(resource, "html.parser")
         return soup.get_text()
+
+    def get_article_body(self, resource):
+        """Get only the article body from the html."""
+        soup = BS(resource, "html.parser")
+        mytext = [item.get_text() for item in soup.findAll('p')]
+        return mytext
 
     def save_text(self, resource, langTag, fileTag):
         """Save the cleaned text in a text file."""
@@ -76,11 +85,13 @@ def main(inputFile):
     lang1, lang2, URIlang1, URIlang2 = obj.read_csv()
     for i, item in enumerate(URIlang1):
         resource = obj.request_URI(item)
-        resource = obj.clean_tags(resource)
+        # resource = obj.clean_tags(resource)
+        resource = obj.get_article_body(resource)
         obj.save_text(resource, lang1,str(i+1))
     for i, item in enumerate(URIlang2):
         resource = obj.request_URI(item)
-        resource = obj.clean_tags(resource)
+        # resource = obj.clean_tags(resource)
+        resource = obj.get_article_body(resource)
         obj.save_text(resource, lang2,str(i+1))
 
 if __name__ == "__main__":
