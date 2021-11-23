@@ -55,24 +55,41 @@ RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-cc
 # refrain from submodules at this point until it is clear what they will use
 # (varying dependencies)
 
+USER root
+
+# install spaCy
+RUN conda install -c conda-forge spacy \
+    && conda install -c \
+        conda-forge spacy-lookups-data \
+    &&python -m spacy download en_core_web_sm\
+    && conda clean -a -q -y
+ENV SPACY_DIR = /home/jovyan/spacy
+
+# install stanza
+RUN conda install -c \
+        conda-forge stanza \
+    && conda install -c \
+        conda-forge ipywidgets\
+    && conda clean -a -q -y
+
 # install m-giza
-RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
-   && cd mgiza/mgizapp \
-   && cmake . \
-   && make \
-   && make install \
-   && cd ..
-ENV MGIZA_DIR=/home/jovyan/mgiza
+#RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
+#   && cd mgiza/mgizapp \
+#   && cmake . \
+#   && make \
+#   && make install \
+#   && cd ..
+#ENV MGIZA_DIR=/home/jovyan/mgiza
 
 # install fastalign - there are no versions/branches unfortunately
-RUN git clone --depth 1 https://github.com/clab/fast_align.git \
-   && cd fast_align \
-   && mkdir build \
-   && cd build \
-   && cmake .. \
-   && make \
-   && cd ../..
-ENV FASTALIGN_DIR=/home/jovyan/fast_align
+#RUN git clone --depth 1 https://github.com/clab/fast_align.git \
+#   && cd fast_align \
+#   && mkdir build \
+#   && cd build \
+#   && cmake .. \
+#   && make \
+#   && cd ../..
+#ENV FASTALIGN_DIR=/home/jovyan/fast_align
 
 # install moses - this takes ages unfortunately
 # not very happy with the manual boost path
@@ -84,4 +101,4 @@ ENV FASTALIGN_DIR=/home/jovyan/fast_align
 # ENV MOSES_DIR=/home/jovyan/mosesdecoder
 
 ## install alignment-scripts - there are no versions/branches unfortunately
-RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git
+#RUN git clone --depth 1 https://github.com/lilt/alignment-scripts.git
