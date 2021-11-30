@@ -1,6 +1,44 @@
 # the stanza class object for stanza nlp
 import stanza as sa
 
+stanza_dict = {
+    "lang": "en",  # Language code for the language to build the Pipeline in
+    "dir": r"/home/inga/stanza_resources",  # directory where models are stored
+    "package": "default",  # see other models:
+    # https://stanfordnlp.github.io/stanza/models.html
+    "processors": "tokenize,pos",  # Comma-separated list of processors to use
+    # can also be given as a dictionary:
+    # {'tokenize': 'ewt', 'pos': 'ewt'}
+    "logging_level": "INFO",  # DEBUG, INFO, WARN, ERROR, CRITICAL, FATAL
+    # FATAL has least amount of log info printed
+    "verbose": True,  # corresponds to INFO, False corresponds to ERROR
+    "use_GPU": False,  # use GPU if available, False forces CPU only
+    # kwargs for the individual processors
+    "tokenize_model_path": r"./en/tokenize/combined.pt",
+    # Processor-specific arguments are set with keys "{processor_name}_{argument_name}"
+    # "mwt_model_path": r"./fr/mwt/gsd.pt",
+    "pos_model_path": r"./en/pos/combined.pt",
+    # "pos_pretrain_path": r"pretrain/gsd.pt",
+    "tokenize_pretokenized": True,  # Use pretokenized text as input and disable tokenization
+}
+
+
+def fix_dict_path(dict):
+    # brute force to get model paths
+    for key, value in dict.items():
+        if "model" in key.lower():
+            # if there is a prepending ".", remove it
+            # be careful not to remove the dot before the file ending
+            if "." in value[0:2]:
+                value = value.replace(".", "", 1)
+            # prepend a slash to make sure
+            value = "/" + value
+            # combine the path from dir with the one from model
+            value = dict["dir"] + value
+            dict.update({key: value})
+            print(dict[key], " updated!")
+    return dict
+
 
 def preprocess():
     """Download an English model into the default directory."""
@@ -15,30 +53,10 @@ def preprocess():
     return en_nlp
 
 
-def pipeline_with_dict():
-    # options for setting the paths to trained models do not work as they should
-    config = {
-        "lang": "fr",  # Language code for the language to build the Pipeline in
-        "dir": "/home/inga/stanza_resources",  # directory where models are stored
-        "package": "default",  # see other models:
-        # https://stanfordnlp.github.io/stanza/models.html
-        "processors": "tokenize,mwt,pos",  # Comma-separated list of processors to use
-        # can also be given as a dictionary:
-        # {'tokenize': 'ewt', 'pos': 'ewt'}
-        "logging_level": "INFO",  # DEBUG, INFO, WARN, ERROR, CRITICAL, FATAL
-        # FATAL has least amount of log info printed
-        "verbose": True,  # corresponds to INFO, False corresponds to ERROR
-        "use_GPU": False,  # use GPU if available, False forces CPU only
-        # kwargs for the individual processors
-        "tokenize_model_path": "/home/inga/stanza_resources/fr/tokenize/gsd.pt",  # Processor-specific arguments are set with keys "{processor_name}_{argument_name}"
-        "mwt_model_path": "/home/inga/stanza_resources/fr/mwt/gsd.pt",
-        "pos_model_path": "/home/inga/stanza_resources/fr/pos/gsd.pt",
-        "pos_pretrain_path": "/home/inga/stanza_resources/fr/pretrain/gsd.pt",
-        "tokenize_pretokenized": True,  # Use pretokenized text as input and disable tokenization
-    }
+def pipeline_with_dict(config):
     nlp = sa.Pipeline(**config)  # Initialize the pipeline using a configuration dict
     doc = nlp(
-        "Van Gogh grandit au sein d'une famille de l'ancienne bourgeoisie ."
+        "I am not sure what to put here ."
     )  # Run the pipeline on the pretokenized input text
     print(doc)  # Look at the result
     # stanza prints result as dictionary
@@ -61,5 +79,6 @@ def multiple_docs():
 
 if __name__ == "__main__":
     # pipe = preprocess()
-    pipeline_with_dict()
     # multiple_docs()
+    mydict = fix_dict_path(stanza_dict)
+    pipeline_with_dict(mydict)
