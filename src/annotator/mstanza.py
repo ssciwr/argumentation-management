@@ -1,5 +1,6 @@
 # the stanza class object for stanza nlp
 import stanza as sa
+import base as be
 
 stanza_dict = {
     "lang": "en",  # Language code for the language to build the Pipeline in
@@ -53,32 +54,42 @@ def preprocess():
     return en_nlp
 
 
-def pipeline_with_dict(config):
-    nlp = sa.Pipeline(**config)  # Initialize the pipeline using a configuration dict
-    doc = nlp(
-        "I am not sure what to put here ."
-    )  # Run the pipeline on the pretokenized input text
-    print(doc)  # Look at the result
-    # stanza prints result as dictionary
+class mstanza_pipeline:
+    """Stanza main processing class.
 
+    Args:
+       config (dictionary): The input dictionary with the stanza options.
+       text (string): The raw text that is to be processed.
+       text (list of strings): Several raw texts to be processed simultaneously.
+       annotated (dictionary): The output dictionary with annotated tokens.
+    """
 
-def multiple_docs():
-    nlp = sa.Pipeline(lang="en")  # Initialize the default English pipeline
-    documents = [
-        "This is a test document.",
-        "I wrote another document for fun.",
-    ]  # Documents that we are going to process
-    in_docs = [
-        sa.Document([], text=d) for d in documents
-    ]  # Wrap each document with a stanza.Document object
-    out_docs = nlp(in_docs)  # Call the neural pipeline on this list of documents
-    print(
-        out_docs[1]
-    )  # The output is also a list of stanza.Document objects, each output corresponding to an input Document object
+    def __init__(self, config):
+        self.config = config
+
+    def init_pipeline(self):
+        self.nlp = sa.Pipeline(
+            **self.config
+        )  # Initialize the pipeline using a configuration dict
+
+    def process_text(self, text):
+        self.doc = self.nlp(text)  # Run the pipeline on the pretokenized input text
+        return self.doc  # stanza prints result as dictionary
+
+    def process_multiple_texts(self, textlist):
+        # Wrap each document with a stanza.Document object
+        in_docs = [sa.Document([], text=d) for d in textlist]
+        self.mdocs = self.nlp(
+            in_docs
+        )  # Call the neural pipeline on this list of documents
+        return self.mdocs
 
 
 if __name__ == "__main__":
-    # pipe = preprocess()
-    # multiple_docs()
     mydict = fix_dict_path(stanza_dict)
-    pipeline_with_dict(mydict)
+    mytext = be.get_sample_text()
+    # initialize instance of the class
+    obj = mstanza_pipeline(mydict)
+    obj.init_pipeline()
+    out = obj.process_text(mytext)
+    print(out)
