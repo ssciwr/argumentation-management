@@ -1,4 +1,5 @@
 # the stanza class object for stanza nlp
+from collections import defaultdict
 import stanza as sa
 
 
@@ -57,6 +58,19 @@ def multiple_docs():
     print(
         out_docs[1]
     )  # The output is also a list of stanza.Document objects, each output corresponding to an input Document object
+
+
+def NER(doc):
+    named_entities = defaultdict(list)
+
+    for ent in doc.ents:
+        # add the entities, key value is start and end char as Token IDs in stanza seem to be restricted to
+        # individual sentences
+        named_entities["{} : {}".format(ent.start_char, ent.end_char)].append(
+            [ent.text, ent.type]
+        )
+
+    return named_entities
 
 
 if __name__ == "__main__":
