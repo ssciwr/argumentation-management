@@ -8,7 +8,7 @@ stanza_dict = {
     "dir": r"/home/inga/stanza_resources",  # directory where models are stored
     "package": "default",  # see other models:
     # https://stanfordnlp.github.io/stanza/models.html
-    "processors": "tokenize,pos",  # Comma-separated list of processors to use
+    "processors": "tokenize,pos,lemma",  # Comma-separated list of processors to use
     # can also be given as a dictionary:
     # {'tokenize': 'ewt', 'pos': 'ewt'}
     "logging_level": "INFO",  # DEBUG, INFO, WARN, ERROR, CRITICAL, FATAL
@@ -20,9 +20,37 @@ stanza_dict = {
     # Processor-specific arguments are set with keys "{processor_name}_{argument_name}"
     # "mwt_model_path": r"./fr/mwt/gsd.pt",
     "pos_model_path": r"./en/pos/combined.pt",
+    "pos_batch_size": 3,  # this specifies the maximum number of words to process as
+    #                      a minibatch for efficient processing. Default: 5000
     # "pos_pretrain_path": r"pretrain/gsd.pt",
-    "tokenize_pretokenized": True,  # Use pretokenized text as input and disable tokenization
+    "lemma_model_path": r"./en/lemma/combined.pt",
+    # lemma has several sub-options as per https://stanfordnlp.github.io/stanza/lemma.html
+    # "tokenize_pretokenized": True,  # Use pretokenized text as input and disable tokenization
 }
+# Issues:
+# only give model paths for the processors that are actually used, otherwise torch will throw
+# exception
+
+
+# Possible processors:
+# 'tokenize': Tokenizes the text and performs sentence segmentation.
+#        Dependency: -
+# 'mwt': Expands multi-word tokens (MWT) predicted by the TokenizeProcessor.
+#        This is only applicable to some languages.
+#        Dependency: - 'tokenize'
+# 'pos': Labels tokens with their universal POS (UPOS) tags, treebank-specific POS (XPOS) tags,
+#        and universal morphological features (UFeats).
+#        Dependency: - 'tokenize, mwt'
+# 'lemma': Generates the word lemmas for all words in the Document.
+#        Dependency: - 'tokenize, mwt, pos'
+# 'depparse': Provides an accurate syntactic dependency parsing analysis.
+#        Dependency: - 'tokenize, mwt, pos, lemma'
+# 'ner': Recognize named entities for all token spans in the corpus.
+#        Dependency: - 'tokenize, mwt'
+# 'sentiment': Assign per-sentence sentiment scores.
+#        Dependency: - 'tokenize, mwt'
+# 'constituency': Parse each sentence in a document using a phrase structure parser.
+#        Dependency: - 'tokenize, mwt, pos'
 
 
 def fix_dict_path(dict):
@@ -69,9 +97,8 @@ class mstanza_pipeline:
         self.config = config
 
     def init_pipeline(self):
-        self.nlp = sa.Pipeline(
-            **self.config
-        )  # Initialize the pipeline using a configuration dict
+        # Initialize the pipeline using a configuration dict
+        self.nlp = sa.Pipeline(**self.config)
 
     def process_text(self, text):
         self.doc = self.nlp(text)  # Run the pipeline on the pretokenized input text
@@ -102,8 +129,43 @@ def NER(doc):
 if __name__ == "__main__":
     mydict = fix_dict_path(stanza_dict)
     mytext = be.get_sample_text()
+    mytext = "This is a test sentence for stanza. This is another sentence."
     # initialize instance of the class
     obj = mstanza_pipeline(mydict)
     obj.init_pipeline()
     out = obj.process_text(mytext)
-    print(out)
+    # We need a module that transforms a generic dict into xml.
+    # Have to decide on a structure though.
+    # May be good to count tokens continuously and not starting from 1 every new
+    # sentence.
+    # print(out)
+    # print sentences and tokens
+    print([sentence.text for sentence in out.sentences])
+    for i, sentence in enumerate(out.sentences):
+        print(f"====== Sentence {i+1} tokens =======")
+        print(
+            *[f"id: {token.id}\ttext: {token.text}" for token in sentence.tokens],
+            sep="\n",
+        )
+    # next step would be mwt, which is only applicable for languages like German and English
+    #
+    # print out pos tags
+    print(
+        *[
+            f'word: {word.text}\tupos: {word.upos}\txpos: {word.xpos}\tfeats: \
+        {word.feats if word.feats else "_"}'
+            for sent in out.sentences
+            for word in sent.words
+        ],
+        sep="\n",
+    )
+    #
+    # access lemma
+    print(
+        *[
+            f'word: {word.text+" "}\tlemma: {word.lemma}'
+            for sent in out.sentences
+            for word in sent.words
+        ],
+        sep="\n",
+    )
