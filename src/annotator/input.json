@@ -1,4 +1,5 @@
 {
+    "input": "input.txt",
     "stanza_dict": {
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
         "_lang_comment": "Language code for the language to build the Pipeline in",
@@ -43,18 +44,10 @@
             "_ner_comment": "Recognize named entities for all token spans in the corpus, dependency: - 'tokenize, mwt'",
         },
         "stanza_sentiment": {
-            
+            "_sentiment_comment": "Assign per-sentence sentiment scores, dependency: - 'tokenize, mwt'",
+        },
+        "stanza_constituency": {
+            "_constituency_comment": "Parse each sentence in a document using a phrase structure parser, dependency: - 'tokenize, mwt, pos'",
         }
-        # 'sentiment': Assign per-sentence sentiment scores.
-    # Dependency: - 'tokenize, mwt'
-    stanza_sentiment = {
-    
-    }
-    # 'constituency': Parse each sentence in a document using a phrase structure parser.
-    # Dependency: - 'tokenize, mwt, pos'
-    stanza_constituency = {
-    
-    }
-        # lemma has several sub-options as per https://stanfordnlp.github.io/stanza/lemma.html
     }
 }
