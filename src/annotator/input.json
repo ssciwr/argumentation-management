@@ -1,0 +1,60 @@
+{
+    "stanza_dict": {
+        "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
+        "_lang_comment": "Language code for the language to build the Pipeline in",
+        "lang": "en",  
+        "_dir_comment": "directory where models are stored - this does not work for pipeline",
+        "dir": "/home/inga/stanza_resources",  
+        "_package_comment": "using the default model, for others see: https://stanfordnlp.github.io/stanza/models.html",
+        "package": "default",
+        "_processors_comment": "Comma-separated list of processors to use, can also be given as a dictionary: {'tokenize': 'ewt', 'pos': 'ewt'}",
+        "processors": "tokenize,pos,lemma",  
+        "_logging_level_comment": "DEBUG, INFO, WARN, ERROR, CRITICAL, FATAL; FATAL has least amount of log info printed",
+        "logging_level": "INFO",  
+        "_verbose_comment": "True corresponds to INFO, False corresponds to ERROR",
+        "verbose": True,  
+        "_use_GPU_comment:":"use GPU if available, False forces CPU only",
+        "use_GPU": False,
+        "stanza_tokenize": {  
+            "_tokenize_comment": "Tokenizes the text and performs sentence segmentation, dependency: -",
+            "_tokenize_model_path_comment": "set model path only for custom models",
+            "_tokenize_pretokenized_comment": "Use pretokenized text as input and disable tokenization",
+            "tokenize_pretokenized": False,  
+        },
+        "stanza_mwt": {
+            "_mwt_comment": "Expands multi-word tokens (MWT) predicted by the TokenizeProcessor, this is only applicable to some languages, dependency: - 'tokenize'",
+            "_mwt_model_path_comment": "set model path only for custom models",
+        },
+        "stanza_pos": {
+            "_pos_comment":"Labels tokens with their universal POS (UPOS) tags, treebank-specific POS (XPOS) tags, and universal morphological features (UFeats), dependency: - 'tokenize, mwt'.",
+            "_pos_model_path_comment": "set model path only for custom models",
+            "_pos_pretrain_path_comment": "set model path only for custom models",
+            "_pos_batch_size_comment": "this specifies the maximum number of words to process as  minibatch for efficient processing. Default: 5000",
+            "pos_batch_size": 5000,  
+        },
+        "stanza_lemma": {
+            "_lemma_comment":"Generates the word lemmas for all words in the Document, dependency: - 'tokenize, mwt, pos'",
+            "_lemma_model_path_comment":"set model path only for custom models",
+        },
+        "stanza_depparse" : {
+            "_depparse_comment": "Provides an accurate syntactic dependency parsing analysis, dependency: - 'tokenize, mwt, pos, lemma'",
+        },
+        "stanza_ner": {
+            "_ner_comment": "Recognize named entities for all token spans in the corpus, dependency: - 'tokenize, mwt'",
+        },
+        "stanza_sentiment": {
+            
+        }
+        # 'sentiment': Assign per-sentence sentiment scores.
+    # Dependency: - 'tokenize, mwt'
+    stanza_sentiment = {
+    
+    }
+    # 'constituency': Parse each sentence in a document using a phrase structure parser.
+    # Dependency: - 'tokenize, mwt, pos'
+    stanza_constituency = {
+    
+    }
+        # lemma has several sub-options as per https://stanfordnlp.github.io/stanza/lemma.html
+    }
+}
