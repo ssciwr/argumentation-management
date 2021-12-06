@@ -3,57 +3,8 @@ from collections import defaultdict
 import stanza as sa
 import base as be
 
-stanza_dict = {
-    "lang": "en",  # Language code for the language to build the Pipeline in
-    "dir": r"/home/inga/stanza_resources",  # directory where models are stored
-    "package": "default",  # see other models:
-    # https://stanfordnlp.github.io/stanza/models.html
-    "processors": "tokenize,pos,lemma",  # Comma-separated list of processors to use
-    # can also be given as a dictionary:
-    # {'tokenize': 'ewt', 'pos': 'ewt'}
-    "logging_level": "INFO",  # DEBUG, INFO, WARN, ERROR, CRITICAL, FATAL
-    # FATAL has least amount of log info printed
-    "verbose": True,  # corresponds to INFO, False corresponds to ERROR
-    "use_GPU": False,  # use GPU if available, False forces CPU only
-    # kwargs for the individual processors
-    "tokenize_model_path": r"./en/tokenize/combined.pt",
-    # Processor-specific arguments are set with keys "{processor_name}_{argument_name}"
-    # "mwt_model_path": r"./fr/mwt/gsd.pt",
-    "pos_model_path": r"./en/pos/combined.pt",
-    "pos_batch_size": 3,  # this specifies the maximum number of words to process as
-    #                      a minibatch for efficient processing. Default: 5000
-    # "pos_pretrain_path": r"pretrain/gsd.pt",
-    "lemma_model_path": r"./en/lemma/combined.pt",
-    # lemma has several sub-options as per https://stanfordnlp.github.io/stanza/lemma.html
-    # "tokenize_pretokenized": True,  # Use pretokenized text as input and disable tokenization
-}
-# Issues:
-# only give model paths for the processors that are actually used, otherwise torch will throw
-# exception
 
-
-# Possible processors:
-# 'tokenize': Tokenizes the text and performs sentence segmentation.
-#        Dependency: -
-# 'mwt': Expands multi-word tokens (MWT) predicted by the TokenizeProcessor.
-#        This is only applicable to some languages.
-#        Dependency: - 'tokenize'
-# 'pos': Labels tokens with their universal POS (UPOS) tags, treebank-specific POS (XPOS) tags,
-#        and universal morphological features (UFeats).
-#        Dependency: - 'tokenize, mwt'
-# 'lemma': Generates the word lemmas for all words in the Document.
-#        Dependency: - 'tokenize, mwt, pos'
-# 'depparse': Provides an accurate syntactic dependency parsing analysis.
-#        Dependency: - 'tokenize, mwt, pos, lemma'
-# 'ner': Recognize named entities for all token spans in the corpus.
-#        Dependency: - 'tokenize, mwt'
-# 'sentiment': Assign per-sentence sentiment scores.
-#        Dependency: - 'tokenize, mwt'
-# 'constituency': Parse each sentence in a document using a phrase structure parser.
-#        Dependency: - 'tokenize, mwt, pos'
-
-
-def fix_dict_path(dict):
+def fix_dict_path(dict) -> dict:
     # brute force to get model paths
     for key, value in dict.items():
         if "model" in key.lower():
@@ -70,7 +21,7 @@ def fix_dict_path(dict):
     return dict
 
 
-def preprocess():
+def preprocess() -> object:
     """Download an English model into the default directory."""
     # this needs to be moved outside of the module and inside the docker container /
     # requirements - have a quick check here that file is there anyways
@@ -81,6 +32,29 @@ def preprocess():
     print("Building an English pipeline...")
     en_nlp = sa.Pipeline("en")
     return en_nlp
+
+
+def update_dict(dict_in) -> dict:
+    """Remove unnecessary keys in dict and move processor-specific keys one level up."""
+    # remove all comments - their keys start with "_"
+    dict_out = {
+        k: v
+        for k, v in dict_in.items()
+        if not k.startswith("_") and not k.startswith("stanza_")
+    }
+    # find out which processors were selected
+    procs = dict_out.get("processors", None)
+    if procs is None:
+        raise ValueError("Error: No stanza processors defined!")
+    # separate the processor list at the comma
+    procs = procs.split(",")
+    # pick the corresponding dictionary
+    for proc in procs:
+        mystring = "stanza_" + proc
+        dict_out.update(
+            {k: v for k, v in dict_in[mystring].items() if not k.startswith("_")}
+        )
+    return dict_out
 
 
 class mstanza_pipeline:
@@ -100,11 +74,11 @@ class mstanza_pipeline:
         # Initialize the pipeline using a configuration dict
         self.nlp = sa.Pipeline(**self.config)
 
-    def process_text(self, text):
+    def process_text(self, text) -> dict:
         self.doc = self.nlp(text)  # Run the pipeline on the pretokenized input text
         return self.doc  # stanza prints result as dictionary
 
-    def process_multiple_texts(self, textlist):
+    def process_multiple_texts(self, textlist) -> dict:
         # Wrap each document with a stanza.Document object
         in_docs = [sa.Document([], text=d) for d in textlist]
         self.mdocs = self.nlp(
@@ -127,13 +101,24 @@ def NER(doc):
 
 
 if __name__ == "__main__":
+    dict = be.load_input_dict()
+    # take only the part of dict pertaining to stanza
+    stanza_dict = dict["stanza_dict"]
+    # to point to user-defined model directories
+    # stanza does not accommodate fully at the moment
     mydict = fix_dict_path(stanza_dict)
-    mytext = be.get_sample_text()
+    # stanza does not care about the extra comment keys
+    # but we remove them for subsequent processing just in case
+    # now we need to select the processors and "activate" the sub-dictionaries
+    mydict = update_dict(mydict)
+    # mytext = be.get_sample_text()
+    # or use something shorter
     mytext = "This is a test sentence for stanza. This is another sentence."
     # initialize instance of the class
     obj = mstanza_pipeline(mydict)
     obj.init_pipeline()
     out = obj.process_text(mytext)
+    # For the output:
     # We need a module that transforms a generic dict into xml.
     # Have to decide on a structure though.
     # May be good to count tokens continuously and not starting from 1 every new
