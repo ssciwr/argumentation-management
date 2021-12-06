@@ -86,6 +86,48 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
+    def postprocess(self) -> str:
+        # postprocess of the annotated dictionary
+        # tokens
+        # count tokens continuously and not starting from 1 every new sentence.
+        # print sentences and tokens
+        # open outfile
+        fout = be.open_outfile()
+        print([sentence.text for sentence in self.doc.sentences])
+        for i, sentence in enumerate(self.doc.sentences):
+            print(f"====== Sentence {i+1} tokens =======")
+            print(
+                *[f"id: {token.id}\ttext: {token.text}" for token in sentence.tokens],
+                sep="\n",
+            )
+            for token in sentence.tokens:
+                print(token.text, token.id[0])
+                mystring = "{} {}\n".format(token.text, token.id[0])
+                fout.write(mystring)
+        fout.close()
+        # next step would be mwt, which is only applicable for languages like German and English
+        #
+        # print out pos tags
+        # print(
+        # *[
+        # f'word: {word.text}\tupos: {word.upos}\txpos: {word.xpos}\tfeats: \
+        # {word.feats if word.feats else "_"}'
+        # for sent in out.sentences
+        # for word in sent.words
+        # ],
+        # sep="\n",
+        # )
+
+        # access lemma
+        # print(
+        # *[
+        # f'word: {word.text+" "}\tlemma: {word.lemma}'
+        # for sent in out.sentences
+        # for word in sent.words
+        # ],
+        # sep="\n",
+        # )
+
 
 def NER(doc):
     named_entities = defaultdict(list)
@@ -118,39 +160,6 @@ if __name__ == "__main__":
     obj = mstanza_pipeline(mydict)
     obj.init_pipeline()
     out = obj.process_text(mytext)
+    obj.postprocess()
     # For the output:
     # We need a module that transforms a generic dict into xml.
-    # Have to decide on a structure though.
-    # May be good to count tokens continuously and not starting from 1 every new
-    # sentence.
-    # print(out)
-    # print sentences and tokens
-    print([sentence.text for sentence in out.sentences])
-    for i, sentence in enumerate(out.sentences):
-        print(f"====== Sentence {i+1} tokens =======")
-        print(
-            *[f"id: {token.id}\ttext: {token.text}" for token in sentence.tokens],
-            sep="\n",
-        )
-    # next step would be mwt, which is only applicable for languages like German and English
-    #
-    # print out pos tags
-    print(
-        *[
-            f'word: {word.text}\tupos: {word.upos}\txpos: {word.xpos}\tfeats: \
-        {word.feats if word.feats else "_"}'
-            for sent in out.sentences
-            for word in sent.words
-        ],
-        sep="\n",
-    )
-    #
-    # access lemma
-    print(
-        *[
-            f'word: {word.text+" "}\tlemma: {word.lemma}'
-            for sent in out.sentences
-            for word in sent.words
-        ],
-        sep="\n",
-    )

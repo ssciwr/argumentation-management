@@ -15,3 +15,10 @@ def load_input_dict():
     with open("src/annotator/input.json") as f:
         dict = json.load(f)
     return dict
+
+
+# open outfile
+def open_outfile():
+    name = "out/output.txt"
+    f = open(name, "w")
+    return f
