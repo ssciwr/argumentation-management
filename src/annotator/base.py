@@ -22,3 +22,38 @@ def open_outfile():
     name = "out/output.txt"
     f = open(name, "w")
     return f
+
+
+# metadata and tags
+# metadata at top of document
+# <corpus>
+# <document>
+#   <metadata>
+#       <author></author>
+#       <speaker_name>
+#       <speaker_party>
+#       <speaker_role>
+#       <lp>
+#       <session>
+#       <date>
+#       <year>
+#       <year_month>
+#       <speaker_next>
+#        ...
+#       <text>
+#   </metadata>
+# now the annotated text
+# <text id="" speaker_name="" ...>
+#  - main text with s-attributes and attributes
+# <sp> speech
+# <z> Zwischenrufe
+# <s id=""> sentence
+# <t id=""> token
+# <pt> <numb><t id=""> thirteen ..
+# <pt><prop><t id=""> Audi ..
+# <pt><comp> ..
+# <pt><emb><noun>
+#
+#
+#
+#
