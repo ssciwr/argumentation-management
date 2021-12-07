@@ -1,5 +1,7 @@
 import spacy as sp
-from spacy.lang.en import English
+from base import get_sample_text
+
+# from spacy.lang.en import English
 
 # from collections import defaultdict
 
@@ -20,33 +22,48 @@ class spaCy:
     Args:
         config[dict]: Dict containing the setup for the spaCy run.
             -> structure:
-                config = {
-                    "JobID": "str",
-                    "config": {"model":str, "add_to":list(str)},
-                    "pretrained"=bool
-                    }
+                {
+                "filename": str,
+                "model":str,
+                "processors": str,
+                "pretrained"= str or False
+                }
 
-                JobID: String with ID to be used for saving to .vrt file
-                config: dict holding information to assemble the pipeline
-                        -> model to load, which components to add
-                pretrained: Use specific pipeline with given name/from given path
+                filename: String with ID to be used for saving to .vrt file.
+                model: String with name of model installed in default
+                    spacy directory or path to model.
+                processors: Comma-separated string containing the processors
+                    to be used in pipeline.
+                pretrained: Use specific pipeline with given name/from given path.
     """
 
     def __init__(self, config):
 
         # config to build a pipeline
-        self.JobID = config["JobID"]
+        self.JobID = config["filename"]
+        # check for pretrained
+        self.pretrained = config["pretrained"]
+
+        if self.pretrained:
+            self.model = self.pretrained
+        elif not self.pretrained:
+            self.model = config["model"]
+
+        # get processors from dict
+        procs = config["processors"]
+        # strip out blank spaces and separate processors into list
+        self.jobs = [proc.strip() for proc in procs.split(",")]
+
+        # use specific device settings if requested
+        if config["set_device"]:
+            if config["set_device"] == "prefer_GPU":
+                sp.prefer_gpu()
+            if config["require_GPU"] == "require_GPU":
+                sp.require_gpu()
+            if config["require_CPU"] == "require_CPU":
+                sp.require_cpu()
+
         self.config = config["config"]
-        self.jobs = config["config"]["add_to"]
-        #  list of which Results to fetch, ideally corresponding
-        # to loaded components in config, currently only supports
-        # "NER"
-        # use a full pretrained pipeline if desired, this will run
-        # all components of said pipeline
-        if config["pretrained"]:
-            self.pretrained = config["pretrained"]
-        else:
-            self.pretrained = False
 
 
 # build the pipeline from config-dict
@@ -70,7 +87,21 @@ class spaCy_pipe(spaCy):
 
         # use a specific pipeline if requested
         if self.pretrained:
-            self.nlp = sp.load(self.pretrained)
+            # load pipeline
+            print("Loading full pipeline {}.".format(self.model))
+
+            self.nlp = sp.load(self.model)
+            # check if there are components that are missing
+            jobs = [
+                component[0]
+                for component in self.nlp.components
+                if component[0] not in self.jobs
+            ]
+            # if yes, add to processors
+            if jobs != []:
+                self.jobs.append([job for job in jobs])
+            # use all components
+            self.used = self.jobs
 
         # initialize pipeline
         else:
@@ -79,38 +110,27 @@ class spaCy_pipe(spaCy):
             # -> changed it to load a model and disable, as I was experiencing inconsistencies
             # with building from base language even for just the two models I tried
             try:
-                self.nlp = sp.load(self.config["model"])
+                if self.config:
+                    self.nlp = sp.load(self.model, config=self.config)
+                else:
+                    self.nlp = sp.load(self.model)
             # if model can't be found, ask to try and download it
-            # -> files can be big, especially the trf pipelines
+            # -> files can be big, especially the trf pipelines.
+
             except OSError:
-                inp = input(
-                    "Could not find {} on system. Attempt to download? [Y/N]".format(
-                        self.config["model"]
-                    )
-                )
+                print("Could not find {} on system.".format(self.model))
 
-                if inp == "Y":
-                    os.system(
-                        "python -m spacy download {}".format(self.config["model"])
-                    )
-                elif inp == "N":
-                    exit()
-
-            print("*" * 50)
+            print(">>>")
 
             # find which processors are available in model
             components = [component[0] for component in self.nlp.components]
 
             # go through the requested processors
-            for component in self.config["add_to"]:
+            for component in self.jobs:
                 # check if the keywords requested correspond to available components in pipeline
                 if component in components:
                     # if yes:
-                    print(
-                        "Loading component {} from model {}.".format(
-                            component, self.config["model"]
-                        )
-                    )
+                    print("Loading component {} from {}.".format(component, self.model))
                     # add to list of components to be used
                     self.used.append(component)
 
@@ -118,19 +138,17 @@ class spaCy_pipe(spaCy):
                 # -> links may not work if they change their websites structure in the future
                 else:
                     print(
-                        "Component {} not found in model {}.".format(
-                            component, self.config["model"]
-                        )
+                        "Component '{}' not found in {}.".format(component, self.model)
                     )
                     message = "You may have tried to add a processor that isn't defined in the source model.\n\
                             \rIf you're loading a pretrained spaCy pipeline you may find a list of available keywords at:\n\
                             \rhttps://spacy.io/models/{}#{}".format(
-                        "{}".format(self.config["model"].split("_")[0]),
-                        self.config["model"],
+                        "{}".format(self.model.split("_")[0]),
+                        self.model,
                     )
                     print(message)
                     exit()
-            print("*" * 50)
+            print(">>>")
 
     # call the build pipeline on the data
     def apply_to(self, data):
@@ -146,6 +164,52 @@ class spaCy_pipe(spaCy):
         # apply to data while disabling everything that wasnt requested
         self.doc = self.nlp(data, disable=disable)
         return self
+
+    # define all of these as functions
+    def grab_ner(self, token, out, line):
+        if token.i == 0:
+            out[1] += " ner"
+        if token.ent_type_ != "":
+            line += "  " + token.ent_type_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_lemma(self, token, out, line):
+        if token.i == 0:
+            out[1] += " lemma"
+        if token.lemma_ != "":
+            line += " " + token.lemma_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_tag(self, token, out, line):
+        if token.i == 0:
+            out[1] += " Tag"
+        if token.tag_ != "":
+            line += " " + token.tag_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_dep(self, token, out, line):
+        if token.i == 0:
+            out[1] += " Depend"
+        if token.dep_ != "":
+            line += " " + token.dep_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_att(self, token, out, line):
+        if token.i == 0:
+            out[1] += " POS"
+        if token.pos_ != "":
+            line += " " + token.pos_
+        else:
+            line += " - "
+        return out, line
 
     def assemble_output_sent(self):
 
@@ -172,32 +236,19 @@ class spaCy_pipe(spaCy):
                 # grab the data for the run components, I've only included the human readable
                 # part of output right now as I don't know what else we need
                 if "ner" in self.jobs:
-                    if token.i == 0:
-                        out[1] += " ner"
-                    if token.ent_type_ != "":
-                        line += "  " + token.ent_type_
-                    else:
-                        line += " - "
+                    out, line = self.grab_ner(token, out, line)
 
                 if "lemmatizer" in self.jobs:
-                    if token.i == 0:
-                        out[1] += " lemma"
-                    line += " " + token.lemma_
+                    out, line = self.grab_lemma(token, out, line)
 
                 if "tagger" in self.jobs:
-                    if token.i == 0:
-                        out[1] += " Tag"
-                    line += " " + token.tag_
+                    out, line = self.grab_tag(token, out, line)
 
                 if "parser" in self.jobs:
-                    if token.i == 0:
-                        out[1] += " Depend"
-                    line += " " + token.dep_
+                    out, line = self.grab_dep(token, out, line)
 
                 if "attribute_ruler" in self.jobs:
-                    if token.i == 0:
-                        out[1] += " POS"
-                    line += " " + token.pos_
+                    out, line = self.grab_att(token, out, line)
                     # add what else we need
 
                 out.append(line + "\n")
@@ -219,36 +270,25 @@ class spaCy_pipe(spaCy):
         out = ["! spaCy output for {}! \n".format(self.JobID)]
         out.append("! Idx Text")
 
+        # getting all the individual info like this looks kinda ugly
+        # -> better idea? Think on this...
         for token in self.doc:
             line = str(token.i) + " " + token.text
             if "ner" in self.jobs:
-                if token.i == 0:
-                    out[1] += " ner"
-                if token.ent_type_ != "":
-                    line += "  " + token.ent_type_
-                else:
-                    line += " - "
+                out, line = self.grab_ner(token, out, line)
 
             if "lemmatizer" in self.jobs:
-                if token.i == 0:
-                    out[1] += " lemma"
-                line += "  " + token.lemma_
+                out, line = self.grab_lemma(token, out, line)
 
             if "tagger" in self.jobs:
-                if token.i == 0:
-                    out[1] += " Tag"
-                line += "  " + token.tag_
+                out, line = self.grab_tag(token, out, line)
 
             if "parser" in self.jobs:
-                if token.i == 0:
-                    out[1] += " Depend"
-                line += "  " + token.dep_
+                out, line = self.grab_dep(token, out, line)
 
             if "attribute_ruler" in self.jobs:
-                if token.i == 0:
-                    out[1] += " POS"
-                line += "  " + token.pos_
-                out.append(line + "\n")
+                out, line = self.grab_att(token, out, line)
+            out.append(line + "\n")
         out[1] += " \n"
 
         return out
@@ -263,7 +303,7 @@ class spaCy_pipe(spaCy):
             out = self.assemble_output_sent()
         else:
             out = self.assemble_output()
-        # write to file -> This overwrites any existing file of given name
+        # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
         with open("{}_spacy.vrt".format(self.JobID), "w") as file:
@@ -272,28 +312,26 @@ class spaCy_pipe(spaCy):
 
 
 if __name__ == "__main__":
-    with open("../../data/Original/iued_test_original.txt", "r") as file:
-        data = file.read().replace("\n", "")
+    # with open("../../data/Original/iued_test_original.txt", "r") as file:
+    #    data = file.read().replace("\n", "")
+
+    data = get_sample_text()
 
     # lets emulate a run of en_core_web_sm
     config = {
-        "JobID": "Test",
-        "config": {
-            "model": "en_core_web_sm",
-            "add_to": [
-                "tok2vec",
-                "senter",
-                "tagger",
-                "parser",
-                "attribute_ruler",
-                "lemmatizer",
-                "ner",
-            ],
-        },
-        # why distinguish jobs and processors? -> The processors are not neccessarily named uniformly for
-        # all models, but I'm not entirely happy with this. Don't have a better idea though, except drop
-        # the concept completely and come up with something new -> Think on this...
+        "filename": "Test",
+        "model": "en_core_web_sm",
+        "processors": "tok2vec, senter, tagger, parser,\
+            attribute_ruler, lemmatizer, ner",
         "pretrained": False,
+        "set_device": False,
+        "config": {
+            "nlp.batch_size": 512,
+            "components": {
+                "attribute_ruler": {"validate": True},
+                "lemmatizer": {"mode": "rule"},
+            },
+        },
     }
 
     # build pipe from config, apply it to data, write results to vrt
@@ -302,12 +340,12 @@ if __name__ == "__main__":
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
     senter_config = {
-        "JobID": "Test1",
-        "config": {
-            "model": "en_core_web_md",
-            "add_to": ["tok2vec", "tagger", "attribute_ruler", "lemmatizer"],
-        },
+        "filename": "Test1",
+        "model": "en_core_web_md",
+        "processors": "tok2vec,tagger,attribute_ruler,lemmatizer",
         "pretrained": False,
+        "set_device": False,
+        "config": False,
     }
 
     spaCy_pipe(senter_config).apply_to(data).to_vrt()
@@ -316,8 +354,8 @@ if __name__ == "__main__":
 
 with open("Test_spacy.vrt", "r") as file:
     for line in file:
-        if line != "<s>\n" and line != "</s>\n":
+        if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
             try:
-                assert len(line.split()) == len(config["config"]["add_to"])
+                assert len(line.split()) == len(config["processors"].split(","))
             except AssertionError:
                 print(line)
