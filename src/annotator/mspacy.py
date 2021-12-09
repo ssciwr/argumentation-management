@@ -16,7 +16,7 @@ import os
 # -> define how to read from the config dict
 
 
-class spaCy:
+class spacy:
     """Base class for spaCy module
 
     Args:
@@ -39,7 +39,8 @@ class spaCy:
 
     def __init__(self, config):
 
-        # config to build a pipeline
+        # config = the input dictionary
+        # output file name
         self.JobID = config["filename"]
         # check for pretrained
         self.pretrained = config["pretrained"]
@@ -67,7 +68,7 @@ class spaCy:
 
 
 # build the pipeline from config-dict
-class spaCy_pipe(spaCy):
+class spacy_pipe(spacy):
     """Pipeline class for spaCy module -> inherits setup from base class
 
     Assemble pipeline from config, apply pipeline to data and write results to .vrt file.
@@ -312,11 +313,7 @@ class spaCy_pipe(spaCy):
 
 
 if __name__ == "__main__":
-    # with open("../../data/Original/iued_test_original.txt", "r") as file:
-    #    data = file.read().replace("\n", "")
-
     data = be.get_sample_text()
-
     # lets emulate a run of en_core_web_sm
     # sample dict
     config = {
@@ -339,11 +336,11 @@ if __name__ == "__main__":
     # take only the part of dict pertaining to spacy
     # filename needs to be moved to/taken from top level of dict
     spacy_dict = mydict["spacy_dict"]
-    # remove comment lines
+    # remove comment lines starting with "_"
     spacy_dict = be.update_dict(spacy_dict)
 
     # build pipe from config, apply it to data, write results to vrt
-    spaCy_pipe(config).apply_to(data).to_vrt()
+    spacy_pipe(config).apply_to(data).to_vrt()
 
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
@@ -356,7 +353,7 @@ if __name__ == "__main__":
         "config": False,
     }
 
-    spaCy_pipe(senter_config).apply_to(data).to_vrt()
+    # spacy_pipe(senter_config).apply_to(data).to_vrt()
 
     # maybe enable loading of processors from different models?
 
