@@ -211,6 +211,30 @@ class spaCy_pipe(spaCy):
             line += " - "
         return out, line
 
+    def collect_results(self, token, out):
+        # always get token id and token text
+        line = str(token.i) + " " + token.text
+
+        # grab the data for the run components, I've only included the human readable
+        # part of output right now as I don't know what else we need
+        if "ner" in self.jobs:
+            out, line = self.grab_ner(token, out, line)
+
+        if "lemmatizer" in self.jobs:
+            out, line = self.grab_lemma(token, out, line)
+
+        if "tagger" in self.jobs:
+            out, line = self.grab_tag(token, out, line)
+
+        if "parser" in self.jobs:
+            out, line = self.grab_dep(token, out, line)
+
+        if "attribute_ruler" in self.jobs:
+            out, line = self.grab_att(token, out, line)
+            # add what else we need
+
+        return out, line
+
     def assemble_output_sent(self):
 
         try:
@@ -230,28 +254,9 @@ class spaCy_pipe(spaCy):
             # iterate through the tokens of the sentence, this is just a slice of
             # the full doc
             for token in sent:
-                # always get token id and token text
-                line = str(token.i) + " " + token.text
-
-                # grab the data for the run components, I've only included the human readable
-                # part of output right now as I don't know what else we need
-                if "ner" in self.jobs:
-                    out, line = self.grab_ner(token, out, line)
-
-                if "lemmatizer" in self.jobs:
-                    out, line = self.grab_lemma(token, out, line)
-
-                if "tagger" in self.jobs:
-                    out, line = self.grab_tag(token, out, line)
-
-                if "parser" in self.jobs:
-                    out, line = self.grab_dep(token, out, line)
-
-                if "attribute_ruler" in self.jobs:
-                    out, line = self.grab_att(token, out, line)
-                    # add what else we need
-
+                out, line = self.collect_results(token, out)
                 out.append(line + "\n")
+
             out.append("</s>\n")
         out[1] += " \n"
         return out
@@ -273,22 +278,9 @@ class spaCy_pipe(spaCy):
         # getting all the individual info like this looks kinda ugly
         # -> better idea? Think on this...
         for token in self.doc:
-            line = str(token.i) + " " + token.text
-            if "ner" in self.jobs:
-                out, line = self.grab_ner(token, out, line)
-
-            if "lemmatizer" in self.jobs:
-                out, line = self.grab_lemma(token, out, line)
-
-            if "tagger" in self.jobs:
-                out, line = self.grab_tag(token, out, line)
-
-            if "parser" in self.jobs:
-                out, line = self.grab_dep(token, out, line)
-
-            if "attribute_ruler" in self.jobs:
-                out, line = self.grab_att(token, out, line)
+            out, line = self.collect_results(token, out)
             out.append(line + "\n")
+
         out[1] += " \n"
 
         return out

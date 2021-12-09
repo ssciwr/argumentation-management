@@ -104,20 +104,35 @@
                 "_special_case_comment": "Add special cases to the tokenizer. Should be provided as "
             },
             "attribute_ruler": {
-                "_attribute_ruler_comment": "Pipeline component for rule-based token attribute assignment.",
+                "_attribute_ruler_comment": "Pipeline component for rule-based token attribute assignment. Trainable: No.",
                 "_validate_comment": "Wheter patterns should be validated, Defaults to false.",
                 "validate": false
             },
             "parser": {
-                "_dependency_parser_comment": "Pipeline component for syntactic dependency parsing.",
+                "_dependency_parser_comment": "Pipeline component for syntactic dependency parsing, coresponds to DependencyParser. Trainable: Yes.",
                 "_moves_comment": "List of transition names. Inferred from data if not provided",
                 "moves": null,
-                "_model": "Model powering the pipeline component. Defaults to TransitionBasedParser. -> I don't think we want to change anything here."
+                "_model_comment": "Model powering the pipeline component and parameters for model. As this is already defined in the config.cfg file for the model you're using you would typically not need to change anything here.",
+                "_min_action_frequency_comment": "Sets the minimum frequency of labelled actions to retain, affects label accuracy and possibly attachment structure.",
+                "min_action_frequency": 30,
+                "_learn_tokens_comment": "Decides whether to learn to merge subtokens split relative to gold standard. Default to false, Experimental.",
+                "learn_tokens": false,
+                "_update_with_oracle_cut_size_comment": "During training: Cut long sequences into shorter segments by creating intermediate standards based on gold-standard history. Default 100.",
+                "update_with_oracle_cut_size": 100
             },
             "entity_linker": {
-                "_entity_linker": "Pipeline component for named entity linking and disambiguation.",
+                "_entity_linker": "Pipeline component for named entity linking and disambiguation. Trainable: Yes. Requires: KnowledgeBase.",
                 "_labels_discard_comment": "NER labels that will automatically get a 'NIL' predictiion, Default []",
-                "label_discard": []
+                "label_discard": [],
+                "_n_sents_comment": "Number of neighboruring sentences to take into account, Default 0.",
+                "n_sents": 0
+            },
+            "lemmatizer": {
+                "_lemmatizer_comment": "Pipeline component for assignment of base forms to tokens based on POS tags or lookup tables. Trainable: No. Requires: spacy-lookups-data or POS tags",
+                "_mode_comment": "Lemmatizer mode, 'lookup' or 'rule'. Lookup needs lookup tables. rule needs coarse-grained POS.",
+                "mode": "rule",
+                "_overwrite_comment": "Wheter to overwrite existing lemmas. Default False",
+                "overwrite": false
             }
         }
     }
