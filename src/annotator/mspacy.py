@@ -167,6 +167,8 @@ class spaCy_pipe(spaCy):
 
     # define all of these as functions
     def grab_ner(self, token, out, line):
+        # attributes:
+        # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.i == 0:
             out[1] += " ner"
         if token.ent_type_ != "":
@@ -175,7 +177,31 @@ class spaCy_pipe(spaCy):
             line += " - "
         return out, line
 
+    def grab_ruler(self, token, out, line):
+        # attributes:
+        # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
+        if token.i == 0:
+            out[1] += " entity_ruler"
+        if token.ent_type_ != "":
+            line += "  " + token.ent_type_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_linker(self, token, out, line):
+        # attributes:
+        # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
+        if token.i == 0:
+            out[1] += " entity_linker"
+        if token.ent_type_ != "":
+            line += "  " + token.ent_kb_id_
+        else:
+            line += " - "
+        return out, line
+
     def grab_lemma(self, token, out, line):
+        # attributes:
+        # Lemmatizer -> Token.lemma, Token.lemma_
         if token.i == 0:
             out[1] += " lemma"
         if token.lemma_ != "":
@@ -184,7 +210,20 @@ class spaCy_pipe(spaCy):
             line += " - "
         return out, line
 
+    def grab_morph(self, token, out, line):
+        # attributes:
+        # Morphologizer -> Token.pos, Token.pos_, Token.morph
+        if token.i == 0:
+            out[1] += " UPOS morph"
+        if token.lemma_ != "":
+            line += " " + token.pos_ + "" + token.morph
+        else:
+            line += " - "
+        return out, line
+
     def grab_tag(self, token, out, line):
+        # attributes:
+        # Tagger -> Token.tag, Token.tag_
         if token.i == 0:
             out[1] += " Tag"
         if token.tag_ != "":
@@ -194,8 +233,10 @@ class spaCy_pipe(spaCy):
         return out, line
 
     def grab_dep(self, token, out, line):
+        # attributes:
+        # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
         if token.i == 0:
-            out[1] += " Depend"
+            out[1] += " pars"
         if token.dep_ != "":
             line += " " + token.dep_
         else:
@@ -203,6 +244,8 @@ class spaCy_pipe(spaCy):
         return out, line
 
     def grab_att(self, token, out, line):
+        # attributes:
+        # Token.pos, Token.pos_
         if token.i == 0:
             out[1] += " POS"
         if token.pos_ != "":
@@ -220,8 +263,17 @@ class spaCy_pipe(spaCy):
         if "ner" in self.jobs:
             out, line = self.grab_ner(token, out, line)
 
+        if "entity_ruler" in self.jobs:
+            out, line = self.grab_ruler(token, out, line)
+
+        if "entity_linker" in self.jobs:
+            out, line = self.grab_linker(token, out, line)
+
         if "lemmatizer" in self.jobs:
             out, line = self.grab_lemma(token, out, line)
+
+        if "morphologizer" in self.jobs:
+            out, line = self.grab_morph(token, out, line)
 
         if "tagger" in self.jobs:
             out, line = self.grab_tag(token, out, line)
@@ -275,8 +327,6 @@ class spaCy_pipe(spaCy):
         out = ["! spaCy output for {}! \n".format(self.JobID)]
         out.append("! Idx Text")
 
-        # getting all the individual info like this looks kinda ugly
-        # -> better idea? Think on this...
         for token in self.doc:
             out, line = self.collect_results(token, out)
             out.append(line + "\n")
@@ -291,7 +341,7 @@ class spaCy_pipe(spaCy):
 
         -> can only be called after pipeline was applied.
         """
-        if "senter" in self.jobs:
+        if "senter" in self.jobs or "sentencizer" in self.jobs or "parser" in self.jobs:
             out = self.assemble_output_sent()
         else:
             out = self.assemble_output()
@@ -314,7 +364,7 @@ if __name__ == "__main__":
     config = {
         "filename": "Test",
         "model": "en_core_web_sm",
-        "processors": "tok2vec, senter, tagger, parser,\
+        "processors": "tok2vec, tagger, parser,\
             attribute_ruler, lemmatizer, ner",
         "pretrained": False,
         "set_device": False,
@@ -352,13 +402,13 @@ if __name__ == "__main__":
 
     # maybe enable loading of processors from different models?
 
-with open("Test_spacy.vrt", "r") as file:
-    for line in file:
-        # check if vrt file was written correctly
-        # lines with "!" are comments, <s> and </s> mark beginning and
-        # end of sentence, respectively
-        if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
-            try:
-                assert len(line.split()) == len(config["processors"].split(","))
-            except AssertionError:
-                print(line)
+# with open("Test_spacy.vrt", "r") as file:
+#    for line in file:
+# check if vrt file was written correctly
+# lines with "!" are comments, <s> and </s> mark beginning and
+# end of sentence, respectively
+#        if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
+#            try:
+#                assert len(line.split()) == len(config["processors"].split(","))+1
+#            except AssertionError:
+#               print(len(line.split()),len(config["processors"].split(",")),line)
