@@ -221,6 +221,11 @@
                 "tok2vec": {
                     "_tok2vec_comment": "Token-to-vectore model that sets its output to the Doc.tensor attribute.This is mostly useful to share a single subnetwork between multiple components.",
                     "_model_comment": "Model to use, Defaults to HashEmbedCNN."
+                },
+                "transformer" : {
+                    "_transformer_comment": "Pipeline component for multi-task learning with transformer models.",
+                    "_set_extra_annotations_comment": "Function that takes a batch of Doc objects and transformer outputs and stores the annotations on the Doc. The Doc._.trf_data attribute is set prior to calling the callback. By default, no additional annotations are set.",
+                    "_max_batch_items": "Maximum size of padded batch. Defaults to 128*32"
                 }
             }
         }
