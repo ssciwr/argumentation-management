@@ -13,8 +13,16 @@ def get_sample_text():
 # load the dictionary
 def load_input_dict():
     with open("src/annotator/input.json") as f:
-        dict = json.load(f)
-    return dict
+        mydict = json.load(f)
+    return mydict
+
+
+def update_dict(dict_in) -> dict:
+    """Remove unnecessary keys in dict and move processor-specific keys one level up."""
+    # remove all comments - their keys start with "_"
+    # also do not select sub-dictionaries
+    dict_out = {k: v for k, v in dict_in.items() if not k.startswith("_")}
+    return dict_out
 
 
 # open outfile

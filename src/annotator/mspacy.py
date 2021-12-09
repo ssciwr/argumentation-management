@@ -1,5 +1,5 @@
 import spacy as sp
-from base import get_sample_text
+import base as be
 
 # from spacy.lang.en import English
 
@@ -307,9 +307,10 @@ if __name__ == "__main__":
     # with open("../../data/Original/iued_test_original.txt", "r") as file:
     #    data = file.read().replace("\n", "")
 
-    data = get_sample_text()
+    data = be.get_sample_text()
 
     # lets emulate a run of en_core_web_sm
+    # sample dict
     config = {
         "filename": "Test",
         "model": "en_core_web_sm",
@@ -325,6 +326,13 @@ if __name__ == "__main__":
             },
         },
     }
+    # or read the main dict and activate
+    mydict = be.load_input_dict()
+    # take only the part of dict pertaining to spacy
+    # filename needs to be moved to/taken from top level of dict
+    spacy_dict = mydict["spacy_dict"]
+    # remove comment lines
+    spacy_dict = be.update_dict(spacy_dict)
 
     # build pipe from config, apply it to data, write results to vrt
     spaCy_pipe(config).apply_to(data).to_vrt()
@@ -346,6 +354,9 @@ if __name__ == "__main__":
 
 with open("Test_spacy.vrt", "r") as file:
     for line in file:
+        # check if vrt file was written correctly
+        # lines with "!" are comments, <s> and </s> mark beginning and
+        # end of sentence, respectively
         if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
             try:
                 assert len(line.split()) == len(config["processors"].split(","))
