@@ -2,6 +2,7 @@
 import json
 
 
+# the below functions will move into an input class
 # read the sample data
 def get_sample_text():
     name = "data/Original/iued_test_original.txt"
@@ -23,6 +24,26 @@ def update_dict(dict_in) -> dict:
     # also do not select sub-dictionaries
     dict_out = {k: v for k, v in dict_in.items() if not k.startswith("_")}
     return dict_out
+
+
+def activate_procs(mydict, toolstring) -> dict:
+    """Move processor-specific keys one level up."""
+    # find out which processors were selected
+    procs = mydict.get("processors", None)
+    if procs is None:
+        raise ValueError("Error: No stanza processors defined!")
+    # separate the processor list at the comma
+    procs = procs.split(",")
+    # pick the corresponding dictionary
+    for proc in procs:
+        mystring = toolstring + proc
+        mydict.update(
+            {k: v for k, v in mydict[mystring].items() if not k.startswith("_")}
+        )
+    # remove all other processor dictionaries that are not used
+    # this is not really necessary for stanza but doing it to keep the dict clean
+    mydict = {k: v for k, v in mydict.items() if not k.startswith("toolstring")}
+    return mydict
 
 
 # open outfile
