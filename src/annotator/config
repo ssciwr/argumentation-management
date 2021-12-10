@@ -1,4 +1,4 @@
-paths]
+[paths]
 train = "corpus/en-core-web/train.spacy"
 dev = "corpus/en-core-web/dev.spacy"
 vectors = null

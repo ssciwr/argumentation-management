@@ -32,6 +32,59 @@ def open_outfile():
     return f
 
 
+class out_object:
+    """The output object. Write the vrt file."""
+
+    def __init__(self) -> None:
+        pass
+
+    # define all of these as functions
+    def grab_ner(token, out, line):
+        if token.i == 0:
+            out[1] += " ner"
+        if token.ent_type_ != "":
+            line += "  " + token.ent_type_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_lemma(token, out, line):
+        if token.i == 0:
+            out[1] += " lemma"
+        if token.lemma_ != "":
+            line += " " + token.lemma_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_tag(token, out, line):
+        if token.i == 0:
+            out[1] += " Tag"
+        if token.tag_ != "":
+            line += " " + token.tag_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_dep(token, out, line):
+        if token.i == 0:
+            out[1] += " Depend"
+        if token.dep_ != "":
+            line += " " + token.dep_
+        else:
+            line += " - "
+        return out, line
+
+    def grab_att(token, out, line):
+        if token.i == 0:
+            out[1] += " POS"
+        if token.pos_ != "":
+            line += " " + token.pos_
+        else:
+            line += " - "
+        return out, line
+
+
 # metadata and tags
 # metadata at top of document
 # <corpus>

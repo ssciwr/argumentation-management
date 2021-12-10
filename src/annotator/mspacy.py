@@ -65,6 +65,7 @@ class spacy:
                 sp.require_cpu()
 
         self.config = config["config"]
+        self.config = be.update_dict(self.config)
 
 
 # build the pipeline from config-dict
@@ -166,52 +167,6 @@ class spacy_pipe(spacy):
         self.doc = self.nlp(data, disable=disable)
         return self
 
-    # define all of these as functions
-    def grab_ner(self, token, out, line):
-        if token.i == 0:
-            out[1] += " ner"
-        if token.ent_type_ != "":
-            line += "  " + token.ent_type_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_lemma(self, token, out, line):
-        if token.i == 0:
-            out[1] += " lemma"
-        if token.lemma_ != "":
-            line += " " + token.lemma_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_tag(self, token, out, line):
-        if token.i == 0:
-            out[1] += " Tag"
-        if token.tag_ != "":
-            line += " " + token.tag_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_dep(self, token, out, line):
-        if token.i == 0:
-            out[1] += " Depend"
-        if token.dep_ != "":
-            line += " " + token.dep_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_att(self, token, out, line):
-        if token.i == 0:
-            out[1] += " POS"
-        if token.pos_ != "":
-            line += " " + token.pos_
-        else:
-            line += " - "
-        return out, line
-
     def collect_results(self, token, out):
         # always get token id and token text
         line = str(token.i) + " " + token.text
@@ -219,19 +174,19 @@ class spacy_pipe(spacy):
         # grab the data for the run components, I've only included the human readable
         # part of output right now as I don't know what else we need
         if "ner" in self.jobs:
-            out, line = self.grab_ner(token, out, line)
+            out, line = be.out_object.grab_ner(token, out, line)
 
         if "lemmatizer" in self.jobs:
-            out, line = self.grab_lemma(token, out, line)
+            out, line = be.out_object.grab_lemma(token, out, line)
 
         if "tagger" in self.jobs:
-            out, line = self.grab_tag(token, out, line)
+            out, line = be.out_object.grab_tag(token, out, line)
 
         if "parser" in self.jobs:
-            out, line = self.grab_dep(token, out, line)
+            out, line = be.out_object.grab_dep(token, out, line)
 
         if "attribute_ruler" in self.jobs:
-            out, line = self.grab_att(token, out, line)
+            out, line = be.out_object.grab_att(token, out, line)
             # add what else we need
 
         return out, line
@@ -308,8 +263,8 @@ if __name__ == "__main__":
     data = be.get_sample_text()
     # lets emulate a run of en_core_web_sm
     # sample dict
-    config = {
-        "filename": "Test",
+    config2 = {
+        "filename": "out/test",
         "model": "en_core_web_sm",
         "processors": "tok2vec, senter, tagger, parser,\
             attribute_ruler, lemmatizer, ner",
@@ -330,9 +285,9 @@ if __name__ == "__main__":
     spacy_dict = mydict["spacy_dict"]
     # remove comment lines starting with "_"
     spacy_dict = be.update_dict(spacy_dict)
-
     # build pipe from config, apply it to data, write results to vrt
-    spacy_pipe(config).apply_to(data).to_vrt()
+    spacy_pipe(spacy_dict).apply_to(data).to_vrt()
+    # spacy_pipe(config).apply_to(data).to_vrt()
 
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
@@ -349,13 +304,13 @@ if __name__ == "__main__":
 
     # maybe enable loading of processors from different models?
 
-with open("Test_spacy.vrt", "r") as file:
+with open("out/test_spacy.vrt", "r") as file:
     for line in file:
         # check if vrt file was written correctly
         # lines with "!" are comments, <s> and </s> mark beginning and
         # end of sentence, respectively
         if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
             try:
-                assert len(line.split()) == len(config["processors"].split(","))
+                assert len(line.split()) == len(spacy_dict["processors"].split(","))
             except AssertionError:
                 print(line)

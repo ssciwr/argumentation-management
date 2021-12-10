@@ -84,9 +84,8 @@
     },
     "spacy_dict": {
         "_comment": "Main spacy dictionary, set the processors for the pipeline, the base model to use and more config.",
-
         "_filename_comment": "Name of .vrt file to create",
-        "filename": "Test_spacy",
+        "filename": "out/test_spacy",
         "_model_comment": "Pretrained model to load and use components from. IF model is not installed as package a path to the directory containing the models config.cfg file can be provided.",
         "_model_path_example": "/home/christian/anaconda3/envs/cwbproj/lib/python3.8/site-packages/en_core_web_sm/en_core_web_sm-3.1.0 -> Path to directory containing config.cfg for en_core_web_sm installed as package in conda environment.",
         "model": "en_core_web_sm",
@@ -98,41 +97,44 @@
         "set_device": false,
         "_exclude_comment": "Components from pipeline that are specifically not to be loaded upon initialization. If none are given all components will be loaded, only those specified in preocessors will be run.",
         "exclude": false,
-        "config:": {
-            "tokenizer": {
-                "_tokenizer_comment": "Segment Text, create Doc object with discovered segment bounderies. Reads punctuation and special case rules from Language.Defaults.",
-                "_special_case_comment": "Add special cases to the tokenizer. Should be provided as "
-            },
-            "attribute_ruler": {
-                "_attribute_ruler_comment": "Pipeline component for rule-based token attribute assignment. Trainable: No.",
-                "_validate_comment": "Wheter patterns should be validated, Defaults to false.",
-                "validate": false
-            },
-            "parser": {
-                "_dependency_parser_comment": "Pipeline component for syntactic dependency parsing, coresponds to DependencyParser. Trainable: Yes.",
-                "_moves_comment": "List of transition names. Inferred from data if not provided",
-                "moves": null,
-                "_model_comment": "Model powering the pipeline component and parameters for model. As this is already defined in the config.cfg file for the model you're using you would typically not need to change anything here.",
-                "_min_action_frequency_comment": "Sets the minimum frequency of labelled actions to retain, affects label accuracy and possibly attachment structure.",
-                "min_action_frequency": 30,
-                "_learn_tokens_comment": "Decides whether to learn to merge subtokens split relative to gold standard. Default to false, Experimental.",
-                "learn_tokens": false,
-                "_update_with_oracle_cut_size_comment": "During training: Cut long sequences into shorter segments by creating intermediate standards based on gold-standard history. Default 100.",
-                "update_with_oracle_cut_size": 100
-            },
-            "entity_linker": {
-                "_entity_linker": "Pipeline component for named entity linking and disambiguation. Trainable: Yes. Requires: KnowledgeBase.",
-                "_labels_discard_comment": "NER labels that will automatically get a 'NIL' predictiion, Default []",
-                "label_discard": [],
-                "_n_sents_comment": "Number of neighboruring sentences to take into account, Default 0.",
-                "n_sents": 0
-            },
-            "lemmatizer": {
-                "_lemmatizer_comment": "Pipeline component for assignment of base forms to tokens based on POS tags or lookup tables. Trainable: No. Requires: spacy-lookups-data or POS tags",
-                "_mode_comment": "Lemmatizer mode, 'lookup' or 'rule'. Lookup needs lookup tables. rule needs coarse-grained POS.",
-                "mode": "rule",
-                "_overwrite_comment": "Wheter to overwrite existing lemmas. Default False",
-                "overwrite": false
+        "config": {
+            "nlp.batch_size": 512,
+            "components": {
+                "tokenizer": {
+                    "_tokenizer_comment": "Segment Text, create Doc object with discovered segment bounderies. Reads punctuation and special case rules from Language.Defaults.",
+                    "_special_case_comment": "Add special cases to the tokenizer. Should be provided as "
+                },
+                "attribute_ruler": {
+                    "_attribute_ruler_comment": "Pipeline component for rule-based token attribute assignment. Trainable: No.",
+                    "_validate_comment": "Wheter patterns should be validated, Defaults to false.",
+                    "validate": false
+                },
+                "parser": {
+                    "_dependency_parser_comment": "Pipeline component for syntactic dependency parsing, coresponds to DependencyParser. Trainable: Yes.",
+                    "_moves_comment": "List of transition names. Inferred from data if not provided",
+                    "moves": null,
+                    "_model_comment": "Model powering the pipeline component and parameters for model. As this is already defined in the config.cfg file for the model you're using you would typically not need to change anything here.",
+                    "_min_action_frequency_comment": "Sets the minimum frequency of labelled actions to retain, affects label accuracy and possibly attachment structure.",
+                    "min_action_frequency": 30,
+                    "_learn_tokens_comment": "Decides whether to learn to merge subtokens split relative to gold standard. Default to false, Experimental.",
+                    "learn_tokens": false,
+                    "_update_with_oracle_cut_size_comment": "During training: Cut long sequences into shorter segments by creating intermediate standards based on gold-standard history. Default 100.",
+                    "update_with_oracle_cut_size": 100
+                },
+                "entity_linker": {
+                    "_entity_linker": "Pipeline component for named entity linking and disambiguation. Trainable: Yes. Requires: KnowledgeBase.",
+                    "_labels_discard_comment": "NER labels that will automatically get a 'NIL' predictiion, Default []",
+                    "label_discard": [],
+                    "_n_sents_comment": "Number of neighboruring sentences to take into account, Default 0.",
+                    "n_sents": 0
+                },
+                "lemmatizer": {
+                    "_lemmatizer_comment": "Pipeline component for assignment of base forms to tokens based on POS tags or lookup tables. Trainable: No. Requires: spacy-lookups-data or POS tags",
+                    "_mode_comment": "Lemmatizer mode, 'lookup' or 'rule'. Lookup needs lookup tables. rule needs coarse-grained POS.",
+                    "mode": "rule",
+                    "_overwrite_comment": "Wheter to overwrite existing lemmas. Default False",
+                    "overwrite": false
+                }
             }
         }
     }
