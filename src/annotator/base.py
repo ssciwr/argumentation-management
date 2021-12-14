@@ -60,7 +60,7 @@ class out_object:
         pass
 
     # define all of these as functions
-    def grab_ner(self, token, out, line):
+    def grab_ner(token, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.i == 0:
@@ -71,7 +71,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_ruler(self, token, out, line):
+    def grab_ruler(token, out, line):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.i == 0:
@@ -82,7 +82,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_linker(self, token, out, line):
+    def grab_linker(token, out, line):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
         if token.i == 0:
@@ -93,7 +93,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_lemma(self, token, out, line):
+    def grab_lemma(token, out, line):
         # attributes:
         # Lemmatizer -> Token.lemma, Token.lemma_
         if token.i == 0:
@@ -104,7 +104,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_morph(self, token, out, line):
+    def grab_morph(token, out, line):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
         if token.i == 0:
@@ -115,7 +115,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_tag(self, token, out, line):
+    def grab_tag(token, out, line):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         if token.i == 0:
@@ -126,7 +126,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_dep(self, token, out, line):
+    def grab_dep(token, out, line):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
         if token.i == 0:
@@ -137,7 +137,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_att(self, token, out, line):
+    def grab_att(token, out, line):
         # attributes:
         # Token.pos, Token.pos_
         if token.i == 0:
