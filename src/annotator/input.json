@@ -88,7 +88,7 @@
         "filename": "out/test_spacy",
         "_model_comment": "Pretrained model to load and use components from. IF model is not installed as package a path to the directory containing the models config.cfg file can be provided.",
         "_model_path_example": "/home/christian/anaconda3/envs/cwbproj/lib/python3.8/site-packages/en_core_web_sm/en_core_web_sm-3.1.0 -> Path to directory containing config.cfg for en_core_web_sm installed as package in conda environment.",
-        "model": "en_core_web_sm",
+        "lang": "en",
         "_processors_comment": "List of processors to be used in the pipeline. Sepparated by ',' may contain whitespaces.",
         "processors": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
         "_pretrained_comment": "Use a complete pretrained model.",
@@ -98,7 +98,7 @@
         "_exclude_comment": "Components from pipeline that are specifically not to be loaded upon initialization. If none are given all components will be loaded, only those specified in preocessors will be run.",
         "exclude": false,
         "config": {
-            "components":{
+            "_components":{
                 "tokenizer": {
                     "_tokenizer_comment": "Segment Text, create Doc object with discovered segment bounderies. Reads punctuation and special case rules from Language.Defaults.",
                     "_rules_comment": "Exceptions and special-cases for the tokenizer. [Dict[str, List[Dict[int, str]]] e.g. [{ORTH: 'do'}, {ORTH: 'n't', NORM: 'not'}]"

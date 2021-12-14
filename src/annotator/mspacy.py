@@ -24,7 +24,7 @@ class spacy:
             -> structure:
                 {
                 "filename": str,
-                "model":str,
+                "lang":str,
                 "processors": str,
                 "pretrained"= str or False
                 }
@@ -47,8 +47,15 @@ class spacy:
 
         if self.pretrained:
             self.model = self.pretrained
+
         elif not self.pretrained:
-            self.model = config["model"]
+            self.lang = config["lang"]
+
+            if self.lang == "en":
+                self.model = "en_core_web_sm"
+
+            elif self.lang == "de":
+                self.model = "de_core_news_sm"
 
         # get processors from dict
         procs = config["processors"]
@@ -90,24 +97,13 @@ class spacy_pipe(spacy):
         # use a specific pipeline if requested
         if self.pretrained:
             # load pipeline
-            print("Loading full pipeline {}.".format(self.model))
+            print("Loading full pipeline {}.".format(self.pretrained))
 
-            self.nlp = sp.load(self.model)
-            # check if there are components that are missing
-            jobs = [
-                component[0]
-                for component in self.nlp.components
-                if component[0] not in self.jobs
-            ]
-            # if yes, add to processors
-            if jobs != []:
-                self.jobs.append([job for job in jobs])
-            # use all components
-            self.used = self.jobs
+            self.nlp = sp.load(self.pretrained)
 
         # initialize pipeline
         else:
-            self.used = []
+            self.validated = []
             # define language -> is this smart or do we want to load a model and disable?
             # -> changed it to load a model and disable, as I was experiencing inconsistencies
             # with building from base language even for just the two models I tried
@@ -116,8 +112,6 @@ class spacy_pipe(spacy):
                     self.nlp = sp.load(self.model, config=self.config)
                 else:
                     self.nlp = sp.load(self.model)
-            # if model can't be found, ask to try and download it
-            # -> files can be big, especially the trf pipelines.
 
             except OSError:
                 print("Could not find {} on system.".format(self.model))
@@ -133,8 +127,8 @@ class spacy_pipe(spacy):
                 if component in components:
                     # if yes:
                     print("Loading component {} from {}.".format(component, self.model))
-                    # add to list of components to be used
-                    self.used.append(component)
+                    # add to list of validated components
+                    self.validated.append(component)
 
                 # if no, there is maybe a typo, display some info and try to link to spacy webpage of model
                 # -> links may not work if they change their websites structure in the future
@@ -152,19 +146,25 @@ class spacy_pipe(spacy):
                     exit()
             print(">>>")
 
+            # assemble list of excluded components from list of available components and
+            # validated list of existing components
+            self.exclude = [
+                component for component in components if component not in self.validated
+            ]
+
+            self.cfg = {
+                "name": self.model,
+                "exclude": self.exclude,
+                "config": self.config,
+            }
+
+            self.nlp = sp.load(**self.cfg)
+
     # call the build pipeline on the data
     def apply_to(self, data):
 
-        # create an empty list for the disabled components
-        disable = []
-        # fill it up with everything that isn't in the used list
-        # -> used list should only contain validated components at this point
-        for tupple in self.nlp.components:
-            if tupple[0] not in self.used:
-                disable.append(tupple[0])
-
         # apply to data while disabling everything that wasnt requested
-        self.doc = self.nlp(data, disable=disable)
+        self.doc = self.nlp(data)
         return self
 
     def collect_results(self, token, out, start=0):
@@ -177,16 +177,16 @@ class spacy_pipe(spacy):
             out, line = be.out_object.grab_ner(token, out, line)
 
         if "entity_ruler" in self.jobs:
-            out, line = self.grab_ruler(token, out, line)
+            out, line = be.out_object.grab_ruler(token, out, line)
 
         if "entity_linker" in self.jobs:
-            out, line = self.grab_linker(token, out, line)
+            out, line = be.out_object.grab_linker(token, out, line)
 
         if "lemmatizer" in self.jobs:
             out, line = be.out_object.grab_lemma(token, out, line)
 
         if "morphologizer" in self.jobs:
-            out, line = self.grab_morph(token, out, line)
+            out, line = be.out_object.grab_morph(token, out, line)
 
         if "tagger" in self.jobs:
             out, line = be.out_object.grab_tag(token, out, line)
@@ -271,6 +271,7 @@ class spacy_pipe(spacy):
                     file.write(line)
         else:
             return out
+        print("+++ Finished +++")
 
 
 # maybe this could be a thing in base class as we may need something similiar for the other methods
@@ -287,7 +288,6 @@ def find_last_idx(chunk):
         if chunk[i].split()[0].startswith("<"):
             # set index to next element
             i -= 1
-            pass
         else:
             # if string doesnt start with "<" we can assume it contains the token index
             # in the first column
@@ -300,7 +300,7 @@ if __name__ == "__main__":
     # sample dict -> keep this structure or change to structure from spacy_test.ipynb?
     config = {
         "filename": "Test",
-        "model": "en_core_web_sm",
+        "lang": "en",
         "processors": "tok2vec, tagger, parser,\
             attribute_ruler, lemmatizer, ner",
         "pretrained": False,
@@ -328,11 +328,11 @@ if __name__ == "__main__":
     # fine though
     senter_config = {
         "filename": "Test1",
-        "model": "en_core_web_md",
+        "lang": "en",
         "processors": "tok2vec,tagger,attribute_ruler,lemmatizer",
         "pretrained": False,
         "set_device": False,
-        "config": False,
+        "config": {},
     }
 
     # spacy_pipe(senter_config).apply_to(data).to_vrt()
