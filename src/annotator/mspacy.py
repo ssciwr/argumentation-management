@@ -1,4 +1,5 @@
 import spacy as sp
+from spacy.tokens.doc import Doc
 import base as be
 
 # from spacy.lang.en import English
@@ -37,7 +38,7 @@ class spacy:
                 pretrained: Use specific pipeline with given name/from given path.
     """
 
-    def __init__(self, config):
+    def __init__(self, config: dict):
 
         # config = the input dictionary
         # output file name
@@ -98,7 +99,7 @@ class spacy_pipe(spacy):
 
     # init with specified config, this may be changed later?
     # -> Right now needs quite specific instuctions
-    def __init__(self, config):
+    def __init__(self, config: dict):
         super().__init__(config)
 
         # use a specific pipeline if requested
@@ -168,13 +169,13 @@ class spacy_pipe(spacy):
             self.nlp = sp.load(**self.cfg)
 
     # call the build pipeline on the data
-    def apply_to(self, data):
+    def apply_to(self, data: str) -> Doc:
 
         # apply to data while disabling everything that wasnt requested
         self.doc = self.nlp(data)
         return self
 
-    def collect_results(self, token, out, start=0):
+    def collect_results(self, token, out: list, start=0) -> tuple:
         # always get token id and token text
         line = str(token.i + start) + " " + token.text
 
@@ -233,7 +234,7 @@ class spacy_pipe(spacy):
         out[1] += " \n"
         return out
 
-    def assemble_output(self, start=0):
+    def assemble_output(self, start=0) -> list:
 
         try:
             assert self.doc
@@ -282,26 +283,6 @@ class spacy_pipe(spacy):
             return out
 
 
-# maybe this could be a thing in base class as we may need something similiar for the other methods
-def find_last_idx(chunk):
-    """Function to find last index in output from spacy_pipe
-
-    [Args]:
-            chunk[list]: List containing the lines for the .vrt as strings."""
-    # get the index to last element
-    i = len(chunk) - 1
-    # iterate through entire chunk if neccessary, should never happen in practice
-    for j in range(len(chunk)):
-        # if string starts with "<" last elem isnt line string but some s-attribute
-        if chunk[i].split()[0].startswith("<"):
-            # set index to next element
-            i -= 1
-        else:
-            # if string doesnt start with "<" we can assume it contains the token index
-            # in the first column
-            return int(chunk[i].split()[0])
-
-
 if __name__ == "__main__":
     data = be.get_sample_text()
     # lets emulate a run of en_core_web_sm
@@ -347,55 +328,18 @@ if __name__ == "__main__":
 
     # spacy_pipe(senter_config).apply_to(data).to_vrt()
 
-    # try to chunk the plenary text from example into pieces, annotate these and than reasemble to .vrt
-    def chunk_sample_text(path):
-        # list for data chunks
-        data = []
-        # index to refer to current chunk
-        i = 0
-        # bool to set if we are currently in paragraph or inbetween
-        inpar = False
-        with open(path, "r") as myfile:
-            # iterate .vrt
-            for line in myfile:
-                # if line starts with "<":
-                if line.startswith("<"):
-                    # if we are not in paragraph:
-                    if inpar is False:
-                        # we are now in paragraph
-                        inpar = True
-                        # add chunk to list-> chunk is list of three strings:
-                        # chunk[0]: Opening "<>" statement
-                        # chunk[1]: Text contained in chunk, every "\n" replaced with " "
-                        # chunk[2]: Next "<>" statement
-                        data.append(["", "", ""])
-                        data[i][0] += line.replace("\n", " ")
-                    # if we are in paragraph
-                    elif inpar is True:
-                        # we are no longer in paragraph
-                        inpar = False
-                        # add end statement to chunk -> start new chunk next iteration
-                        data[i][2] += line.replace("\n", " ")
-                        # increment chunk idx
-                        i += 1
-                # if we are in paragraph:
-                elif inpar:
-                    # append line to chunk[1], replacing "\n" with " "
-                    data[i][1] += line.replace("\n", " ")
-        return data
-
     # get chunked text
-    data, layers = be.chunk_sample_text("data/Original/plenary.vrt")
+    data = be.chunk_sample_text("data/Original/plenary.vrt")
 
-    # start with basic config as above
+    # start with basic config as above if we use the pretrained keyword it
+    # replaces the lang and text_type keys so we don't need to specifiy them
     config = {
         "filename": "test",
         "processors": "tok2vec, tagger, parser,\
             attribute_ruler, lemmatizer, ner",
-        "text_type": "news",
-        "pretrained": "en_core_web_sm",
+        "pretrained": "de_core_news_md",
         "set_device": False,
-        "config": {},
+        "config": {"nlp.batch_size": 10},
     }
 
     # load pipeline, we could also do this later, use different configs for different chunks etc.
@@ -411,7 +355,7 @@ if __name__ == "__main__":
         elif i > 0:
             # apply pipe to chunk, keeping token index from previous chunk
             tmp = nlp.apply_to(chunk[1]).to_vrt(
-                ret=True, start=find_last_idx(tmp) + 1
+                ret=True, start=be.find_last_idx(tmp) + 1
             )  # int(tmp[-2].split()[0]+1))
         # append data from tmp pipe output to complete output
         for line in tmp:
@@ -424,6 +368,7 @@ if __name__ == "__main__":
         for chunk in out:
             for line in chunk:
                 file.write(line)
+        print("+++ Finished writing .vrt +++")
 
     # maybe enable loading of processors from different models?
 

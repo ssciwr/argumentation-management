@@ -11,27 +11,23 @@ def get_sample_text():
     return data
 
 
-# I thought this would be belong here rather than mspacy.
+# I thought this would belong here rather than mspacy.
 # try to chunk the plenary text from example into pieces, annotate these and than reasemble to .vrt
-def chunk_sample_text(path):
+def chunk_sample_text(path: str) -> list:
     # list for data chunks
     data = []
     # index to refer to current chunk
     i = 0
     # bool to set if we are currently in paragraph or inbetween
     inpar = False
-    # counter to identify sublayers (<>text<>text</></>). This could be used to iteratively chunk down a corpus by
-    # calling this function on the chunks until no more sublayers are present
-    sub = 0
-    layers = False
 
     with open(path, "r") as myfile:
         # iterate .vrt
         for line in myfile:
             # if line starts with "<":
-            if line[0] == "<" and line[1] != "/":
+            if line.startswith("<"):
                 # if we are not in paragraph and not in chunk already:
-                if inpar is False and sub == 0:
+                if inpar is False:
                     # we are now in paragraph
                     inpar = True
                     # add chunk to list-> chunk is list of three strings:
@@ -40,33 +36,42 @@ def chunk_sample_text(path):
                     # chunk[2]: Next "<>" statement
                     data.append(["", "", ""])
                     data[i][0] += line.replace("\n", " ")
-                elif sub > 0:
-                    data[i][1] += line.replace("\n", " ")
-                # we are one layer deeper in every opening <> statement will be chunk
-                sub += 1
 
-            elif line[0] == "<" and line[1] == "/":
-
-                sub -= 1
                 # if we are in paragraph and not in subchunk
-                if inpar is True and sub == 0:
+                elif inpar is True:
                     # we are no longer in paragraph
                     inpar = False
                     # add end statement to chunk -> start new chunk next iteration
                     data[i][2] += line.replace("\n", " ")
                     # increment chunk idx
                     i += 1
-                elif inpar is True and sub > 0:
-                    data[i][1] += line.replace("\n", " ")
+
             # if we are in paragraph:
             elif inpar:
                 # append line to chunk[1], replacing "\n" with " "
                 data[i][1] += line.replace("\n", " ")
 
-            if sub > 1:
-                layers = True
+    return data
 
-    return data, layers
+
+def find_last_idx(chunk: list) -> int:
+    """Function to find last index in output to keep token index up to date after
+    chunking the corpus.
+
+    [Args]:
+            chunk[list]: List containing the lines for the .vrt as strings."""
+    # get the index to last element
+    i = len(chunk) - 1
+    # iterate through entire chunk if neccessary, should never happen in practice
+    for j in range(len(chunk)):
+        # if string starts with "<" last elem isnt line string but some s-attribute
+        if chunk[i].split()[0].startswith("<"):
+            # set index to next element
+            i -= 1
+        else:
+            # if string doesnt start with "<" we can assume it contains the token index
+            # in the first column
+            return int(chunk[i].split()[0])
 
 
 # load the dictionary
