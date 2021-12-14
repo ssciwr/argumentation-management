@@ -31,10 +31,10 @@ def activate_procs(mydict, toolstring) -> dict:
     # find out which processors were selected
     procs = mydict.get("processors", None)
     if procs is None:
-        raise ValueError("Error: No stanza processors defined!")
+        raise ValueError("Error: No processors defined!")
     # separate the processor list at the comma
     procs = procs.split(",")
-    # pick the corresponding dictionary
+    # pick the corresponding dictionary and clean comments
     for proc in procs:
         mystring = toolstring + proc
         mydict.update(
