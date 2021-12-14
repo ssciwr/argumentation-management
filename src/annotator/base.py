@@ -5,7 +5,7 @@ import json
 # the below functions will move into an input class
 # read the sample data
 def get_sample_text():
-    name = "data/Original/iued_test_original.txt"
+    name = "/github/argumentation-management/data/Original/iued_test_original.txt"
     with open(name, "r") as myfile:
         data = myfile.read().replace("\n", "")
     return data

@@ -49,13 +49,20 @@ class spacy:
             self.model = self.pretrained
 
         elif not self.pretrained:
+
             self.lang = config["lang"]
+            self.type = config["text_type"]
 
             if self.lang == "en":
-                self.model = "en_core_web_sm"
+                if self.type == "news":
+                    self.model = "en_core_web_md"
 
             elif self.lang == "de":
-                self.model = "de_core_news_sm"
+                if self.type == "news":
+                    self.model = "de_core_news_md"
+                elif self.type == "biomed":
+                    # uses the scispacy package for processing biomedical text
+                    self.model = "en_core_sci_md"
 
         # get processors from dict
         procs = config["processors"]
@@ -66,9 +73,9 @@ class spacy:
         if config["set_device"]:
             if config["set_device"] == "prefer_GPU":
                 sp.prefer_gpu()
-            if config["require_GPU"] == "require_GPU":
+            elif config["require_GPU"] == "require_GPU":
                 sp.require_gpu()
-            if config["require_CPU"] == "require_CPU":
+            elif config["require_CPU"] == "require_CPU":
                 sp.require_cpu()
 
         self.config = config["config"]
@@ -269,9 +276,9 @@ class spacy_pipe(spacy):
             with open("{}_spacy.vrt".format(self.JobID), "w") as file:
                 for line in out:
                     file.write(line)
+            print("+++ Finished writing .vrt +++")
         else:
             return out
-        print("+++ Finished +++")
 
 
 # maybe this could be a thing in base class as we may need something similiar for the other methods
@@ -301,6 +308,7 @@ if __name__ == "__main__":
     config = {
         "filename": "Test",
         "lang": "en",
+        "text_type": "news",
         "processors": "tok2vec, tagger, parser,\
             attribute_ruler, lemmatizer, ner",
         "pretrained": False,
@@ -329,6 +337,7 @@ if __name__ == "__main__":
     senter_config = {
         "filename": "Test1",
         "lang": "en",
+        "text_type": "news",
         "processors": "tok2vec,tagger,attribute_ruler,lemmatizer",
         "pretrained": False,
         "set_device": False,
@@ -382,9 +391,10 @@ if __name__ == "__main__":
         "filename": "test",
         "processors": "tok2vec, tagger, parser,\
             attribute_ruler, lemmatizer, ner",
+        "text_type": "news",
         "pretrained": "en_core_web_sm",
         "set_device": False,
-        "config": False,
+        "config": {},
     }
 
     # load pipeline, we could also do this later, use different configs for different chunks etc.
@@ -417,13 +427,13 @@ if __name__ == "__main__":
 
     # maybe enable loading of processors from different models?
 
-with open("out/test_spacy.vrt", "r") as file:
-    for line in file:
-        # check if vrt file was written correctly
-        # lines with "!" are comments, <s> and </s> mark beginning and
-        # end of sentence, respectively
-        if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
-            try:
-                assert len(line.split()) == len(spacy_dict["processors"].split(","))
-            except AssertionError:
-                print(line)
+# with open("out/test_spacy.vrt", "r") as file:
+# for line in file:
+# check if vrt file was written correctly
+# lines with "!" are comments, <s> and </s> mark beginning and
+# end of sentence, respectively
+# if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
+# try:
+#    assert len(line.split()) == len(spacy_dict["processors"].split(","))
+# except AssertionError:
+#    print(line)
