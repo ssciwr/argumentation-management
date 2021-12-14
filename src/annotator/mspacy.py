@@ -374,7 +374,6 @@ def find_last_idx(chunk):
         if chunk[i].split()[0].startswith("<"):
             # set index to next element
             i -= 1
-            pass
         else:
             # if string doesnt start with "<" we can assume it contains the token index
             # in the first column
