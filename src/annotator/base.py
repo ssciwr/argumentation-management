@@ -5,10 +5,68 @@ import json
 # the below functions will move into an input class
 # read the sample data
 def get_sample_text():
-    name = "/github/argumentation-management/data/Original/iued_test_original.txt"
+    name = "data/Original/iued_test_original.txt"
     with open(name, "r") as myfile:
         data = myfile.read().replace("\n", "")
     return data
+
+
+# I thought this would be belong here rather than mspacy.
+# try to chunk the plenary text from example into pieces, annotate these and than reasemble to .vrt
+def chunk_sample_text(path):
+    # list for data chunks
+    data = []
+    # index to refer to current chunk
+    i = 0
+    # bool to set if we are currently in paragraph or inbetween
+    inpar = False
+    # counter to identify sublayers (<>text<>text</></>). This could be used to iteratively chunk down a corpus by
+    # calling this function on the chunks until no more sublayers are present
+    sub = 0
+    layers = False
+
+    with open(path, "r") as myfile:
+        # iterate .vrt
+        for line in myfile:
+            # if line starts with "<":
+            if line[0] == "<" and line[1] != "/":
+                # if we are not in paragraph and not in chunk already:
+                if inpar is False and sub == 0:
+                    # we are now in paragraph
+                    inpar = True
+                    # add chunk to list-> chunk is list of three strings:
+                    # chunk[0]: Opening "<>" statement
+                    # chunk[1]: Text contained in chunk, every "\n" replaced with " "
+                    # chunk[2]: Next "<>" statement
+                    data.append(["", "", ""])
+                    data[i][0] += line.replace("\n", " ")
+                elif sub > 0:
+                    data[i][1] += line.replace("\n", " ")
+                # we are one layer deeper in every opening <> statement will be chunk
+                sub += 1
+
+            elif line[0] == "<" and line[1] == "/":
+
+                sub -= 1
+                # if we are in paragraph and not in subchunk
+                if inpar is True and sub == 0:
+                    # we are no longer in paragraph
+                    inpar = False
+                    # add end statement to chunk -> start new chunk next iteration
+                    data[i][2] += line.replace("\n", " ")
+                    # increment chunk idx
+                    i += 1
+                elif inpar is True and sub > 0:
+                    data[i][1] += line.replace("\n", " ")
+            # if we are in paragraph:
+            elif inpar:
+                # append line to chunk[1], replacing "\n" with " "
+                data[i][1] += line.replace("\n", " ")
+
+            if sub > 1:
+                layers = True
+
+    return data, layers
 
 
 # load the dictionary

@@ -265,6 +265,7 @@ class spacy_pipe(spacy):
             ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
             start[int]: Starting index for token indexing in passed data, usefull if data is chunk of larger corpus.
         """
+
         if "senter" in self.jobs or "sentencizer" in self.jobs or "parser" in self.jobs:
             out = self.assemble_output_sent(start=start)
         else:
@@ -384,7 +385,7 @@ if __name__ == "__main__":
         return data
 
     # get chunked text
-    data = chunk_sample_text("data/Original/plenary.vrt")
+    data, layers = be.chunk_sample_text("data/Original/plenary.vrt")
 
     # start with basic config as above
     config = {
@@ -401,7 +402,6 @@ if __name__ == "__main__":
     nlp = spacy_pipe(config)
     # output to create .vrt from
     out = []
-
     for i, chunk in enumerate(data):
         # get the "< >" opening statement
         out.append(data[i][0] + "\n")
