@@ -16,7 +16,7 @@ import os
 # -> define how to read from the config dict
 
 
-class spaCy:
+class spacy:
     """Base class for spaCy module
 
     Args:
@@ -39,7 +39,8 @@ class spaCy:
 
     def __init__(self, config):
 
-        # config to build a pipeline
+        # config = the input dictionary
+        # output file name
         self.JobID = config["filename"]
         # check for pretrained
         self.pretrained = config["pretrained"]
@@ -64,10 +65,11 @@ class spaCy:
                 sp.require_cpu()
 
         self.config = config["config"]
+        self.config = be.update_dict(self.config)
 
 
 # build the pipeline from config-dict
-class spaCy_pipe(spaCy):
+class spacy_pipe(spacy):
     """Pipeline class for spaCy module -> inherits setup from base class
 
     Assemble pipeline from config, apply pipeline to data and write results to .vrt file.
@@ -165,95 +167,6 @@ class spaCy_pipe(spaCy):
         self.doc = self.nlp(data, disable=disable)
         return self
 
-    # define all of these as functions
-    def grab_ner(self, token, out, line):
-        # attributes:
-        # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if token.i == 0:
-            out[1] += " ner"
-        if token.ent_type_ != "":
-            line += "  " + token.ent_type_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_ruler(self, token, out, line):
-        # attributes:
-        # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if token.i == 0:
-            out[1] += " entity_ruler"
-        if token.ent_type_ != "":
-            line += "  " + token.ent_type_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_linker(self, token, out, line):
-        # attributes:
-        # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
-        if token.i == 0:
-            out[1] += " entity_linker"
-        if token.ent_type_ != "":
-            line += "  " + token.ent_kb_id_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_lemma(self, token, out, line):
-        # attributes:
-        # Lemmatizer -> Token.lemma, Token.lemma_
-        if token.i == 0:
-            out[1] += " lemma"
-        if token.lemma_ != "":
-            line += " " + token.lemma_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_morph(self, token, out, line):
-        # attributes:
-        # Morphologizer -> Token.pos, Token.pos_, Token.morph
-        if token.i == 0:
-            out[1] += " UPOS morph"
-        if token.lemma_ != "":
-            line += " " + token.pos_ + "" + token.morph
-        else:
-            line += " - "
-        return out, line
-
-    def grab_tag(self, token, out, line):
-        # attributes:
-        # Tagger -> Token.tag, Token.tag_
-        if token.i == 0:
-            out[1] += " Tag"
-        if token.tag_ != "":
-            line += " " + token.tag_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_dep(self, token, out, line):
-        # attributes:
-        # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
-        if token.i == 0:
-            out[1] += " pars"
-        if token.dep_ != "":
-            line += " " + token.dep_
-        else:
-            line += " - "
-        return out, line
-
-    def grab_att(self, token, out, line):
-        # attributes:
-        # Token.pos, Token.pos_
-        if token.i == 0:
-            out[1] += " POS"
-        if token.pos_ != "":
-            line += " " + token.pos_
-        else:
-            line += " - "
-        return out, line
-
     def collect_results(self, token, out, start=0):
         # always get token id and token text
         line = str(token.i + start) + " " + token.text
@@ -261,7 +174,7 @@ class spaCy_pipe(spaCy):
         # grab the data for the run components, I've only included the human readable
         # part of output right now as I don't know what else we need
         if "ner" in self.jobs:
-            out, line = self.grab_ner(token, out, line)
+            out, line = be.out_object.grab_ner(token, out, line)
 
         if "entity_ruler" in self.jobs:
             out, line = self.grab_ruler(token, out, line)
@@ -270,19 +183,19 @@ class spaCy_pipe(spaCy):
             out, line = self.grab_linker(token, out, line)
 
         if "lemmatizer" in self.jobs:
-            out, line = self.grab_lemma(token, out, line)
+            out, line = be.out_object.grab_lemma(token, out, line)
 
         if "morphologizer" in self.jobs:
             out, line = self.grab_morph(token, out, line)
 
         if "tagger" in self.jobs:
-            out, line = self.grab_tag(token, out, line)
+            out, line = be.out_object.grab_tag(token, out, line)
 
         if "parser" in self.jobs:
-            out, line = self.grab_dep(token, out, line)
+            out, line = be.out_object.grab_dep(token, out, line)
 
         if "attribute_ruler" in self.jobs:
-            out, line = self.grab_att(token, out, line)
+            out, line = be.out_object.grab_att(token, out, line)
             # add what else we need
 
         return out, line
@@ -381,11 +294,7 @@ def find_last_idx(chunk):
 
 
 if __name__ == "__main__":
-    # with open("../../data/Original/iued_test_original.txt", "r") as file:
-    #    data = file.read().replace("\n", "")
-
     data = be.get_sample_text()
-
     # lets emulate a run of en_core_web_sm
     # sample dict -> keep this structure or change to structure from spacy_test.ipynb?
     config = {
@@ -408,11 +317,11 @@ if __name__ == "__main__":
     # take only the part of dict pertaining to spacy
     # filename needs to be moved to/taken from top level of dict
     spacy_dict = mydict["spacy_dict"]
-    # remove comment lines
+    # remove comment lines starting with "_"
     spacy_dict = be.update_dict(spacy_dict)
-
     # build pipe from config, apply it to data, write results to vrt
-    spaCy_pipe(config).apply_to(data).to_vrt()
+    spacy_pipe(spacy_dict).apply_to(data).to_vrt()
+    # spacy_pipe(config).apply_to(data).to_vrt()
 
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
@@ -425,7 +334,7 @@ if __name__ == "__main__":
         "config": False,
     }
 
-    spaCy_pipe(senter_config).apply_to(data).to_vrt()
+    # spacy_pipe(senter_config).apply_to(data).to_vrt()
 
     # try to chunk the plenary text from example into pieces, annotate these and than reasemble to .vrt
     def chunk_sample_text(path):
@@ -478,7 +387,7 @@ if __name__ == "__main__":
     }
 
     # load pipeline, we could also do this later, use different configs for different chunks etc.
-    nlp = spaCy_pipe(config)
+    nlp = spacy_pipe(config)
     # output to create .vrt from
     out = []
 
@@ -507,13 +416,13 @@ if __name__ == "__main__":
 
     # maybe enable loading of processors from different models?
 
-# with open("Test_spacy.vrt", "r") as file:
-#    for line in file:
-# check if vrt file was written correctly
-# lines with "!" are comments, <s> and </s> mark beginning and
-# end of sentence, respectively
-#        if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
-#            try:
-#                assert len(line.split()) == len(config["processors"].split(","))+1
-#            except AssertionError:
-#               print(len(line.split()),len(config["processors"].split(",")),line)
+with open("out/test_spacy.vrt", "r") as file:
+    for line in file:
+        # check if vrt file was written correctly
+        # lines with "!" are comments, <s> and </s> mark beginning and
+        # end of sentence, respectively
+        if line != "<s>\n" and line != "</s>\n" and line.split()[0] != "!":
+            try:
+                assert len(line.split()) == len(spacy_dict["processors"].split(","))
+            except AssertionError:
+                print(line)

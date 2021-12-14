@@ -34,26 +34,6 @@ def preprocess() -> object:
     return en_nlp
 
 
-def activate_procs(mydict) -> dict:
-    """Move processor-specific keys one level up."""
-    # find out which processors were selected
-    procs = mydict.get("processors", None)
-    if procs is None:
-        raise ValueError("Error: No stanza processors defined!")
-    # separate the processor list at the comma
-    procs = procs.split(",")
-    # pick the corresponding dictionary
-    for proc in procs:
-        mystring = "stanza_" + proc
-        mydict.update(
-            {k: v for k, v in mydict[mystring].items() if not k.startswith("_")}
-        )
-    # remove all other processor dictionaries that are not used
-    # this is not really necessary but doing it to keep the dict clean
-    mydict = {k: v for k, v in mydict.items() if not k.startswith("stanza_")}
-    return mydict
-
-
 class mstanza_pipeline:
     """Stanza main processing class.
 
@@ -150,7 +130,7 @@ if __name__ == "__main__":
     # but we remove them for subsequent processing just in case
     # now we need to select the processors and "activate" the sub-dictionaries
     mydict = be.update_dict(mydict)
-    mydict = activate_procs(mydict)
+    mydict = be.activate_procs(mydict, "stanza_")
     # mytext = be.get_sample_text()
     # or use something shorter
     mytext = "This is a test sentence for stanza. This is another sentence."
