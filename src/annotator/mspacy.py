@@ -327,7 +327,7 @@ if __name__ == "__main__":
     }
 
     # spacy_pipe(senter_config).apply_to(data).to_vrt()
-
+    # try to chunk the plenary text from example into pieces, annotate these and than reasemble to .vrt
     # get chunked text
     data = be.chunk_sample_text("data/Original/plenary.vrt")
 

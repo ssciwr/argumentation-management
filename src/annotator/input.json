@@ -232,5 +232,13 @@
                 }
             }
         }
+    },
+    "flair_dict":{
+        "_filename_comment":"Name of .vrt file to create.",
+        "filename": "Test",
+        "_lang_comment": "Language of the text, supports en and de.",
+        "lang": "en",
+        "_job_comment": "What to tag, options are 'ner', 'pos' or list of both '['pos', 'ner']'.",
+        "job": ["ner", "pos"]
     }
 }

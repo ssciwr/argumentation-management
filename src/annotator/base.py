@@ -12,8 +12,9 @@ def get_sample_text():
 
 
 # I thought this would belong here rather than mspacy.
-# try to chunk the plenary text from example into pieces, annotate these and than reasemble to .vrt
 def chunk_sample_text(path: str) -> list:
+    """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
+    Assumes that there is one layer of text elements to be separated."""
     # list for data chunks
     data = []
     # index to refer to current chunk
