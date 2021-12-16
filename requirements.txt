@@ -1,4 +1,0 @@
-spacy
-stanza
-jupyter
-flair
