@@ -1,53 +1,80 @@
-FROM jupyter/base-notebook:584f43f06586
+FROM jupyter/base-notebook:python-3.9.7
 
 USER root
-# Create a non-root user
-# there is already jovyan, so no need for this
 
-# install dependencies for cwb and tools (moses, fastalign)
-# I'd like to keep this separate from the python part
+# install dependencies for cwb and tools (cwb-perl, cwb-ccc)
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install --no-install-recommends -y \
         autoconf \
         bison \
         flex \
         gcc \
         libc6-dev \
+        libglib2.0-0 \
         libglib2.0-dev \
+        libncurses5 \
         libncurses5-dev \
+        libpcre3-dev \
         make \
+        subversion \
+        less \
         wget \
+        pkg-config \
+        perl \
+        libreadline8 \
         libreadline-dev \
-        git \
         libboost-all-dev \
         libgoogle-perftools-dev \
         libsparsehash-dev \
         build-essential \
         cmake \
+        cython3 \
     && apt-get clean \
     && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/*
 
 # install cwb
-RUN wget https://downloads.sourceforge.net/project/cwb/cwb/cwb-3.4-beta/cwb-3.4.22-source.tar.gz \
-    && tar xzvf cwb-3.4.22-source.tar.gz \
-    && rm cwb-3.4.22-source.tar.gz \
-    && cd cwb-3.4.22 \
-    && make clean \
-    && make all PLATFORM=linux SITE=standard \
-    && make install \
-    && cd .. \
-    && rm -rf cwb-3.4.22
+COPY ./docker/cwb-3.4.32 /cwb-3.4.32
+RUN cd /cwb-3.4.32 \
+    && sed -i 's/SITE=beta-install/SITE=standard/' config.mk \
+    && ./install-scripts/install-linux
+
+# install cwb-perl for regedit
+COPY ./docker/Perl-CWB-3.0.7 /Perl-CWB-3.0.7
+RUN cd /Perl-CWB-3.0.7 \
+    && perl Makefile.PL --config=/usr/local/bin/cwb-config \
+    && make \
+    && make test \
+    && make install 
 
 # install the python dependencies and cwb-ccc
-# stay with conda for consistency
-RUN conda install -c conda-forge python=3.6 \
-    && conda install -c \
-       conda-forge \
-       cython \
-       jupyter-resource-usage \
-    && conda clean -a -q -y
+# let's try with pipenv for cwb-ccc
+# RUN conda install -c conda-forge python=3.9.7 \
+    # && conda install -c \
+    #    conda-forge \
+    #    cython \
+    #    jupyter-resource-usage \
+    #    pip \
+    # && conda clean -a -q -y
+
 USER jovyan
-RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-ccc
+## RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-ccc
+RUN python3 -m pip install --upgrade pip \
+    && python3 -m pip install -q pipenv \
+    && pwd \
+    && ls
+
+# ENV CWB_DIR=/usr/local/cwb-3.4.22/
+COPY --chown=1000:100 /docker/cwb-ccc /home/jovyan/cwb-ccc
+# the below will work, have to pipenv shell and add cwb-ccc to
+# pythonpath
+# if not using pipenv shell: then it finds cwb-ccc in path but 
+# the dependencies are of course missing
+RUN cd cwb-ccc \
+    && make clean \
+    && make install \
+    && make compile \
+    && make build \
+    && make test 
 
 # install the other tools that are planned to be used
 # we should probably set up conda environments so that different toolchains
@@ -55,22 +82,22 @@ RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-cc
 # refrain from submodules at this point until it is clear what they will use
 # (varying dependencies)
 
-USER root
+#USER root
 
 # install spaCy
-RUN conda install -c conda-forge spacy \
-    && conda install -c \
-        conda-forge spacy-lookups-data \
-    &&python -m spacy download en_core_web_sm\
-    && conda clean -a -q -y
-ENV SPACY_DIR = /home/jovyan/spacy
+#RUN conda install -c conda-forge spacy \
+#    && conda install -c \
+#        conda-forge spacy-lookups-data \
+#    &&python -m spacy download en_core_web_sm\
+#    && conda clean -a -q -y
+#ENV SPACY_DIR = /home/jovyan/spacy
 
 # install stanza
-RUN conda install -c \
-        conda-forge stanza \
-    && conda install -c \
-        conda-forge ipywidgets\
-    && conda clean -a -q -y
+#RUN conda install -c \
+#        conda-forge stanza \
+#    && conda install -c \
+#        conda-forge ipywidgets\
+#    && conda clean -a -q -y#
 
 # install m-giza
 #RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
