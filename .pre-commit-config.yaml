@@ -20,7 +20,3 @@ repos:
       rev: v0.3.1 
       hooks:
       -   id: flake8-nb
-  -   repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.0.1  
-      hooks:
-        - id: check-json
