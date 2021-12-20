@@ -55,7 +55,7 @@ RUN conda install -c conda-forge python=3.9.7 \
     && conda clean -a -q -y
 
 USER jovyan
-RUN CWB_DIR=/usr/local/cwb-3.4.22 conda run -n base python -m pip install cwb-ccc
+RUN conda run -n base python -m pip install cwb-ccc
 
 # install the other tools that are planned to be used
 # we should probably set up conda environments so that different toolchains
