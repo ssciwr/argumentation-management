@@ -134,3 +134,4 @@ data/
 #other resources
 DW/
 docker/
+!docker/get_models.py

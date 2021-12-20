@@ -124,7 +124,7 @@
                     "_model_comment": "Model powering pipeline component.",
                     "_entity_vector_length": "Size of encoding vectors in KB",
                     "_labels_discard_comment": "NER labels that will automatically get a 'NIL' prediction, Default []",
-                    "labels_discard": null,
+                    "labels_discard": [],
                     "_n_sents_comment": "Number of neighbouring sentences to take into account, Default 0.",
                     "n_sents": 0,
                     "_incl_prior_comment": "Whether or not to include prior probabilities from the KB in the model.",

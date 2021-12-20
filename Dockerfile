@@ -6,28 +6,28 @@ USER root
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install --no-install-recommends -y \
         autoconf \
         bison \
+        build-essential \
+        cmake \
+        cython3 \
         flex \
         gcc \
+        less \
         libc6-dev \
         libglib2.0-0 \
         libglib2.0-dev \
         libncurses5 \
         libncurses5-dev \
-        libpcre3-dev \
-        make \
-        subversion \
-        less \
-        wget \
-        pkg-config \
-        perl \
-        libreadline8 \
-        libreadline-dev \
         libboost-all-dev \
         libgoogle-perftools-dev \
+        libpcre3-dev \
+        libreadline8 \
+        libreadline-dev \
         libsparsehash-dev \
-        build-essential \
-        cmake \
-        cython3 \
+        make \
+        perl \
+        pkg-config \
+        subversion \
+        wget \
     && apt-get clean \
     && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/*
@@ -46,34 +46,32 @@ RUN cd /Perl-CWB-3.0.7 \
     && make test \
     && make install 
 
-# install the python dependencies and cwb-ccc
+# install the python dependencies
 RUN conda install -c conda-forge python=3.9.7 \
     && conda install -c \
        conda-forge \
        cython \
+       ipywidgets \
        jupyter-resource-usage \
     && conda clean -a -q -y
 
+# install cwb-ccc
 USER jovyan
 RUN conda run -n base python -m pip install cwb-ccc
 
-# install the other tools that are planned to be used
-# we should probably set up conda environments so that different toolchains
-# can be activated for different users
-# refrain from submodules at this point until it is clear what they will use
-# (varying dependencies)
-
 # install spaCy
-#RUN conda install -c conda-forge spacy \
-#    && conda install -c \
-#        conda-forge spacy-lookups-data \
-#    &&python -m spacy download en_core_web_sm\
-#    && conda clean -a -q -y
+RUN conda install -c conda-forge spacy \
+    && conda install -c \
+        conda-forge spacy-lookups-data \
+    && python -m spacy download en_core_web_sm \
+    # && sleep 15 \
+    # && python -m spacy download de_core_news_sm \
+    && conda clean -a -q -y
 #ENV SPACY_DIR = /home/jovyan/spacy
 
 # install stanza
-#RUN conda install -c \
-#        conda-forge stanza \
-#    && conda install -c \
-#        conda-forge ipywidgets\
-#    && conda clean -a -q -y#
+COPY docker/get_models.py /home/jovyan/.
+RUN conda install -c \
+        conda-forge stanza \
+    && conda clean -a -q -y \
+    && python get_models.py
