@@ -1,0 +1,6 @@
+# ignore all repository history
+.git
+.svn
+
+# ignore documentation
+doc/
