@@ -133,3 +133,6 @@ data/
 
 #other resources
 DW/
+
+# .vrt files
+*.vrt
