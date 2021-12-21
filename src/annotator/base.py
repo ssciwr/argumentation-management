@@ -1,5 +1,11 @@
 # the base class and utilities are contained in this module
 import json
+import os
+
+
+def get_cores() -> int:
+    """Find out how many CPU-cores are available on system."""
+    return len(os.sched_getaffinity(0))
 
 
 # the below functions will move into an input class
