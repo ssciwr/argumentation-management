@@ -39,16 +39,25 @@ class Spacy:
         # output file name
         self.JobID = config["filename"]
         # check for pretrained
+        # lets you initialize your models with information from raw text
+        # you would do this if you had generated the model yourself
         self.pretrained = config["pretrained"]
 
         if self.pretrained:
             self.model = self.pretrained
 
-        elif not self.pretrained:
-
-            self.lang = config["lang"]
-            self.type = config["text_type"]
-
+        # here we put some sensible default values
+        # in general, it should also be possible
+        # that the user puts in a language and selected model
+        # so if model is already set, we should not overwrite it
+        # I believe this would then eliminate the `elif` case for pretrained above
+        self.lang = config["lang"]
+        self.type = config["text_type"]
+        if "model" in config:
+            self.model = config["model"]
+            print("Using selected model {}.".format(self.model))
+        else:
+            # now here goes the default model if none was selected
             if self.lang == "en":
                 if self.type == "news":
                     self.model = "en_core_web_md"
@@ -410,30 +419,15 @@ def sentencize_spacy(lang: str, data: str) -> list:
 
 if __name__ == "__main__":
     data = be.get_sample_text()
-    # lets emulate a run of en_core_web_sm
-    # sample dict -> keep this structure or change to structure from spacy_test.ipynb?
-    config = {
-        "filename": "Test",
-        "lang": "en",
-        "text_type": "news",
-        "processors": "tok2vec, tagger, parser,\
-            attribute_ruler, lemmatizer, ner",
-        "pretrained": False,
-        "set_device": False,
-        "config": {
-            "nlp.batch_size": 512,
-            "components": {
-                "attribute_ruler": {"validate": True},
-                "lemmatizer": {"mode": "rule"},
-            },
-        },
-    }
     # or read the main dict and activate
     mydict = be.load_input_dict()
     # take only the part of dict pertaining to spacy
     # filename needs to be moved to/taken from top level of dict
     spacy_dict = mydict["spacy_dict"]
     # remove comment lines starting with "_"
+    # for now, we are not using "components" as these are defined through the pre-
+    # made models; for making your own model, they will need to be used
+    # we will worry about this later
     spacy_dict = be.update_dict(spacy_dict)
     # build pipe from config, apply it to data, write results to vrt
     spacy_pipe(spacy_dict).apply_to(data).to_vrt()
