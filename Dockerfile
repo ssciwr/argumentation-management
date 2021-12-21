@@ -63,8 +63,7 @@ RUN conda run -n base python -m pip install cwb-ccc
 RUN conda install -c conda-forge spacy \
     && conda install -c \
         conda-forge spacy-lookups-data \
-    && python -m spacy download en_core_web_sm \
-    # && sleep 15 \
+    # && python -m spacy download en_core_web_sm \
     # && python -m spacy download de_core_news_sm \
     && conda clean -a -q -y
 #ENV SPACY_DIR = /home/jovyan/spacy
