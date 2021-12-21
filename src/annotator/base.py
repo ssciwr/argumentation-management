@@ -4,7 +4,7 @@ import os
 
 
 def get_cores() -> int:
-    """Find out how many CPU-cores are available on system."""
+    """Find out how many CPU-cores are available for current process."""
     return len(os.sched_getaffinity(0))
 
 
@@ -20,7 +20,7 @@ def get_sample_text():
 # I thought this would belong here rather than mspacy.
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
-    Assumes that there is one layer of text elements to be separated."""
+    Assumes that there is one layer (no nested <> </> statements) of text elements to be separated."""
     # list for data chunks
     data = []
     # index to refer to current chunk
@@ -62,8 +62,8 @@ def chunk_sample_text(path: str) -> list:
 
 
 def find_last_idx(chunk: list) -> int:
-    """Function to find last index in output to keep token index up to date after
-    chunking the corpus.
+    """Function to find last index in chunk to keep token index up to date for
+    next chunk after chunking the corpus.
 
     [Args]:
             chunk[list]: List containing the lines for the .vrt as strings."""
@@ -179,10 +179,10 @@ class out_object:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
         if token.i == 0:
             out[1] += " UPOS morph"
-        if token.lemma_ != "":
+        if token.pos_ != "":
             line += " " + token.pos_ + "" + token.morph
-        else:
-            line += " - "
+        elif token.pos_ == "":
+            line += " - " + token.morph
         return out, line
 
     def grab_tag(token, out, line):

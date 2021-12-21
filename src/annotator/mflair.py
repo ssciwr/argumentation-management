@@ -70,7 +70,9 @@ class flair_pipe(Flair):
         """Apply chosen Tagger to data after turning sentences list of strings into list of
         Sentence objects."""
 
+        # wrap the recheived sentence strings from the spacy senter into Sentence-Objects
         self.sentences = [Sentence(sent[0]) for sent in self.sents]
+        # apply tagger to list if Sentences
         self.tagger.predict(self.sentences)
 
         return self
@@ -84,8 +86,7 @@ class flair_pipe(Flair):
                     [opening <>, text, closing <>].
                 ret[bool]=False: Wheter to return output as list (True) or write to file (False)."""
 
-        # Initialize the out list
-        out = self.start_output()
+        out = []
 
         # iterate through the chunks
         for i, chunk in enumerate(chunks):
