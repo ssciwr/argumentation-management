@@ -136,3 +136,5 @@ DW/
 
 # .vrt files
 *.vrt
+docker/
+!docker/get_models.py
