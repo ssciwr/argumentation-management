@@ -135,16 +135,20 @@ class flair_pipe(flair):
                     .to_vrt(ret=True, start=be.find_last_idx(tmp) + 1)
                 )
 
-            # append data from tmp pipe output to complete output
+            tokens = 0
+            # append data from tmp pipe output to complete output,
+            # maybe count the tokens for failchecking later? -> Token
+            # idx should coincide with the cwb corpus index for final
+            # output?
             for line in tmp:
+                if not line.startswith("!") and not line.startswith("<"):
+                    tokens += 1
                 out.append(line)
             # append the "< >" closing statement
             out.append(data1[i][2] + "\n")
             print(
                 "\r"
-                + " Finished chunk {}/{}, {} Token".format(
-                    i + 1, len(data1), len(tmp) - 2
-                )
+                + " Finished chunk {}/{}, {} Token".format(i + 1, len(data1), tokens)
             )
 
         # either return or write to file
@@ -163,12 +167,10 @@ class flair_pipe(flair):
         out = ["! Output flair", "! Idx Token"]
 
         if type(self.job) == str:
-            out[0] += " " + self.job
             out[1] += " " + self.job
 
         elif type(self.job) == list:
             for job in self.job:
-                out[0] += " " + job
                 out[1] += " " + job
 
         out[0] += "\n"
@@ -263,7 +265,7 @@ if __name__ == "__main__":
     check = []
     with open("Test_flair.vrt", "r") as file:
         for line in file:
-            if line.split()[0] != "!" and not line.startswith("<"):
+            if not line.startswith("!") and not line.startswith("<"):
                 check.append(int(line.split()[0]))
 
     for i, elem in enumerate(check):
@@ -284,7 +286,7 @@ if __name__ == "__main__":
     check = []
     with open("testplenary_flair.vrt", "r") as file:
         for line in file:
-            if line.split()[0] != "!" and not line.startswith("<"):
+            if not line.startswith("!") and not line.startswith("<"):
                 check.append(int(line.split()[0]))
 
     for i, elem in enumerate(check):
