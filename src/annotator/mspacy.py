@@ -11,6 +11,8 @@ import base as be
 # initialize the spacy top level class, this does
 # -> define how to read from the config dict
 
+available_lang = ["en", "de"]
+
 
 class Spacy:
     """Base class for spaCy module
@@ -30,7 +32,7 @@ class Spacy:
                     spacy directory or path to model.
                 processors: Comma-separated string containing the processors
                     to be used in pipeline.
-                pretrained: Use specific pipeline with given name/from given path.
+                pretrained: Use specific, custom pipeline with given name/from given path.
     """
 
     def __init__(self, config: dict):
@@ -68,6 +70,16 @@ class Spacy:
                 elif self.type == "biomed":
                     # uses the scispacy package for processing biomedical text
                     self.model = "en_core_sci_md"
+            # make sure to throw an exception if language is not found
+            # the available languages should be stored in a list somewhere
+            # put it on top of the module for now, find a better place for it later.
+            else:
+                raise ValueError(
+                    """Languages not available yet. Only {} models have been implemented.
+                Aborting...""".format(
+                        available_lang
+                    )
+                )
 
         # get processors from dict
         procs = config["processors"]
@@ -154,8 +166,7 @@ class spacy_pipe(Spacy):
                         "{}".format(self.model.split("_")[0]),
                         self.model,
                     )
-                    print(message)
-                    exit()
+                    raise ValueError(message)
             print(">>>")
 
             # assemble list of excluded components from list of available components and
