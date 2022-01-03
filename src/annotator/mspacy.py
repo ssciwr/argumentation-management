@@ -170,7 +170,7 @@ class spacy_pipe(Spacy):
             print(">>>")
 
             # assemble list of excluded components from list of available components and
-            # validated list of existing components
+            # validated list of existing components so not to load in the pipeline
             self.exclude = [
                 component for component in components if component not in self.validated
             ]
@@ -224,7 +224,7 @@ class spacy_pipe(Spacy):
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
-            # append the "< >" closinmg statement
+            # append the "< >" closing statement
             out.append(chunks[i][2] + "\n")
 
         if ret:
@@ -283,7 +283,7 @@ class spacy_pipe(Spacy):
             )
             exit()
         # if senter is called we insert sentence symbol <s> before and </s> after
-        # every sentence -> Is this the right symbol?
+        # every sentence
         out = ["! spaCy output for {}! \n".format(self.JobID)]
         out.append("! Idx Text")
 
@@ -330,7 +330,7 @@ class spacy_pipe(Spacy):
 
         [Args]:
             ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
-            start[int]: Starting index for token indexing in passed data, usefull if data is chunk of larger corpus.
+            start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
         """
 
         if self.doc.has_annotation("SENT_START"):
@@ -442,7 +442,6 @@ if __name__ == "__main__":
     spacy_dict = be.update_dict(spacy_dict)
     # build pipe from config, apply it to data, write results to vrt
     spacy_pipe(spacy_dict).apply_to(data).to_vrt()
-    # spacy_pipe(config).apply_to(data).to_vrt()
 
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
