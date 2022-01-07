@@ -69,7 +69,8 @@ class mstanza_pipeline:
         # count tokens continuously and not starting from 1 every new sentence.
         # print sentences and tokens
         # open outfile
-        fout = be.open_outfile()
+        # this all as generic object in base
+        fout = be.out_object.open_outfile(dict["output"])
         print([sentence.text for sentence in self.doc.sentences])
         for i, sentence in enumerate(self.doc.sentences):
             print(f"====== Sentence {i+1} tokens =======")
@@ -82,6 +83,13 @@ class mstanza_pipeline:
                 mystring = "{} {}\n".format(token.text, token.id[0])
                 fout.write(mystring)
         fout.close()
+        # sentencize using generic base output object
+        jobs = [proc.strip() for proc in mydict["processors"].split(",")]
+        print(jobs)
+        out = be.out_object.assemble_output_sent(
+            self.doc, dict["output"], jobs, start=0
+        )
+        print(out)
         # next step would be mwt, which is only applicable for languages like German and English
         #
         # print out pos tags

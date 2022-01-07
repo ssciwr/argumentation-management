@@ -238,40 +238,7 @@ class spacy_pipe(Spacy):
                         file.write(line)
                 print("+++ Finished writing .vrt +++")
 
-    def collect_results(self, token: Token, out: list, start=0) -> tuple:
-        """Function to collect requested tags for tokens after applying pipeline to data."""
-        # always get token id and token text
-        line = str(token.i + start) + " " + token.text
-
-        # grab the data for the run components, I've only included the human readable
-        # part of output right now as I don't know what else we need
-        if "ner" in self.jobs:
-            out, line = be.out_object.grab_ner(token, out, line)
-
-        if "entity_ruler" in self.jobs:
-            out, line = be.out_object.grab_ruler(token, out, line)
-
-        if "entity_linker" in self.jobs:
-            out, line = be.out_object.grab_linker(token, out, line)
-
-        if "lemmatizer" in self.jobs:
-            out, line = be.out_object.grab_lemma(token, out, line)
-
-        if "morphologizer" in self.jobs:
-            out, line = be.out_object.grab_morph(token, out, line)
-
-        if "tagger" in self.jobs:
-            out, line = be.out_object.grab_tag(token, out, line)
-
-        if "parser" in self.jobs:
-            out, line = be.out_object.grab_dep(token, out, line)
-
-        if "attribute_ruler" in self.jobs:
-            out, line = be.out_object.grab_att(token, out, line)
-            # add what else we need
-
-        return out, line
-
+    # refactoring to move replicated units to base generic output object
     def assemble_output_sent(self, start=0) -> list:
         """Function to assemble the output list for a run with sentence level annotation."""
 
@@ -282,23 +249,11 @@ class spacy_pipe(Spacy):
                 "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"
             )
             exit()
-        # if senter is called we insert sentence symbol <s> before and </s> after
-        # every sentence
-        out = ["! spaCy output for {}! \n".format(self.JobID)]
-        out.append("! Idx Text")
-
-        for sent in self.doc.sents:
-            out.append("<s>\n")
-            # iterate through the tokens of the sentence, this is just a slice of
-            # the full doc
-            for token in sent:
-                out, line = self.collect_results(token, out, start=start)
-                out.append(line + "\n")
-
-            out.append("</s>\n")
-        out[1] += " \n"
+        # apply sentence and sublevel annotation
+        out = be.out_object.assemble_output_sent(self.doc, self.JobID, self.jobs, start)
         return out
 
+    # refactor to move replicated units to base generic output object
     def assemble_output(self, start=0) -> list:
         """Funtion to assemble the output list for a run below sentence level."""
 
@@ -311,11 +266,14 @@ class spacy_pipe(Spacy):
             exit()
         # if no senter was called we either dont want to distinguish sentences
         # or passed data below sentence level -> only work on individual tokens
+        # the below two lines should be moved to base
         out = ["! spaCy output for {}! \n".format(self.JobID)]
         out.append("! Idx Text")
 
         for token in self.doc:
-            out, line = self.collect_results(token, out, start=start)
+            out, line = be.out_object.collect_results(
+                self.jobs, token, out, start=start
+            )
             out.append(line + "\n")
 
         out[1] += " \n"
@@ -333,12 +291,13 @@ class spacy_pipe(Spacy):
             start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
         """
 
+        # check if spacy doc object is sentencized
         if self.doc.has_annotation("SENT_START"):
             # if "senter" in self.jobs or "sentencizer" in self.jobs or "parser" in self.jobs:
             out = self.assemble_output_sent(start=start)
         else:
             out = self.assemble_output(start=start)
-        # write to file -> This overwrites any existing file of given name;
+        # write to file -> This overwrites any existing file of given name;stanza -
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
         if ret is False:

@@ -1,8 +1,10 @@
 # the base class and utilities are contained in this module
 import json
+from logging import raiseExceptions
 import os
 
 
+# the below functions in a class with attributes
 def get_cores() -> int:
     """Find out how many CPU-cores are available for current process."""
     return len(os.sched_getaffinity(0))
@@ -116,18 +118,95 @@ def activate_procs(mydict, toolstring) -> dict:
     return mydict
 
 
-# open outfile
-def open_outfile():
-    name = "out/output.txt"
-    f = open(name, "w")
-    return f
-
-
 class out_object:
-    """The output object. Write the vrt file."""
+    """The output object and namespace. Write the vrt file."""
 
     def __init__(self) -> None:
         pass
+
+    @staticmethod
+    def open_outfile(outname):
+        name = "out/" + outname
+        f = open(name, "w")
+        return f
+
+    @staticmethod
+    def assemble_output_sent(doc, inpname, jobs, start):
+        # if senter is called we insert sentence symbol <s> before and </s> after
+        # every sentence
+        out = ["! Output for {}! \n".format(inpname)]
+        out.append("! Idx Text")
+
+        # spacy
+        # for sent in doc.sents:
+        # stanza
+        for sent in doc.sentences:
+            out.append("<s>\n")
+            # iterate through the tokens of the sentence, this is just a slice of
+            # the full doc
+            # spacy
+            # for token in sent:
+            # stanza
+            # for multi-word tokens this could prove problematic
+            # we have to distinguish btw token and word in that case
+            print(sent.tokens)
+            print(sent.words)
+            for token, word in zip(sent.tokens, sent.words):
+                if token.text != word.text:
+                    raise NotImplementedError(
+                        "Multi-word expressions not available currently"
+                    )
+                out, line = out_object.collect_results(
+                    jobs, token, word, out, start=start
+                )
+                out.append(line + "\n")
+
+            out.append("</s>\n")
+        out[1] += " \n"
+        return out
+
+    def collect_results(jobs, token, word, out: list, start=0) -> tuple:
+        """Function to collect requested tags for tokens after applying pipeline to data."""
+        # always get token id and token text
+        # spacy
+        # line = str(token.i + start) + " " + token.text
+        # stanza
+        line = str(token.id[0] + start) + " " + token.text
+
+        # grab the data for the run components, I've only included the human readable
+        # part of output right now as I don't know what else we need
+        ########
+        # we need to unify the name for the different job types
+        # ie spacy - lemmatizer, stanza - lemma
+        # spacy - attribute_ruler, stanza - pos
+        #########
+        # tokenize is done above this level
+        if "ner" in jobs:
+            out, line = out_object.grab_ner(token, out, line)
+
+        if "entity_ruler" in jobs:
+            out, line = out_object.grab_ruler(token, out, line)
+
+        if "entity_linker" in jobs:
+            out, line = out_object.grab_linker(token, out, line)
+
+        if "lemmatizer" or "lemma" in jobs:
+            out, line = out_object.grab_lemma(token, word, out, line)
+
+        if "morphologizer" in jobs:
+            out, line = out_object.grab_morph(token, out, line)
+
+        if "tagger" in jobs:
+            out, line = out_object.grab_tag(token, out, line)
+
+        if "parser" in jobs:
+            out, line = out_object.grab_dep(token, out, line)
+
+        if "attribute_ruler" or "pos" in jobs:
+            out, line = out_object.grab_att(token, word, out, line)
+            # add what else we need
+
+        return out, line
 
     # define all of these as functions
     def grab_ner(token, out, line):
@@ -163,13 +242,21 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_lemma(token, out, line):
+    def grab_lemma(token, word, out, line):
         # attributes:
+        # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
-        if token.i == 0:
+        # if token.i == 0:
+        # out[1] += " lemma"
+        # if token.lemma_ != "":
+        # line += " " + token.lemma_
+        # else:
+        # line += " - "
+        # stanza
+        if token.id[0] == 0:
             out[1] += " lemma"
-        if token.lemma_ != "":
-            line += " " + token.lemma_
+        if word.lemma != "":
+            line += " " + word.lemma
         else:
             line += " - "
         return out, line
@@ -207,13 +294,21 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_att(token, out, line):
+    def grab_att(token, word, out, line):
         # attributes:
+        # spacy
         # Token.pos, Token.pos_
-        if token.i == 0:
+        # if token.i == 0:
+        # out[1] += " POS"
+        # if token.pos_ != "":
+        # line += " " + token.pos_
+        # else:
+        # line += " - "
+        # stanza
+        if token.id[0] == 0:
             out[1] += " POS"
-        if token.pos_ != "":
-            line += " " + token.pos_
+        if word.upos != "":
+            line += " " + word.upos
         else:
             line += " - "
         return out, line
