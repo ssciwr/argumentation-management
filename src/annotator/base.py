@@ -4,6 +4,19 @@ from logging import raiseExceptions
 import os
 
 
+# a dictionary to map attribute names for the different tools that we use
+dictmap = {
+    "stanza_names": {
+        "pos": "upos",
+        "lemma": "lemma",
+    },
+    "spacy_names": {
+        "pos": "POS",
+        "lemma": "lemma_",
+    },
+}
+
+
 # the below functions in a class with attributes
 def get_cores() -> int:
     """Find out how many CPU-cores are available for current process."""
@@ -131,7 +144,10 @@ class out_object:
         return f
 
     @staticmethod
-    def assemble_output_sent(doc, inpname, jobs, start):
+    def assemble_output_sent(doc, inpname, tool, jobs, start):
+        # get the dictionary map for the attribute names that are unique to each tool
+        attrnames = out_object._get_names(tool)
+
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         out = ["! Output for {}! \n".format(inpname)]
@@ -157,7 +173,7 @@ class out_object:
                         "Multi-word expressions not available currently"
                     )
                 out, line = out_object.collect_results(
-                    jobs, token, word, out, start=start
+                    jobs, token, word, out, attrnames, start=start
                 )
                 out.append(line + "\n")
 
@@ -165,7 +181,11 @@ class out_object:
         out[1] += " \n"
         return out
 
-    def collect_results(jobs, token, word, out: list, start=0) -> tuple:
+    def _get_names(tool) -> dict:
+        mydict = dictmap[tool + "_names"]
+        return mydict
+
+    def collect_results(jobs, token, word, out: list, attrnames, start=0) -> tuple:
         """Function to collect requested tags for tokens after applying pipeline to data."""
         # always get token id and token text
         # spacy
@@ -191,7 +211,9 @@ class out_object:
             out, line = out_object.grab_linker(token, out, line)
 
         if "lemmatizer" or "lemma" in jobs:
-            out, line = out_object.grab_lemma(token, word, out, line)
+            out, line = out_object.grab_lemma(
+                token, word, out, line, attrnames["lemma"]
+            )
 
         if "morphologizer" in jobs:
             out, line = out_object.grab_morph(token, out, line)
@@ -203,7 +225,7 @@ class out_object:
             out, line = out_object.grab_dep(token, out, line)
 
         if "attribute_ruler" or "pos" in jobs:
-            out, line = out_object.grab_att(token, word, out, line)
+            out, line = out_object.grab_att(token, word, out, line, attrnames["pos"])
             # add what else we need
 
         return out, line
@@ -242,7 +264,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_lemma(token, word, out, line):
+    def grab_lemma(token, word, out, line, attrname):
         # attributes:
         # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
@@ -256,7 +278,7 @@ class out_object:
         if token.id[0] == 0:
             out[1] += " lemma"
         if word.lemma != "":
-            line += " " + word.lemma
+            line += " " + getattr(word, attrname)
         else:
             line += " - "
         return out, line
@@ -294,7 +316,7 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_att(token, word, out, line):
+    def grab_att(token, word, out, line, attrname):
         # attributes:
         # spacy
         # Token.pos, Token.pos_
@@ -308,7 +330,7 @@ class out_object:
         if token.id[0] == 0:
             out[1] += " POS"
         if word.upos != "":
-            line += " " + word.upos
+            line += " " + getattr(word, attrname)
         else:
             line += " - "
         return out, line

@@ -63,7 +63,7 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self) -> str:
+    def postprocess(self, tool) -> str:
         # postprocess of the annotated dictionary
         # tokens
         # count tokens continuously and not starting from 1 every new sentence.
@@ -87,7 +87,7 @@ class mstanza_pipeline:
         jobs = [proc.strip() for proc in mydict["processors"].split(",")]
         print(jobs)
         out = be.out_object.assemble_output_sent(
-            self.doc, dict["output"], jobs, start=0
+            self.doc, dict["output"], tool, jobs, start=0
         )
         print(out)
         # next step would be mwt, which is only applicable for languages like German and English
@@ -146,6 +146,6 @@ if __name__ == "__main__":
     obj = mstanza_pipeline(mydict)
     obj.init_pipeline()
     out = obj.process_text(mytext)
-    obj.postprocess()
+    obj.postprocess(tool="stanza")
     # For the output:
     # We need a module that transforms a generic dict into xml.
