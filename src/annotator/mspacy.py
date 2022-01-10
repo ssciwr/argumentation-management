@@ -109,7 +109,7 @@ class spacy_pipe(Spacy):
             apply_to(data):
                 apply pipeline of object to given data
 
-            to_vrt():
+            begin_to_vrt():
                 write results after applying pipeline to .vrt file
     """
 
@@ -217,10 +217,10 @@ class spacy_pipe(Spacy):
             self.doc = doc
             if i == 0:
                 # token index from 0
-                tmp = self.to_vrt(ret=True)
+                tmp = self.begin_to_vrt(ret=True)
             if i > 0:
                 # keep token index from previous chunk
-                tmp = self.to_vrt(ret=True, start=be.find_last_idx(tmp) + 1)
+                tmp = self.begin_to_vrt(ret=True, start=be.find_last_idx(tmp) + 1)
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
@@ -282,7 +282,8 @@ class spacy_pipe(Spacy):
 
         return out
 
-    def to_vrt(self, ret=False, start=0) -> list or None:
+    # move this to base and refactor
+    def begin_to_vrt(self, ret=False, start=0) -> list or None:
         """Function to build list with results from the doc object
         and write it to a .vrt file.
 
@@ -303,10 +304,7 @@ class spacy_pipe(Spacy):
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
         if ret is False:
-            with open("{}_spacy.vrt".format(self.JobID), "w") as file:
-                for line in out:
-                    file.write(line)
-            print("+++ Finished writing .vrt +++")
+            be.out_object.to_vrt(self.JobID, out)
         else:
             return out
 
@@ -328,10 +326,10 @@ class spacy_pipe(Spacy):
             out.append(chunks[i][0] + "\n")
             if i == 0:
                 # apply pipe to chunk, token index from 0
-                tmp = self.apply_to(chunk[1]).to_vrt(ret=True)
+                tmp = self.apply_to(chunk[1]).begin_to_vrt(ret=True)
             elif i > 0:
                 # apply pipe to chunk, keeping token index from previous chunk
-                tmp = self.apply_to(chunk[1]).to_vrt(
+                tmp = self.apply_to(chunk[1]).begin_to_vrt(
                     ret=True, start=be.find_last_idx(tmp) + 1
                 )  # int(tmp[-2].split()[0]+1))
             # append data from tmp pipe output to complete output
@@ -402,7 +400,7 @@ if __name__ == "__main__":
     # we will worry about this later
     spacy_dict = be.update_dict(spacy_dict)
     # build pipe from config, apply it to data, write results to vrt
-    spacy_pipe(spacy_dict).apply_to(data).to_vrt()
+    spacy_pipe(spacy_dict).apply_to(data).begin_to_vrt()
 
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
@@ -416,7 +414,7 @@ if __name__ == "__main__":
     #     "config": {},
     # # }
 
-    # # spacy_pipe(senter_config).apply_to(data).to_vrt()
+    # # spacy_pipe(senter_config).apply_to(data).begin_to_vrt()
     # # try to chunk the plenary text from example into pieces, annotate these and than reasemble to .vrt
     # # get chunked text
     # data = be.chunk_sample_text("data/Original/plenary.vrt")

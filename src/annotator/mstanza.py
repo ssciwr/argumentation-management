@@ -65,27 +65,11 @@ class mstanza_pipeline:
 
     def postprocess(self) -> str:
         # postprocess of the annotated dictionary
-        # tokens
-        # count tokens continuously and not starting from 1 every new sentence.
-        # print sentences and tokens
-        # open outfile
-        # this all as generic object in base
-        fout = be.out_object.open_outfile(dict["output"])
-        print([sentence.text for sentence in self.doc.sentences])
-        for i, sentence in enumerate(self.doc.sentences):
-            print(f"====== Sentence {i+1} tokens =======")
-            print(
-                *[f"id: {token.id}\ttext: {token.text}" for token in sentence.tokens],
-                sep="\n",
-            )
-            for token in sentence.tokens:
-                print(token.text, token.id[0])
-                mystring = "{} {}\n".format(token.text, token.id[0])
-                fout.write(mystring)
-        fout.close()
+        # fout = be.out_object.open_outfile(dict["output"])
         # sentencize using generic base output object
+        # next step would be mwt, which is only applicable for languages like German and French
+        # seems not to be available in spacy, how is it handled in cwb?
         jobs = [proc.strip() for proc in mydict["processors"].split(",")]
-        print(jobs)
         out = be.out_object.assemble_output_sent(
             self.doc,
             dict["output"],
@@ -94,28 +78,8 @@ class mstanza_pipeline:
             tool="stanza",
         )
         print(out)
-        # next step would be mwt, which is only applicable for languages like German and English
-        #
-        # print out pos tags
-        # print(
-        # *[
-        # f'word: {word.text}\tupos: {word.upos}\txpos: {word.xpos}\tfeats: \
-        # {word.feats if word.feats else "_"}'
-        # for sent in out.sentences
-        # for word in sent.words
-        # ],
-        # sep="\n",
-        # )
-
-        # access lemma
-        # print(
-        # *[
-        # f'word: {word.text+" "}\tlemma: {word.lemma}'
-        # for sent in out.sentences
-        # for word in sent.words
-        # ],
-        # sep="\n",
-        # )
+        # write out to .vrt
+        be.out_object.to_vrt(dict["output"], out)
 
 
 def NER(doc):

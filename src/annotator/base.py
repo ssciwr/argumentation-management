@@ -163,6 +163,8 @@ class out_object:
         # stanza
         # for sent in doc.sentences:
         # general
+        # count stanza tokens continuously and not starting from 1 every new sentence.
+        tstart = 0
         for sent in getattr(doc, attrnames["sentence"]):
             out.append("<s>\n")
             # iterate through the tokens of the sentence, this is just a slice of
@@ -177,7 +179,9 @@ class out_object:
             if tool == "spacy":
                 out = out_object._iterate_spacy(out, sent, attrnames, jobs, start)
             elif tool == "stanza":
-                out = out_object._iterate_stanza(out, sent, attrnames, jobs, start)
+                out, tstart = out_object._iterate_stanza(
+                    out, sent, attrnames, jobs, start, tstart
+                )
             else:
                 raise NotImplementedError(
                     "Tool {} not available at this time.".format(tool)
@@ -201,27 +205,24 @@ class out_object:
         out.append("</s>\n")
         return out
 
-    def _iterate_stanza(out, sent, attrnames, jobs, start):
+    def _iterate_stanza(out, sent, attrnames, jobs, start, tstart):
         for token, word in zip(getattr(sent, "tokens"), getattr(sent, "words")):
             if token.text != word.text:
                 raise NotImplementedError(
                     "Multi-word expressions not available currently"
                 )
-            tid = token.id[0]
+            tid = token.id[0] + tstart
             out, line = out_object.collect_results(
                 jobs, token, tid, word, out, attrnames, start=start
             )
             out.append(line + "\n")
-
         out.append("</s>\n")
-        return out
+        tstart = tid
+        return out, tstart
 
     def collect_results(jobs, token, tid, word, out: list, attrnames, start=0) -> tuple:
         """Function to collect requested tags for tokens after applying pipeline to data."""
         # always get token id and token text
-        # spacy
-        # line = str(token.i + start) + " " + token.text
-        # stanza
         line = str(tid + start) + " " + token.text
 
         # grab the data for the run components, I've only included the human readable
@@ -350,6 +351,17 @@ class out_object:
         else:
             line += " - "
         return out, line
+
+    def to_vrt(outname, out) -> list or None:
+        """Function to write list to a .vrt file.
+
+        [Args]:
+            ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
+        """
+        with open("{}.vrt".format(outname), "w") as file:
+            for line in out:
+                file.write(line)
+        print("+++ Finished writing .vrt +++")
 
 
 # metadata and tags

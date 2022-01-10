@@ -1,6 +1,6 @@
 {
     "input": "input.txt",
-    "output": "output.vrt",
+    "output": "out/output",
     "tool": "spacy",
     "stanza_dict": {
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
