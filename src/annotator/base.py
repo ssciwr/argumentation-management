@@ -2,16 +2,21 @@
 import json
 from logging import raiseExceptions
 import os
+import copy
 
 
 # a dictionary to map attribute names for the different tools that we use
 dictmap = {
     "stanza_names": {
+        "sentence": "sentences",
+        "token": "tokens",
         "pos": "upos",
         "lemma": "lemma",
     },
     "spacy_names": {
-        "pos": "POS",
+        "sentence": "sents",
+        "token": "token",
+        "pos": "pos_",
         "lemma": "lemma_",
     },
 }
@@ -144,7 +149,7 @@ class out_object:
         return f
 
     @staticmethod
-    def assemble_output_sent(doc, inpname, tool, jobs, start):
+    def assemble_output_sent(doc, inpname, jobs, start, tool):
         # get the dictionary map for the attribute names that are unique to each tool
         attrnames = out_object._get_names(tool)
 
@@ -156,7 +161,9 @@ class out_object:
         # spacy
         # for sent in doc.sents:
         # stanza
-        for sent in doc.sentences:
+        # for sent in doc.sentences:
+        # general
+        for sent in getattr(doc, attrnames["sentence"]):
             out.append("<s>\n")
             # iterate through the tokens of the sentence, this is just a slice of
             # the full doc
@@ -165,19 +172,16 @@ class out_object:
             # stanza
             # for multi-word tokens this could prove problematic
             # we have to distinguish btw token and word in that case
-            print(sent.tokens)
-            print(sent.words)
-            for token, word in zip(sent.tokens, sent.words):
-                if token.text != word.text:
-                    raise NotImplementedError(
-                        "Multi-word expressions not available currently"
-                    )
-                out, line = out_object.collect_results(
-                    jobs, token, word, out, attrnames, start=start
+            # for token, word in zip(sent.tokens, sent.words):
+            # general
+            if tool == "spacy":
+                out = out_object._iterate_spacy(out, sent, attrnames, jobs, start)
+            elif tool == "stanza":
+                out = out_object._iterate_stanza(out, sent, attrnames, jobs, start)
+            else:
+                raise NotImplementedError(
+                    "Tool {} not available at this time.".format(tool)
                 )
-                out.append(line + "\n")
-
-            out.append("</s>\n")
         out[1] += " \n"
         return out
 
@@ -185,56 +189,84 @@ class out_object:
         mydict = dictmap[tool + "_names"]
         return mydict
 
-    def collect_results(jobs, token, word, out: list, attrnames, start=0) -> tuple:
+    def _iterate_spacy(out, sent, attrnames, jobs, start):
+        for token in sent:
+            # multi-word expressions not available in spacy?
+            # Setting word=token for now
+            tid = copy.copy(token.i)
+            out, line = out_object.collect_results(
+                jobs, token, tid, token, out, attrnames, start=start
+            )
+            out.append(line + "\n")
+        out.append("</s>\n")
+        return out
+
+    def _iterate_stanza(out, sent, attrnames, jobs, start):
+        for token, word in zip(getattr(sent, "tokens"), getattr(sent, "words")):
+            if token.text != word.text:
+                raise NotImplementedError(
+                    "Multi-word expressions not available currently"
+                )
+            tid = token.id[0]
+            out, line = out_object.collect_results(
+                jobs, token, tid, word, out, attrnames, start=start
+            )
+            out.append(line + "\n")
+
+        out.append("</s>\n")
+        return out
+
+    def collect_results(jobs, token, tid, word, out: list, attrnames, start=0) -> tuple:
         """Function to collect requested tags for tokens after applying pipeline to data."""
         # always get token id and token text
         # spacy
         # line = str(token.i + start) + " " + token.text
         # stanza
-        line = str(token.id[0] + start) + " " + token.text
+        line = str(tid + start) + " " + token.text
 
         # grab the data for the run components, I've only included the human readable
         # part of output right now as I don't know what else we need
         ########
-        # we need to unify the name for the different job types
+        # we need to unify the names for the different job types
         # ie spacy - lemmatizer, stanza - lemma
         # spacy - attribute_ruler, stanza - pos
         #########
-        # tokenize is done above this level
         if "ner" in jobs:
-            out, line = out_object.grab_ner(token, out, line)
+            out, line = out_object.grab_ner(token, tid, out, line)
 
         if "entity_ruler" in jobs:
-            out, line = out_object.grab_ruler(token, out, line)
+            out, line = out_object.grab_ruler(token, tid, out, line)
 
         if "entity_linker" in jobs:
-            out, line = out_object.grab_linker(token, out, line)
+            out, line = out_object.grab_linker(token, tid, out, line)
 
         if "lemmatizer" or "lemma" in jobs:
             out, line = out_object.grab_lemma(
-                token, word, out, line, attrnames["lemma"]
+                token, tid, word, out, line, attrnames["lemma"]
             )
 
         if "morphologizer" in jobs:
-            out, line = out_object.grab_morph(token, out, line)
+            out, line = out_object.grab_morph(token, tid, out, line)
 
         if "tagger" in jobs:
-            out, line = out_object.grab_tag(token, out, line)
+            out, line = out_object.grab_tag(token, tid, out, line)
 
         if "parser" in jobs:
-            out, line = out_object.grab_dep(token, out, line)
+            out, line = out_object.grab_dep(token, tid, out, line)
 
         if "attribute_ruler" or "pos" in jobs:
-            out, line = out_object.grab_att(token, word, out, line, attrnames["pos"])
+            out, line = out_object.grab_att(
+                token, tid, word, out, line, attrnames["pos"]
+            )
             # add what else we need
 
         return out, line
 
     # define all of these as functions
-    def grab_ner(token, out, line):
+    def grab_ner(token, tid, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if token.i == 0:
+        if tid == 0:
             out[1] += " ner"
         if token.ent_type_ != "":
             line += "  " + token.ent_type_
@@ -242,10 +274,10 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_ruler(token, out, line):
+    def grab_ruler(token, tid, out, line):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if token.i == 0:
+        if tid == 0:
             out[1] += " entity_ruler"
         if token.ent_type_ != "":
             line += "  " + token.ent_type_
@@ -253,10 +285,10 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_linker(token, out, line):
+    def grab_linker(token, tid, out, line):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
-        if token.i == 0:
+        if tid == 0:
             out[1] += " entity_linker"
         if token.ent_type_ != "":
             line += "  " + token.ent_kb_id_
@@ -264,18 +296,11 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_lemma(token, word, out, line, attrname):
+    def grab_lemma(token, tid, word, out, line, attrname):
         # attributes:
         # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
-        # if token.i == 0:
-        # out[1] += " lemma"
-        # if token.lemma_ != "":
-        # line += " " + token.lemma_
-        # else:
-        # line += " - "
-        # stanza
-        if token.id[0] == 0:
+        if tid == 0:
             out[1] += " lemma"
         if word.lemma != "":
             line += " " + getattr(word, attrname)
@@ -283,10 +308,10 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_morph(token, out, line):
+    def grab_morph(token, tid, out, line):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
-        if token.i == 0:
+        if tid == 0:
             out[1] += " UPOS morph"
         if token.pos_ != "":
             line += " " + token.pos_ + "" + token.morph
@@ -294,10 +319,10 @@ class out_object:
             line += " - " + token.morph
         return out, line
 
-    def grab_tag(token, out, line):
+    def grab_tag(token, tid, out, line):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
-        if token.i == 0:
+        if tid == 0:
             out[1] += " Tag"
         if token.tag_ != "":
             line += " " + token.tag_
@@ -305,10 +330,10 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_dep(token, out, line):
+    def grab_dep(token, tid, out, line):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
-        if token.i == 0:
+        if tid == 0:
             out[1] += " pars"
         if token.dep_ != "":
             line += " " + token.dep_
@@ -316,20 +341,11 @@ class out_object:
             line += " - "
         return out, line
 
-    def grab_att(token, word, out, line, attrname):
+    def grab_att(token, tid, word, out, line, attrname):
         # attributes:
-        # spacy
-        # Token.pos, Token.pos_
-        # if token.i == 0:
-        # out[1] += " POS"
-        # if token.pos_ != "":
-        # line += " " + token.pos_
-        # else:
-        # line += " - "
-        # stanza
-        if token.id[0] == 0:
+        if tid == 0:
             out[1] += " POS"
-        if word.upos != "":
+        if getattr(word, attrname) != "":
             line += " " + getattr(word, attrname)
         else:
             line += " - "

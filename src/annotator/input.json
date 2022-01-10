@@ -1,6 +1,7 @@
 {
     "input": "input.txt",
     "output": "output.vrt",
+    "tool": "spacy",
     "stanza_dict": {
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
         "_lang_comment": "Language code for the language to build the Pipeline in",

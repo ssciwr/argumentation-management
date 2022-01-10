@@ -250,7 +250,9 @@ class spacy_pipe(Spacy):
             )
             exit()
         # apply sentence and sublevel annotation
-        out = be.out_object.assemble_output_sent(self.doc, self.JobID, self.jobs, start)
+        out = be.out_object.assemble_output_sent(
+            self.doc, self.JobID, self.jobs, start, tool="spacy"
+        )
         return out
 
     # refactor to move replicated units to base generic output object
