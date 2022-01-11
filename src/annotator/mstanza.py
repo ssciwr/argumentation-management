@@ -70,13 +70,7 @@ class mstanza_pipeline:
         # next step would be mwt, which is only applicable for languages like German and French
         # seems not to be available in spacy, how is it handled in cwb?
         jobs = [proc.strip() for proc in mydict["processors"].split(",")]
-        out = be.out_object.assemble_output_sent(
-            self.doc,
-            dict["output"],
-            jobs,
-            start=0,
-            tool="stanza",
-        )
+        out = be.out_object.assemble_output_sent(self.doc, jobs, start=0, tool="stanza")
         # write out to .vrt
         be.out_object.to_vrt(dict["output"], out)
 
