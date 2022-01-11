@@ -107,9 +107,9 @@ if __name__ == "__main__":
     # now we need to select the processors and "activate" the sub-dictionaries
     mydict = be.update_dict(mydict)
     mydict = be.activate_procs(mydict, "stanza_")
-    # mytext = be.get_sample_text()
+    mytext = be.get_sample_text()
     # or use something shorter
-    mytext = "This is a test sentence for stanza. This is another sentence."
+    # mytext = "This is a test sentence for stanza. This is another sentence."
     # initialize instance of the class
     obj = mstanza_pipeline(mydict)
     obj.init_pipeline()

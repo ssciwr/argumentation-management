@@ -8,16 +8,22 @@ import copy
 # a dictionary to map attribute names for the different tools that we use
 dictmap = {
     "stanza_names": {
+        "proc_lemma": "lemma",
+        "proc_pos": "pos",
         "sentence": "sentences",
         "token": "tokens",
         "pos": "upos",
         "lemma": "lemma",
+        "ner": "text",
     },
     "spacy_names": {
+        "proc_lemma": "lemmatizer",
+        "proc_pos": "attribute_ruler",
         "sentence": "sents",
         "token": "token",
         "pos": "pos_",
         "lemma": "lemma_",
+        "ner": "ent_type_",
     },
 }
 
@@ -212,6 +218,8 @@ class out_object:
                     "Multi-word expressions not available currently"
                 )
             tid = token.id[0] + tstart
+            # for ent in getattr(sent, "ents"):
+            # print(ent)
             out, line = out_object.collect_results(
                 jobs, token, tid, word, out, attrnames, start=start
             )
@@ -224,13 +232,16 @@ class out_object:
         """Function to collect requested tags for tokens after applying pipeline to data."""
         # always get token id and token text
         line = str(tid + start) + " " + token.text
-
+        print("collecting results!")
+        print(jobs)
         # grab the data for the run components, I've only included the human readable
         # part of output right now as I don't know what else we need
         ########
         # we need to unify the names for the different job types
         # ie spacy - lemmatizer, stanza - lemma
         # spacy - attribute_ruler, stanza - pos
+        # spacy - ner, stanza - ner
+        # have to find out how ner is encoded in cwb first
         #########
         if "ner" in jobs:
             out, line = out_object.grab_ner(token, tid, out, line)
@@ -241,7 +252,8 @@ class out_object:
         if "entity_linker" in jobs:
             out, line = out_object.grab_linker(token, tid, out, line)
 
-        if "lemmatizer" or "lemma" in jobs:
+        if attrnames["proc_lemma"] in jobs:
+            print("found lemma!", jobs)
             out, line = out_object.grab_lemma(
                 token, tid, word, out, line, attrnames["lemma"]
             )
@@ -255,7 +267,7 @@ class out_object:
         if "parser" in jobs:
             out, line = out_object.grab_dep(token, tid, out, line)
 
-        if "attribute_ruler" or "pos" in jobs:
+        if attrnames["proc_pos"] in jobs:
             out, line = out_object.grab_att(
                 token, tid, word, out, line, attrnames["pos"]
             )
@@ -264,15 +276,16 @@ class out_object:
         return out, line
 
     # define all of these as functions
-    def grab_ner(token, tid, out, line):
+    def grab_ner(token, tid, ent, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if tid == 0:
             out[1] += " ner"
-        if token.ent_type_ != "":
-            line += "  " + token.ent_type_
-        else:
-            line += " - "
+        # if token.ent_type_ != "":
+        # line += "  " + token.ent_type_
+        # else:
+        # line += " - "
+        print(ent)
         return out, line
 
     def grab_ruler(token, tid, out, line):
