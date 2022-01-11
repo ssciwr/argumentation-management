@@ -222,7 +222,7 @@ class flair_pipe(Flair):
 
 if __name__ == "__main__":
 
-    cfg = be.load_input_dict()
+    cfg = be.load_input_dict("input")
     flair_cfg = be.update_dict(cfg["flair_dict"])
     data = be.get_sample_text()
     flair_pipe(flair_cfg).senter_spacy(data).apply_to().to_vrt()
