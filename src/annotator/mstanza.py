@@ -77,7 +77,6 @@ class mstanza_pipeline:
             start=0,
             tool="stanza",
         )
-        print(out)
         # write out to .vrt
         be.out_object.to_vrt(dict["output"], out)
 
@@ -96,7 +95,7 @@ def NER(doc):
 
 
 if __name__ == "__main__":
-    dict = be.load_input_dict()
+    dict = be.load_input_dict("input")
     # take only the part of dict pertaining to stanza
     stanza_dict = dict["stanza_dict"]
     # to point to user-defined model directories

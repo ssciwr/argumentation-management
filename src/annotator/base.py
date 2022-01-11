@@ -108,8 +108,8 @@ def find_last_idx(chunk: list) -> int:
 
 
 # load the dictionary
-def load_input_dict():
-    with open("src/annotator/input.json") as f:
+def load_input_dict(name):
+    with open("src/annotator/{}.json".format(name)) as f:
         mydict = json.load(f)
     return mydict
 
@@ -142,11 +142,16 @@ def activate_procs(mydict, toolstring) -> dict:
     return mydict
 
 
+# now this becomes the base out_object class
+# this class is inherited in the different modules
+# selected methods are overwritten/added depending on the requirements
+# the mapping dict will remain to make the conversion clear and not to duplicate
 class out_object:
-    """The output object and namespace. Write the vrt file."""
+    """The base output object and namespace. Write the vrt file."""
 
     def __init__(self) -> None:
-        pass
+        # get the attribute names for the different tools
+        self.attrnames = load_input_dict("attribute_names")
 
     @staticmethod
     def open_outfile(outname):
@@ -237,7 +242,7 @@ class out_object:
         ########
         # we need to unify the names for the different job types
         # ie spacy - lemmatizer, stanza - lemma
-        # spacy - attribute_ruler, stanza - pos
+        # spacy - tagger, stanza - pos
         # spacy - ner, stanza - ner
         # have to find out how ner is encoded in cwb first
         #########
@@ -245,7 +250,7 @@ class out_object:
         # order matters for encoding
 
         if attrnames["proc_pos"] in jobs:
-            out, line = out_object.grab_att(
+            out, line = out_object.grab_tag(
                 token, tid, word, out, line, attrnames["pos"]
             )
 
@@ -266,11 +271,11 @@ class out_object:
         if "morphologizer" in jobs:
             out, line = out_object.grab_morph(token, tid, out, line)
 
-        if "tagger" in jobs:
-            out, line = out_object.grab_tag(token, tid, out, line)
-
         if "parser" in jobs:
             out, line = out_object.grab_dep(token, tid, out, line)
+
+        if "attribute_ruler" in jobs:
+            out, line = out_object.grab_att(token, tid, out, line)
         # add what else we need
 
         return out, line
@@ -279,8 +284,6 @@ class out_object:
     def grab_ner(token, tid, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if tid == 0:
-            out[1] += " ner"
         if token.ent_type_ != "":
             line += "\t" + token.ent_type_
         else:
@@ -290,8 +293,6 @@ class out_object:
     def grab_ruler(token, tid, out, line):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if tid == 0:
-            out[1] += " entity_ruler"
         if token.ent_type_ != "":
             line += "\t" + token.ent_type_
         else:
@@ -301,8 +302,6 @@ class out_object:
     def grab_linker(token, tid, out, line):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
-        if tid == 0:
-            out[1] += " entity_linker"
         if token.ent_type_ != "":
             line += "\t" + token.ent_kb_id_
         else:
@@ -313,8 +312,6 @@ class out_object:
         # attributes:
         # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
-        if tid == 0:
-            out[1] += " lemma"
         if word.lemma != "":
             line += "\t" + getattr(word, attrname)
         else:
@@ -324,21 +321,17 @@ class out_object:
     def grab_morph(token, tid, out, line):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
-        if tid == 0:
-            out[1] += " UPOS morph"
         if token.pos_ != "":
             line += "\t" + token.pos_ + "" + token.morph
         elif token.pos_ == "":
             line += "\t-" + token.morph
         return out, line
 
-    def grab_tag(token, tid, out, line):
+    def grab_tag(token, tid, word, out, line, attrname):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
-        if tid == 0:
-            out[1] += " Tag"
-        if token.tag_ != "":
-            line += "\t" + token.tag_
+        if getattr(word, attrname) != "":
+            line += "\t" + getattr(word, attrname)
         else:
             line += "\t-"
         return out, line
@@ -346,20 +339,16 @@ class out_object:
     def grab_dep(token, tid, out, line):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
-        if tid == 0:
-            out[1] += " pars"
         if token.dep_ != "":
             line += "\t" + token.dep_
         else:
             line += "\t-"
         return out, line
 
-    def grab_att(token, tid, word, out, line, attrname):
+    def grab_att(token, tid, out, line):
         # attributes:
-        if tid == 0:
-            out[1] += " POS"
-        if getattr(word, attrname) != "":
-            line += "\t" + getattr(word, attrname)
+        if token.pos_ != "":
+            line += "\t" + token.pos_
         else:
             line += "\t-"
         return out, line

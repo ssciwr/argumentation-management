@@ -390,7 +390,7 @@ def sentencize_spacy(lang: str, data: str) -> list:
 if __name__ == "__main__":
     data = be.get_sample_text()
     # or read the main dict and activate
-    mydict = be.load_input_dict()
+    mydict = be.load_input_dict("input")
     # take only the part of dict pertaining to spacy
     # filename needs to be moved to/taken from top level of dict
     spacy_dict = mydict["spacy_dict"]

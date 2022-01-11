@@ -1,0 +1,20 @@
+{
+    "stanza_names": {
+        "proc_lemma": "lemma",
+        "proc_pos": "pos",
+        "sentence": "sentences",
+        "token": "tokens",
+        "pos": "upos",
+        "lemma": "lemma",
+        "ner": "text"
+    },
+    "spacy_names": {
+        "proc_lemma": "lemmatizer",
+        "proc_pos": "tagger",
+        "sentence": "sents",
+        "token": "token",
+        "pos": "tag_",
+        "lemma": "lemma_",
+        "ner": "ent_type_"
+    }
+}
