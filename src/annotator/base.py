@@ -161,8 +161,7 @@ class out_object:
 
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
-        out = ["! Output for {}! \n".format(inpname)]
-        out.append("! Idx Text")
+        out = []
 
         # spacy
         # for sent in doc.sents:
@@ -231,7 +230,8 @@ class out_object:
     def collect_results(jobs, token, tid, word, out: list, attrnames, start=0) -> tuple:
         """Function to collect requested tags for tokens after applying pipeline to data."""
         # always get token id and token text
-        line = str(tid + start) + " " + token.text
+        # line = str(tid + start) + " " + token.text
+        line = token.text
         # grab the data for the run components, I've only included the human readable
         # part of output right now as I don't know what else we need
         ########
@@ -279,9 +279,9 @@ class out_object:
         if tid == 0:
             out[1] += " ner"
         if token.ent_type_ != "":
-            line += "  " + token.ent_type_
+            line += "\t" + token.ent_type_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
     def grab_ruler(token, tid, out, line):
@@ -290,9 +290,9 @@ class out_object:
         if tid == 0:
             out[1] += " entity_ruler"
         if token.ent_type_ != "":
-            line += "  " + token.ent_type_
+            line += "\t" + token.ent_type_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
     def grab_linker(token, tid, out, line):
@@ -301,9 +301,9 @@ class out_object:
         if tid == 0:
             out[1] += " entity_linker"
         if token.ent_type_ != "":
-            line += "  " + token.ent_kb_id_
+            line += "\t" + token.ent_kb_id_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
     def grab_lemma(token, tid, word, out, line, attrname):
@@ -313,9 +313,9 @@ class out_object:
         if tid == 0:
             out[1] += " lemma"
         if word.lemma != "":
-            line += " " + getattr(word, attrname)
+            line += "\t" + getattr(word, attrname)
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
     def grab_morph(token, tid, out, line):
@@ -324,9 +324,9 @@ class out_object:
         if tid == 0:
             out[1] += " UPOS morph"
         if token.pos_ != "":
-            line += " " + token.pos_ + "" + token.morph
+            line += "\t" + token.pos_ + "" + token.morph
         elif token.pos_ == "":
-            line += " - " + token.morph
+            line += "\t-" + token.morph
         return out, line
 
     def grab_tag(token, tid, out, line):
@@ -335,9 +335,9 @@ class out_object:
         if tid == 0:
             out[1] += " Tag"
         if token.tag_ != "":
-            line += " " + token.tag_
+            line += "\t" + token.tag_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
     def grab_dep(token, tid, out, line):
@@ -346,9 +346,9 @@ class out_object:
         if tid == 0:
             out[1] += " pars"
         if token.dep_ != "":
-            line += " " + token.dep_
+            line += "\t" + token.dep_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
     def grab_att(token, tid, word, out, line, attrname):
@@ -356,9 +356,9 @@ class out_object:
         if tid == 0:
             out[1] += " POS"
         if getattr(word, attrname) != "":
-            line += " " + getattr(word, attrname)
+            line += "\t" + getattr(word, attrname)
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
     def to_vrt(outname, out) -> list or None:
