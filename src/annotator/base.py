@@ -241,6 +241,19 @@ class out_object:
         # spacy - ner, stanza - ner
         # have to find out how ner is encoded in cwb first
         #########
+        # put in correct order - first pos, then lemma
+        # order matters for encoding
+
+        if attrnames["proc_pos"] in jobs:
+            out, line = out_object.grab_att(
+                token, tid, word, out, line, attrnames["pos"]
+            )
+
+        if attrnames["proc_lemma"] in jobs:
+            out, line = out_object.grab_lemma(
+                token, tid, word, out, line, attrnames["lemma"]
+            )
+
         if "ner" in jobs:
             out, line = out_object.grab_ner(token, tid, out, line)
 
@@ -250,11 +263,6 @@ class out_object:
         if "entity_linker" in jobs:
             out, line = out_object.grab_linker(token, tid, out, line)
 
-        if attrnames["proc_lemma"] in jobs:
-            out, line = out_object.grab_lemma(
-                token, tid, word, out, line, attrnames["lemma"]
-            )
-
         if "morphologizer" in jobs:
             out, line = out_object.grab_morph(token, tid, out, line)
 
@@ -263,12 +271,7 @@ class out_object:
 
         if "parser" in jobs:
             out, line = out_object.grab_dep(token, tid, out, line)
-
-        if attrnames["proc_pos"] in jobs:
-            out, line = out_object.grab_att(
-                token, tid, word, out, line, attrnames["pos"]
-            )
-            # add what else we need
+        # add what else we need
 
         return out, line
 
