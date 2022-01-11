@@ -232,8 +232,6 @@ class out_object:
         """Function to collect requested tags for tokens after applying pipeline to data."""
         # always get token id and token text
         line = str(tid + start) + " " + token.text
-        print("collecting results!")
-        print(jobs)
         # grab the data for the run components, I've only included the human readable
         # part of output right now as I don't know what else we need
         ########
@@ -253,7 +251,6 @@ class out_object:
             out, line = out_object.grab_linker(token, tid, out, line)
 
         if attrnames["proc_lemma"] in jobs:
-            print("found lemma!", jobs)
             out, line = out_object.grab_lemma(
                 token, tid, word, out, line, attrnames["lemma"]
             )
@@ -276,16 +273,15 @@ class out_object:
         return out, line
 
     # define all of these as functions
-    def grab_ner(token, tid, ent, out, line):
+    def grab_ner(token, tid, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if tid == 0:
             out[1] += " ner"
-        # if token.ent_type_ != "":
-        # line += "  " + token.ent_type_
-        # else:
-        # line += " - "
-        print(ent)
+        if token.ent_type_ != "":
+            line += "  " + token.ent_type_
+        else:
+            line += " - "
         return out, line
 
     def grab_ruler(token, tid, out, line):
