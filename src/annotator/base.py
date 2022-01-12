@@ -246,6 +246,8 @@ class out_object:
     # define all of these as functions
     # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing
+    # making them static for now
+    @staticmethod
     def grab_ner(token, tid, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
@@ -255,6 +257,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_ruler(token, tid, out, line):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
@@ -264,6 +267,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_linker(token, tid, out, line):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
@@ -273,6 +277,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_lemma(token, tid, word, out, line, attrname):
         # attributes:
         # spacy
@@ -283,6 +288,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_morph(token, tid, out, line):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
@@ -292,6 +298,7 @@ class out_object:
             line += "\t-" + token.morph
         return out, line
 
+    @staticmethod
     def grab_tag(token, tid, word, out, line, attrname):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
@@ -301,6 +308,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_dep(token, tid, out, line):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
@@ -310,6 +318,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_att(token, tid, out, line):
         # attributes:
         if token.pos_ != "":

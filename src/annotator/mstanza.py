@@ -75,7 +75,7 @@ class mstanza_pipeline:
         be.out_object.to_vrt(dict["output"], out)
 
 
-def NER(doc):
+def ner(doc):
     named_entities = defaultdict(list)
 
     for ent in doc.ents:
