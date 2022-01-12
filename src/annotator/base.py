@@ -1,5 +1,37 @@
 # the base class and utilities are contained in this module
 import json
+from logging import raiseExceptions
+import os
+import copy
+
+
+# a dictionary to map attribute names for the different tools that we use
+dictmap = {
+    "stanza_names": {
+        "proc_lemma": "lemma",
+        "proc_pos": "pos",
+        "sentence": "sentences",
+        "token": "tokens",
+        "pos": "upos",
+        "lemma": "lemma",
+        "ner": "text",
+    },
+    "spacy_names": {
+        "proc_lemma": "lemmatizer",
+        "proc_pos": "attribute_ruler",
+        "sentence": "sents",
+        "token": "token",
+        "pos": "pos_",
+        "lemma": "lemma_",
+        "ner": "ent_type_",
+    },
+}
+
+
+# the below functions in a class with attributes
+def get_cores() -> int:
+    """Find out how many CPU-cores are available for current process."""
+    return len(os.sched_getaffinity(0))
 
 
 # the below functions will move into an input class
@@ -14,7 +46,7 @@ def get_sample_text():
 # I thought this would belong here rather than mspacy.
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
-    Assumes that there is one layer of text elements to be separated."""
+    Assumes that there is one layer (no nested <> </> statements) of text elements to be separated."""
     # list for data chunks
     data = []
     # index to refer to current chunk
@@ -56,8 +88,8 @@ def chunk_sample_text(path: str) -> list:
 
 
 def find_last_idx(chunk: list) -> int:
-    """Function to find last index in output to keep token index up to date after
-    chunking the corpus.
+    """Function to find last index in chunk to keep token index up to date for
+    next chunk after chunking the corpus.
 
     [Args]:
             chunk[list]: List containing the lines for the .vrt as strings."""
@@ -76,8 +108,8 @@ def find_last_idx(chunk: list) -> int:
 
 
 # load the dictionary
-def load_input_dict():
-    with open("src/annotator/input.json") as f:
+def load_input_dict(name):
+    with open("src/annotator/{}.json".format(name)) as f:
         mydict = json.load(f)
     return mydict
 
@@ -110,107 +142,195 @@ def activate_procs(mydict, toolstring) -> dict:
     return mydict
 
 
-# open outfile
-def open_outfile():
-    name = "out/output.txt"
-    f = open(name, "w")
-    return f
-
-
+# now this becomes the base out_object class
+# this class is inherited in the different modules
+# selected methods are overwritten/added depending on the requirements
+# the mapping dict will remain to make the conversion clear and not to duplicate
 class out_object:
-    """The output object. Write the vrt file."""
+    """The base output object and namespace. Write the vrt file."""
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, doc, jobs, start, tool) -> None:
+        self.doc = doc
+        self.jobs = jobs
+        self.tool = tool
+        self.start = start
+        # get the attribute names for the different tools
+        self.attrnames = self._get_names()
+
+    @staticmethod
+    def open_outfile(outname):
+        name = "out/" + outname
+        f = open(name, "w")
+        return f
+
+    @classmethod
+    def assemble_output_sent(cls, doc, jobs, start, tool):
+        obj = cls(doc, jobs, start, tool)
+        # if senter is called we insert sentence symbol <s> before and </s> after
+        # every sentence
+        # if only sentence is provided, directly call the methods
+        out = []
+        # spacy
+        # for sent in doc.sents:
+        # stanza
+        # for sent in doc.sentences:
+        # general
+        # count stanza tokens continuously and not starting from 1 every new sentence.
+        obj.tstart = 0
+        for sent in getattr(obj.doc, obj.attrnames["sentence"]):
+            out.append("<s>\n")
+            # iterate through the tokens of the sentence, this is just a slice of
+            # the full doc
+            # spacy
+            # for token in sent:
+            # stanza
+            # for multi-word tokens this could prove problematic
+            # we have to distinguish btw token and word in that case
+            # for token, word in zip(sent.tokens, sent.words):
+            # general
+            out = obj.iterate(out, sent)
+        out[1] += " \n"
+        return out
+
+    def _get_names(self) -> dict:
+        mydict = load_input_dict("attribute_names")
+        mydict = mydict[self.tool + "_names"]
+        return mydict
+
+    def collect_results(self, token, tid, word, out: list) -> tuple:
+        """Function to collect requested tags for tokens after applying pipeline to data."""
+        # always get token id and token text
+        # line = str(tid + start) + " " + token.text
+        line = token.text
+        # grab the data for the run components, I've only included the human readable
+        # part of output right now as I don't know what else we need
+        ########
+        # we need to unify the names for the different job types
+        # ie spacy - lemmatizer, stanza - lemma
+        # spacy - tagger, stanza - pos
+        # spacy - ner, stanza - ner
+        # have to find out how ner is encoded in cwb first
+        #########
+        # put in correct order - first pos, then lemma
+        # order matters for encoding
+
+        if self.attrnames["proc_pos"] in self.jobs:
+            out, line = out_object.grab_tag(
+                token, tid, word, out, line, self.attrnames["pos"]
+            )
+
+        if self.attrnames["proc_lemma"] in self.jobs:
+            out, line = out_object.grab_lemma(
+                token, tid, word, out, line, self.attrnames["lemma"]
+            )
+
+        if "ner" in self.jobs:
+            out, line = out_object.grab_ner(token, tid, out, line)
+
+        if "entity_ruler" in self.jobs:
+            out, line = out_object.grab_ruler(token, tid, out, line)
+
+        if "entity_linker" in self.jobs:
+            out, line = out_object.grab_linker(token, tid, out, line)
+
+        if "morphologizer" in self.jobs:
+            out, line = out_object.grab_morph(token, tid, out, line)
+
+        if "parser" in self.jobs:
+            out, line = out_object.grab_dep(token, tid, out, line)
+
+        if "attribute_ruler" in self.jobs:
+            out, line = out_object.grab_att(token, tid, out, line)
+        # add what else we need
+
+        return out, line
 
     # define all of these as functions
-    def grab_ner(token, out, line):
+    # these to be either internal or static methods
+    # we should have an option for vrt and one for xml writing
+    def grab_ner(token, tid, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if token.i == 0:
-            out[1] += " ner"
         if token.ent_type_ != "":
-            line += "  " + token.ent_type_
+            line += "\t" + token.ent_type_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
-    def grab_ruler(token, out, line):
+    def grab_ruler(token, tid, out, line):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if token.i == 0:
-            out[1] += " entity_ruler"
         if token.ent_type_ != "":
-            line += "  " + token.ent_type_
+            line += "\t" + token.ent_type_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
-    def grab_linker(token, out, line):
+    def grab_linker(token, tid, out, line):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
-        if token.i == 0:
-            out[1] += " entity_linker"
         if token.ent_type_ != "":
-            line += "  " + token.ent_kb_id_
+            line += "\t" + token.ent_kb_id_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
-    def grab_lemma(token, out, line):
+    def grab_lemma(token, tid, word, out, line, attrname):
         # attributes:
+        # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
-        if token.i == 0:
-            out[1] += " lemma"
-        if token.lemma_ != "":
-            line += " " + token.lemma_
+        if word.lemma != "":
+            line += "\t" + getattr(word, attrname)
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
-    def grab_morph(token, out, line):
+    def grab_morph(token, tid, out, line):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
-        if token.i == 0:
-            out[1] += " UPOS morph"
-        if token.lemma_ != "":
-            line += " " + token.pos_ + "" + token.morph
-        else:
-            line += " - "
+        if token.pos_ != "":
+            line += "\t" + token.pos_ + "" + token.morph
+        elif token.pos_ == "":
+            line += "\t-" + token.morph
         return out, line
 
-    def grab_tag(token, out, line):
+    def grab_tag(token, tid, word, out, line, attrname):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
-        if token.i == 0:
-            out[1] += " Tag"
-        if token.tag_ != "":
-            line += " " + token.tag_
+        if getattr(word, attrname) != "":
+            line += "\t" + getattr(word, attrname)
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
-    def grab_dep(token, out, line):
+    def grab_dep(token, tid, out, line):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
-        if token.i == 0:
-            out[1] += " pars"
         if token.dep_ != "":
-            line += " " + token.dep_
+            line += "\t" + token.dep_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
 
-    def grab_att(token, out, line):
+    def grab_att(token, tid, out, line):
         # attributes:
-        # Token.pos, Token.pos_
-        if token.i == 0:
-            out[1] += " POS"
         if token.pos_ != "":
-            line += " " + token.pos_
+            line += "\t" + token.pos_
         else:
-            line += " - "
+            line += "\t-"
         return out, line
+
+    @staticmethod
+    def to_vrt(outname, out) -> list or None:
+        """Function to write list to a .vrt file.
+
+        [Args]:
+            ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
+        """
+        with open("{}.vrt".format(outname), "w") as file:
+            for line in out:
+                file.write(line)
+        print("+++ Finished writing .vrt +++")
 
 
 # metadata and tags
