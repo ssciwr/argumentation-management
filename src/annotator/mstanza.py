@@ -73,6 +73,8 @@ class mstanza_pipeline:
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
         be.out_object.to_vrt(dict["output"], out)
+        # encode
+        be.encode_corpus.encode_vrt("test", dict["output"], jobs, "stanza")
 
 
 def ner(doc):

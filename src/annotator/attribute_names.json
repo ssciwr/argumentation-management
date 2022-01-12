@@ -1,5 +1,6 @@
 {
     "stanza_names": {
+        "proc_sent": "tokenize",
         "proc_lemma": "lemma",
         "proc_pos": "pos",
         "sentence": "sentences",
@@ -9,6 +10,7 @@
         "ner": "text"
     },
     "spacy_names": {
+        "proc_sent": "senter, sentencizer",
         "proc_lemma": "lemmatizer",
         "proc_pos": "tagger",
         "sentence": "sents",
