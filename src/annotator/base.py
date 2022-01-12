@@ -149,10 +149,9 @@ def activate_procs(mydict, toolstring) -> dict:
 class out_object:
     """The base output object and namespace. Write the vrt file."""
 
-    def __init__(self, doc, jobs, start, tool) -> None:
+    def __init__(self, doc, jobs, start) -> None:
         self.doc = doc
         self.jobs = jobs
-        self.tool = tool
         self.start = start
         # get the attribute names for the different tools
         self.attrnames = self._get_names()
@@ -164,8 +163,8 @@ class out_object:
         return f
 
     @classmethod
-    def assemble_output_sent(cls, doc, jobs, start, tool):
-        obj = cls(doc, jobs, start, tool)
+    def assemble_output_sent(cls, doc, jobs, start):
+        obj = cls(doc, jobs, start)
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         # if only sentence is provided, directly call the methods
@@ -194,7 +193,6 @@ class out_object:
 
     def _get_names(self) -> dict:
         mydict = load_input_dict("attribute_names")
-        mydict = mydict[self.tool + "_names"]
         return mydict
 
     def collect_results(self, token, tid, word, out: list) -> tuple:
