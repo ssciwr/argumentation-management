@@ -168,6 +168,7 @@ class out_object:
         obj = cls(doc, jobs, start, tool)
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
+        # if only sentence is provided, directly call the methods
         out = []
         # spacy
         # for sent in doc.sents:
@@ -175,7 +176,7 @@ class out_object:
         # for sent in doc.sentences:
         # general
         # count stanza tokens continuously and not starting from 1 every new sentence.
-        tstart = 0
+        obj.tstart = 0
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append("<s>\n")
             # iterate through the tokens of the sentence, this is just a slice of
@@ -187,14 +188,7 @@ class out_object:
             # we have to distinguish btw token and word in that case
             # for token, word in zip(sent.tokens, sent.words):
             # general
-            if obj.tool == "spacy":
-                out = obj._iterate_spacy(out, sent)
-            elif obj.tool == "stanza":
-                out, tstart = obj._iterate_stanza(out, sent, tstart)
-            else:
-                raise NotImplementedError(
-                    "Tool {} not available at this time.".format(cls.tool)
-                )
+            out = obj.iterate(out, sent)
         out[1] += " \n"
         return out
 
@@ -202,33 +196,6 @@ class out_object:
         mydict = load_input_dict("attribute_names")
         mydict = mydict[self.tool + "_names"]
         return mydict
-
-    # this to spacy inherited out_object
-    def _iterate_spacy(self, out, sent):
-        for token in sent:
-            # multi-word expressions not available in spacy?
-            # Setting word=token for now
-            tid = copy.copy(token.i)
-            out, line = self.collect_results(token, tid, token, out)
-            out.append(line + "\n")
-        out.append("</s>\n")
-        return out
-
-    # this to stanza inherited out_object
-    def _iterate_stanza(self, out, sent, tstart):
-        for token, word in zip(getattr(sent, "tokens"), getattr(sent, "words")):
-            if token.text != word.text:
-                raise NotImplementedError(
-                    "Multi-word expressions not available currently"
-                )
-            tid = token.id[0] + tstart
-            # for ent in getattr(sent, "ents"):
-            # print(ent)
-            out, line = self.collect_results(token, tid, word, out)
-            out.append(line + "\n")
-        out.append("</s>\n")
-        tstart = tid
-        return out, tstart
 
     def collect_results(self, token, tid, word, out: list) -> tuple:
         """Function to collect requested tags for tokens after applying pipeline to data."""
@@ -280,6 +247,7 @@ class out_object:
 
     # define all of these as functions
     # these to be either internal or static methods
+    # we should have an option for vrt and one for xml writing
     def grab_ner(token, tid, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
@@ -352,6 +320,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def to_vrt(outname, out) -> list or None:
         """Function to write list to a .vrt file.
 

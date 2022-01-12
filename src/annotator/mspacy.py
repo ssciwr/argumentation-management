@@ -3,6 +3,7 @@ from spacy.tokens.doc import Doc
 from spacy.tokens.token import Token
 from spacy.lang.en import English
 from spacy.lang.de import German
+import copy
 import base as be
 
 # import timeit
@@ -250,7 +251,7 @@ class spacy_pipe(Spacy):
             )
             exit()
         # apply sentence and sublevel annotation
-        out = be.out_object.assemble_output_sent(
+        out = out_object_spacy.assemble_output_sent(
             self.doc, self.jobs, start, tool="spacy"
         )
         return out
@@ -385,6 +386,25 @@ def sentencize_spacy(lang: str, data: str) -> list:
         elif i > 0:
             sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
     return sents
+
+
+# inherit the output class from base and add spacy-specific methods
+class out_object_spacy(be.out_object):
+    """Out object for spacy annotation, adds spacy-specific methods to the
+    vrt/xml writing."""
+
+    def __init__(self, doc, jobs, start, tool):
+        super().__init__(doc, jobs, start, tool)
+
+    def iterate(self, out, sent):
+        for token in sent:
+            # multi-word expressions not available in spacy?
+            # Setting word=token for now
+            tid = copy.copy(token.i)
+            out, line = self.collect_results(token, tid, token, out)
+            out.append(line + "\n")
+        out.append("</s>\n")
+        return out
 
 
 if __name__ == "__main__":

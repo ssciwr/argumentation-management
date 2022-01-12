@@ -70,7 +70,9 @@ class mstanza_pipeline:
         # next step would be mwt, which is only applicable for languages like German and French
         # seems not to be available in spacy, how is it handled in cwb?
         jobs = [proc.strip() for proc in mydict["processors"].split(",")]
-        out = be.out_object.assemble_output_sent(self.doc, jobs, start=0, tool="stanza")
+        out = out_object_stanza.assemble_output_sent(
+            self.doc, jobs, start=0, tool="stanza"
+        )
         # write out to .vrt
         be.out_object.to_vrt(dict["output"], out)
 
@@ -86,6 +88,31 @@ def NER(doc):
         )
 
     return named_entities
+
+
+# inherit the output class from base and add stanza-specific methods
+class out_object_stanza(be.out_object):
+    """Out object for stanza annotation, adds stanza-specific methods to the
+    vrt/xml writing."""
+
+    def __init__(self, doc, jobs, start, tool):
+        super().__init__(doc, jobs, start, tool)
+
+    # add new method for stanza iteration over tokens/words/ents
+    def iterate(self, out, sent):
+        for token, word in zip(getattr(sent, "tokens"), getattr(sent, "words")):
+            if token.text != word.text:
+                raise NotImplementedError(
+                    "Multi-word expressions not available currently"
+                )
+            tid = token.id[0] + self.tstart
+            # for ent in getattr(sent, "ents"):
+            # print(ent)
+            out, line = self.collect_results(token, tid, word, out)
+            out.append(line + "\n")
+        out.append("</s>\n")
+        self.tstart = tid
+        return out
 
 
 if __name__ == "__main__":
