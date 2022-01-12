@@ -2,30 +2,8 @@
 import json
 from logging import raiseExceptions
 import os
-import copy
 
-
-# a dictionary to map attribute names for the different tools that we use
-dictmap = {
-    "stanza_names": {
-        "proc_lemma": "lemma",
-        "proc_pos": "pos",
-        "sentence": "sentences",
-        "token": "tokens",
-        "pos": "upos",
-        "lemma": "lemma",
-        "ner": "text",
-    },
-    "spacy_names": {
-        "proc_lemma": "lemmatizer",
-        "proc_pos": "attribute_ruler",
-        "sentence": "sents",
-        "token": "token",
-        "pos": "pos_",
-        "lemma": "lemma_",
-        "ner": "ent_type_",
-    },
-}
+from numpy import string_
 
 
 # the below functions in a class with attributes
@@ -154,7 +132,7 @@ class out_object:
         self.jobs = jobs
         self.start = start
         # get the attribute names for the different tools
-        self.attrnames = self._get_names()
+        self.attrnames = self.get_names()
 
     @staticmethod
     def open_outfile(outname):
@@ -191,7 +169,8 @@ class out_object:
         out[1] += " \n"
         return out
 
-    def _get_names(self) -> dict:
+    @staticmethod
+    def get_names() -> dict:
         mydict = load_input_dict("attribute_names")
         return mydict
 
@@ -338,6 +317,76 @@ class out_object:
             for line in out:
                 file.write(line)
         print("+++ Finished writing .vrt +++")
+
+
+class encode_corpus:
+    """Encode the vrt/xml files for cwb."""
+
+    def __init__(self, corpusname, outname, jobs, tool) -> None:
+        # self.corpusdir = "/home/jovyan/corpus"
+        self.corpusdir = "/home/inga/projects/corpus-workbench/cwb/corpora/"
+        self.corpusname = corpusname
+        self.outname = outname
+        # self.regdir = "/home/jovyan/registry"
+        self.regdir = "/home/inga/projects/corpus-workbench/cwb/registry/"
+        self.jobs = jobs
+        self.tool = tool
+        self.encodedir = self.corpusdir + corpusname
+        # create the new corpus' directory if not there yet
+        try:
+            os.makedirs(self.encodedir)
+        except OSError:
+            pass
+        # get attribute names
+        self.attrnames = out_object.get_names()
+        self.attrnames = self.attrnames[self.tool + "_names"]
+
+    def _get_s_attributes(self, line) -> str:
+        if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
+            print("Encoding s-attribute <s>...")
+            line += "-S s "
+        return line
+
+    # the order here is important for vrt files and MUST NOT be changed!!!
+    def _get_p_attributes(self, line) -> str:
+        if any(attr in self.attrnames["proc_pos"] for attr in self.jobs):
+            print("Encoding p-attribute POS...")
+            line += "-P pos "
+        if any(attr in self.attrnames["proc_lemma"] for attr in self.jobs):
+            print("Encoding p-attribute lemma...")
+            line += "-P lemma "
+        return line
+
+    @classmethod
+    def encode_vrt(cls, corpusname, outname, jobs, tool):
+        obj = cls(corpusname, outname, jobs, tool)
+        line = " "
+        # find out which options are to be encoded
+        line = obj._get_s_attributes(line)
+        line = obj._get_p_attributes(line)
+        # call the os with the encode command
+        print("Encoding the corpus...")
+        print("Options are:")
+        command = (
+            "cwb-encode -d "
+            + obj.encodedir
+            + " -xsBC9 -c ascii -f "
+            + obj.outname
+            + ".vrt -R "
+            + obj.regdir
+            + obj.corpusname
+            + line
+        )
+        print(command)
+        os.system(command)
+        print("Updating the registry entry...")
+        print("Options are:")
+        # call the os with the registry update command
+        command = "cwb-makeall -r " + obj.regdir + " -V " + obj.corpusname
+        print(command)
+        os.system(command)
+
+    # en
 
 
 # metadata and tags

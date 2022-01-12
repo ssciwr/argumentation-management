@@ -304,6 +304,8 @@ class spacy_pipe(Spacy):
         # temporary, this should not be a problem. right?
         if ret is False:
             be.out_object.to_vrt(self.JobID, out)
+            # encode
+            be.encode_corpus.encode_vrt("test", self.JobID, self.jobs, "spacy")
         else:
             return out
 
