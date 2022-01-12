@@ -251,9 +251,7 @@ class spacy_pipe(Spacy):
             )
             exit()
         # apply sentence and sublevel annotation
-        out = out_object_spacy.assemble_output_sent(
-            self.doc, self.jobs, start, tool="spacy"
-        )
+        out = out_object_spacy.assemble_output_sent(self.doc, self.jobs, start)
         return out
 
     # refactor to move replicated units to base generic output object
@@ -393,8 +391,9 @@ class out_object_spacy(be.out_object):
     """Out object for spacy annotation, adds spacy-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs, start, tool):
-        super().__init__(doc, jobs, start, tool)
+    def __init__(self, doc, jobs, start):
+        super().__init__(doc, jobs, start)
+        self.attrnames = self.attrnames["spacy_names"]
 
     def iterate(self, out, sent):
         for token in sent:

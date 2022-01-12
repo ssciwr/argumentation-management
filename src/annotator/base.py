@@ -149,10 +149,9 @@ def activate_procs(mydict, toolstring) -> dict:
 class out_object:
     """The base output object and namespace. Write the vrt file."""
 
-    def __init__(self, doc, jobs, start, tool) -> None:
+    def __init__(self, doc, jobs, start) -> None:
         self.doc = doc
         self.jobs = jobs
-        self.tool = tool
         self.start = start
         # get the attribute names for the different tools
         self.attrnames = self._get_names()
@@ -164,8 +163,8 @@ class out_object:
         return f
 
     @classmethod
-    def assemble_output_sent(cls, doc, jobs, start, tool):
-        obj = cls(doc, jobs, start, tool)
+    def assemble_output_sent(cls, doc, jobs, start):
+        obj = cls(doc, jobs, start)
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         # if only sentence is provided, directly call the methods
@@ -194,7 +193,6 @@ class out_object:
 
     def _get_names(self) -> dict:
         mydict = load_input_dict("attribute_names")
-        mydict = mydict[self.tool + "_names"]
         return mydict
 
     def collect_results(self, token, tid, word, out: list) -> tuple:
@@ -248,6 +246,8 @@ class out_object:
     # define all of these as functions
     # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing
+    # making them static for now
+    @staticmethod
     def grab_ner(token, tid, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
@@ -257,6 +257,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_ruler(token, tid, out, line):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
@@ -266,6 +267,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_linker(token, tid, out, line):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
@@ -275,6 +277,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_lemma(token, tid, word, out, line, attrname):
         # attributes:
         # spacy
@@ -285,6 +288,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_morph(token, tid, out, line):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
@@ -294,6 +298,7 @@ class out_object:
             line += "\t-" + token.morph
         return out, line
 
+    @staticmethod
     def grab_tag(token, tid, word, out, line, attrname):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
@@ -303,6 +308,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_dep(token, tid, out, line):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
@@ -312,6 +318,7 @@ class out_object:
             line += "\t-"
         return out, line
 
+    @staticmethod
     def grab_att(token, tid, out, line):
         # attributes:
         if token.pos_ != "":
