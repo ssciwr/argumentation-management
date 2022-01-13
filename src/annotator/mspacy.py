@@ -281,8 +281,7 @@ class spacy_pipe(Spacy):
 
         return out
 
-    # move this to base and refactor
-    def begin_to_vrt(self, ret=False, start=0) -> list or None:
+    def to_vrt(self, ret=False, start=0) -> list or None:
         """Function to build list with results from the doc object
         and write it to a .vrt file.
 
@@ -444,7 +443,6 @@ if __name__ == "__main__":
     # # replaces the lang and text_type keys so we don't need to specifiy them
 
     # # some testing to check wheter spacy_pipe.pipe_multiple or spacy_pipe.get_multiple is faster
-
     # config = {
     #     "filename": "test_new",
     #     "processors": "tok2vec, tagger, parser,\
