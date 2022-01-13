@@ -218,10 +218,10 @@ class spacy_pipe(Spacy):
             self.doc = doc
             if i == 0:
                 # token index from 0
-                tmp = self.begin_to_vrt(ret=True)
+                tmp = self.pass_results(ret=True)
             if i > 0:
                 # keep token index from previous chunk
-                tmp = self.begin_to_vrt(ret=True, start=be.find_last_idx(tmp) + 1)
+                tmp = self.pass_results(ret=True, start=be.find_last_idx(tmp) + 1)
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
@@ -297,7 +297,7 @@ class spacy_pipe(Spacy):
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
         if ret is False:
-            be.out_object.to_vrt(self.JobID, out)
+            be.out_object.write_vrt(self.JobID, out)
             # encode
             be.encode_corpus.encode_vrt("test", self.JobID, self.jobs, "spacy")
         else:
@@ -321,10 +321,10 @@ class spacy_pipe(Spacy):
             out.append(chunks[i][0] + "\n")
             if i == 0:
                 # apply pipe to chunk, token index from 0
-                tmp = self.apply_to(chunk[1]).begin_to_vrt(ret=True)
+                tmp = self.apply_to(chunk[1]).pass_results(ret=True)
             elif i > 0:
                 # apply pipe to chunk, keeping token index from previous chunk
-                tmp = self.apply_to(chunk[1]).begin_to_vrt(
+                tmp = self.apply_to(chunk[1]).pass_results(
                     ret=True, start=be.find_last_idx(tmp) + 1
                 )  # int(tmp[-2].split()[0]+1))
             # append data from tmp pipe output to complete output
@@ -401,7 +401,8 @@ class out_object_spacy(be.out_object):
         return out
 
     def fetch_output(self) -> list:
-        """Function to assemble the output list for a run."""
+        """Function to assemble the output list for a run. Can work with or without sentence
+        level annotation and will check if doc is sentencized on its own."""
 
         try:
             assert self.doc

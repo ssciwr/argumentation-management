@@ -307,7 +307,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def to_vrt(outname, out) -> list or None:
+    def write_vrt(outname, out):
         """Function to write list to a .vrt file.
 
         [Args]:
