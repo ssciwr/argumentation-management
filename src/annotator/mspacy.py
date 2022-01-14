@@ -218,10 +218,10 @@ class spacy_pipe(Spacy):
             self.doc = doc
             if i == 0:
                 # token index from 0
-                tmp = self.begin_to_vrt(ret=True)
+                tmp = self.pass_results(ret=True)
             if i > 0:
                 # keep token index from previous chunk
-                tmp = self.begin_to_vrt(ret=True, start=be.find_last_idx(tmp) + 1)
+                tmp = self.pass_results(ret=True, start=be.find_last_idx(tmp) + 1)
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
@@ -239,51 +239,9 @@ class spacy_pipe(Spacy):
                         file.write(line)
                 print("+++ Finished writing .vrt +++")
 
-    # refactoring to move replicated units to base generic output object
-    def assemble_output_sent(self, start=0) -> list:
-        """Function to assemble the output list for a run with sentence level annotation."""
-
-        try:
-            assert self.doc
-        except AttributeError:
-            print(
-                "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"
-            )
-            exit()
-        # apply sentence and sublevel annotation
-        out = out_object_spacy.assemble_output_sent(self.doc, self.jobs, start)
-        return out
-
-    # refactor to move replicated units to base generic output object
-    def assemble_output(self, start=0) -> list:
-        """Funtion to assemble the output list for a run below sentence level."""
-
-        try:
-            assert self.doc
-        except AttributeError:
-            print(
-                "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"
-            )
-            exit()
-        # if no senter was called we either dont want to distinguish sentences
-        # or passed data below sentence level -> only work on individual tokens
-        # the below two lines should be moved to base
-        out = ["! spaCy output for {}! \n".format(self.JobID)]
-        out.append("! Idx Text")
-
-        for token in self.doc:
-            out, line = be.out_object.collect_results(
-                self.jobs, token, out, start=start
-            )
-            out.append(line + "\n")
-
-        out[1] += " \n"
-
-        return out
-
-    def to_vrt(self, ret=False, start=0) -> list or None:
+    def pass_results(self, ret=False, start=0) -> list or None:
         """Function to build list with results from the doc object
-        and write it to a .vrt file.
+        and write it to a .vrt file / encode to cwb directly.
 
         -> can only be called after pipeline was applied.
 
@@ -292,17 +250,12 @@ class spacy_pipe(Spacy):
             start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
         """
 
-        # check if spacy doc object is sentencized
-        if self.doc.has_annotation("SENT_START"):
-            # if "senter" in self.jobs or "sentencizer" in self.jobs or "parser" in self.jobs:
-            out = self.assemble_output_sent(start=start)
-        else:
-            out = self.assemble_output(start=start)
-        # write to file -> This overwrites any existing file of given name;stanza -
+        out = out_object_spacy(self.doc, self.jobs, start=start).fetch_output()
+        # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
         if ret is False:
-            be.out_object.to_vrt(self.JobID, out)
+            be.out_object.write_vrt(self.JobID, out)
             # encode
             be.encode_corpus.encode_vrt("test", self.JobID, self.jobs, "spacy")
         else:
@@ -326,10 +279,10 @@ class spacy_pipe(Spacy):
             out.append(chunks[i][0] + "\n")
             if i == 0:
                 # apply pipe to chunk, token index from 0
-                tmp = self.apply_to(chunk[1]).begin_to_vrt(ret=True)
+                tmp = self.apply_to(chunk[1]).pass_results(ret=True)
             elif i > 0:
                 # apply pipe to chunk, keeping token index from previous chunk
-                tmp = self.apply_to(chunk[1]).begin_to_vrt(
+                tmp = self.apply_to(chunk[1]).pass_results(
                     ret=True, start=be.find_last_idx(tmp) + 1
                 )  # int(tmp[-2].split()[0]+1))
             # append data from tmp pipe output to complete output
@@ -347,7 +300,7 @@ class spacy_pipe(Spacy):
                 for chunk in out:
                     for line in chunk:
                         file.write(line)
-                print("+++ Finished writing .vrt +++")
+                print("+++ Finished writing {}.vrt +++".format(self.JobID))
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -403,7 +356,30 @@ class out_object_spacy(be.out_object):
             tid = copy.copy(token.i)
             out, line = self.collect_results(token, tid, token, out)
             out.append(line + "\n")
-        out.append("</s>\n")
+        return out
+
+    def fetch_output(self) -> list:
+        """Function to assemble the output list for a run. Can work with or without sentence
+        level annotation and will check if doc is sentencized on its own."""
+
+        try:
+            assert self.doc
+        except AttributeError:
+            print(
+                "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"
+            )
+            exit()
+
+        out = []
+        # check if spacy doc object is sentencized
+        if self.doc.has_annotation("SENT_START"):
+            # apply sentence and sublevel annotation
+            out = self.assemble_output_sent(self.doc, self.jobs, start=self.start)
+
+        # if not sentencized just iterate doc and extract results
+        elif not self.doc.has_annotation("SENT_START"):
+            out = self.iterate(out, self.doc)
+
         return out
 
 
@@ -420,7 +396,7 @@ if __name__ == "__main__":
     # we will worry about this later
     spacy_dict = be.update_dict(spacy_dict)
     # build pipe from config, apply it to data, write results to vrt
-    spacy_pipe(spacy_dict).apply_to(data).begin_to_vrt()
+    spacy_pipe(spacy_dict).apply_to(data).pass_results()
 
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
