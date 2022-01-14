@@ -169,7 +169,7 @@ class out_object:
             # for token, word in zip(sent.tokens, sent.words):
             # general
             out = obj.iterate(out, sent)
-        out[1] += " \n"
+            out.append("</s>\n")
         return out
 
     @staticmethod
@@ -310,7 +310,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def to_vrt(outname, out) -> list or None:
+    def write_vrt(outname, out):
         """Function to write list to a .vrt file.
 
         [Args]:
@@ -319,7 +319,7 @@ class out_object:
         with open("{}.vrt".format(outname), "w") as file:
             for line in out:
                 file.write(line)
-        print("+++ Finished writing .vrt +++")
+        print("+++ Finished writing {}.vrt +++".format(outname))
 
 
 # encode the generated files
