@@ -239,48 +239,6 @@ class spacy_pipe(Spacy):
                         file.write(line)
                 print("+++ Finished writing .vrt +++")
 
-    # refactoring to move replicated units to base generic output object
-    # def assemble_output_sent(self, start=0) -> list:
-    #     """Function to assemble the output list for a run with sentence level annotation."""
-
-    #     try:
-    #         assert self.doc
-    #     except AttributeError:
-    #         print(
-    #             "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"
-    #         )
-    #         exit()
-    #     # apply sentence and sublevel annotation
-    #     out = out_object_spacy.assemble_output_sent(self.doc, self.jobs, start)
-    #     return out
-
-    # # refactor to move replicated units to base generic output object
-    # def assemble_output(self, start=0) -> list:
-    #     """Funtion to assemble the output list for a run below sentence level."""
-
-    #     try:
-    #         assert self.doc
-    #     except AttributeError:
-    #         print(
-    #             "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"
-    #         )
-    #         exit()
-    #     # if no senter was called we either dont want to distinguish sentences
-    #     # or passed data below sentence level -> only work on individual tokens
-    #     # the below two lines should be moved to base
-    #     out = ["! spaCy output for {}! \n".format(self.JobID)]
-    #     out.append("! Idx Text")
-
-    #     for token in self.doc:
-    #         out, line = be.out_object.collect_results(
-    #             self.jobs, token, out, start=start
-    #         )
-    #         out.append(line + "\n")
-
-    #     out[1] += " \n"
-
-    #     return out
-
     def pass_results(self, ret=False, start=0) -> list or None:
         """Function to build list with results from the doc object
         and write it to a .vrt file / encode to cwb directly.
@@ -293,7 +251,7 @@ class spacy_pipe(Spacy):
         """
 
         out = out_object_spacy(self.doc, self.jobs, start=start).fetch_output()
-        # write to file -> This overwrites any existing file of given name;stanza -
+        # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
         if ret is False:
