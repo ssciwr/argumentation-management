@@ -181,7 +181,6 @@ class spacy_pipe(Spacy):
                 "exclude": self.exclude,
                 "config": self.config,
             }
-
             self.nlp = sp.load(**self.cfg)
 
     # call the build pipeline on the data

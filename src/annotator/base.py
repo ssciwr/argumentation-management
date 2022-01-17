@@ -19,6 +19,7 @@ class prepare_run:
         return len(os.sched_getaffinity(0))
 
     # read the sample data - this will be in test_base
+    # method will be removed
     @staticmethod
     def get_sample_text():
         name = "data/Original/iued_test_original.txt"
@@ -29,7 +30,8 @@ class prepare_run:
     # load the dictionary
     @staticmethod
     def load_input_dict(name):
-        with open("src/annotator/{}.json".format(name)) as f:
+        # with open("src/annotator/{}.json".format(name)) as f:
+        with open("{}.json".format(name)) as f:
             mydict = json.load(f)
         return mydict
 

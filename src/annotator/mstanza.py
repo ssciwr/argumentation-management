@@ -106,7 +106,6 @@ class out_object_stanza(be.out_object):
             # print(ent)
             out, line = self.collect_results(token, tid, word, out)
             out.append(line + "\n")
-        out.append("</s>\n")
         self.tstart = tid
         return out
 
@@ -124,6 +123,7 @@ if __name__ == "__main__":
     mydict = be.prepare_run.update_dict(mydict)
     mydict = be.prepare_run.activate_procs(mydict, "stanza_")
     mytext = be.prepare_run.get_sample_text()
+    # mytext = "This is an example. And here we go."
     # initialize instance of the class
     obj = mstanza_pipeline(mydict)
     obj.init_pipeline()
