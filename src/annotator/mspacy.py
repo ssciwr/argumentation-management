@@ -97,7 +97,7 @@ class Spacy:
                 sp.require_cpu()
 
         self.config = config["config"]
-        self.config = be.update_dict(self.config)
+        self.config = be.prepare_run.update_dict(self.config)
 
 
 # build the pipeline from config-dict
@@ -209,7 +209,7 @@ class spacy_pipe(Spacy):
         # apply pipe to list of text chunks and write resulting
         # generator to list of docs
         text = [List[1] for List in chunks]
-        self.docs = list(self.nlp.pipe(text, n_process=be.get_cores()))
+        self.docs = list(self.nlp.pipe(text, n_process=be.prepare_run.get_cores()))
         # iterate through doc objects
         for i, doc in enumerate(self.docs):
             # get the "< >" opening statement
@@ -281,7 +281,7 @@ class spacy_pipe(Spacy):
 
         return out
 
-    def to_vrt(self, ret=False, start=0) -> list or None:
+    def begin_to_vrt(self, ret=False, start=0) -> list or None:
         """Function to build list with results from the doc object
         and write it to a .vrt file.
 
@@ -408,9 +408,9 @@ class out_object_spacy(be.out_object):
 
 
 if __name__ == "__main__":
-    data = be.get_sample_text()
+    data = be.prepare_run.get_sample_text()
     # or read the main dict and activate
-    mydict = be.load_input_dict("input")
+    mydict = be.prepare_run.load_input_dict("input")
     # take only the part of dict pertaining to spacy
     # filename needs to be moved to/taken from top level of dict
     spacy_dict = mydict["spacy_dict"]
@@ -418,7 +418,7 @@ if __name__ == "__main__":
     # for now, we are not using "components" as these are defined through the pre-
     # made models; for making your own model, they will need to be used
     # we will worry about this later
-    spacy_dict = be.update_dict(spacy_dict)
+    spacy_dict = be.prepare_run.update_dict(spacy_dict)
     # build pipe from config, apply it to data, write results to vrt
     spacy_pipe(spacy_dict).apply_to(data).begin_to_vrt()
 

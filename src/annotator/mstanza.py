@@ -4,34 +4,29 @@ import stanza as sa
 import base as be
 
 
-def fix_dict_path(dict) -> dict:
-    # brute force to get model paths
-    for key, value in dict.items():
-        if "model" in key.lower():
-            # if there is a prepending ".", remove it
-            # be careful not to remove the dot before the file ending
-            if "." in value[0:2]:
-                value = value.replace(".", "", 1)
-            # prepend a slash to make sure
-            value = "/" + value
-            # combine the path from dir with the one from model
-            value = dict["dir"] + value
-            dict.update({key: value})
-            print(dict[key], " updated!")
-    return dict
+class mstanza_preprocess:
+    """Preprocessing for stanza document annotation. Collection
+    of preprocessing steps to be carried out initially."""
 
+    def __init__(self) -> None:
+        pass
 
-def preprocess() -> object:
-    """Download an English model into the default directory."""
-    # this needs to be moved outside of the module and inside the docker container /
-    # requirements - have a quick check here that file is there anyways
-    print("Downloading English model...")
-    sa.download("en")
-    print("Downloading French model...")
-    sa.download("fr")
-    print("Building an English pipeline...")
-    en_nlp = sa.Pipeline("en")
-    return en_nlp
+    @staticmethod
+    def fix_dict_path(dict) -> dict:
+        # brute force to get model paths
+        for key, value in dict.items():
+            if "model" in key.lower():
+                # if there is a prepending ".", remove it
+                # be careful not to remove the dot before the file ending
+                if "." in value[0:2]:
+                    value = value.replace(".", "", 1)
+                # prepend a slash to make sure
+                value = "/" + value
+                # combine the path from dir with the one from model
+                value = dict["dir"] + value
+                dict.update({key: value})
+                print(dict[key], " updated!")
+        return dict
 
 
 class mstanza_pipeline:
@@ -117,20 +112,18 @@ class out_object_stanza(be.out_object):
 
 
 if __name__ == "__main__":
-    dict = be.load_input_dict("input")
+    dict = be.prepare_run.load_input_dict("input")
     # take only the part of dict pertaining to stanza
     stanza_dict = dict["stanza_dict"]
     # to point to user-defined model directories
     # stanza does not accommodate fully at the moment
-    mydict = fix_dict_path(stanza_dict)
+    mydict = mstanza_preprocess.fix_dict_path(stanza_dict)
     # stanza does not care about the extra comment keys
     # but we remove them for subsequent processing just in case
     # now we need to select the processors and "activate" the sub-dictionaries
-    mydict = be.update_dict(mydict)
-    mydict = be.activate_procs(mydict, "stanza_")
-    mytext = be.get_sample_text()
-    # or use something shorter
-    # mytext = "This is a test sentence for stanza. This is another sentence."
+    mydict = be.prepare_run.update_dict(mydict)
+    mydict = be.prepare_run.activate_procs(mydict, "stanza_")
+    mytext = be.prepare_run.get_sample_text()
     # initialize instance of the class
     obj = mstanza_pipeline(mydict)
     obj.init_pipeline()
