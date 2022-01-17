@@ -1,4 +1,19 @@
 import pytest
+import mstanza as ma
+
+
+def test_fix_dict_path():
+    mydict = {
+        "dir": "/home/inga/stanza_resources",
+        "tokenize_model_path": "en/tokenize/combined.pt",
+    }
+    mydict = ma.mstanza_preprocess.fix_dict_path(mydict)
+    test_mydict = {
+        "dir": "/home/inga/stanza_resources",
+        "tokenize_model_path": "/home/inga/stanza_resources/en/tokenize/combined.pt",
+    }
+    assert mydict == test_mydict
+
 
 # output object
 # def test_assemble_output_sent():

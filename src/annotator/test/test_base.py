@@ -11,10 +11,10 @@ class get_sample:
             "de": "./iued_test_i_en53_pt-export.txt",
         }
 
-    def get_sample(self, lang):
-        with open(self.text_dict[lang], "r") as myfile:
-            data_en = myfile.read().replace("\n", "")
-        return data_en
+    # def get_sample_dict(self, lang):
+    # with open(self.text_dict[lang], "r") as myfile:
+    # data_en = myfile.read().replace("\n", "")
+    # return data_en
 
     @staticmethod
     def set_input_dict(name):

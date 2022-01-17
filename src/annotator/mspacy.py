@@ -385,7 +385,7 @@ class out_object_spacy(be.out_object):
 if __name__ == "__main__":
     data = be.prepare_run.get_sample_text()
     # or read the main dict and activate
-    mydict = be.prepare_run.load_input_dict("input")
+    mydict = be.prepare_run.load_input_dict("src/annotator/input")
     # take only the part of dict pertaining to spacy
     # filename needs to be moved to/taken from top level of dict
     spacy_dict = mydict["spacy_dict"]

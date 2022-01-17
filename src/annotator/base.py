@@ -30,7 +30,6 @@ class prepare_run:
     # load the dictionary
     @staticmethod
     def load_input_dict(name):
-        # with open("src/annotator/{}.json".format(name)) as f:
         with open("{}.json".format(name)) as f:
             mydict = json.load(f)
         return mydict
@@ -177,6 +176,7 @@ class out_object:
     @staticmethod
     def get_names() -> dict:
         mydict = prepare_run.load_input_dict("attribute_names")
+        # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
     def collect_results(self, token, tid, word, out: list) -> tuple:

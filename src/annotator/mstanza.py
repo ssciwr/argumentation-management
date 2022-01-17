@@ -111,12 +111,14 @@ class out_object_stanza(be.out_object):
 
 
 if __name__ == "__main__":
-    dict = be.prepare_run.load_input_dict("input")
+    dict = be.prepare_run.load_input_dict("./src/annotator/input")
     # take only the part of dict pertaining to stanza
     stanza_dict = dict["stanza_dict"]
     # to point to user-defined model directories
     # stanza does not accommodate fully at the moment
     mydict = mstanza_preprocess.fix_dict_path(stanza_dict)
+    print(stanza_dict)
+    print(mydict)
     # stanza does not care about the extra comment keys
     # but we remove them for subsequent processing just in case
     # now we need to select the processors and "activate" the sub-dictionaries
