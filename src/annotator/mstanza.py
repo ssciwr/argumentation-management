@@ -67,7 +67,7 @@ class mstanza_pipeline:
         jobs = [proc.strip() for proc in mydict["processors"].split(",")]
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        be.out_object.to_vrt(dict["output"], out)
+        be.out_object.write_vrt(dict["output"], out)
         # encode
         be.encode_corpus.encode_vrt("test", dict["output"], jobs, "stanza")
 
