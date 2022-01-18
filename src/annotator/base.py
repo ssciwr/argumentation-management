@@ -157,6 +157,9 @@ class out_object:
         # for sent in doc.sentences:
         # general
         # count stanza tokens continuously and not starting from 1 every new sentence.
+        if "sentence" not in obj.attrnames:
+            raise KeyError("Error: Sentence-Key not in obj.attrnames.")
+
         obj.tstart = 0
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append("<s>\n")
