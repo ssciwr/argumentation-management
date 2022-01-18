@@ -138,3 +138,6 @@ DW/
 *.vrt
 docker/
 !docker/get_models.py
+
+# vscode stuff
+.vscode
