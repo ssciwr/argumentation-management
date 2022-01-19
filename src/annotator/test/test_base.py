@@ -53,7 +53,7 @@ def test_load_input_dict():
 
 
 def test_update_dict():
-    name = "input"
+    name = "test/input"
     mydict = be.prepare_run.load_input_dict(name)
     mydict = mydict["spacy_dict"]
     mydict = be.prepare_run.update_dict(mydict)

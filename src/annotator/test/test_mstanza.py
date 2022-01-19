@@ -37,7 +37,6 @@ def test_process_text():
     obj = ma.mstanza_pipeline(mydict)
     obj.init_pipeline()
     doc = obj.process_text(text)
-    print(repr(str(doc)))
     assert str(doc) == str(test_doc)
 
 

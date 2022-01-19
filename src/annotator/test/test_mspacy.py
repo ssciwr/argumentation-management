@@ -9,7 +9,7 @@ def test_init():
     pipe object as expected."""
 
     # assuming that base functions are already tested in base
-    mydict = be.prepare_run.load_input_dict("input_short")
+    mydict = be.prepare_run.load_input_dict("test/input_short")
 
     test_obj = msp.spacy_pipe(mydict)
 
@@ -64,9 +64,10 @@ def test_output_sent():
 
     check_out = msp.out_object_spacy(check_doc, test_obj.jobs, start=0).fetch_output()
 
+    # check = ['<s>\n', 'This\tDT\tthis\t-\tnsubj\tPRON\n', 'is\tVBZ\tbe\t-\tROOT\tAUX\n', 'an\tDT\tan\t-\tdet\tDET\n', 'example\tNN\texample\t-\tcompound\tNOUN\n', 'text\tNN\ttext\t-\tattr\tNOUN\n', '.\t.\t.\t-\tpunct\tPUNCT\n', '</s>\n', '<s>\n', 'This\tDT\tthis\t-\tnsubj\tPRON\n', 'is\tVBZ\tbe\t-\tROOT\tAUX\n', 'a\tDT\ta\t-\tdet\tDET\n', 'second\tJJ\tsecond\tORDINAL\tamod\tADJ\n', 'sentence\tNN\tsentence\t-\tattr\tNOUN\n', '.\t.\t.\t-\tpunct\tPUNCT\n', '</s>\n']
     check = [
         "<s>\n",
-        "This\tDT\tthis\t-\tnsubj\tDET\n",
+        "This\tDT\tthis\t-\tnsubj\tPRON\n",
         "is\tVBZ\tbe\t-\tROOT\tAUX\n",
         "an\tDT\tan\t-\tdet\tDET\n",
         "example\tNN\texample\t-\tcompound\tNOUN\n",
@@ -74,7 +75,7 @@ def test_output_sent():
         ".\t.\t.\t-\tpunct\tPUNCT\n",
         "</s>\n",
         "<s>\n",
-        "This\tDT\tthis\t-\tnsubj\tDET\n",
+        "This\tDT\tthis\t-\tnsubj\tPRON\n",
         "is\tVBZ\tbe\t-\tROOT\tAUX\n",
         "a\tDT\ta\t-\tdet\tDET\n",
         "second\tJJ\tsecond\tORDINAL\tamod\tADJ\n",
@@ -82,7 +83,6 @@ def test_output_sent():
         ".\t.\t.\t-\tpunct\tPUNCT\n",
         "</s>\n",
     ]
-
     assert test_out == check_out
     assert test_out == check
 
