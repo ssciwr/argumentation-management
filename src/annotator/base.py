@@ -14,6 +14,7 @@ class prepare_run:
     @staticmethod
     def get_cores() -> int:
         """Find out how many CPU-cores are available for current process."""
+
         # will need to update this to using multiprocess
         # as this method is not available on all os's
         return len(os.sched_getaffinity(0))
@@ -29,22 +30,34 @@ class prepare_run:
 
     # load the dictionary
     @staticmethod
-    def load_input_dict(name):
+    def load_input_dict(name: str) -> dict:
+        """Load the specified input dictionary."""
+
         with open("{}.json".format(name)) as f:
             mydict = json.load(f)
         return mydict
 
     @staticmethod
-    def update_dict(dict_in) -> dict:
+    def update_dict(dict_in: dict) -> dict:
         """Remove unnecessary keys in dict and move processor-specific keys one level up."""
+
         # remove all comments - their keys start with "_"
         # also do not select sub-dictionaries
         dict_out = {k: v for k, v in dict_in.items() if not k.startswith("_")}
         return dict_out
 
     @staticmethod
-    def activate_procs(mydict, toolstring) -> dict:
-        """Move processor-specific keys one level up."""
+    def activate_procs(mydict: dict, toolstring: str) -> dict:
+        """Move processor-specific keys for a specific tool one level up.
+
+        Args:
+                mydict[dict]: Complete input dictionary.
+                toolstring[str]: Indicates tool to activate entries for.
+
+        Returns:
+                [dict]: Dictionary containing input parameters for specific tool.
+        """
+
         # find out which processors were selected
         procs = mydict.get("processors", None)
         if procs is None:
@@ -67,7 +80,15 @@ class prepare_run:
 # I thought this would belong here rather than mspacy.
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
-    Assumes that there is one layer (no nested <> </> statements) of text elements to be separated."""
+    Assumes that there is one layer (no nested <> </> statements) of text elements to be separated.
+
+    Args:
+            path[str]: Path to .vrt file to be chunked.
+
+    Returns:
+            [list]: List containing the individual chunks.
+    """
+
     # list for data chunks
     data = []
     # index to refer to current chunk
@@ -106,10 +127,12 @@ def chunk_sample_text(path: str) -> list:
 
 def find_last_idx(chunk: list) -> int:
     """Function to find last index in chunk to keep token index up to date for
-    next chunk after chunking the corpus.
+    next chunk after chunking the corpus. This method is currently not needed.
 
-    [Args]:
-            chunk[list]: List containing the lines for the .vrt as strings."""
+    Args:
+            chunk[list]: List containing the lines for the .vrt as strings.
+    """
+
     # get the index to last element
     i = len(chunk) - 1
     # iterate through entire chunk if neccessary, should never happen in practice
@@ -147,6 +170,17 @@ class out_object:
 
     @classmethod
     def assemble_output_sent(cls, doc, jobs, start):
+        """Assemble the output after applying a pipeline to data.
+
+        Args:
+                doc: Doc-object returned by tool after applying pipeline to data.
+                jobs[list]: List containing the specifiers for applied processors.
+                start[int]: Starting Corpus-index for data.
+
+        Returns:
+                [list]: List containing the annotated .vrt lines.
+        """
+
         obj = cls(doc, jobs, start)
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
@@ -179,12 +213,15 @@ class out_object:
 
     @staticmethod
     def get_names() -> dict:
+        """Map the processors of different tools to the attribute names."""
+
         mydict = prepare_run.load_input_dict("attribute_names")
         # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
-    def collect_results(self, token, tid, word, out: list) -> tuple:
+    def collect_results(self, token, tid, word) -> tuple:
         """Function to collect requested tags for tokens after applying pipeline to data."""
+
         # always get token id and token text
         # line = str(tid + start) + " " + token.text
         line = token.text
@@ -201,72 +238,70 @@ class out_object:
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
-            out, line = out_object.grab_tag(
-                token, tid, word, out, line, self.attrnames["pos"]
-            )
+            line = out_object.grab_tag(token, tid, word, line, self.attrnames["pos"])
 
         if self.attrnames["proc_lemma"] in self.jobs:
-            out, line = out_object.grab_lemma(
-                token, tid, word, out, line, self.attrnames["lemma"]
+            line = out_object.grab_lemma(
+                token, tid, word, line, self.attrnames["lemma"]
             )
 
         if "ner" in self.jobs:
-            out, line = out_object.grab_ner(token, tid, out, line)
+            line = out_object.grab_ner(token, tid, line)
 
         if "entity_ruler" in self.jobs:
-            out, line = out_object.grab_ruler(token, tid, out, line)
+            line = out_object.grab_ruler(token, tid, line)
 
         if "entity_linker" in self.jobs:
-            out, line = out_object.grab_linker(token, tid, out, line)
+            line = out_object.grab_linker(token, tid, line)
 
         if "morphologizer" in self.jobs:
-            out, line = out_object.grab_morph(token, tid, out, line)
+            line = out_object.grab_morph(token, tid, line)
 
         if "parser" in self.jobs:
-            out, line = out_object.grab_dep(token, tid, out, line)
+            line = out_object.grab_dep(token, tid, line)
 
         if "attribute_ruler" in self.jobs:
-            out, line = out_object.grab_att(token, tid, out, line)
+            line = out_object.grab_att(token, tid, line)
         # add what else we need
 
-        return out, line
+        return line
 
     # define all of these as functions
     # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing
     # making them static for now
     @staticmethod
-    def grab_ner(token, tid, out, line):
+    def grab_ner(token, tid, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.ent_type_ != "":
             line += "\t" + token.ent_type_
         else:
             line += "\t-"
-        return out, line
+        return line
 
     @staticmethod
-    def grab_ruler(token, tid, out, line):
+    def grab_ruler(token, tid: int, line: str):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.ent_type_ != "":
             line += "\t" + token.ent_type_
         else:
             line += "\t-"
-        return out, line
+        return line
 
     @staticmethod
-    def grab_linker(token, tid, out, line):
+    def grab_linker(token, tid: int, line: str):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
         if token.ent_type_ != "":
             line += "\t" + token.ent_kb_id_
         else:
             line += "\t-"
-        return out, line
+        return line
 
     @staticmethod
-    def grab_lemma(token, tid, word, out, line, attrname):
+    def grab_lemma(token, tid: int, word, line: str, attrname: str):
         # attributes:
         # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
@@ -274,49 +309,49 @@ class out_object:
             line += "\t" + getattr(word, attrname)
         else:
             line += "\t-"
-        return out, line
+        return line
 
     @staticmethod
-    def grab_morph(token, tid, out, line):
+    def grab_morph(token, tid: int, line: str):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
         if token.pos_ != "":
             line += "\t" + token.pos_ + "" + token.morph
         elif token.pos_ == "":
             line += "\t-" + token.morph
-        return out, line
+        return line
 
     @staticmethod
-    def grab_tag(token, tid, word, out, line, attrname):
+    def grab_tag(token, tid: int, word, line: str, attrname: str):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
             line += "\t" + getattr(word, attrname)
         else:
             line += "\t-"
-        return out, line
+        return line
 
     @staticmethod
-    def grab_dep(token, tid, out, line):
+    def grab_dep(token, tid: int, line: str):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
         if token.dep_ != "":
             line += "\t" + token.dep_
         else:
             line += "\t-"
-        return out, line
+        return line
 
     @staticmethod
-    def grab_att(token, tid, out, line):
+    def grab_att(token, tid: int, line: str):
         # attributes:
         if token.pos_ != "":
             line += "\t" + token.pos_
         else:
             line += "\t-"
-        return out, line
+        return line
 
     @staticmethod
-    def write_vrt(outname, out):
+    def write_vrt(outname: str, out: list):
         """Function to write list to a .vrt file.
 
         [Args]:
@@ -332,7 +367,7 @@ class out_object:
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
-    def __init__(self, corpusname, outname, jobs, tool) -> None:
+    def __init__(self, corpusname: str, outname: str, jobs: list, tool: str) -> None:
         # self.corpusdir = "/home/jovyan/corpus"
         self.corpusdir = "/home/inga/projects/corpus-workbench/cwb/corpora/"
         self.corpusname = corpusname
@@ -351,14 +386,14 @@ class encode_corpus:
         self.attrnames = out_object.get_names()
         self.attrnames = self.attrnames[self.tool + "_names"]
 
-    def _get_s_attributes(self, line) -> str:
+    def _get_s_attributes(self, line: str) -> str:
         if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
             print("Encoding s-attribute <s>...")
             line += "-S s "
         return line
 
     # the order here is important for vrt files and MUST NOT be changed!!!
-    def _get_p_attributes(self, line) -> str:
+    def _get_p_attributes(self, line: str) -> str:
         if any(attr in self.attrnames["proc_pos"] for attr in self.jobs):
             print("Encoding p-attribute POS...")
             line += "-P pos "
@@ -368,7 +403,7 @@ class encode_corpus:
         return line
 
     @classmethod
-    def encode_vrt(cls, corpusname, outname, jobs, tool):
+    def encode_vrt(cls, corpusname: str, outname: str, jobs: list, tool: str):
         obj = cls(corpusname, outname, jobs, tool)
         line = " "
         # find out which options are to be encoded

@@ -104,7 +104,7 @@ class out_object_stanza(be.out_object):
             tid = token.id[0] + self.tstart
             # for ent in getattr(sent, "ents"):
             # print(ent)
-            out, line = self.collect_results(token, tid, word, out)
+            line = self.collect_results(token, tid, word)
             out.append(line + "\n")
         self.tstart = tid
         return out
