@@ -1,7 +1,7 @@
 import pytest
 import json
 import spacy as sp
-import base as be
+from .. import base as be
 
 
 class get_sample:

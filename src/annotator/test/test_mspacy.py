@@ -1,7 +1,7 @@
 import pytest
 import spacy as sp
-import mspacy as msp
-import base as be
+from .. import mspacy as msp
+from .. import base as be
 
 
 def test_init():

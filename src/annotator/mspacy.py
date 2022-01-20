@@ -4,7 +4,7 @@ from spacy.tokens.token import Token
 from spacy.lang.en import English
 from spacy.lang.de import German
 import copy
-import base as be
+from . import base as be
 
 # import timeit
 # import time
@@ -20,6 +20,7 @@ class Spacy:
 
     Args:
         config[dict]: Dict containing the setup for the spaCy run.
+
             -> structure:
                 {
                 "filename": str,
@@ -30,9 +31,9 @@ class Spacy:
 
                 filename: String with ID to be used for saving to .vrt file.
                 model: String with name of model installed in default
-                    spacy directory or path to model.
+                spacy directory or path to model.
                 processors: Comma-separated string containing the processors
-                    to be used in pipeline.
+                to be used in pipeline.
                 pretrained: Use specific, custom pipeline with given name/from given path.
     """
 
@@ -114,8 +115,7 @@ class spacy_pipe(Spacy):
                 apply pipeline of object to given data
 
             begin_to_vrt():
-                write results after applying pipeline to .vrt file
-    """
+                write results after applying pipeline to .vrt file."""
 
     # init with specified config, this may be changed later?
     # -> Right now needs quite specific instuctions
@@ -203,8 +203,9 @@ class spacy_pipe(Spacy):
 
         [Args]:
                 chunks[list[list[str,str,str]]]: List of chunks which are lists containing
-                    [opening <>, text, closing <>].
-                ret[bool]=False: Wheter to return output as list (True) or write to file (False)."""
+                [opening <>, text, closing <>].
+                ret[bool]=False: Wheter to return output as list (True) or write to file (False).
+        """
 
         out = []
 
@@ -277,8 +278,9 @@ class spacy_pipe(Spacy):
 
         [Args]:
                 chunks[list[list[str,str,str]]]: List of chunks which are lists containing
-                    [opening <>, text, closing <>].
-                ret[bool]=False: Wheter to return output as list (True) or write to file (False)."""
+                [opening <>, text, closing <>].
+                ret[bool]=False: Wheter to return output as list (True) or write to file (False).
+        """
 
         out = []
 
@@ -321,8 +323,9 @@ def sentencize_spacy(lang: str, data: str) -> list:
 
     [returns]:
             List[List[str, int]]: List containing lists which contain the sentences as strings
-                as well as the number of tokens previous to the sentence to easily keep
-                track of the correct token index for a given sentence in the list."""
+            as well as the number of tokens previous to the sentence to easily keep
+            track of the correct token index for a given sentence in the list.
+    """
 
     if lang == "en":
         nlp = English()

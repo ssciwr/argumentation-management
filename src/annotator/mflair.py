@@ -2,8 +2,8 @@ from flair.data import Sentence
 from flair.models import SequenceTagger
 from flair.models.sequence_tagger_model import MultiTagger
 from flair.data import Token
-import base as be
-import mspacy as msp
+from . import base as be
+from . import mspacy as msp
 
 
 class Flair:
@@ -83,7 +83,7 @@ class flair_pipe(Flair):
 
         [Args]:
                 chunks[list[list[str,str,str]]]: List of chunks which are lists containing
-                    [opening <>, text, closing <>].
+                [opening <>, text, closing <>].
                 ret[bool]=False: Wheter to return output as list (True) or write to file (False)."""
 
         out = []
