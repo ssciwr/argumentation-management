@@ -31,10 +31,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
+    - name: Get the models and run pytest
+      run: |
         python docker/get_models.py
         python -m spacy download en_core_web_sm
         python -m spacy download de_core_news_md
-    - name: Run pytest
-      run: |
         cd src/annotator
         python -m pytest

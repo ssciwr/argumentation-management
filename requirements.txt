@@ -1,4 +1,3 @@
 spacy
 stanza
-jupyter
 flair
