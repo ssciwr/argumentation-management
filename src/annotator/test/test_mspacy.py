@@ -64,10 +64,11 @@ def test_output_sent():
 
     check_out = msp.out_object_spacy(check_doc, test_obj.jobs, start=0).fetch_output()
 
+    # as the below two are different, is the outcome of the analysis platform-dependant?
     # check = ['<s>\n', 'This\tDT\tthis\t-\tnsubj\tPRON\n', 'is\tVBZ\tbe\t-\tROOT\tAUX\n', 'an\tDT\tan\t-\tdet\tDET\n', 'example\tNN\texample\t-\tcompound\tNOUN\n', 'text\tNN\ttext\t-\tattr\tNOUN\n', '.\t.\t.\t-\tpunct\tPUNCT\n', '</s>\n', '<s>\n', 'This\tDT\tthis\t-\tnsubj\tPRON\n', 'is\tVBZ\tbe\t-\tROOT\tAUX\n', 'a\tDT\ta\t-\tdet\tDET\n', 'second\tJJ\tsecond\tORDINAL\tamod\tADJ\n', 'sentence\tNN\tsentence\t-\tattr\tNOUN\n', '.\t.\t.\t-\tpunct\tPUNCT\n', '</s>\n']
     check = [
         "<s>\n",
-        "This\tDT\tthis\t-\tnsubj\tPRON\n",
+        "This\tDT\tthis\t-\tnsubj\tDET\n",
         "is\tVBZ\tbe\t-\tROOT\tAUX\n",
         "an\tDT\tan\t-\tdet\tDET\n",
         "example\tNN\texample\t-\tcompound\tNOUN\n",
@@ -75,7 +76,7 @@ def test_output_sent():
         ".\t.\t.\t-\tpunct\tPUNCT\n",
         "</s>\n",
         "<s>\n",
-        "This\tDT\tthis\t-\tnsubj\tPRON\n",
+        "This\tDT\tthis\t-\tnsubj\tDET\n",
         "is\tVBZ\tbe\t-\tROOT\tAUX\n",
         "a\tDT\ta\t-\tdet\tDET\n",
         "second\tJJ\tsecond\tORDINAL\tamod\tADJ\n",

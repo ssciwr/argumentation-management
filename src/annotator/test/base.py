@@ -121,7 +121,6 @@ def find_last_idx(chunk: list) -> int:
         else:
             # if string doesnt start with "<" we can assume it contains the token index
             # in the first column
-            print(chunk[i].split()[0])
             return int(chunk[i].split()[0])
 
 
