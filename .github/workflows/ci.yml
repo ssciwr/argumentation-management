@@ -33,7 +33,7 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Get the models 
       run: |
-        source src/annotator/test/setup_test.sh
+        source src/annotator/test/setup_tests.sh
         python -m spacy download en_core_web_sm
         python -m spacy download de_core_news_md
         ls
