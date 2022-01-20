@@ -4,6 +4,7 @@ import mspacy as msp
 import base as be
 
 
+@pytest.mark.skip
 def test_init():
     """Check if the parameters from the input dict are loaded into the
     pipe object as expected."""
@@ -24,6 +25,7 @@ def test_init():
     return test_obj, mydict
 
 
+@pytest.mark.skip
 def test_pipe_sent():
     """Check if applying pipeline through mspacy leads to same result as applying
     same pipeline through spacy directly."""
@@ -53,6 +55,7 @@ def test_pipe_sent():
     return test_obj.apply_to(text), check_doc
 
 
+@pytest.mark.skip
 def test_output_sent():
     """Check if output is as expected, use current output as example result.
     Additionally use doc build through spacy directly and compare output."""
