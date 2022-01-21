@@ -9,22 +9,26 @@ def test_init():
     pipe object as expected."""
 
     # assuming that base functions are already tested in base
-    mydict = be.prepare_run.load_input_dict("test/input_short")
+    # mydict = be.prepare_run.load_input_dict("test/input_short")
+    # if we use "outname", pass the full dict
+    mydict = be.prepare_run.load_input_dict("test/input")
+    mydict_test = be.prepare_run.load_input_dict("test/input_short")
 
     test_obj = msp.spacy_pipe(mydict)
 
-    assert test_obj.JobID == mydict["filename"]
-    assert test_obj.pretrained == mydict["pretrained"]
-    assert test_obj.lang == mydict["lang"]
-    assert test_obj.type == mydict["text_type"]
-    assert test_obj.model == mydict["model"]
-    assert test_obj.jobs == [proc.strip() for proc in mydict["processors"].split(",")]
-    assert test_obj.config == be.prepare_run.update_dict(mydict["config"])
+    assert test_obj.JobID == mydict_test["filename"]
+    assert test_obj.pretrained == mydict_test["pretrained"]
+    assert test_obj.lang == mydict_test["lang"]
+    assert test_obj.type == mydict_test["text_type"]
+    assert test_obj.model == mydict_test["model"]
+    assert test_obj.jobs == [
+        proc.strip() for proc in mydict_test["processors"].split(",")
+    ]
+    assert test_obj.config == be.prepare_run.update_dict(mydict_test["config"])
 
-    return test_obj, mydict
+    return test_obj, mydict_test
 
 
-@pytest.mark.skip
 def test_pipe_sent():
     """Check if applying pipeline through mspacy leads to same result as applying
     same pipeline through spacy directly."""
@@ -54,7 +58,6 @@ def test_pipe_sent():
     return test_obj.apply_to(text), check_doc
 
 
-@pytest.mark.skip
 def test_output_sent():
     """Check if output is as expected, use current output as example result.
     Additionally use doc build through spacy directly and compare output."""
@@ -70,7 +73,7 @@ def test_output_sent():
     # check = ['<s>\n', 'This\tDT\tthis\t-\tnsubj\tPRON\n', 'is\tVBZ\tbe\t-\tROOT\tAUX\n', 'an\tDT\tan\t-\tdet\tDET\n', 'example\tNN\texample\t-\tcompound\tNOUN\n', 'text\tNN\ttext\t-\tattr\tNOUN\n', '.\t.\t.\t-\tpunct\tPUNCT\n', '</s>\n', '<s>\n', 'This\tDT\tthis\t-\tnsubj\tPRON\n', 'is\tVBZ\tbe\t-\tROOT\tAUX\n', 'a\tDT\ta\t-\tdet\tDET\n', 'second\tJJ\tsecond\tORDINAL\tamod\tADJ\n', 'sentence\tNN\tsentence\t-\tattr\tNOUN\n', '.\t.\t.\t-\tpunct\tPUNCT\n', '</s>\n']
     check = [
         "<s>\n",
-        "This\tDT\tthis\t-\tnsubj\tDET\n",
+        "This\tDT\tthis\t-\tnsubj\tPRON\n",
         "is\tVBZ\tbe\t-\tROOT\tAUX\n",
         "an\tDT\tan\t-\tdet\tDET\n",
         "example\tNN\texample\t-\tcompound\tNOUN\n",
@@ -78,7 +81,7 @@ def test_output_sent():
         ".\t.\t.\t-\tpunct\tPUNCT\n",
         "</s>\n",
         "<s>\n",
-        "This\tDT\tthis\t-\tnsubj\tDET\n",
+        "This\tDT\tthis\t-\tnsubj\tPRON\n",
         "is\tVBZ\tbe\t-\tROOT\tAUX\n",
         "a\tDT\ta\t-\tdet\tDET\n",
         "second\tJJ\tsecond\tORDINAL\tamod\tADJ\n",

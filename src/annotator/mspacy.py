@@ -404,7 +404,9 @@ if __name__ == "__main__":
     # we will worry about this later
     spacy_dict = be.prepare_run.update_dict(mydict)
     # build pipe from config, apply it to data, write results to vrt
-    # spacy_pipe(spacy_dict).apply_to(data).pass_results()
+    # spacy_pipe(spacy_dict).pply_to(data).pass_results()
+    # if we use "outname", this needs to be passed the full dict
+    spacy_pipe(mydict).apply_to(data).pass_results()
 
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
