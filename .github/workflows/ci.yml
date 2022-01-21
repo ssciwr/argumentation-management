@@ -39,7 +39,7 @@ jobs:
         ls
         ls ~/.
         pwd
-        find / -name "en_core_web_md"
+        find /home/runner/. -name "en_core_web_md"
     - name: Run pytest
       run: |
         cd src/annotator
