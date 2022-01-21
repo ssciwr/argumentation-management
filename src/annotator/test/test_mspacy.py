@@ -4,7 +4,6 @@ import mspacy as msp
 import base as be
 
 
-@pytest.mark.skip
 def test_init():
     """Check if the parameters from the input dict are loaded into the
     pipe object as expected."""
