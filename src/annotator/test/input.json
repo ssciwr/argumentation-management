@@ -7,7 +7,7 @@
         "_lang_comment": "Language code for the language to build the Pipeline in",
         "lang": "en",
         "_dir_comment": "directory where models are stored - this does not work for pipeline",
-        "dir": "/home/inga/stanza_resources",  
+        "dir": "./src/annotator/test/models/",  
         "_package_comment": "using the default model, for others see: https://stanfordnlp.github.io/stanza/models.html",
         "package": "default",
         "_processors_comment": "Comma-separated list of processors to use, can also be given as a dictionary: {'tokenize': 'ewt', 'pos': 'ewt'}",

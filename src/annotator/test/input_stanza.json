@@ -1,6 +1,6 @@
 {
     "lang": "en",
-    "dir": "/home/inga/stanza_resources",  
+    "dir": "./src/annotator/test/models/",  
     "package": "default",
     "processors": "tokenize,pos,lemma",  
     "logging_level": "INFO",  

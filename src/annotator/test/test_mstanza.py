@@ -6,13 +6,13 @@ test_doc = """[\n  [\n    {\n      "id": 1,\n      "text": "This",\n      "lemma
 
 def test_fix_dict_path():
     mydict = {
-        "dir": "/home/inga/stanza_resources",
+        "dir": "./test/models",
         "tokenize_model_path": "en/tokenize/combined.pt",
     }
     mydict = ma.mstanza_preprocess.fix_dict_path(mydict)
     test_mydict = {
-        "dir": "/home/inga/stanza_resources",
-        "tokenize_model_path": "/home/inga/stanza_resources/en/tokenize/combined.pt",
+        "dir": "./test/models",
+        "tokenize_model_path": "./test/models/en/tokenize/combined.pt",
     }
     assert mydict == test_mydict
 
@@ -20,7 +20,7 @@ def test_fix_dict_path():
 def test_init_pipeline():
     mydict = {
         "lang": "en",
-        "dir": "/home/inga/stanza_resources",
+        "dir": "./test/models/",
         "processors": "tokenize,pos,lemma",
     }
     obj = ma.mstanza_pipeline(mydict)
@@ -30,7 +30,7 @@ def test_init_pipeline():
 def test_process_text():
     mydict = {
         "lang": "en",
-        "dir": "/home/inga/stanza_resources",
+        "dir": "./test/models/",
         "processors": "tokenize,pos,lemma",
     }
     text = "This is an example. And here we go."
