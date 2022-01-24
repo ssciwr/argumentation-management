@@ -36,6 +36,8 @@ jobs:
         source src/annotator/test/setup_tests.sh
         python -m spacy download en_core_web_sm
         python -m spacy download de_core_news_md
+    - name: Test for spacy models
+      run: python src/annotator/test/test_spacy_model.py
     - name: Run pytest
       run: |
         cd src/annotator
