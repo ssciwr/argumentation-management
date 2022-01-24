@@ -38,8 +38,8 @@ jobs:
         python -m spacy download de_core_news_md
     - name: Test for spacy models
       run: |
-      python -m spacy validate
-      python src/annotator/test/test_spacy_model.py
+        python -m spacy validate
+        python src/annotator/test/test_spacy_model.py
     - name: Run pytest
       run: |
         cd src/annotator
