@@ -40,7 +40,9 @@ jobs:
       run: |
         python -m spacy validate
         python src/annotator/test/test_spacy_model.py
+        python src/annotator/test/test_spacy_model2.py
     - name: Run pytest
       run: |
         cd src/annotator
-        python -m pytest
+        python -m pytest test/test_mspacy.py
+        
