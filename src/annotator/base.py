@@ -27,6 +27,12 @@ class prepare_run:
             data = myfile.read().replace("\n", "")
         return data
 
+    @staticmethod
+    def get_text(path: str) -> str:
+        with open(path, "r") as input:
+            data = input.read().replace("\n", "")
+        return data
+
     # load the dictionary
     @staticmethod
     def load_input_dict(name):

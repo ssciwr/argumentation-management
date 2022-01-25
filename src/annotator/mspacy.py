@@ -59,7 +59,7 @@ class Spacy:
         # I believe this would then eliminate the `elif` case for pretrained above
         self.lang = config["lang"]
         self.type = config["text_type"]
-        if "model" in config:
+        if "model" in config and config["model"] is not False:
             self.model = config["model"]
             print("Using selected model {}.".format(self.model))
         else:
