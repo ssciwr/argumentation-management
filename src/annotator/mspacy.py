@@ -43,7 +43,7 @@ class Spacy:
         self.outname = config["output"]
 
         config = be.prepare_run.update_dict(config["spacy_dict"])
-        self.JobID = config["filename"]
+
         # check for pretrained
         # lets you initialize your models with information from raw text
         # you would do this if you had generated the model yourself
@@ -304,11 +304,11 @@ class spacy_pipe(Spacy):
 
         elif not ret:
             # write complete output to file
-            with open("{}_spacy.vrt".format(self.JobID), "w") as file:
+            with open("{}_spacy.vrt".format(self.outname), "w") as file:
                 for chunk in out:
                     for line in chunk:
                         file.write(line)
-                print("+++ Finished writing {}.vrt +++".format(self.JobID))
+                print("+++ Finished writing {}.vrt +++".format(self.outname))
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
