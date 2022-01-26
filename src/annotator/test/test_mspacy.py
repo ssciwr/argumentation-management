@@ -16,7 +16,7 @@ def test_init():
 
     test_obj = msp.spacy_pipe(mydict)
 
-    assert test_obj.JobID == mydict_test["filename"]
+    assert test_obj.outname == mydict["output"]
     assert test_obj.pretrained == mydict_test["pretrained"]
     assert test_obj.lang == mydict_test["lang"]
     assert test_obj.type == mydict_test["text_type"]
