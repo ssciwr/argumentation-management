@@ -2,11 +2,9 @@
 import json
 from logging import raiseExceptions
 import os
-
 from numpy import string_
 
 
-# the below functions in a class with attributes
 class prepare_run:
     def __init__(self) -> None:
         pass
@@ -152,27 +150,12 @@ class out_object:
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        # spacy
-        # for sent in doc.sents:
-        # stanza
-        # for sent in doc.sentences:
-        # general
-        # count stanza tokens continuously and not starting from 1 every new sentence.
         if "sentence" not in obj.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         obj.tstart = 0
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append("<s>\n")
-            # iterate through the tokens of the sentence, this is just a slice of
-            # the full doc
-            # spacy
-            # for token in sent:
-            # stanza
-            # for multi-word tokens this could prove problematic
-            # we have to distinguish btw token and word in that case
-            # for token, word in zip(sent.tokens, sent.words):
-            # general
             out = obj.iterate(out, sent)
             out.append("</s>\n")
         return out
@@ -180,7 +163,6 @@ class out_object:
     @staticmethod
     def get_names() -> dict:
         mydict = prepare_run.load_input_dict("attribute_names")
-        # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
     def collect_results(self, token, tid, word, out: list) -> tuple:
@@ -190,14 +172,6 @@ class out_object:
         line = token.text
         # grab the data for the run components, I've only included the human readable
         # part of output right now as I don't know what else we need
-        ########
-        # we need to unify the names for the different job types
-        # ie spacy - lemmatizer, stanza - lemma
-        # spacy - tagger, stanza - pos
-        # spacy - ner, stanza - ner
-        # have to find out how ner is encoded in cwb first
-        #########
-        # put in correct order - first pos, then lemma
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
@@ -231,10 +205,7 @@ class out_object:
 
         return out, line
 
-    # define all of these as functions
-    # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing
-    # making them static for now
     @staticmethod
     def grab_ner(token, tid, out, line):
         # attributes:
