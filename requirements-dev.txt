@@ -1,5 +1,2 @@
-nbstripout
-flake8
-flake8-nb
-black
-black_nbconvert
+pytest
+pytest-cov

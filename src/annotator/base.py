@@ -7,20 +7,63 @@ from numpy import string_
 
 
 # the below functions in a class with attributes
-def get_cores() -> int:
-    """Find out how many CPU-cores are available for current process."""
-    return len(os.sched_getaffinity(0))
+class prepare_run:
+    def __init__(self) -> None:
+        pass
+
+    @staticmethod
+    def get_cores() -> int:
+        """Find out how many CPU-cores are available for current process."""
+        # will need to update this to using multiprocess
+        # as this method is not available on all os's
+        return len(os.sched_getaffinity(0))
+
+    # read the sample data - this will be in test_base
+    # method will be removed
+    @staticmethod
+    def get_sample_text():
+        name = "data/Original/iued_test_original.txt"
+        with open(name, "r") as myfile:
+            data = myfile.read().replace("\n", "")
+        return data
+
+    # load the dictionary
+    @staticmethod
+    def load_input_dict(name):
+        with open("{}.json".format(name)) as f:
+            mydict = json.load(f)
+        return mydict
+
+    @staticmethod
+    def update_dict(dict_in) -> dict:
+        """Remove unnecessary keys in dict and move processor-specific keys one level up."""
+        # remove all comments - their keys start with "_"
+        # also do not select sub-dictionaries
+        dict_out = {k: v for k, v in dict_in.items() if not k.startswith("_")}
+        return dict_out
+
+    @staticmethod
+    def activate_procs(mydict, toolstring) -> dict:
+        """Move processor-specific keys one level up."""
+        # find out which processors were selected
+        procs = mydict.get("processors", None)
+        if procs is None:
+            raise ValueError("Error: No processors defined!")
+        # separate the processor list at the comma
+        procs = procs.split(",")
+        # pick the corresponding dictionary and clean comments
+        for proc in procs:
+            mystring = toolstring + proc
+            mydict.update(
+                {k: v for k, v in mydict[mystring].items() if not k.startswith("_")}
+            )
+        # remove all other processor dictionaries that are not used
+        # this is not really necessary for stanza but doing it to keep the dict clean
+        mydict = {k: v for k, v in mydict.items() if not k.startswith("toolstring")}
+        return mydict
 
 
-# the below functions will move into an input class
-# read the sample data
-def get_sample_text():
-    name = "data/Original/iued_test_original.txt"
-    with open(name, "r") as myfile:
-        data = myfile.read().replace("\n", "")
-    return data
-
-
+# the below in a chunker class
 # I thought this would belong here rather than mspacy.
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
@@ -31,7 +74,6 @@ def chunk_sample_text(path: str) -> list:
     i = 0
     # bool to set if we are currently in paragraph or inbetween
     inpar = False
-
     with open(path, "r") as myfile:
         # iterate .vrt
         for line in myfile:
@@ -47,7 +89,6 @@ def chunk_sample_text(path: str) -> list:
                     # chunk[2]: Next "<>" statement
                     data.append(["", "", ""])
                     data[i][0] += line.replace("\n", " ")
-
                 # if we are in paragraph and not in subchunk
                 elif inpar is True:
                     # we are no longer in paragraph
@@ -56,12 +97,10 @@ def chunk_sample_text(path: str) -> list:
                     data[i][2] += line.replace("\n", " ")
                     # increment chunk idx
                     i += 1
-
             # if we are in paragraph:
             elif inpar:
                 # append line to chunk[1], replacing "\n" with " "
                 data[i][1] += line.replace("\n", " ")
-
     return data
 
 
@@ -82,48 +121,14 @@ def find_last_idx(chunk: list) -> int:
         else:
             # if string doesnt start with "<" we can assume it contains the token index
             # in the first column
+            print(chunk[i].split()[0])
             return int(chunk[i].split()[0])
 
 
-# load the dictionary
-def load_input_dict(name):
-    with open("src/annotator/{}.json".format(name)) as f:
-        mydict = json.load(f)
-    return mydict
-
-
-def update_dict(dict_in) -> dict:
-    """Remove unnecessary keys in dict and move processor-specific keys one level up."""
-    # remove all comments - their keys start with "_"
-    # also do not select sub-dictionaries
-    dict_out = {k: v for k, v in dict_in.items() if not k.startswith("_")}
-    return dict_out
-
-
-def activate_procs(mydict, toolstring) -> dict:
-    """Move processor-specific keys one level up."""
-    # find out which processors were selected
-    procs = mydict.get("processors", None)
-    if procs is None:
-        raise ValueError("Error: No processors defined!")
-    # separate the processor list at the comma
-    procs = procs.split(",")
-    # pick the corresponding dictionary and clean comments
-    for proc in procs:
-        mystring = toolstring + proc
-        mydict.update(
-            {k: v for k, v in mydict[mystring].items() if not k.startswith("_")}
-        )
-    # remove all other processor dictionaries that are not used
-    # this is not really necessary for stanza but doing it to keep the dict clean
-    mydict = {k: v for k, v in mydict.items() if not k.startswith("toolstring")}
-    return mydict
-
-
-# now this becomes the base out_object class
+# the base out_object class
 # this class is inherited in the different modules
 # selected methods are overwritten/added depending on the requirements
-# the mapping dict will remain to make the conversion clear and not to duplicate
+# the mapping dict to make the conversion clear and not to duplicate code
 class out_object:
     """The base output object and namespace. Write the vrt file."""
 
@@ -153,6 +158,9 @@ class out_object:
         # for sent in doc.sentences:
         # general
         # count stanza tokens continuously and not starting from 1 every new sentence.
+        if "sentence" not in obj.attrnames:
+            raise KeyError("Error: Sentence-Key not in obj.attrnames.")
+
         obj.tstart = 0
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append("<s>\n")
@@ -171,7 +179,8 @@ class out_object:
 
     @staticmethod
     def get_names() -> dict:
-        mydict = load_input_dict("attribute_names")
+        mydict = prepare_run.load_input_dict("attribute_names")
+        # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
     def collect_results(self, token, tid, word, out: list) -> tuple:
@@ -319,6 +328,7 @@ class out_object:
         print("+++ Finished writing {}.vrt +++".format(outname))
 
 
+# encode the generated files
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
@@ -386,9 +396,8 @@ class encode_corpus:
         print(command)
         os.system(command)
 
-    # en
 
-
+# en
 # metadata and tags
 # metadata at top of document
 # <corpus>
@@ -418,7 +427,3 @@ class encode_corpus:
 # <pt><prop><t id=""> Audi ..
 # <pt><comp> ..
 # <pt><emb><noun>
-#
-#
-#
-#

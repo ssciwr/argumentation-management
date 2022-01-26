@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![GitHub Workflow Status](https://github.com/ssciwr/argumentation-management/actions/workflows/ci.yml/badge.svg)
+[![codecov]()]()
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ssciwr_argumentation-management&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ssciwr_argumentation-management)
 
 *This is a project for an embedded workflow to analyse argumentation structures in different languages and across different input media and is currently under development.*

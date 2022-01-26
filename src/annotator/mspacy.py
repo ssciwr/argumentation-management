@@ -40,7 +40,10 @@ class Spacy:
 
         # config = the input dictionary
         # output file name
-        self.JobID = config["filename"]
+        self.outname = config["output"]
+
+        config = be.prepare_run.update_dict(config["spacy_dict"])
+
         # check for pretrained
         # lets you initialize your models with information from raw text
         # you would do this if you had generated the model yourself
@@ -97,7 +100,7 @@ class Spacy:
                 sp.require_cpu()
 
         self.config = config["config"]
-        self.config = be.update_dict(self.config)
+        self.config = be.prepare_run.update_dict(self.config)
 
 
 # build the pipeline from config-dict
@@ -181,7 +184,6 @@ class spacy_pipe(Spacy):
                 "exclude": self.exclude,
                 "config": self.config,
             }
-
             self.nlp = sp.load(**self.cfg)
 
     # call the build pipeline on the data
@@ -209,35 +211,41 @@ class spacy_pipe(Spacy):
         # apply pipe to list of text chunks and write resulting
         # generator to list of docs
         text = [List[1] for List in chunks]
-        self.docs = list(self.nlp.pipe(text, n_process=be.get_cores()))
+        self.docs = list(self.nlp.pipe(text, n_process=be.prepare_run.get_cores()))
         # iterate through doc objects
         for i, doc in enumerate(self.docs):
             # get the "< >" opening statement
             out.append(chunks[i][0] + "\n")
             # self.doc is now current doc
             self.doc = doc
-            if i == 0:
-                # token index from 0
-                tmp = self.pass_results(ret=True)
-            if i > 0:
-                # keep token index from previous chunk
-                tmp = self.pass_results(ret=True, start=be.find_last_idx(tmp) + 1)
+            # if i == 0:
+            # token index from 0
+            #    tmp = self.pass_results(ret=True)
+            # if i > 0:
+            #    print(tmp)
+            #    # keep token index from previous chunk
+            #    tmp = self.pass_results(ret=True, start=be.find_last_idx(tmp) + 1)
+            tmp = self.pass_results(ret=True, start=0)
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
             # append the "< >" closing statement
             out.append(chunks[i][2] + "\n")
 
-        if ret:
+        if ret is False:
+            be.out_object.write_vrt(self.outname, out)
+            be.encode_corpus.encode_vrt("test_chunks", self.outname, self.jobs, "spacy")
+
+        else:
             return out
 
-        elif not ret:
-            # write complete output to file
-            with open("{}_spacy.vrt".format(self.JobID), "w") as file:
-                for chunk in out:
-                    for line in chunk:
-                        file.write(line)
-                print("+++ Finished writing .vrt +++")
+        # elif not ret:
+        #     # write complete output to file
+        #     with open("{}_spacy.vrt".format(self.outname), "w") as file:
+        #         for chunk in out:
+        #             for line in chunk:
+        #                 file.write(line)
+        #         print("+++ Finished writing {}.vrt +++".format(self.outname))
 
     def pass_results(self, ret=False, start=0) -> list or None:
         """Function to build list with results from the doc object
@@ -255,9 +263,9 @@ class spacy_pipe(Spacy):
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
         if ret is False:
-            be.out_object.write_vrt(self.JobID, out)
+            be.out_object.write_vrt(self.outname, out)
             # encode
-            be.encode_corpus.encode_vrt("test", self.JobID, self.jobs, "spacy")
+            be.encode_corpus.encode_vrt("test", self.outname, self.jobs, "spacy")
         else:
             return out
 
@@ -296,11 +304,11 @@ class spacy_pipe(Spacy):
 
         elif not ret:
             # write complete output to file
-            with open("{}_spacy.vrt".format(self.JobID), "w") as file:
+            with open("{}_spacy.vrt".format(self.outname), "w") as file:
                 for chunk in out:
                     for line in chunk:
                         file.write(line)
-                print("+++ Finished writing {}.vrt +++".format(self.JobID))
+                print("+++ Finished writing {}.vrt +++".format(self.outname))
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -384,19 +392,21 @@ class out_object_spacy(be.out_object):
 
 
 if __name__ == "__main__":
-    data = be.get_sample_text()
+    data = be.prepare_run.get_sample_text()
     # or read the main dict and activate
-    mydict = be.load_input_dict("input")
+    mydict = be.prepare_run.load_input_dict("src/annotator/input")
     # take only the part of dict pertaining to spacy
     # filename needs to be moved to/taken from top level of dict
-    spacy_dict = mydict["spacy_dict"]
+    # spacy_dict = mydict["spacy_dict"]
     # remove comment lines starting with "_"
     # for now, we are not using "components" as these are defined through the pre-
     # made models; for making your own model, they will need to be used
     # we will worry about this later
-    spacy_dict = be.update_dict(spacy_dict)
+    spacy_dict = be.prepare_run.update_dict(mydict)
     # build pipe from config, apply it to data, write results to vrt
-    spacy_pipe(spacy_dict).apply_to(data).pass_results()
+    # spacy_pipe(spacy_dict).pply_to(data).pass_results()
+    # if we use "outname", this needs to be passed the full dict
+    spacy_pipe(mydict).apply_to(data).pass_results()
 
     # this throws a warning that the senter may not work as intended, it seems to work
     # fine though
@@ -413,7 +423,7 @@ if __name__ == "__main__":
     # # spacy_pipe(senter_config).apply_to(data).begin_to_vrt()
     # # try to chunk the plenary text from example into pieces, annotate these and than reasemble to .vrt
     # # get chunked text
-    # data = be.chunk_sample_text("data/Original/plenary.vrt")
+    data = be.chunk_sample_text("data/Original/plenary.vrt")
 
     # # start with basic config as above if we use the pretrained keyword it
     # # replaces the lang and text_type keys so we don't need to specifiy them
@@ -439,7 +449,8 @@ if __name__ == "__main__":
 
     # repeat = 50
 
-    # pipe = spacy_pipe(config)
+    pipe = spacy_pipe(spacy_dict)
+    pipe.pipe_multiple(data)
 
     # stmt = """pipe.pipe_multiple(data)"""
 
