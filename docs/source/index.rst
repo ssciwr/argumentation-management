@@ -6,6 +6,8 @@
 Welcome to CWBPipe's documentation!
 ===================================
 
+This data pipeline provides annotation for text corpora.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

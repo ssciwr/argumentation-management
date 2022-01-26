@@ -1,93 +1,71 @@
-annotator package
-=================
-
-Subpackages
+base module
 -----------
 
-.. toctree::
-   :maxdepth: 4
-
-   annotator.test
-
-Submodules
-----------
-
-annotator.base module
----------------------
-
-.. automodule:: annotator.base
+.. automodule:: base
    :members:
    :undoc-members:
    :show-inheritance:
 
-annotator.mberkeley module
---------------------------
+mberkeley module
+----------------
 
-.. automodule:: annotator.mberkeley
+.. automodule:: mberkeley
    :members:
    :undoc-members:
    :show-inheritance:
 
-annotator.mflair module
------------------------
+mflair module
+-------------
 
-.. automodule:: annotator.mflair
+.. automodule:: mflair
    :members:
    :undoc-members:
    :show-inheritance:
 
-annotator.mgensim module
-------------------------
+mgensim module
+--------------
 
-.. automodule:: annotator.mgensim
+.. automodule:: mgensim
    :members:
    :undoc-members:
    :show-inheritance:
 
-annotator.msomajo module
-------------------------
+msomajo module
+--------------
 
-.. automodule:: annotator.msomajo
+.. automodule:: msomajo
    :members:
    :undoc-members:
    :show-inheritance:
 
-annotator.msowemeta module
---------------------------
+msowemeta module
+----------------
 
-.. automodule:: annotator.msowemeta
+.. automodule:: msowemeta
    :members:
    :undoc-members:
    :show-inheritance:
 
-annotator.mspacy module
------------------------
+mspacy module
+-------------
 
-.. automodule:: annotator.mspacy
+.. automodule:: mspacy
    :members:
    :undoc-members:
    :show-inheritance:
 
-annotator.mstanza module
-------------------------
+mstanza module
+--------------
 
-.. automodule:: annotator.mstanza
+.. automodule:: mstanza
    :members:
    :undoc-members:
    :show-inheritance:
 
-annotator.mtreetagger module
-----------------------------
+mtreetagger module
+------------------
 
-.. automodule:: annotator.mtreetagger
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: annotator
+.. automodule:: mtreetagger
    :members:
    :undoc-members:
    :show-inheritance:

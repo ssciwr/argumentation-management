@@ -4,7 +4,7 @@ from spacy.tokens.token import Token
 from spacy.lang.en import English
 from spacy.lang.de import German
 import copy
-from . import base as be
+import base as be
 
 # import timeit
 # import time
