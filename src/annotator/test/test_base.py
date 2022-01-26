@@ -1,8 +1,7 @@
 import pytest
 import json
 import spacy as sp
-from .. import base as be
-
+import base as be
 
 class get_sample:
     def __init__(self) -> None:
@@ -10,11 +9,6 @@ class get_sample:
             "en": "./iued_test_original.txt",
             "de": "./iued_test_i_en53_pt-export.txt",
         }
-
-    # def get_sample_dict(self, lang):
-    # with open(self.text_dict[lang], "r") as myfile:
-    # data_en = myfile.read().replace("\n", "")
-    # return data_en
 
     @staticmethod
     def set_input_dict(name):
@@ -78,7 +72,6 @@ def test_activate_procs():
 # everything except the actual cwb command
 # we do not want to install it in CI/CD
 # to use dockerfile for workflow is left for later
-# but may blow up the workflow processing time
 def test_encode_vrt():
     obj = be.encode_corpus("test", "test", ["tokenize", "pos", "lemma"], "stanza")
     line = " "
