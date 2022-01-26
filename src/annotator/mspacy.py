@@ -320,8 +320,8 @@ class out_object_spacy(be.out_object):
             # Setting word=token for now
             tid = copy.copy(token.i)
             out, line = self.collect_results(token, tid, token, out)
-            print(line)
             out.append(line + "\n")
+        return out
 
     def fetch_output(self) -> list:
         """Function to assemble the output list for a run. Can work with or without sentence
