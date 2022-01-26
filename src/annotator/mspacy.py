@@ -319,7 +319,8 @@ class out_object_spacy(be.out_object):
             # multi-word expressions not available in spacy?
             # Setting word=token for now
             tid = copy.copy(token.i)
-            line = self.collect_results(token, tid, token)
+            out, line = self.collect_results(token, tid, token, out)
+            print(line)
             out.append(line + "\n")
 
     def fetch_output(self) -> list:
@@ -343,4 +344,5 @@ class out_object_spacy(be.out_object):
         # if not sentencized just iterate doc and extract results
         elif not self.doc.has_annotation("SENT_START"):
             out = self.iterate(out, self.doc)
+
         return out

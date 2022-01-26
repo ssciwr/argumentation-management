@@ -33,6 +33,7 @@ def test_pipe_sent():
     # should be equivalent to using:
     nlp = sp.load(mydict["model"])
     check_doc = nlp(text)
+    test_doc = test_obj.apply_to(text).doc
     assert test_doc.has_annotation("SENT_START")
     # there seems to be no __eq__() definition for either doc or token in spacy
     # so just compare a couple of attributes for every token?

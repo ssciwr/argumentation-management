@@ -196,7 +196,7 @@ class out_object:
         mydict = prepare_run.load_input_dict("attribute_names")
         return mydict
 
-    def collect_results(self, token, tid, word) -> tuple:
+    def collect_results(self, token, tid, word, out: list) -> tuple:
         """Function to collect requested tags for tokens after applying pipeline to data."""
 
         # always get token id and token text
@@ -207,67 +207,69 @@ class out_object:
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
-            line = out_object.grab_tag(token, tid, word, line, self.attrnames["pos"])
+            out, line = out_object.grab_tag(
+                token, tid, word, out, line, self.attrnames["pos"]
+            )
 
         if self.attrnames["proc_lemma"] in self.jobs:
-            line = out_object.grab_lemma(
-                token, tid, word, line, self.attrnames["lemma"]
+            out, line = out_object.grab_lemma(
+                token, tid, word, out, line, self.attrnames["lemma"]
             )
 
         if "ner" in self.jobs:
-            line = out_object.grab_ner(token, tid, line)
+            out, line = out_object.grab_ner(token, tid, out, line)
 
         if "entity_ruler" in self.jobs:
-            line = out_object.grab_ruler(token, tid, line)
+            out, line = out_object.grab_ruler(token, tid, out, line)
 
         if "entity_linker" in self.jobs:
-            line = out_object.grab_linker(token, tid, line)
+            out, line = out_object.grab_linker(token, tid, out, line)
 
         if "morphologizer" in self.jobs:
-            line = out_object.grab_morph(token, tid, line)
+            out, line = out_object.grab_morph(token, tid, out, line)
 
         if "parser" in self.jobs:
-            line = out_object.grab_dep(token, tid, line)
+            out, line = out_object.grab_dep(token, tid, out, line)
 
         if "attribute_ruler" in self.jobs:
-            line = out_object.grab_att(token, tid, line)
+            out, line = out_object.grab_att(token, tid, out, line)
         # add what else we need
 
-        return line
+        return out, line
 
     # we should have an option for vrt and one for xml writing
     @staticmethod
-    def grab_ner(token, tid, line):
+    def grab_ner(token, tid, out, line):
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.ent_type_ != "":
             line += "\t" + token.ent_type_
         else:
             line += "\t-"
-        return line
+        return out, line
 
     @staticmethod
-    def grab_ruler(token, tid: int, line: str):
+    def grab_ruler(token, tid: int, out, line: str):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.ent_type_ != "":
             line += "\t" + token.ent_type_
         else:
             line += "\t-"
-        return line
+        return out, line
 
     @staticmethod
-    def grab_linker(token, tid: int, line: str):
+    def grab_linker(token, tid: int, out, line: str):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
         if token.ent_type_ != "":
             line += "\t" + token.ent_kb_id_
         else:
             line += "\t-"
-        return line
+        return out, line
 
     @staticmethod
-    def grab_lemma(token, tid: int, word, line: str, attrname: str):
+    def grab_lemma(token, tid: int, word, out, line: str, attrname: str):
         # attributes:
         # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
@@ -275,46 +277,46 @@ class out_object:
             line += "\t" + getattr(word, attrname)
         else:
             line += "\t-"
-        return line
+        return out, line
 
     @staticmethod
-    def grab_morph(token, tid: int, line: str):
+    def grab_morph(token, tid: int, out, line: str):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
         if token.pos_ != "":
             line += "\t" + token.pos_ + "" + token.morph
         elif token.pos_ == "":
             line += "\t-" + token.morph
-        return line
+        return out, line
 
     @staticmethod
-    def grab_tag(token, tid: int, word, line: str, attrname: str):
+    def grab_tag(token, tid: int, word, out, line: str, attrname: str):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
             line += "\t" + getattr(word, attrname)
         else:
             line += "\t-"
-        return line
+        return out, line
 
     @staticmethod
-    def grab_dep(token, tid: int, line: str):
+    def grab_dep(token, tid: int, out, line: str):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
         if token.dep_ != "":
             line += "\t" + token.dep_
         else:
             line += "\t-"
-        return line
+        return out, line
 
     @staticmethod
-    def grab_att(token, tid: int, line: str):
+    def grab_att(token, tid: int, out, line: str):
         # attributes:
         if token.pos_ != "":
             line += "\t" + token.pos_
         else:
             line += "\t-"
-        return line
+        return out, line
 
     @staticmethod
     def write_vrt(outname: str, out: list):
