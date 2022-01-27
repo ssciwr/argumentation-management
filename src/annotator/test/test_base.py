@@ -3,7 +3,6 @@ import json
 import spacy as sp
 import base as be
 
-
 class get_sample:
     def __init__(self) -> None:
         self.text_dict = {

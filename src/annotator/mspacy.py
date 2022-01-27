@@ -11,24 +11,10 @@ available_lang = ["en", "de"]
 
 
 class Spacy:
-    """Base class for spaCy module
+    """Base class for spaCy module.
 
     Args:
         config[dict]: Dict containing the setup for the spaCy run.
-            -> structure:
-                {
-                "filename": str,
-                "lang":str,
-                "processors": str,
-                "pretrained"= str or False
-                }
-
-                filename: String with ID to be used for saving to .vrt file.
-                model: String with name of model installed in default
-                    spacy directory or path to model.
-                processors: Comma-separated string containing the processors
-                    to be used in pipeline.
-                pretrained: Use specific, custom pipeline with given name/from given path.
     """
 
     def __init__(self, config: dict):
@@ -38,7 +24,6 @@ class Spacy:
         self.outname = config["output"]
 
         config = be.prepare_run.update_dict(config["spacy_dict"])
-
         # check for pretrained
         # lets you initialize your models with information from raw text
         # you would do this if you had generated the model yourself
@@ -100,17 +85,7 @@ class Spacy:
 
 # build the pipeline from config-dict
 class spacy_pipe(Spacy):
-    """Pipeline class for spaCy module -> inherits setup from base class
-
-    Assemble pipeline from config, apply pipeline to data and write results to .vrt file.
-
-    Methods:
-            apply_to(data):
-                apply pipeline of object to given data
-
-            begin_to_vrt():
-                write results after applying pipeline to .vrt file
-    """
+    """Assemble pipeline from config, apply pipeline to data and write results to .vrt file."""
 
     # init with specified config, this may be changed later?
     # -> Right now needs quite specific instuctions
@@ -196,10 +171,12 @@ class spacy_pipe(Spacy):
         the spacy_pipe.get_multiple method by streaming chunks through spacy.pipe and
         using as many cores as available to multiprocess rather than iterating separately.
 
-        [Args]:
-                chunks[list[list[str,str,str]]]: List of chunks which are lists containing
-                    [opening <>, text, closing <>].
-                ret[bool]=False: Wheter to return output as list (True) or write to file (False)."""
+        Args:
+                chunks[list[list[str]]]: List of chunks which are lists containing
+                                            [opening <>, text, closing <>].
+
+                ret[bool]=False: Wheter to return output as list (True) or write to file (False).
+        """
 
         out = []
 
@@ -233,7 +210,7 @@ class spacy_pipe(Spacy):
 
         -> can only be called after pipeline was applied.
 
-        [Args]:
+        Args:
             ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
             start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
         """
@@ -254,10 +231,12 @@ class spacy_pipe(Spacy):
         and create output for full corpus, either return as list or write to .vrt. This function is
         essentially equal to, but slower than, spacy_pipe.pipe_multiple.
 
-        [Args]:
-                chunks[list[list[str,str,str]]]: List of chunks which are lists containing
-                    [opening <>, text, closing <>].
-                ret[bool]=False: Wheter to return output as list (True) or write to file (False)."""
+        Args:
+                chunks[list[list[str]]]: List of chunks which are lists containing
+                                            [opening <>, text, closing <>].
+
+                ret[bool]=False: Wheter to return output as list (True) or write to file (False).
+        """
 
         out = []
 
@@ -293,13 +272,14 @@ class spacy_pipe(Spacy):
 def sentencize_spacy(lang: str, data: str) -> list:
     """Function to sentencize given text data in either German or English language.
 
-    [args]:
+    Args:
             data[str]: The text string to be split into sentences.
 
-    [returns]:
+    Returns:
             List[List[str, int]]: List containing lists which contain the sentences as strings
-                as well as the number of tokens previous to the sentence to easily keep
-                track of the correct token index for a given sentence in the list."""
+            as well as the number of tokens previous to the sentence to easily keep
+            track of the correct token index for a given sentence in the list.
+    """
 
     if lang == "en":
         nlp = English()
