@@ -2,6 +2,7 @@ import pytest
 import spacy as sp
 import mspacy as msp
 import base as be
+import tempfile
 
 
 def test_init():
@@ -16,7 +17,7 @@ def test_init():
 
     test_obj = msp.spacy_pipe(mydict)
 
-    assert test_obj.JobID == mydict_test["filename"]
+    assert test_obj.outname == mydict["output"]
     assert test_obj.pretrained == mydict_test["pretrained"]
     assert test_obj.lang == mydict_test["lang"]
     assert test_obj.type == mydict_test["text_type"]
@@ -69,8 +70,9 @@ def test_output_sent():
 
     check_out = msp.out_object_spacy(check_doc, test_obj.jobs, start=0).fetch_output()
 
-    # as the below two are different, is the outcome of the analysis platform-dependant?
     # check = ['<s>\n', 'This\tDT\tthis\t-\tnsubj\tPRON\n', 'is\tVBZ\tbe\t-\tROOT\tAUX\n', 'an\tDT\tan\t-\tdet\tDET\n', 'example\tNN\texample\t-\tcompound\tNOUN\n', 'text\tNN\ttext\t-\tattr\tNOUN\n', '.\t.\t.\t-\tpunct\tPUNCT\n', '</s>\n', '<s>\n', 'This\tDT\tthis\t-\tnsubj\tPRON\n', 'is\tVBZ\tbe\t-\tROOT\tAUX\n', 'a\tDT\ta\t-\tdet\tDET\n', 'second\tJJ\tsecond\tORDINAL\tamod\tADJ\n', 'sentence\tNN\tsentence\t-\tattr\tNOUN\n', '.\t.\t.\t-\tpunct\tPUNCT\n', '</s>\n']
+
+    # using spacy 3.2.1 and en_core_web_md 3.2.0
     check = [
         "<s>\n",
         "This\tDT\tthis\t-\tnsubj\tPRON\n",
@@ -93,6 +95,58 @@ def test_output_sent():
     assert test_out == check
 
 
+def test_pipe_multiple():
+    """Check if the pipe_multiple function works correctly."""
+
+    test_obj, _ = test_init()
+
+    # lets just quickly emulate a file for our input, maybe change the chunker to also allow for direct string input down the line?
+    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
+    formated_text = text.replace(" ", "\n")
+
+    tmp = tempfile.NamedTemporaryFile()
+
+    tmp.write(formated_text.encode())
+    tmp.seek(0)
+    # print(tmp.read().decode())
+    data = be.chunk_sample_text("{}".format(tmp.name))
+    # print(data)
+    # don't need this anymore
+    tmp.close()
+
+    results = test_obj.pipe_multiple(data, ret=True)
+
+    # using spacy 3.2.1 and en_core_web_md 3.2.0
+    check = [
+        '<textid="1"> \n',
+        "<s>\n",
+        "This\tDT\tthis\t-\tnsubj\tPRON\n",
+        "is\tVBZ\tbe\t-\tROOT\tAUX\n",
+        "an\tDT\tan\t-\tdet\tDET\n",
+        "example\tNN\texample\t-\tcompound\tNOUN\n",
+        "text\tNN\ttext\t-\tattr\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
+        '<subtextid="1"> \n',
+        "</subtext> \n",
+        "</text> \n",
+        '<textid="2"> \n',
+        "<s>\n",
+        "Here\tRB\there\t-\tadvmod\tADV\n",
+        "is\tVBZ\tbe\t-\tROOT\tAUX\n",
+        "some\tDT\tsome\t-\tadvmod\tPRON\n",
+        "more\tJJR\tmore\t-\tamod\tADJ\n",
+        "text\tNN\ttext\t-\tnsubj\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
+        "</text>\n",
+    ]
+
+    assert type(results) == list
+    assert len(data) == 3
+    assert check == results
+
+
 # output object
 # def test_assemble_output_sent():
 #     data = "This is an example. And here we go."
@@ -107,3 +161,4 @@ if __name__ == "__main__":
     test_init()
     test_pipe_sent()
     test_output_sent()
+    test_pipe_multiple()

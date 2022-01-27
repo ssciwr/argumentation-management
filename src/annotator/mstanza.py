@@ -58,18 +58,18 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self) -> str:
+    def postprocess(self, outname) -> str:
         # postprocess of the annotated dictionary
         # fout = be.out_object.open_outfile(dict["output"])
         # sentencize using generic base output object
         # next step would be mwt, which is only applicable for languages like German and French
         # seems not to be available in spacy, how is it handled in cwb?
-        jobs = [proc.strip() for proc in mydict["processors"].split(",")]
+        jobs = [proc.strip() for proc in self.config["processors"].split(",")]
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        be.out_object.write_vrt(dict["output"], out)
+        be.out_object.write_vrt(outname, out)
         # encode
-        be.encode_corpus.encode_vrt("test", dict["output"], jobs, "stanza")
+        be.encode_corpus.encode_vrt("test", outname, jobs, "stanza")
 
 
 def ner(doc):
@@ -114,9 +114,11 @@ if __name__ == "__main__":
     dict = be.prepare_run.load_input_dict("./src/annotator/input")
     # take only the part of dict pertaining to stanza
     stanza_dict = dict["stanza_dict"]
+
     # to point to user-defined model directories
     # stanza does not accommodate fully at the moment
     mydict = mstanza_preprocess.fix_dict_path(stanza_dict)
+    sa.download(mydict["lang"], model_dir=mydict["dir"])
     print(stanza_dict)
     print(mydict)
     # stanza does not care about the extra comment keys

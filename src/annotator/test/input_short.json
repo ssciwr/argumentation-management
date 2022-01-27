@@ -1,5 +1,4 @@
 {
-    "filename": "out/test",
     "model": "en_core_web_md",
     "lang": "en",
     "text_type": "news",
