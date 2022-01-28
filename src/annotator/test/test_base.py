@@ -1,37 +1,20 @@
 import pytest
 import json
-import spacy as sp
 import base as be
 
-class get_sample:
-    def __init__(self) -> None:
-        self.text_dict = {
-            "en": "./iued_test_original.txt",
-            "de": "./iued_test_i_en53_pt-export.txt",
-        }
 
-    @staticmethod
-    def set_input_dict(name):
-        # load the default input dict
-        with open("{}.json".format(name)) as f:
-            mydict = json.load(f)
-        return mydict
-
-
-text = """<s>
-This	PRON	this
-is	AUX	be
-an	DET	a
-example	NOUN	example
-.	PUNCT	.
-</s>
-<s>
-And	CCONJ	and
-here	ADV	here
-we	PRON	we
-go	VERB	go
-.	PUNCT	.
-</s>"""
+@pytest.fixture()
+def init_dict(request):
+    """Load the specified input dict."""
+    marker = request.node.get_closest_marker("dictname")
+    if marker == "None":
+        # missing marker
+        print("Missing a marker for reading the input dictionary.")
+    else:
+        name = marker.args[0]
+    with open("{}.json".format(name)) as f:
+        mydict = json.load(f)
+    return mydict
 
 
 @pytest.mark.skip
@@ -39,30 +22,27 @@ def test_get_cores():
     pass
 
 
-def test_load_input_dict():
-    name = "input"
-    mydict = be.prepare_run.load_input_dict(name)
-    test_mydict = get_sample.set_input_dict("test/" + name)
-    assert mydict == test_mydict
+@pytest.mark.dictname("test/input")
+def test_load_input_dict(init_dict):
+    mydict = be.prepare_run.load_input_dict("input")
+    assert mydict == init_dict
 
 
-def test_update_dict():
-    name = "test/input"
-    mydict = be.prepare_run.load_input_dict(name)
+@pytest.mark.dictname("test/input_short")
+def test_update_dict(init_dict):
+    mydict = be.prepare_run.load_input_dict("input")
     mydict = mydict["spacy_dict"]
     mydict = be.prepare_run.update_dict(mydict)
-    test_mydict = get_sample.set_input_dict("test/input_short")
-    assert mydict == test_mydict
+    assert mydict == init_dict
 
 
-def test_activate_procs():
-    name = "input"
-    mydict = be.prepare_run.load_input_dict(name)
+@pytest.mark.dictname("test/input_stanza")
+def test_activate_procs(init_dict):
+    mydict = be.prepare_run.load_input_dict("input")
     mydict = mydict["stanza_dict"]
     mydict = be.prepare_run.update_dict(mydict)
     mydict = be.prepare_run.activate_procs(mydict, "stanza_")
-    test_mydict = get_sample.set_input_dict("test/input_stanza")
-    assert mydict == test_mydict
+    assert mydict == init_dict
 
 
 # chunker class - to be completed
