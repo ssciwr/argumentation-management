@@ -2,11 +2,9 @@
 import json
 from logging import raiseExceptions
 import os
-
 from numpy import string_
 
 
-# the below functions in a class with attributes
 class prepare_run:
     def __init__(self) -> None:
         pass
@@ -27,12 +25,6 @@ class prepare_run:
             data = myfile.read().replace("\n", "")
         return data
 
-    @staticmethod
-    def get_text(path: str) -> str:
-        with open(path, "r") as input:
-            data = input.read().replace("\n", "")
-        return data
-
     # load the dictionary
     @staticmethod
     def load_input_dict(name):
@@ -41,7 +33,7 @@ class prepare_run:
         return mydict
 
     @staticmethod
-    def update_dict(dict_in) -> dict:
+    def update_dict(dict_in: dict) -> dict:
         """Remove unnecessary keys in dict and move processor-specific keys one level up."""
         # remove all comments - their keys start with "_"
         # also do not select sub-dictionaries
@@ -49,8 +41,17 @@ class prepare_run:
         return dict_out
 
     @staticmethod
-    def activate_procs(mydict, toolstring) -> dict:
-        """Move processor-specific keys one level up."""
+    def activate_procs(mydict: dict, toolstring: str) -> dict:
+        """Move processor-specific keys for a specific tool one level up.
+
+        Args:
+                mydict[dict]: Complete input dictionary.
+                toolstring[str]: Indicates tool to activate entries for.
+
+        Returns:
+                [dict]: Dictionary containing input parameters for specific tool.
+        """
+
         # find out which processors were selected
         procs = mydict.get("processors", None)
         if procs is None:
@@ -73,7 +74,15 @@ class prepare_run:
 # I thought this would belong here rather than mspacy.
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
-    Assumes that there is one layer (no nested <> </> statements) of text elements to be separated."""
+    Assumes that there is one layer (no nested <> </> statements) of text elements to be separated.
+
+    Args:
+            path[str]: Path to .vrt file to be chunked.
+
+    Returns:
+            [list]: List containing the individual chunks.
+    """
+
     # list for data chunks
     data = []
     # index to refer to current chunk
@@ -112,10 +121,12 @@ def chunk_sample_text(path: str) -> list:
 
 def find_last_idx(chunk: list) -> int:
     """Function to find last index in chunk to keep token index up to date for
-    next chunk after chunking the corpus.
+    next chunk after chunking the corpus. This method is currently not needed.
 
-    [Args]:
-            chunk[list]: List containing the lines for the .vrt as strings."""
+    Args:
+            chunk[list]: List containing the lines for the .vrt as strings.
+    """
+
     # get the index to last element
     i = len(chunk) - 1
     # iterate through entire chunk if neccessary, should never happen in practice
@@ -153,57 +164,46 @@ class out_object:
 
     @classmethod
     def assemble_output_sent(cls, doc, jobs, start):
+        """Assemble the output after applying a pipeline to data.
+
+        Args:
+                doc: Doc-object returned by tool after applying pipeline to data.
+                jobs[list]: List containing the specifiers for applied processors.
+                start[int]: Starting Corpus-index for data.
+
+        Returns:
+                [list]: List containing the annotated .vrt lines.
+        """
+
         obj = cls(doc, jobs, start)
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        # spacy
-        # for sent in doc.sents:
-        # stanza
-        # for sent in doc.sentences:
-        # general
-        # count stanza tokens continuously and not starting from 1 every new sentence.
         if "sentence" not in obj.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         obj.tstart = 0
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append("<s>\n")
-            # iterate through the tokens of the sentence, this is just a slice of
-            # the full doc
-            # spacy
-            # for token in sent:
-            # stanza
-            # for multi-word tokens this could prove problematic
-            # we have to distinguish btw token and word in that case
-            # for token, word in zip(sent.tokens, sent.words):
-            # general
             out = obj.iterate(out, sent)
             out.append("</s>\n")
         return out
 
     @staticmethod
     def get_names() -> dict:
+        """Map the processors of different tools to the attribute names."""
         mydict = prepare_run.load_input_dict("attribute_names")
-        # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
     def collect_results(self, token, tid, word, out: list) -> tuple:
         """Function to collect requested tags for tokens after applying pipeline to data."""
+
         # always get token id and token text
         # line = str(tid + start) + " " + token.text
         line = token.text
         # grab the data for the run components, I've only included the human readable
         # part of output right now as I don't know what else we need
-        ########
-        # we need to unify the names for the different job types
-        # ie spacy - lemmatizer, stanza - lemma
-        # spacy - tagger, stanza - pos
-        # spacy - ner, stanza - ner
-        # have to find out how ner is encoded in cwb first
-        #########
-        # put in correct order - first pos, then lemma
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
@@ -237,10 +237,7 @@ class out_object:
 
         return out, line
 
-    # define all of these as functions
-    # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing
-    # making them static for now
     @staticmethod
     def grab_ner(token, tid, out, line):
         # attributes:
@@ -252,7 +249,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def grab_ruler(token, tid, out, line):
+    def grab_ruler(token, tid: int, out, line: str):
         # attributes:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.ent_type_ != "":
@@ -262,7 +259,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def grab_linker(token, tid, out, line):
+    def grab_linker(token, tid: int, out, line: str):
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
         if token.ent_type_ != "":
@@ -272,7 +269,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def grab_lemma(token, tid, word, out, line, attrname):
+    def grab_lemma(token, tid: int, word, out, line: str, attrname: str):
         # attributes:
         # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
@@ -283,7 +280,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def grab_morph(token, tid, out, line):
+    def grab_morph(token, tid: int, out, line: str):
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
         if token.pos_ != "":
@@ -293,7 +290,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def grab_tag(token, tid, word, out, line, attrname):
+    def grab_tag(token, tid: int, word, out, line: str, attrname: str):
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
@@ -303,7 +300,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def grab_dep(token, tid, out, line):
+    def grab_dep(token, tid: int, out, line: str):
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
         if token.dep_ != "":
@@ -313,7 +310,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def grab_att(token, tid, out, line):
+    def grab_att(token, tid: int, out, line: str):
         # attributes:
         if token.pos_ != "":
             line += "\t" + token.pos_
@@ -322,7 +319,7 @@ class out_object:
         return out, line
 
     @staticmethod
-    def write_vrt(outname, out):
+    def write_vrt(outname: str, out: list):
         """Function to write list to a .vrt file.
 
         [Args]:
@@ -338,7 +335,7 @@ class out_object:
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
-    def __init__(self, corpusname, outname, jobs, tool) -> None:
+    def __init__(self, corpusname: str, outname: str, jobs: list, tool: str) -> None:
         # self.corpusdir = "/home/jovyan/corpus"
         self.corpusdir = "/home/inga/projects/corpus-workbench/cwb/corpora/"
         self.corpusname = corpusname
@@ -357,14 +354,14 @@ class encode_corpus:
         self.attrnames = out_object.get_names()
         self.attrnames = self.attrnames[self.tool + "_names"]
 
-    def _get_s_attributes(self, line) -> str:
+    def _get_s_attributes(self, line: str) -> str:
         if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
             print("Encoding s-attribute <s>...")
             line += "-S s "
         return line
 
     # the order here is important for vrt files and MUST NOT be changed!!!
-    def _get_p_attributes(self, line) -> str:
+    def _get_p_attributes(self, line: str) -> str:
         if any(attr in self.attrnames["proc_pos"] for attr in self.jobs):
             print("Encoding p-attribute POS...")
             line += "-P pos "
@@ -374,7 +371,7 @@ class encode_corpus:
         return line
 
     @classmethod
-    def encode_vrt(cls, corpusname, outname, jobs, tool):
+    def encode_vrt(cls, corpusname: str, outname: str, jobs: list, tool: str):
         obj = cls(corpusname, outname, jobs, tool)
         line = " "
         # find out which options are to be encoded
