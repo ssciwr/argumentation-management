@@ -65,3 +65,18 @@ def test_process_text_en(get_sample):
     docobj = obj.process_text(text)
     doc = str(docobj).replace("\n", "")
     assert doc == str(test_doc)
+
+
+@pytest.mark.lang("de")
+def test_process_text_de(get_sample):
+    mydict = {
+        "lang": "de",
+        "dir": "./test/models/",
+        "processors": "tokenize,pos,lemma",
+    }
+    text, test_doc = get_sample
+    obj = ma.mstanza_pipeline(mydict)
+    obj.init_pipeline()
+    docobj = obj.process_text(text)
+    doc = str(docobj).replace("\n", "")
+    assert doc == str(test_doc)

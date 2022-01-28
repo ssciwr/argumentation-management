@@ -1,0 +1,660 @@
+[
+  [
+    {
+      "id": 1,
+      "text": "Das",
+      "lemma": "der",
+      "upos": "DET",
+      "xpos": "ART",
+      "feats": "Case=Nom|Definite=Def|Gender=Neut|Number=Sing|PronType=Art",
+      "start_char": 0,
+      "end_char": 3
+    },
+    {
+      "id": 2,
+      "text": "Feld",
+      "lemma": "Feld",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Nom|Gender=Neut|Number=Sing",
+      "start_char": 4,
+      "end_char": 8
+    },
+    {
+      "id": 3,
+      "text": "der",
+      "lemma": "der",
+      "upos": "DET",
+      "xpos": "ART",
+      "feats": "Case=Gen|Definite=Def|Gender=Fem|Number=Sing|PronType=Art",
+      "start_char": 9,
+      "end_char": 12
+    },
+    {
+      "id": 4,
+      "text": "Computerchemie",
+      "lemma": "Computerchemie",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Gen|Gender=Fem|Number=Sing",
+      "start_char": 13,
+      "end_char": 27
+    },
+    {
+      "id": 5,
+      "text": "erfreut",
+      "lemma": "erfreuen",
+      "upos": "VERB",
+      "xpos": "VVFIN",
+      "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+      "start_char": 28,
+      "end_char": 35
+    },
+    {
+      "id": 6,
+      "text": "sich",
+      "lemma": "er|es|sie",
+      "upos": "PRON",
+      "xpos": "PRF",
+      "feats": "Case=Acc|Number=Sing|Person=3|PronType=Prs|Reflex=Yes",
+      "start_char": 36,
+      "end_char": 40
+    },
+    {
+      "id": 7,
+      "text": "seit",
+      "lemma": "seit",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 41,
+      "end_char": 45
+    },
+    {
+      "id": 8,
+      "text": "einiger",
+      "lemma": "einige",
+      "upos": "PRON",
+      "xpos": "PIAT",
+      "feats": "Case=Dat|Definite=Ind|Gender=Fem|Number=Sing|PronType=Ind",
+      "start_char": 46,
+      "end_char": 53
+    },
+    {
+      "id": 9,
+      "text": "Zeit",
+      "lemma": "Zeit",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Dat|Gender=Fem|Number=Sing",
+      "start_char": 54,
+      "end_char": 58
+    },
+    {
+      "id": 10,
+      "text": "einer",
+      "lemma": "ein",
+      "upos": "DET",
+      "xpos": "ART",
+      "feats": "Case=Gen|Definite=Ind|Gender=Fem|Number=Sing|PronType=Art",
+      "start_char": 59,
+      "end_char": 64
+    },
+    {
+      "id": 11,
+      "text": "stetig",
+      "lemma": "stetig",
+      "upos": "ADJ",
+      "xpos": "ADJD",
+      "start_char": 65,
+      "end_char": 71
+    },
+    {
+      "id": 12,
+      "text": "zunehmenden",
+      "lemma": "zunehmend",
+      "upos": "ADJ",
+      "xpos": "ADJA",
+      "feats": "Case=Gen|Gender=Fem|Number=Sing",
+      "start_char": 72,
+      "end_char": 83
+    },
+    {
+      "id": 13,
+      "text": "Auf-merksamkeit",
+      "lemma": "Auf-merksamkeit",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Gen|Gender=Fem|Number=Sing",
+      "start_char": 84,
+      "end_char": 99
+    },
+    {
+      "id": 14,
+      "text": ".",
+      "lemma": ".",
+      "upos": "PUNCT",
+      "xpos": "$.",
+      "start_char": 99,
+      "end_char": 100
+    }
+  ],
+  [
+    {
+      "id": 1,
+      "text": "Hierbei",
+      "lemma": "hierbei",
+      "upos": "ADV",
+      "xpos": "PAV",
+      "start_char": 101,
+      "end_char": 108
+    },
+    {
+      "id": 2,
+      "text": "ist",
+      "lemma": "sein",
+      "upos": "AUX",
+      "xpos": "VAFIN",
+      "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+      "start_char": 109,
+      "end_char": 112
+    },
+    {
+      "id": 3,
+      "text": "es",
+      "lemma": "es",
+      "upos": "PRON",
+      "xpos": "PPER",
+      "feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3|PronType=Prs",
+      "start_char": 113,
+      "end_char": 115
+    },
+    {
+      "id": 4,
+      "text": "für",
+      "lemma": "für",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 116,
+      "end_char": 119
+    },
+    {
+      "id": 5,
+      "text": "die",
+      "lemma": "der",
+      "upos": "DET",
+      "xpos": "ART",
+      "feats": "Case=Acc|Definite=Def|Gender=Fem|Number=Sing|PronType=Art",
+      "start_char": 120,
+      "end_char": 123
+    },
+    {
+      "id": 6,
+      "text": "Berechnung",
+      "lemma": "Berechnung",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Acc|Gender=Fem|Number=Sing",
+      "start_char": 124,
+      "end_char": 134
+    },
+    {
+      "id": 7,
+      "text": "von",
+      "lemma": "von",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 135,
+      "end_char": 138
+    },
+    {
+      "id": 8,
+      "text": "chemisch",
+      "lemma": "chemisch",
+      "upos": "ADJ",
+      "xpos": "ADJD",
+      "start_char": 139,
+      "end_char": 147
+    },
+    {
+      "id": 9,
+      "text": "relevanten",
+      "lemma": "relevant",
+      "upos": "ADJ",
+      "xpos": "ADJA",
+      "feats": "Case=Dat|Gender=Neut|Number=Plur",
+      "start_char": 148,
+      "end_char": 158
+    },
+    {
+      "id": 10,
+      "text": "Systemen",
+      "lemma": "System",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Dat|Gender=Neut|Number=Plur",
+      "start_char": 159,
+      "end_char": 167
+    },
+    {
+      "id": 11,
+      "text": "von",
+      "lemma": "von",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 168,
+      "end_char": 171
+    },
+    {
+      "id": 12,
+      "text": "Interesse",
+      "lemma": "Interesse",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Dat|Gender=Neut|Number=Sing",
+      "start_char": 172,
+      "end_char": 181
+    },
+    {
+      "id": 13,
+      "text": ",",
+      "lemma": ",",
+      "upos": "PUNCT",
+      "xpos": "$,",
+      "start_char": 181,
+      "end_char": 182
+    },
+    {
+      "id": 14,
+      "text": "möglichst",
+      "lemma": "möglichst",
+      "upos": "ADV",
+      "xpos": "ADV",
+      "start_char": 183,
+      "end_char": 192
+    },
+    {
+      "id": 15,
+      "text": "große",
+      "lemma": "groß",
+      "upos": "ADJ",
+      "xpos": "ADJA",
+      "feats": "Case=Nom|Gender=Masc|Number=Plur",
+      "start_char": 193,
+      "end_char": 198
+    },
+    {
+      "id": 16,
+      "text": "Systeme",
+      "lemma": "System",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Nom|Gender=Neut|Number=Plur",
+      "start_char": 199,
+      "end_char": 206
+    },
+    {
+      "id": 17,
+      "text": "(",
+      "lemma": "(",
+      "upos": "PUNCT",
+      "xpos": "$(",
+      "start_char": 207,
+      "end_char": 208
+    },
+    {
+      "id": 18,
+      "text": "Moleküle",
+      "lemma": "Molekül",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Nom|Gender=Masc|Number=Plur",
+      "start_char": 208,
+      "end_char": 216
+    },
+    {
+      "id": 19,
+      "text": ")",
+      "lemma": ")",
+      "upos": "PUNCT",
+      "xpos": "$(",
+      "start_char": 216,
+      "end_char": 217
+    },
+    {
+      "id": 20,
+      "text": "durch",
+      "lemma": "durch",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 218,
+      "end_char": 223
+    },
+    {
+      "id": 21,
+      "text": "effiziente",
+      "lemma": "effizient",
+      "upos": "ADJ",
+      "xpos": "ADJA",
+      "feats": "Case=Acc|Gender=Fem|Number=Sing",
+      "start_char": 224,
+      "end_char": 234
+    },
+    {
+      "id": 22,
+      "text": "Nutzung",
+      "lemma": "Nutzung",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Acc|Gender=Fem|Number=Sing",
+      "start_char": 235,
+      "end_char": 242
+    },
+    {
+      "id": 23,
+      "text": "von",
+      "lemma": "von",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 243,
+      "end_char": 246
+    },
+    {
+      "id": 24,
+      "text": "Rechen",
+      "lemma": "Rechen",
+      "upos": "NOUN",
+      "xpos": "TRUNC",
+      "start_char": 247,
+      "end_char": 253
+    },
+    {
+      "id": 25,
+      "text": "-",
+      "lemma": "-",
+      "upos": "PUNCT",
+      "xpos": "$(",
+      "start_char": 253,
+      "end_char": 254
+    },
+    {
+      "id": 26,
+      "text": "und",
+      "lemma": "und",
+      "upos": "CCONJ",
+      "xpos": "KON",
+      "start_char": 255,
+      "end_char": 258
+    },
+    {
+      "id": 27,
+      "text": "Speicherressourcen",
+      "lemma": "Speicherressourcen",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Dat|Gender=Fem|Number=Plur",
+      "start_char": 259,
+      "end_char": 277
+    },
+    {
+      "id": 28,
+      "text": "zugänglich",
+      "lemma": "zugänglich",
+      "upos": "ADJ",
+      "xpos": "ADJD",
+      "start_char": 278,
+      "end_char": 288
+    },
+    {
+      "id": 29,
+      "text": "zu",
+      "lemma": "zu",
+      "upos": "PART",
+      "xpos": "PTKZU",
+      "start_char": 289,
+      "end_char": 291
+    },
+    {
+      "id": 30,
+      "text": "machen",
+      "lemma": "machen",
+      "upos": "VERB",
+      "xpos": "VVINF",
+      "feats": "VerbForm=Inf",
+      "start_char": 292,
+      "end_char": 298
+    },
+    {
+      "id": 31,
+      "text": ".",
+      "lemma": ".",
+      "upos": "PUNCT",
+      "xpos": "$.",
+      "start_char": 298,
+      "end_char": 299
+    }
+  ],
+  [
+    {
+      "id": 1,
+      "text": "Die",
+      "lemma": "der",
+      "upos": "DET",
+      "xpos": "ART",
+      "feats": "Case=Nom|Definite=Def|Gender=Fem|Number=Sing|PronType=Art",
+      "start_char": 300,
+      "end_char": 303
+    },
+    {
+      "id": 2,
+      "text": "Herausforderung",
+      "lemma": "Herausforderung",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Nom|Gender=Fem|Number=Sing",
+      "start_char": 304,
+      "end_char": 319
+    },
+    {
+      "id": 3,
+      "text": "besteht",
+      "lemma": "bestehen",
+      "upos": "VERB",
+      "xpos": "VVFIN",
+      "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+      "start_char": 320,
+      "end_char": 327
+    },
+    {
+      "id": 4,
+      "text": "darin",
+      "lemma": "darin",
+      "upos": "PRON",
+      "xpos": "PAV",
+      "start_char": 328,
+      "end_char": 333
+    },
+    {
+      "id": 5,
+      "text": ",",
+      "lemma": ",",
+      "upos": "PUNCT",
+      "xpos": "$,",
+      "start_char": 333,
+      "end_char": 334
+    },
+    {
+      "id": 6,
+      "text": "dass",
+      "lemma": "dass",
+      "upos": "SCONJ",
+      "xpos": "KOUS",
+      "start_char": 335,
+      "end_char": 339
+    },
+    {
+      "id": 7,
+      "text": "mit",
+      "lemma": "mit",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 340,
+      "end_char": 343
+    },
+    {
+      "id": 8,
+      "text": "der",
+      "lemma": "der",
+      "upos": "DET",
+      "xpos": "ART",
+      "feats": "Case=Dat|Definite=Def|Gender=Fem|Number=Sing|PronType=Art",
+      "start_char": 344,
+      "end_char": 347
+    },
+    {
+      "id": 9,
+      "text": "zunehmenden",
+      "lemma": "zunehmend",
+      "upos": "ADJ",
+      "xpos": "ADJA",
+      "feats": "Case=Dat|Gender=Fem|Number=Sing",
+      "start_char": 348,
+      "end_char": 359
+    },
+    {
+      "id": 10,
+      "text": "Anzahl",
+      "lemma": "Anzahl",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Dat|Gender=Fem|Number=Sing",
+      "start_char": 360,
+      "end_char": 366
+    },
+    {
+      "id": 11,
+      "text": "von",
+      "lemma": "von",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 367,
+      "end_char": 370
+    },
+    {
+      "id": 12,
+      "text": "Atomen",
+      "lemma": "Atome",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Dat|Gender=Fem|Number=Plur",
+      "start_char": 371,
+      "end_char": 377
+    },
+    {
+      "id": 13,
+      "text": "in",
+      "lemma": "in",
+      "upos": "ADP",
+      "xpos": "APPR",
+      "start_char": 378,
+      "end_char": 380
+    },
+    {
+      "id": 14,
+      "text": "größeren",
+      "lemma": "groß",
+      "upos": "ADJ",
+      "xpos": "ADJA",
+      "feats": "Case=Dat|Gender=Neut|Number=Plur",
+      "start_char": 381,
+      "end_char": 389
+    },
+    {
+      "id": 15,
+      "text": "Systemen",
+      "lemma": "System",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Dat|Gender=Neut|Number=Plur",
+      "start_char": 390,
+      "end_char": 398
+    },
+    {
+      "id": 16,
+      "text": "auch",
+      "lemma": "auch",
+      "upos": "ADV",
+      "xpos": "ADV",
+      "start_char": 399,
+      "end_char": 403
+    },
+    {
+      "id": 17,
+      "text": "die",
+      "lemma": "der",
+      "upos": "DET",
+      "xpos": "ART",
+      "feats": "Case=Nom|Definite=Def|Gender=Fem|Number=Sing|PronType=Art",
+      "start_char": 404,
+      "end_char": 407
+    },
+    {
+      "id": 18,
+      "text": "Anzahl",
+      "lemma": "Anzahl",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Nom|Gender=Fem|Number=Sing",
+      "start_char": 408,
+      "end_char": 414
+    },
+    {
+      "id": 19,
+      "text": "der",
+      "lemma": "der",
+      "upos": "DET",
+      "xpos": "ART",
+      "feats": "Case=Gen|Definite=Def|Gender=Fem|Number=Sing|PronType=Art",
+      "start_char": 415,
+      "end_char": 418
+    },
+    {
+      "id": 20,
+      "text": "internen",
+      "lemma": "intern",
+      "upos": "ADJ",
+      "xpos": "ADJA",
+      "feats": "Case=Gen|Gender=Fem|Number=Sing",
+      "start_char": 419,
+      "end_char": 427
+    },
+    {
+      "id": 21,
+      "text": "Freiheitsgrade",
+      "lemma": "Freiheitsgrade",
+      "upos": "NOUN",
+      "xpos": "NN",
+      "feats": "Case=Gen|Gender=Fem|Number=Sing",
+      "start_char": 428,
+      "end_char": 442
+    },
+    {
+      "id": 22,
+      "text": "zunimmt",
+      "lemma": "zunimmen",
+      "upos": "VERB",
+      "xpos": "VVFIN",
+      "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+      "start_char": 443,
+      "end_char": 450
+    },
+    {
+      "id": 23,
+      "text": ".",
+      "lemma": ".",
+      "upos": "PUNCT",
+      "xpos": "$.",
+      "start_char": 450,
+      "end_char": 451
+    }
+  ]
+]
