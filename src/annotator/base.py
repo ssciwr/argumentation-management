@@ -6,24 +6,12 @@ from numpy import string_
 
 
 class prepare_run:
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def get_cores() -> int:
         """Find out how many CPU-cores are available for current process."""
         # will need to update this to using multiprocess
         # as this method is not available on all os's
         return len(os.sched_getaffinity(0))
-
-    # read the sample data - this will be in test_base
-    # method will be removed
-    @staticmethod
-    def get_sample_text():
-        name = "data/Original/iued_test_original.txt"
-        with open(name, "r") as myfile:
-            data = myfile.read().replace("\n", "")
-        return data
 
     # load the dictionary
     @staticmethod
@@ -155,12 +143,6 @@ class out_object:
         self.start = start
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
-
-    @staticmethod
-    def open_outfile(outname):
-        name = "out/" + outname
-        f = open(name, "w")
-        return f
 
     @classmethod
     def assemble_output_sent(cls, doc, jobs, start):
