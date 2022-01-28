@@ -1,0 +1,87 @@
+{
+    "input": "input_en.txt",
+    "output": "output_stanza",
+    "tool": "stanza",
+    "stanza_dict": {
+        "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
+        "_lang_comment": "Language code for the language to build the Pipeline in",
+        "lang": "en",
+        "_dir_comment": "directory where models are stored - this does not work for pipeline",
+        "dir": "./test/models",  
+        "_package_comment": "using the default model, for others see: https://stanfordnlp.github.io/stanza/models.html",
+        "package": "default",
+        "_processors_comment": "Comma-separated list of processors to use, can also be given as a dictionary: {'tokenize': 'ewt', 'pos': 'ewt'}",
+        "processors": "tokenize,pos,lemma",  
+        "_logging_level_comment": "DEBUG, INFO, WARN, ERROR, CRITICAL, FATAL; FATAL has least amount of log info printed",
+        "logging_level": "INFO",  
+        "_verbose_comment": "True corresponds to INFO, False corresponds to ERROR",
+        "verbose": true,
+        "_use_GPU_comment:":"use GPU if available, False forces CPU only",
+        "use_GPU": false,
+        "stanza_tokenize": {  
+            "_tokenize_comment": "Tokenizes the text and performs sentence segmentation, dependency: -",
+            "_tokenize_model_path_comment": "set model path only for custom models",
+            "_tokenize_batch_size_comment": "Maximum number of paragraphs to process as minibatch for efficient processing",
+            "tokenize_batch_size": 32,
+            "_tokenize_pretokenized_comment": "Text is already tokenized by white space and sentence split by newline, no usage of a model",
+            "tokenize_no_ssplit": false
+        },
+        "stanza_mwt": {
+            "_mwt_comment": "Expands multi-word tokens (MWT) predicted by the TokenizeProcessor, this is only applicable to some languages, dependency: - 'tokenize'",
+            "_mwt_model_path_comment": "set model path only for custom models",
+            "_mwt_batch_size_comment": " Specifies maximum number of workds to process as a minibatch",
+            "mwt_batch_size": 50
+        },
+        "stanza_pos": {
+            "_pos_comment": "Labels tokens with their universal POS (UPOS) tags, treebank-specific POS (XPOS) tags, and universal morphological features (UFeats), dependency: - 'tokenize, mwt'.",
+            "_pos_model_path_comment": "set model path only for custom models",
+            "_pos_pretrain_path_comment": "set model path only for custom models",
+            "_pos_batch_size_comment": "this specifies the maximum number of words to process as  minibatch for efficient processing. Default: 5000",
+            "pos_batch_size": 5000
+        },
+        "stanza_lemma": {
+            "_lemma_comment": "Generates the word lemmas for all words in the Document, dependency: - 'tokenize, mwt, pos'",
+            "_lemma_model_path_comment": "set model path only for custom models",
+            "_lemma_use_identity_comment": "Identity lemmatizer is used instead of statistical lemmatizer",
+            "lemma_use_identity": false,
+            "_lemma_batch_size_comment": "Maximum number of words to batch for efficient processing. Default: 50",
+            "lemma_batch_size": 50,
+            "_lemma_ensemble_dict_comment": "Lemmatizer will ensemble a seq2seq model with output from dictionary-based lemmatizer, improvement for many languages",
+            "lemma_ensemble_dict": true,
+            "_lemma_dict_only_comment": "Dictionary-based lemmatizer only",
+            "lemma_dict_only": false,
+            "_lemma_edit_comment": "Use an edit classifier in addition to seq2seq to make long sentence predictions more stable",
+            "lemma_edit": true,
+            "_lemma_beam_size_comment": "Control beam size during decoding in seq2seq",
+            "lemma_beam_size": 1,
+            "_lemma_max_dec_len_comment": "Control maximum decoding character length in seq2seq, decoder will stop if this length is achieved and end-of-sequence character still not seen",
+            "lemma_max_dec_len": 50
+        },
+        "stanza_depparse" : {
+            "_depparse_comment": "Provides an accurate syntactic dependency parsing analysis, dependency: - 'tokenize, mwt, pos, lemma'",
+            "_depparse_model_path_comment": "set model path only for custom models",
+            "_depparse_batch_size_comment": "Maximum number of words to process as minibatch, may require large amounts of RAM; should be set larger than the number of workds in the longest sentence in input document, or may result in unexpected behaviors",
+            "depparse_batch_size": 5000,
+            "_depparse_pretagged_comment": "Assumes document is tokenized and pretagged, only run dependency parsing",
+            "depparse_pretagged": false
+        },
+        "stanza_ner": {
+            "_ner_comment": "Recognize named entities for all token spans in the corpus, dependency: - 'tokenize, mwt'",
+            "_ner_model_path_comment": "set model path only for custom models",
+            "_ner_batch_size_comment": "Maximum number of sentences to process as minibatch, may require large amounts of RAM",
+            "ner_batch_size": 32
+        },
+        "stanza_sentiment": {
+            "_sentiment_comment": "Assign per-sentence sentiment scores, dependency: - 'tokenize, mwt'",
+            "_sentiment_model_path_comment": "set model path only for custom models",
+            "_sentiment_pretrain_path_comment": "which set of pretrained word vectors to use, closely related to used model",
+            "_batch_size_comment": "Run everything at once (None) or if set to integer, processing is broken into chunks of that size",
+            "batch_size": null
+        },
+        "stanza_constituency": {
+            "_constituency_comment": "Parse each sentence in a document using a phrase structure parser, dependency: - 'tokenize, mwt, pos'",
+            "_constituency_model_path_comment": "set model path only for custom models",
+            "_constituency_pretrain_path_comment": "which set of pretrained word vectors to use, closely related to used model"
+        }
+    }
+}

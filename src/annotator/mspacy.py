@@ -1,10 +1,12 @@
 import spacy as sp
 from spacy.tokens.doc import Doc
-from spacy.tokens.token import Token
 from spacy.lang.en import English
 from spacy.lang.de import German
 import copy
 import base as be
+from tqdm import (
+    tqdm,
+)  # for progress in pipe_multiple, might be interesting for large corpora down the line
 
 
 available_lang = ["en", "de"]
@@ -39,7 +41,7 @@ class Spacy:
         # I believe this would then eliminate the `elif` case for pretrained above
         self.lang = config["lang"]
         self.type = config["text_type"]
-        if "model" in config:
+        if "model" in config and config["model"] is not False:
             self.model = config["model"]
             print("Using selected model {}.".format(self.model))
         else:
@@ -91,7 +93,6 @@ class spacy_pipe(Spacy):
     # -> Right now needs quite specific instuctions
     def __init__(self, config: dict):
         super().__init__(config)
-
         # use a specific pipeline if requested
         if self.pretrained:
             # load pipeline
@@ -183,7 +184,17 @@ class spacy_pipe(Spacy):
         # apply pipe to list of text chunks and write resulting
         # generator to list of docs
         text = [List[1] for List in chunks]
-        self.docs = list(self.nlp.pipe(text, n_process=be.prepare_run.get_cores()))
+        n_process = be.prepare_run.get_cores()
+        self.docs = list(
+            tqdm(
+                self.nlp.pipe(text, n_process=n_process),
+                total=len(text),
+                desc="Running on {} cores".format(n_process),
+                bar_format="{l_bar}{bar:20}{r_bar}{bar:-20b}",
+                unit="chunks",
+            )
+        )
+        #         self.docs = list(self.nlp.pipe(text, n_process=be.prepare_run.get_cores()))
         # iterate through doc objects
         for i, doc in enumerate(self.docs):
             # get the "< >" opening statement
@@ -328,7 +339,7 @@ class out_object_spacy(be.out_object):
         level annotation and will check if doc is sentencized on its own."""
 
         try:
-            assert self.doc
+            assert hasattr(self, "doc")
         except AttributeError:
             print(
                 "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"
@@ -344,5 +355,4 @@ class out_object_spacy(be.out_object):
         # if not sentencized just iterate doc and extract results
         elif not self.doc.has_annotation("SENT_START"):
             out = self.iterate(out, self.doc)
-
         return out
