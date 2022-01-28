@@ -41,8 +41,12 @@ def test_activate_procs(init_dict):
     mydict = be.prepare_run.load_input_dict("input")
     mydict = mydict["stanza_dict"]
     mydict = be.prepare_run.update_dict(mydict)
-    mydict = be.prepare_run.activate_procs(mydict, "stanza_")
-    assert mydict == init_dict
+    mydict_content = be.prepare_run.activate_procs(mydict, "stanza_")
+    assert mydict_content == init_dict
+    # test for empty procs
+    mydict["processors"] = None
+    with pytest.raises(ValueError):
+        assert be.prepare_run.activate_procs(mydict, "stanza_")
 
 
 # chunker class - to be completed
