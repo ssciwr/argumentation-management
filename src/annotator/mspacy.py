@@ -9,7 +9,6 @@ from tqdm import (
 )  # for progress in pipe_multiple, might be interesting for large corpora down the line
 
 
-
 available_lang = ["en", "de"]
 
 
@@ -195,7 +194,7 @@ class spacy_pipe(Spacy):
                 unit="chunks",
             )
         )
-#         self.docs = list(self.nlp.pipe(text, n_process=be.prepare_run.get_cores()))
+        #         self.docs = list(self.nlp.pipe(text, n_process=be.prepare_run.get_cores()))
         # iterate through doc objects
         for i, doc in enumerate(self.docs):
             # get the "< >" opening statement
@@ -340,7 +339,7 @@ class out_object_spacy(be.out_object):
         level annotation and will check if doc is sentencized on its own."""
 
         try:
-            assert self.doc
+            assert hasattr(self, "doc")
         except AttributeError:
             print(
                 "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"

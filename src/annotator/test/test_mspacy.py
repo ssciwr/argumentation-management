@@ -2,6 +2,7 @@ import pytest
 import spacy as sp
 import mspacy as msp
 import base as be
+import tempfile
 
 
 def test_init():
