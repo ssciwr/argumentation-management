@@ -1,6 +1,9 @@
 import pytest
 import mstanza as ma
 
+mydict_en = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+mydict_de = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+
 
 @pytest.fixture()
 def get_sample(request):
@@ -30,37 +33,24 @@ test_doc = """[\n  [\n    {\n      "id": 1,\n      "text": "This",\n      "lemma
 
 
 def test_fix_dict_path():
-    mydict = {
-        "dir": "./test/models",
-        "tokenize_model_path": "en/tokenize/combined.pt",
-    }
-    mydict = ma.mstanza_preprocess.fix_dict_path(mydict)
+    mydict = ma.mstanza_preprocess.fix_dict_path(mydict_en)
     test_mydict = {
         "dir": "./test/models",
         "tokenize_model_path": "./test/models/en/tokenize/combined.pt",
+        "processors": "tokenize,pos,lemma",
     }
     assert mydict == test_mydict
 
 
 def test_init_pipeline():
-    mydict = {
-        "lang": "en",
-        "dir": "./test/models/",
-        "processors": "tokenize,pos,lemma",
-    }
-    obj = ma.mstanza_pipeline(mydict)
+    obj = ma.mstanza_pipeline(mydict_en)
     obj.init_pipeline()
 
 
 @pytest.mark.lang("en")
 def test_process_text_en(get_sample):
-    mydict = {
-        "lang": "en",
-        "dir": "./test/models/",
-        "processors": "tokenize,pos,lemma",
-    }
     text, test_doc = get_sample
-    obj = ma.mstanza_pipeline(mydict)
+    obj = ma.mstanza_pipeline(mydict_en)
     obj.init_pipeline()
     docobj = obj.process_text(text)
     doc = str(docobj).replace("\n", "")
@@ -69,13 +59,18 @@ def test_process_text_en(get_sample):
 
 @pytest.mark.lang("de")
 def test_process_text_de(get_sample):
-    mydict = {
-        "lang": "de",
-        "dir": "./test/models/",
-        "processors": "tokenize,pos,lemma",
-    }
     text, test_doc = get_sample
-    obj = ma.mstanza_pipeline(mydict)
+    obj = ma.mstanza_pipeline(mydict_de)
+    obj.init_pipeline()
+    docobj = obj.process_text(text)
+    doc = str(docobj).replace("\n", "")
+    assert doc == str(test_doc)
+
+
+@pytest.mark.lang("en")
+def test_out_object_stanza(get_sample):
+    text, test_doc = get_sample
+    obj = ma.mstanza_pipeline(mydict_en)
     obj.init_pipeline()
     docobj = obj.process_text(text)
     doc = str(docobj).replace("\n", "")
