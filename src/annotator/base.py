@@ -419,3 +419,12 @@ class encode_corpus:
 # <pt><prop><t id=""> Audi ..
 # <pt><comp> ..
 # <pt><emb><noun>
+#
+# p-attributes: token, lemma, POS
+#
+#
+#
+# s-attributes: sentences, NER
+#
+#
+#

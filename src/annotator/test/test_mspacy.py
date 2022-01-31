@@ -9,8 +9,8 @@ def test_init():
     """Check if the parameters from the input dict are loaded into the
     pipe object as expected."""
 
-    mydict = be.prepare_run.load_input_dict("test/input")
-    mydict_test = be.prepare_run.load_input_dict("test/input_short")
+    mydict = be.prepare_run.load_input_dict("test/test_files/input")
+    mydict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
     test_obj = msp.spacy_pipe(mydict)
     assert test_obj.outname == mydict["output"]
     assert test_obj.pretrained == mydict_test["pretrained"]
