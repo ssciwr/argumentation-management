@@ -8,13 +8,13 @@ mydict_de = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,
 @pytest.fixture()
 def set_file_dict():
     text_dict = {
-        "en": "./test/example_en.txt",
-        "de": "./test/example_de.txt",
-        "test_en": "./test/example_en_stanza.txt",
-        "test_de": "./test/example_de_stanza.txt",
-        "tok": "./test/example_en_stanza_tok.txt",
-        "tok_pos": "./test/example_en_stanza_tok_pos.txt",
-        "tok_pos_lemma": "./test/example_en_stanza_tok_pos_lemma.txt",
+        "en": "./test/test_files/example_en.txt",
+        "de": "./test/test_files/example_de.txt",
+        "test_en": "./test/test_files/example_en_stanza.txt",
+        "test_de": "./test/test_files/example_de_stanza.txt",
+        "tok": "./test/test_files/example_en_stanza_tok.txt",
+        "tok_pos": "./test/test_files/example_en_stanza_tok_pos.txt",
+        "tok_pos_lemma": "./test/test_files/example_en_stanza_tok_pos_lemma.txt",
     }
     return text_dict
 
@@ -163,7 +163,7 @@ def test_out_object_stanza_tok_pos_lemma(get_sample, get_out_sample):
 def test_out_object_stanza_vrt(get_sample):
     text = get_sample
     procstring = "tokenize,pos,lemma"
-    outfile = "./test/example_en"
+    outfile = "./test/test_files/example_en"
     obj = ma.mstanza_pipeline(mydict_en)
     obj.init_pipeline()
     docobj = obj.process_text(text)

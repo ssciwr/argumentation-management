@@ -22,13 +22,13 @@ def test_get_cores():
     pass
 
 
-@pytest.mark.dictname("test/input")
+@pytest.mark.dictname("test/test_files/input")
 def test_load_input_dict(init_dict):
     mydict = be.prepare_run.load_input_dict("input")
     assert mydict == init_dict
 
 
-@pytest.mark.dictname("test/input_short")
+@pytest.mark.dictname("test/test_files/input_short")
 def test_update_dict(init_dict):
     mydict = be.prepare_run.load_input_dict("input")
     mydict = mydict["spacy_dict"]
@@ -36,7 +36,7 @@ def test_update_dict(init_dict):
     assert mydict == init_dict
 
 
-@pytest.mark.dictname("test/input_stanza")
+@pytest.mark.dictname("test/test_files/input_stanza")
 def test_activate_procs(init_dict):
     mydict = be.prepare_run.load_input_dict("input")
     mydict = mydict["stanza_dict"]
