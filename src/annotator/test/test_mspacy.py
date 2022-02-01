@@ -9,8 +9,8 @@ def test_init():
     """Check if the parameters from the input dict are loaded into the
     pipe object as expected."""
 
-    mydict = be.prepare_run.load_input_dict("test/input")
-    mydict_test = be.prepare_run.load_input_dict("test/input_short")
+    mydict = be.prepare_run.load_input_dict("test/test_files/input")
+    mydict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
     test_obj = msp.spacy_pipe(mydict)
     assert test_obj.outname == mydict["output"]
     assert test_obj.pretrained == mydict_test["pretrained"]
@@ -109,8 +109,17 @@ def test_pipe_multiple():
         "text\tNN\ttext\t-\tattr\tNOUN\n",
         ".\t.\t.\t-\tpunct\tPUNCT\n",
         "</s>\n",
+        "\n",
         '<subtextid="1"> \n',
+        "<s>\n",
+        "It\tPRP\tit\t-\tnsubj\tPRON\n",
+        "has\tVBZ\thave\t-\tROOT\tVERB\n",
+        "some\tDT\tsome\t-\tdet\tDET\n",
+        "subtext\tNN\tsubtext\t-\tdobj\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
         "</subtext> \n",
+        "\n",
         "</text> \n",
         '<textid="2"> \n',
         "<s>\n",
@@ -125,5 +134,4 @@ def test_pipe_multiple():
     ]
 
     assert type(results) == list
-    assert len(data) == 3
     assert check == results
