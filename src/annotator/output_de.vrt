@@ -1,0 +1,74 @@
+<s>
+Das	ART	der	-	nk	-
+Feld	NN	Feld	-	sb	-
+der	ART	der	-	nk	-
+Computational	NE	Computational	-	pnc	-
+Chemistry	NE	Chemistry	-	ag	-
+erfreut	VVFIN	erfreuen	-	ROOT	-
+sich	PRF	sich	-	oa	-
+seit	APPR	seit	-	mo	-
+einiger	PIAT	einig	-	nk	-
+Zeit	NN	Zeit	-	nk	-
+einer	ART	einer	-	nk	-
+stetig	ADJD	stetig	-	mo	-
+zunehmenden	ADJA	zunehmend	-	nk	-
+Auf-merksamkeit	NN	Auf-merksamkeit	-	ag	-
+.	$.	.	-	punct	-
+</s>
+<s>
+Hierbei	PROAV	Hierbei	-	mo	-
+ist	VAFIN	sein	-	ROOT	-
+es	PPER	ich	-	sb	-
+für	APPR	für	-	mo	-
+die	ART	der	-	nk	-
+Berechnung	NN	Berechnung	-	nk	-
+von	APPR	von	-	pg	-
+chemisch	ADJD	chemisch	-	mo	-
+relevanten	ADJA	relevant	-	nk	-
+Systemen	NN	System	-	nk	-
+von	APPR	von	-	pg	-
+Interesse	NN	Interesse	-	nk	-
+,	$,	,	-	punct	-
+möglichst	ADV	möglichst	-	mo	-
+große	ADJA	groß	-	nk	-
+Systeme	NN	System	-	oa	-
+(	$(	(	-	punct	-
+Moleküle	NN	Molekül	-	app	-
+)	$(	)	-	punct	-
+durch	APPR	durch	-	mo	-
+effiziente	ADJA	effiziente	-	nk	-
+Nutzung	NN	Nutzung	-	nk	-
+von	APPR	von	-	pg	-
+Rechen-	TRUNC	Rechen-	-	cj	-
+und	KON	und	-	cd	-
+Speicherressourcen	NN	Speicherressourcen	-	nk	-
+zugänglich	ADJD	zugänglich	-	mo	-
+zu	PTKZU	zu	-	pm	-
+machen	VVINF	machen	-	oc	-
+.	$.	.	-	punct	-
+</s>
+<s>
+Die	ART	der	-	nk	-
+Herausforderung	NN	Herausforderung	-	sb	-
+besteht	VVFIN	bestehen	-	ROOT	-
+darin	PROAV	darin	-	op	-
+,	$,	,	-	punct	-
+dass	KOUS	dass	-	cp	-
+mit	APPR	mit	-	mo	-
+der	ART	der	-	nk	-
+zunehmenden	ADJA	zunehmend	-	nk	-
+Anzahl	NN	Anzahl	-	nk	-
+von	APPR	von	-	pg	-
+Atomen	NN	Atomen	-	nk	-
+in	APPR	in	-	mnr	-
+größeren	ADJA	groß	-	nk	-
+Systemen	NN	System	-	nk	-
+auch	ADV	auch	-	mo	-
+die	ART	der	-	nk	-
+Anzahl	NN	Anzahl	-	sb	-
+der	ART	der	-	nk	-
+internen	ADJA	intern	-	nk	-
+Freiheitsgrade	NN	Freiheitsgrade	-	ag	-
+zunimmt	VVFIN	zunehmen	-	re	-
+.	$.	.	-	punct	-
+</s>
