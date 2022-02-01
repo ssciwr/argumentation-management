@@ -74,3 +74,14 @@ RUN conda install -c \
         conda-forge stanza \
     && conda clean -a -q -y \
     && python get_models.py
+
+# install git and pip for local installation of annotator
+RUN apt-get update \
+    && apt-get install -y git \
+    && apt-get install -y pip
+
+# install annotator from repository
+# I guess this would also provide the notebook
+RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management
+RUN cd argumentation_management/src/ \
+    && sudo pip install .
