@@ -9,8 +9,8 @@ def test_init():
     """Check if the parameters from the input dict are loaded into the
     pipe object as expected."""
 
-    mydict = be.prepare_run.load_input_dict("test/input")
-    mydict_test = be.prepare_run.load_input_dict("test/input_short")
+    mydict = be.prepare_run.load_input_dict("test/test_files/input")
+    mydict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
     test_obj = msp.spacy_pipe(mydict)
     assert test_obj.outname == mydict["output"]
     assert test_obj.pretrained == mydict_test["pretrained"]
@@ -96,7 +96,8 @@ def test_pipe_multiple():
     # don't need this anymore
     tmp.close()
 
-    results = test_obj.pipe_multiple(data, ret=True)
+    results_pipe = test_obj.pipe_multiple(data, ret=True)
+    results_alt = test_obj.get_multiple(data, ret=True)
 
     # using spacy 3.2.1 and en_core_web_md 3.2.0
     check = [
@@ -124,6 +125,25 @@ def test_pipe_multiple():
         "</text>\n",
     ]
 
-    assert type(results) == list
+    assert type(results_pipe) == list
     assert len(data) == 3
-    assert check == results
+    assert check == results_pipe
+    assert check == results_alt
+
+
+def test_sentencize():
+
+    text_en = "This is a sentence. This is another sentence, or is it?"
+    text_de = "Dies ist ein Satz. Dies ist ein zweiter Satz, oder nicht?"
+
+    data_en = msp.sentencize_spacy("en", text_en)
+    data_de = msp.sentencize_spacy("de", text_de)
+
+    check_en = [["This is a sentence.", 4], ["This is another sentence, or is it?", 11]]
+    check_de = [
+        ["Dies ist ein Satz.", 4],
+        ["Dies ist ein zweiter Satz, oder nicht?", 11],
+    ]
+
+    assert data_en == check_en
+    assert data_de == check_de
