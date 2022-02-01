@@ -13,6 +13,13 @@ class prepare_run:
         # as this method is not available on all os's
         return len(os.sched_getaffinity(0))
 
+    # read the input data
+    @staticmethod
+    def get_text(path: str) -> str:
+        with open(path, "r") as input:
+            data = input.read().replace("\n", "")
+        return data
+
     # load the dictionary
     @staticmethod
     def load_input_dict(name):
