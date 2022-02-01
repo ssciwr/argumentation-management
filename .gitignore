@@ -139,3 +139,9 @@ docker/
 
 # vscode stuff
 .vscode
+
+# .vrt
+src/annotator/*.vrt
+
+# out folder
+out/
