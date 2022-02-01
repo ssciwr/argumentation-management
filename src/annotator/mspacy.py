@@ -3,7 +3,7 @@ from spacy.tokens.doc import Doc
 from spacy.lang.en import English
 from spacy.lang.de import German
 import copy
-import base as be
+import annotator.base as be
 from tqdm import (
     tqdm,
 )  # for progress in pipe_multiple, might be interesting for large corpora down the line
@@ -32,7 +32,7 @@ class Spacy:
         self.pretrained = config["pretrained"]
 
         if self.pretrained:
-            self.model = self.pretrained
+            self.model = self.pretrainedcd
 
         # here we put some sensible default values
         # in general, it should also be possible

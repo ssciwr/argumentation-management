@@ -5,12 +5,15 @@ import os
 version_file = open(os.path.join("./annotator", "VERSION"))
 version = version_file.read().strip()
 
+requires_file = open(os.path.join("./annotator", "requirements.txt"))
+requirements = [line.strip() for line in requires_file]
+
 setup(
-    name="Annotator",
-    Version=version,
-    description="Annotator source files",
-    authors="Dr. Inga Ulusoy, Christian Delavier",
+    name="annotator",
+    version=version,
+    description="annotator source files",
+    author="Dr. Inga Ulusoy, Christian Delavier",
     license="MIT License",
     packages=find_packages(),
-    install_requires=["numpy"],
+    install_requires=requirements,
 )

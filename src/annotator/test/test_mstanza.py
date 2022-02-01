@@ -1,5 +1,5 @@
 import pytest
-import mstanza as ma
+import annotator.mstanza as ma
 
 
 @pytest.fixture()
