@@ -1,13 +1,13 @@
 {
-    "input": "./test/test_files/example_en.txt",
-    "output": "out/output_en",
+    "input": "input.txt",
+    "output": "out/output",
     "tool": "spacy",
     "stanza_dict": {
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
         "_lang_comment": "Language code for the language to build the Pipeline in",
         "lang": "en",
         "_dir_comment": "directory where models are stored - this maynot work for pipeline",
-        "dir": "./test/models/",  
+        "dir": "./src/annotator/test/models/",  
         "_package_comment": "using the default model, for others see: https://stanfordnlp.github.io/stanza/models.html",
         "package": "default",
         "_processors_comment": "Comma-separated list of processors to use, can also be given as a dictionary: {'tokenize': 'ewt', 'pos': 'ewt'}",
