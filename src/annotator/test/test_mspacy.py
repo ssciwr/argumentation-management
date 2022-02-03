@@ -40,7 +40,7 @@ def test_init(init, load_object):
     assert test_obj.config == be.prepare_run.update_dict(mydict_test["config"])
 
 
-@pytest.fixture
+@pytest.fixture()
 def pipe_sent(init, load_object):
     """Check if applying pipeline through mspacy leads to same result as applying
     same pipeline through spacy directly."""
@@ -100,12 +100,8 @@ def test_output_sent(pipe_sent):
     assert test_out == check
 
 
-def test_pipe_multiple(load_object):
-    """Check if the pipe_multiple function works correctly."""
-
-    test_obj = load_object
-
-    # lets just quickly emulate a file for our input, maybe change the chunker to also allow for direct string input down the line?
+@pytest.fixture(scope="session")
+def chunked_data():
     text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
     formated_text = text.replace(" ", "\n")
 
@@ -119,39 +115,59 @@ def test_pipe_multiple(load_object):
     # don't need this anymore
     tmp.close()
 
+    return data
+
+
+# using spacy 3.2.1 and en_core_web_md 3.2.0
+check_chunked = [
+    '<textid="1"> \n',
+    "<s>\n",
+    "This\tDT\tthis\t-\tnsubj\tPRON\n",
+    "is\tVBZ\tbe\t-\tROOT\tAUX\n",
+    "an\tDT\tan\t-\tdet\tDET\n",
+    "example\tNN\texample\t-\tcompound\tNOUN\n",
+    "text\tNN\ttext\t-\tattr\tNOUN\n",
+    ".\t.\t.\t-\tpunct\tPUNCT\n",
+    "</s>\n",
+    "\n",
+    '<subtextid="1"> \n',
+    "<s>\n",
+    "It\tPRP\tit\t-\tnsubj\tPRON\n",
+    "has\tVBZ\thave\t-\tROOT\tVERB\n",
+    "some\tDT\tsome\t-\tdet\tDET\n",
+    "subtext\tNN\tsubtext\t-\tdobj\tNOUN\n",
+    ".\t.\t.\t-\tpunct\tPUNCT\n",
+    "</s>\n",
+    "</subtext> \n",
+    "\n",
+    "</text> \n",
+    '<textid="2"> \n',
+    "<s>\n",
+    "Here\tRB\there\t-\tadvmod\tADV\n",
+    "is\tVBZ\tbe\t-\tROOT\tAUX\n",
+    "some\tDT\tsome\t-\tadvmod\tPRON\n",
+    "more\tJJR\tmore\t-\tamod\tADJ\n",
+    "text\tNN\ttext\t-\tnsubj\tNOUN\n",
+    ".\t.\t.\t-\tpunct\tPUNCT\n",
+    "</s>\n",
+    "</text>\n",
+]
+
+
+@pytest.mark.check_chunked(check_chunked)
+def test_pipe_multiple(load_object, chunked_data):
+    """Check if the pipe_multiple function works correctly."""
+
+    test_obj = load_object
+
+    # lets just quickly emulate a file for our input, maybe change the chunker to also allow for direct string input down the line?
+    data = chunked_data
     results_pipe = test_obj.pipe_multiple(data, ret=True)
     results_alt = test_obj.get_multiple(data, ret=True)
 
-    # using spacy 3.2.1 and en_core_web_md 3.2.0
-    check = [
-        '<textid="1"> \n',
-        "<s>\n",
-        "This\tDT\tthis\t-\tnsubj\tPRON\n",
-        "is\tVBZ\tbe\t-\tROOT\tAUX\n",
-        "an\tDT\tan\t-\tdet\tDET\n",
-        "example\tNN\texample\t-\tcompound\tNOUN\n",
-        "text\tNN\ttext\t-\tattr\tNOUN\n",
-        ".\t.\t.\t-\tpunct\tPUNCT\n",
-        "</s>\n",
-        '<subtextid="1"> \n',
-        "</subtext> \n",
-        "</text> \n",
-        '<textid="2"> \n',
-        "<s>\n",
-        "Here\tRB\there\t-\tadvmod\tADV\n",
-        "is\tVBZ\tbe\t-\tROOT\tAUX\n",
-        "some\tDT\tsome\t-\tadvmod\tPRON\n",
-        "more\tJJR\tmore\t-\tamod\tADJ\n",
-        "text\tNN\ttext\t-\tnsubj\tNOUN\n",
-        ".\t.\t.\t-\tpunct\tPUNCT\n",
-        "</s>\n",
-        "</text>\n",
-    ]
-
     assert type(results_pipe) == list
-    assert len(data) == 3
-    assert check == results_pipe
-    assert check == results_alt
+    assert check_chunked == results_pipe
+    assert check_chunked == results_alt
 
 
 def test_sentencize():
