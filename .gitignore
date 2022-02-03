@@ -142,3 +142,6 @@ docker/
 
 # vscode stuff
 .vscode
+
+#xml
+*.xml
