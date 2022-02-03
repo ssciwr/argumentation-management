@@ -66,31 +66,28 @@ def pipe_sent(init, load_object):
     return test_obj.apply_to(text), check_doc
 
 
-check = [
-    "<s>\n",
-    "This\tDT\tthis\t-\tnsubj\tPRON\n",
-    "is\tVBZ\tbe\t-\tROOT\tAUX\n",
-    "an\tDT\tan\t-\tdet\tDET\n",
-    "example\tNN\texample\t-\tcompound\tNOUN\n",
-    "text\tNN\ttext\t-\tattr\tNOUN\n",
-    ".\t.\t.\t-\tpunct\tPUNCT\n",
-    "</s>\n",
-    "<s>\n",
-    "This\tDT\tthis\t-\tnsubj\tPRON\n",
-    "is\tVBZ\tbe\t-\tROOT\tAUX\n",
-    "a\tDT\ta\t-\tdet\tDET\n",
-    "second\tJJ\tsecond\tORDINAL\tamod\tADJ\n",
-    "sentence\tNN\tsentence\t-\tattr\tNOUN\n",
-    ".\t.\t.\t-\tpunct\tPUNCT\n",
-    "</s>\n",
-]
-
-
-@pytest.mark.check(check)
 def test_output_sent(pipe_sent):
     """Check if output is as expected, use current output as example result.
     Additionally use doc build through spacy directly and compare output."""
 
+    check = [
+        "<s>\n",
+        "This\tDT\tthis\t-\tnsubj\tPRON\n",
+        "is\tVBZ\tbe\t-\tROOT\tAUX\n",
+        "an\tDT\tan\t-\tdet\tDET\n",
+        "example\tNN\texample\t-\tcompound\tNOUN\n",
+        "text\tNN\ttext\t-\tattr\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
+        "<s>\n",
+        "This\tDT\tthis\t-\tnsubj\tPRON\n",
+        "is\tVBZ\tbe\t-\tROOT\tAUX\n",
+        "a\tDT\ta\t-\tdet\tDET\n",
+        "second\tJJ\tsecond\tORDINAL\tamod\tADJ\n",
+        "sentence\tNN\tsentence\t-\tattr\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
+    ]
     # this is quite specific, any way to generalize?
     test_obj, check_doc = pipe_sent
     test_out = msp.out_object_spacy(test_obj.doc, test_obj.jobs, start=0).fetch_output()
@@ -100,7 +97,7 @@ def test_output_sent(pipe_sent):
     assert test_out == check
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def chunked_data():
     text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
     formated_text = text.replace(" ", "\n")
@@ -118,43 +115,6 @@ def chunked_data():
     return data
 
 
-# using spacy 3.2.1 and en_core_web_md 3.2.0
-check_chunked = [
-    '<textid="1"> \n',
-    "<s>\n",
-    "This\tDT\tthis\t-\tnsubj\tPRON\n",
-    "is\tVBZ\tbe\t-\tROOT\tAUX\n",
-    "an\tDT\tan\t-\tdet\tDET\n",
-    "example\tNN\texample\t-\tcompound\tNOUN\n",
-    "text\tNN\ttext\t-\tattr\tNOUN\n",
-    ".\t.\t.\t-\tpunct\tPUNCT\n",
-    "</s>\n",
-    "\n",
-    '<subtextid="1"> \n',
-    "<s>\n",
-    "It\tPRP\tit\t-\tnsubj\tPRON\n",
-    "has\tVBZ\thave\t-\tROOT\tVERB\n",
-    "some\tDT\tsome\t-\tdet\tDET\n",
-    "subtext\tNN\tsubtext\t-\tdobj\tNOUN\n",
-    ".\t.\t.\t-\tpunct\tPUNCT\n",
-    "</s>\n",
-    "</subtext> \n",
-    "\n",
-    "</text> \n",
-    '<textid="2"> \n',
-    "<s>\n",
-    "Here\tRB\there\t-\tadvmod\tADV\n",
-    "is\tVBZ\tbe\t-\tROOT\tAUX\n",
-    "some\tDT\tsome\t-\tadvmod\tPRON\n",
-    "more\tJJR\tmore\t-\tamod\tADJ\n",
-    "text\tNN\ttext\t-\tnsubj\tNOUN\n",
-    ".\t.\t.\t-\tpunct\tPUNCT\n",
-    "</s>\n",
-    "</text>\n",
-]
-
-
-@pytest.mark.check_chunked(check_chunked)
 def test_pipe_multiple(load_object, chunked_data):
     """Check if the pipe_multiple function works correctly."""
 
@@ -164,6 +124,41 @@ def test_pipe_multiple(load_object, chunked_data):
     data = chunked_data
     results_pipe = test_obj.pipe_multiple(data, ret=True)
     results_alt = test_obj.get_multiple(data, ret=True)
+
+    # using spacy 3.2.1 and en_core_web_md 3.2.0
+    check_chunked = [
+        '<textid="1"> \n',
+        "<s>\n",
+        "This\tDT\tthis\t-\tnsubj\tPRON\n",
+        "is\tVBZ\tbe\t-\tROOT\tAUX\n",
+        "an\tDT\tan\t-\tdet\tDET\n",
+        "example\tNN\texample\t-\tcompound\tNOUN\n",
+        "text\tNN\ttext\t-\tattr\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
+        "\n",
+        '<subtextid="1"> \n',
+        "<s>\n",
+        "It\tPRP\tit\t-\tnsubj\tPRON\n",
+        "has\tVBZ\thave\t-\tROOT\tVERB\n",
+        "some\tDT\tsome\t-\tdet\tDET\n",
+        "subtext\tNN\tsubtext\t-\tdobj\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
+        "</subtext> \n",
+        "\n",
+        "</text> \n",
+        '<textid="2"> \n',
+        "<s>\n",
+        "Here\tRB\there\t-\tadvmod\tADV\n",
+        "is\tVBZ\tbe\t-\tROOT\tAUX\n",
+        "some\tDT\tsome\t-\tadvmod\tPRON\n",
+        "more\tJJR\tmore\t-\tamod\tADJ\n",
+        "text\tNN\ttext\t-\tnsubj\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
+        "</text>\n",
+    ]
 
     assert type(results_pipe) == list
     assert check_chunked == results_pipe

@@ -16,6 +16,7 @@ def load_object(init):
 
 
 def test_init(load_object, init):
+    """Check that the initial values are as expected."""
 
     test_obj = load_object
     check_dict = init
@@ -32,6 +33,7 @@ text_en = "This is a sentence. This is another sentence, or is it?"
 def test_senter_spacy(load_object):
     """Check that the sentencizer works."""
 
+    # using spacy 3.2.1
     test_obj = load_object
     data_en = test_obj.senter_spacy(text_en).sents
 
@@ -41,6 +43,7 @@ def test_senter_spacy(load_object):
 
 @pytest.fixture
 def apply_to(load_object):
+    """Get object in post-pipe state."""
 
     test_obj = load_object
 
@@ -50,6 +53,9 @@ def apply_to(load_object):
 
 
 def test_output(apply_to):
+    """Check that the output is as expected."""
+
+    # using flair 0.9
     check = """! ner pos
     <s>
     This -  DT
@@ -77,6 +83,8 @@ def test_output(apply_to):
 
 @pytest.fixture()
 def chunked_data():
+    """Get some chunked data."""
+
     text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
     formated_text = text.replace(" ", "\n")
 
@@ -84,9 +92,8 @@ def chunked_data():
 
     tmp.write(formated_text.encode())
     tmp.seek(0)
-    # print(tmp.read().decode())
+
     data = be.chunk_sample_text("{}".format(tmp.name))
-    # print(data)
     # don't need this anymore
     tmp.close()
 
@@ -94,9 +101,12 @@ def chunked_data():
 
 
 def test_get_multiple(chunked_data, load_object):
+    """Check that chunked data is annotated and returned as expected."""
 
     test_obj = load_object
     data = test_obj.get_multiple(chunked_data, ret=True)
+
+    # using spacy 3.2.1 and flair 0.9
     check_chunked = [
         "! ner pos\n",
         '<textid="1"> \n',
