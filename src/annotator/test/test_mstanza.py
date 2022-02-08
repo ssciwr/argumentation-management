@@ -1,9 +1,26 @@
 import pytest
 import mstanza as ma
 
+mydict_en = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+mydict_de = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+
 
 @pytest.fixture()
-def get_sample(request):
+def set_file_dict():
+    text_dict = {
+        "en": "./test/test_files/example_en.txt",
+        "de": "./test/test_files/example_de.txt",
+        "test_en": "./test/test_files/example_en_stanza.txt",
+        "test_de": "./test/test_files/example_de_stanza.txt",
+        "tok": "./test/test_files/example_en_stanza_tok.txt",
+        "tok_pos": "./test/test_files/example_en_stanza_tok_pos.txt",
+        "tok_pos_lemma": "./test/test_files/example_en_stanza_tok_pos_lemma.txt",
+    }
+    return text_dict
+
+
+@pytest.fixture()
+def get_sample(set_file_dict, request):
     """Load the specified sample text."""
     marker = request.node.get_closest_marker("lang")
     if marker == "None":
@@ -18,15 +35,39 @@ def get_sample(request):
         "test_de": "./test/test_files/example_de_stanza.txt",
     }
     # Read the sample text.
-    with open(text_dict[lang_key], "r") as myfile:
+    with open(set_file_dict[lang_key], "r") as myfile:
         data = myfile.read().replace("\n", "")
+    return data
+
+
+@pytest.fixture()
+def get_sample_stanza(set_file_dict, request):
+    """Load the specified sample text output from stanza."""
+    marker = request.node.get_closest_marker("lang")
+    if marker == "None":
+        # missing marker
+        print("Missing a marker for reading the sample text output from stanza.")
+    else:
+        lang_key = marker.args[0]
     # Read the processed text from stanza.
-    with open(text_dict["test_" + lang_key], "r") as myfile:
+    with open(set_file_dict["test_" + lang_key], "r") as myfile:
         test_data = myfile.read().replace("\n", "")
-    return data, test_data
+    return test_data
 
 
-test_doc = """[\n  [\n    {\n      "id": 1,\n      "text": "This",\n      "lemma": "this",\n      "upos": "PRON",\n      "xpos": "DT",\n      "feats": "Number=Sing|PronType=Dem",\n      "start_char": 0,\n      "end_char": 4\n    },\n    {\n      "id": 2,\n      "text": "is",\n      "lemma": "be",\n      "upos": "AUX",\n      "xpos": "VBZ",\n      "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",\n      "start_char": 5,\n      "end_char": 7\n    },\n    {\n      "id": 3,\n      "text": "an",\n      "lemma": "a",\n      "upos": "DET",\n      "xpos": "DT",\n      "feats": "Definite=Ind|PronType=Art",\n      "start_char": 8,\n      "end_char": 10\n    },\n    {\n      "id": 4,\n      "text": "example",\n      "lemma": "example",\n      "upos": "NOUN",\n      "xpos": "NN",\n      "feats": "Number=Sing",\n      "start_char": 11,\n      "end_char": 18\n    },\n    {\n      "id": 5,\n      "text": ".",\n      "lemma": ".",\n      "upos": "PUNCT",\n      "xpos": ".",\n      "start_char": 18,\n      "end_char": 19\n    }\n  ],\n  [\n    {\n      "id": 1,\n      "text": "And",\n      "lemma": "and",\n      "upos": "CCONJ",\n      "xpos": "CC",\n      "start_char": 20,\n      "end_char": 23\n    },\n    {\n      "id": 2,\n      "text": "here",\n      "lemma": "here",\n      "upos": "ADV",\n      "xpos": "RB",\n      "feats": "PronType=Dem",\n      "start_char": 24,\n      "end_char": 28\n    },\n    {\n      "id": 3,\n      "text": "we",\n      "lemma": "we",\n      "upos": "PRON",\n      "xpos": "PRP",\n      "feats": "Case=Nom|Number=Plur|Person=1|PronType=Prs",\n      "start_char": 29,\n      "end_char": 31\n    },\n    {\n      "id": 4,\n      "text": "go",\n      "lemma": "go",\n      "upos": "VERB",\n      "xpos": "VBP",\n      "feats": "Mood=Ind|Number=Plur|Person=1|Tense=Pres|VerbForm=Fin",\n      "start_char": 32,\n      "end_char": 34\n    },\n    {\n      "id": 5,\n      "text": ".",\n      "lemma": ".",\n      "upos": "PUNCT",\n      "xpos": ".",\n      "start_char": 34,\n      "end_char": 35\n    }\n  ]\n]"""
+@pytest.fixture()
+def get_out_sample(set_file_dict, request):
+    """Load the specified vrt sample."""
+    marker = request.node.get_closest_marker("proc")
+    if marker == "None":
+        # missing marker
+        print("Missing a marker for reading the vrt sample text.")
+    else:
+        proc_key = marker.args[0]
+    # Read the sample text.
+    with open(set_file_dict[proc_key], "r") as myfile:
+        data = myfile.read()
+    return data
 
 
 def test_fix_dict_path():
@@ -43,40 +84,105 @@ def test_fix_dict_path():
 
 
 def test_init_pipeline():
-    mydict = {
-        "lang": "en",
-        "dir": "./test/models/",
-        "processors": "tokenize,pos,lemma",
-    }
-    obj = ma.mstanza_pipeline(mydict)
+    obj = ma.mstanza_pipeline(mydict_en)
     obj.init_pipeline()
 
 
 @pytest.mark.lang("en")
-def test_process_text_en(get_sample):
-    mydict = {
-        "lang": "en",
-        "dir": "./test/models/",
-        "processors": "tokenize,pos,lemma",
-    }
-    text, test_doc = get_sample
-    obj = ma.mstanza_pipeline(mydict)
+def test_process_text_en(get_sample, get_sample_stanza):
+    text = get_sample
+    obj = ma.mstanza_pipeline(mydict_en)
     obj.init_pipeline()
     docobj = obj.process_text(text)
+    # clean up the returned object, convert to string
     doc = str(docobj).replace("\n", "")
-    assert doc == str(test_doc)
+    doc = doc.replace(" ", "")
+    test_doc = get_sample_stanza.replace(" ", "")
+    assert doc == test_doc
 
 
 @pytest.mark.lang("de")
-def test_process_text_de(get_sample):
-    mydict = {
-        "lang": "de",
-        "dir": "./test/models/",
-        "processors": "tokenize,pos,lemma",
-    }
-    text, test_doc = get_sample
-    obj = ma.mstanza_pipeline(mydict)
+def test_process_text_de(get_sample, get_sample_stanza):
+    text = get_sample
+    obj = ma.mstanza_pipeline(mydict_de)
     obj.init_pipeline()
     docobj = obj.process_text(text)
+    # clean up the returned object, convert to string
     doc = str(docobj).replace("\n", "")
-    assert doc == str(test_doc)
+    doc = doc.replace(" ", "")
+    test_doc = get_sample_stanza.replace(" ", "")
+    assert doc == test_doc
+
+
+@pytest.mark.lang("en")
+@pytest.mark.proc("tok")
+def test_out_object_stanza_tok(get_sample, get_out_sample):
+    text = get_sample
+    procstring = "tokenize"
+    mydict_en["processors"] = procstring
+    obj = ma.mstanza_pipeline(mydict_en)
+    obj.init_pipeline()
+    docobj = obj.process_text(text)
+    # now call the postprocessing
+    out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
+    test_out = get_out_sample
+    # compare as string not as list
+    # reading in as list will add further \n
+    assert str(out) == test_out
+
+
+@pytest.mark.lang("en")
+@pytest.mark.proc("tok_pos")
+def test_out_object_stanza_tok_pos(get_sample, get_out_sample):
+    text = get_sample
+    procstring = "tokenize,pos"
+    mydict_en["processors"] = procstring
+    obj = ma.mstanza_pipeline(mydict_en)
+    obj.init_pipeline()
+    docobj = obj.process_text(text)
+    # now call the postprocessing
+    out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
+    test_out = get_out_sample
+    # compare as string not as list
+    # reading in as list will add further \n
+    assert str(out) == test_out
+
+
+@pytest.mark.lang("en")
+@pytest.mark.proc("tok_pos_lemma")
+def test_out_object_stanza_tok_pos_lemma(get_sample, get_out_sample):
+    text = get_sample
+    procstring = "tokenize,pos,lemma"
+    mydict_en["processors"] = procstring
+    obj = ma.mstanza_pipeline(mydict_en)
+    obj.init_pipeline()
+    docobj = obj.process_text(text)
+    # now call the postprocessing
+    out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
+    test_out = get_out_sample
+    # compare as string not as list
+    # reading in as list will add further \n
+    assert str(out) == test_out
+
+
+@pytest.mark.lang("en")
+def test_out_object_stanza_vrt(get_sample):
+    text = get_sample
+    procstring = "tokenize,pos,lemma"
+    outfile = "./test/test_files/example_en"
+    obj = ma.mstanza_pipeline(mydict_en)
+    obj.init_pipeline()
+    docobj = obj.process_text(text)
+    # now call the postprocessing
+    out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
+    file_out = open(outfile + "_test.vrt", "r")
+    # call vrt writing
+    ma.out_object_stanza.write_vrt(outfile, out)
+    file = open(outfile + ".vrt", "r")
+    assert file.read() == file_out.read()
+    import os
+
+    if os.path.exists(outfile + ".vrt"):
+        os.remove(outfile + ".vrt")
+    else:
+        print("{} was not created during testing.".format(outfile + ".vrt"))

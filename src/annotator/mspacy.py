@@ -3,7 +3,7 @@ from spacy.tokens.doc import Doc
 from spacy.lang.en import English
 from spacy.lang.de import German
 import copy
-import annotator.base as be
+import base as be
 from tqdm import (
     tqdm,
 )  # for progress in pipe_multiple, might be interesting for large corpora down the line
@@ -32,7 +32,7 @@ class Spacy:
         self.pretrained = config["pretrained"]
 
         if self.pretrained:
-            self.model = self.pretrainedcd
+            self.model = self.pretrained
 
         # here we put some sensible default values
         # in general, it should also be possible
@@ -259,9 +259,7 @@ class spacy_pipe(Spacy):
                 tmp = self.apply_to(chunk[1]).pass_results(ret=True)
             elif i > 0:
                 # apply pipe to chunk, keeping token index from previous chunk
-                tmp = self.apply_to(chunk[1]).pass_results(
-                    ret=True, start=be.find_last_idx(tmp) + 1
-                )
+                tmp = self.apply_to(chunk[1]).pass_results(ret=True, start=0)
             # append data from tmp pipe output to complete output
             for line in tmp:
                 out.append(line)
