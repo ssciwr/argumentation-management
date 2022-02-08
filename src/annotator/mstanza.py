@@ -67,7 +67,7 @@ class mstanza_pipeline:
         jobs = [proc.strip() for proc in self.config["processors"].split(",")]
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        out_object_stanza.write_vrt(outfile, out)
+        out_object_stanza.write_vrt(outname, out)
         # encode
         be.encode_corpus.encode_vrt("test", outname, jobs, "stanza")
 
@@ -108,30 +108,3 @@ class out_object_stanza(be.out_object):
             out.append(line + "\n")
         self.tstart = tid
         return out
-
-
-if __name__ == "__main__":
-    dict = be.prepare_run.load_input_dict("./src/annotator/input")
-    # take only the part of dict pertaining to stanza
-    stanza_dict = dict["stanza_dict"]
-
-    # to point to user-defined model directories
-    # stanza does not accommodate fully at the moment
-    mydict = mstanza_preprocess.fix_dict_path(stanza_dict)
-    # sa.download(mydict["lang"], model_dir=mydict["dir"])
-    print(stanza_dict)
-    print(mydict)
-    # stanza does not care about the extra comment keys
-    # but we remove them for subsequent processing just in case
-    # now we need to select the processors and "activate" the sub-dictionaries
-    mydict = be.prepare_run.update_dict(mydict)
-    mydict = be.prepare_run.activate_procs(mydict, "stanza_")
-    mytext = be.prepare_run.get_sample_text()
-    # mytext = "This is an example. And here we go."
-    # initialize instance of the class
-    obj = mstanza_pipeline(mydict)
-    obj.init_pipeline()
-    out = obj.process_text(mytext)
-    obj.postprocess()
-    # For the output:
-    # We need a module that transforms a generic dict into xml.
