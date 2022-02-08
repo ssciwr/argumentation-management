@@ -1,7 +1,7 @@
 import pytest
 import spacy as sp
-import annotator.mspacy as msp
-import annotator.base as be
+import mspacy as msp
+import base as be
 import tempfile
 
 

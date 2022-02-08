@@ -1,6 +1,6 @@
 import pytest
 import json
-import annotator.base as be
+import base as be
 
 
 @pytest.fixture()
