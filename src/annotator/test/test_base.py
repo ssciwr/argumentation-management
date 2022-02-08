@@ -1,6 +1,7 @@
 import pytest
 import json
-import annotator.base as be
+import base as be
+import tempfile
 
 
 @pytest.fixture()
@@ -51,6 +52,33 @@ def test_activate_procs(init_dict):
 
 # chunker class - to be completed
 # def test_chunker
+
+
+def test_chunker():
+    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
+
+    formated_text = text.replace(" ", "\n")
+
+    tmp = tempfile.NamedTemporaryFile()
+
+    tmp.write(formated_text.encode())
+    tmp.seek(0)
+    # print(tmp.read().decode())
+    data = be.chunk_sample_text("{}".format(tmp.name))
+    # print(data)
+    # don't need this anymore
+    tmp.close()
+
+    check = [
+        ['<textid="1"> ', "This is an example text. ", ""],
+        ['<subtextid="1"> ', "It has some subtext. ", "</subtext> "],
+        ["", "", "</text> "],
+        ['<textid="2"> ', "Here is some more text. ", "</text>"],
+    ]
+
+    assert data == check
+
+
 # out_object to be tested in spacy/stanza
 # test the encode_corpus class
 # everything except the actual cwb command
