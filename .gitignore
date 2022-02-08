@@ -137,7 +137,7 @@ src/annotator/test/models/
 
 # .vrt files
 src/annotator/*.vrt
-./*.vrt
+.*.vrt
 docker/
 !docker/get_models.py
 
