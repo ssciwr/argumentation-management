@@ -11,6 +11,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -
         cython3 \
         flex \
         gcc \
+        git \
         less \
         libc6-dev \
         libglib2.0-0 \
@@ -76,12 +77,12 @@ RUN conda install -c \
     && python get_models.py
 
 # install git and pip for local installation of annotator
-RUN apt-get update \
-    && apt-get install -y git \
-    && apt-get install -y pip
+# RUN apt-get update \
+    # && apt-get install -y git \
+    # && apt-get install -y pip
 
 # install annotator from repository
 # I guess this would also provide the notebook
 RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management
 RUN cd argumentation_management/src/ \
-    && sudo pip install .
+    && conda run -n base python -m pip install .
