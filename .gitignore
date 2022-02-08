@@ -146,3 +146,6 @@ docker/
 
 #xml
 *.xml
+
+# out folder
+out/
