@@ -28,12 +28,6 @@ def get_sample(set_file_dict, request):
         print("Missing a marker for reading the sample text.")
     else:
         lang_key = marker.args[0]
-    text_dict = {
-        "en": "./test/test_files/example_en.txt",
-        "de": "./test/test_files/example_de.txt",
-        "test_en": "./test/test_files/example_en_stanza.txt",
-        "test_de": "./test/test_files/example_de_stanza.txt",
-    }
     # Read the sample text.
     with open(set_file_dict[lang_key], "r") as myfile:
         data = myfile.read().replace("\n", "")
