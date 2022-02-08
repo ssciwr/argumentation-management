@@ -1,0 +1,1008 @@
+<?xml version="1.0" ?>
+<doc>
+	<Sent Id="1">
+		<Token Id="1">
+			<text>The</text>
+			<lemma>the</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Def|PronType=Art</feats>
+			<start_char>0</start_char>
+			<end_char>3</end_char>
+		</Token>
+		<Token Id="2">
+			<text>Scientific</text>
+			<lemma>Scientific</lemma>
+			<upos>ADJ</upos>
+			<xpos>NNP</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>4</start_char>
+			<end_char>14</end_char>
+		</Token>
+		<Token Id="3">
+			<text>Software</text>
+			<lemma>Software</lemma>
+			<upos>PROPN</upos>
+			<xpos>NNP</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>15</start_char>
+			<end_char>23</end_char>
+		</Token>
+		<Token Id="4">
+			<text>Center</text>
+			<lemma>Center</lemma>
+			<upos>PROPN</upos>
+			<xpos>NNP</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>24</start_char>
+			<end_char>30</end_char>
+		</Token>
+		<Token Id="5">
+			<text>strives</text>
+			<lemma>strive</lemma>
+			<upos>VERB</upos>
+			<xpos>VBZ</xpos>
+			<feats>Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin</feats>
+			<start_char>31</start_char>
+			<end_char>38</end_char>
+		</Token>
+		<Token Id="6">
+			<text>to</text>
+			<lemma>to</lemma>
+			<upos>PART</upos>
+			<xpos>TO</xpos>
+			<start_char>39</start_char>
+			<end_char>41</end_char>
+		</Token>
+		<Token Id="7">
+			<text>improve</text>
+			<lemma>improve</lemma>
+			<upos>VERB</upos>
+			<xpos>VB</xpos>
+			<feats>VerbForm=Inf</feats>
+			<start_char>42</start_char>
+			<end_char>49</end_char>
+		</Token>
+		<Token Id="8">
+			<text>scientific</text>
+			<lemma>scientific</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>50</start_char>
+			<end_char>60</end_char>
+		</Token>
+		<Token Id="9">
+			<text>software</text>
+			<lemma>software</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>61</start_char>
+			<end_char>69</end_char>
+		</Token>
+		<Token Id="10">
+			<text>development</text>
+			<lemma>development</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>70</start_char>
+			<end_char>81</end_char>
+		</Token>
+		<Token Id="11">
+			<text>to</text>
+			<lemma>to</lemma>
+			<upos>PART</upos>
+			<xpos>TO</xpos>
+			<start_char>82</start_char>
+			<end_char>84</end_char>
+		</Token>
+		<Token Id="12">
+			<text>ensure</text>
+			<lemma>ensure</lemma>
+			<upos>VERB</upos>
+			<xpos>VB</xpos>
+			<feats>VerbForm=Inf</feats>
+			<start_char>85</start_char>
+			<end_char>91</end_char>
+		</Token>
+		<Token Id="13">
+			<text>reproducible</text>
+			<lemma>reproducible</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>92</start_char>
+			<end_char>104</end_char>
+		</Token>
+		<Token Id="14">
+			<text>science</text>
+			<lemma>science</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>105</start_char>
+			<end_char>112</end_char>
+		</Token>
+		<Token Id="15">
+			<text>and</text>
+			<lemma>and</lemma>
+			<upos>CCONJ</upos>
+			<xpos>CC</xpos>
+			<start_char>113</start_char>
+			<end_char>116</end_char>
+		</Token>
+		<Token Id="16">
+			<text>software</text>
+			<lemma>software</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>117</start_char>
+			<end_char>125</end_char>
+		</Token>
+		<Token Id="17">
+			<text>sustainability</text>
+			<lemma>sustainability</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>126</start_char>
+			<end_char>140</end_char>
+		</Token>
+		<Token Id="18">
+			<text>.</text>
+			<lemma>.</lemma>
+			<upos>PUNCT</upos>
+			<xpos>.</xpos>
+			<start_char>140</start_char>
+			<end_char>141</end_char>
+		</Token>
+	</Sent>
+	<Sent Id="2">
+		<Token Id="1">
+			<text>The</text>
+			<lemma>the</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Def|PronType=Art</feats>
+			<start_char>142</start_char>
+			<end_char>145</end_char>
+		</Token>
+		<Token Id="2">
+			<text>SSC</text>
+			<lemma>SSC</lemma>
+			<upos>PROPN</upos>
+			<xpos>NNP</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>146</start_char>
+			<end_char>149</end_char>
+		</Token>
+		<Token Id="3">
+			<text>also</text>
+			<lemma>also</lemma>
+			<upos>ADV</upos>
+			<xpos>RB</xpos>
+			<start_char>150</start_char>
+			<end_char>154</end_char>
+		</Token>
+		<Token Id="4">
+			<text>acts</text>
+			<lemma>act</lemma>
+			<upos>VERB</upos>
+			<xpos>VBZ</xpos>
+			<feats>Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin</feats>
+			<start_char>155</start_char>
+			<end_char>159</end_char>
+		</Token>
+		<Token Id="5">
+			<text>as</text>
+			<lemma>as</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>160</start_char>
+			<end_char>162</end_char>
+		</Token>
+		<Token Id="6">
+			<text>a</text>
+			<lemma>a</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Ind|PronType=Art</feats>
+			<start_char>163</start_char>
+			<end_char>164</end_char>
+		</Token>
+		<Token Id="7">
+			<text>link</text>
+			<lemma>link</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>165</start_char>
+			<end_char>169</end_char>
+		</Token>
+		<Token Id="8">
+			<text>between</text>
+			<lemma>between</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>170</start_char>
+			<end_char>177</end_char>
+		</Token>
+		<Token Id="9">
+			<text>the</text>
+			<lemma>the</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Def|PronType=Art</feats>
+			<start_char>178</start_char>
+			<end_char>181</end_char>
+		</Token>
+		<Token Id="10">
+			<text>different</text>
+			<lemma>different</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>182</start_char>
+			<end_char>191</end_char>
+		</Token>
+		<Token Id="11">
+			<text>scientific</text>
+			<lemma>scientific</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>192</start_char>
+			<end_char>202</end_char>
+		</Token>
+		<Token Id="12">
+			<text>disciplines</text>
+			<lemma>discipline</lemma>
+			<upos>NOUN</upos>
+			<xpos>NNS</xpos>
+			<feats>Number=Plur</feats>
+			<start_char>203</start_char>
+			<end_char>214</end_char>
+		</Token>
+		<Token Id="13">
+			<text>,</text>
+			<lemma>,</lemma>
+			<upos>PUNCT</upos>
+			<xpos>,</xpos>
+			<start_char>214</start_char>
+			<end_char>215</end_char>
+		</Token>
+		<Token Id="14">
+			<text>enabling</text>
+			<lemma>enable</lemma>
+			<upos>VERB</upos>
+			<xpos>VBG</xpos>
+			<feats>VerbForm=Ger</feats>
+			<start_char>216</start_char>
+			<end_char>224</end_char>
+		</Token>
+		<Token Id="15">
+			<text>collaboration</text>
+			<lemma>collaboration</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>225</start_char>
+			<end_char>238</end_char>
+		</Token>
+		<Token Id="16">
+			<text>and</text>
+			<lemma>and</lemma>
+			<upos>CCONJ</upos>
+			<xpos>CC</xpos>
+			<start_char>239</start_char>
+			<end_char>242</end_char>
+		</Token>
+		<Token Id="17">
+			<text>interdisciplinary</text>
+			<lemma>interdisciplinary</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>243</start_char>
+			<end_char>260</end_char>
+		</Token>
+		<Token Id="18">
+			<text>research</text>
+			<lemma>research</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>261</start_char>
+			<end_char>269</end_char>
+		</Token>
+		<Token Id="19">
+			<text>.</text>
+			<lemma>.</lemma>
+			<upos>PUNCT</upos>
+			<xpos>.</xpos>
+			<start_char>269</start_char>
+			<end_char>270</end_char>
+		</Token>
+	</Sent>
+	<Sent Id="3">
+		<Token Id="1">
+			<text>The</text>
+			<lemma>the</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Def|PronType=Art</feats>
+			<start_char>270</start_char>
+			<end_char>273</end_char>
+		</Token>
+		<Token Id="2">
+			<text>current</text>
+			<lemma>current</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>274</start_char>
+			<end_char>281</end_char>
+		</Token>
+		<Token Id="3">
+			<text>role</text>
+			<lemma>role</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>282</start_char>
+			<end_char>286</end_char>
+		</Token>
+		<Token Id="4">
+			<text>of</text>
+			<lemma>of</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>287</start_char>
+			<end_char>289</end_char>
+		</Token>
+		<Token Id="5">
+			<text>software</text>
+			<lemma>software</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>290</start_char>
+			<end_char>298</end_char>
+		</Token>
+		<Token Id="6">
+			<text>in</text>
+			<lemma>in</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>299</start_char>
+			<end_char>301</end_char>
+		</Token>
+		<Token Id="7">
+			<text>research</text>
+			<lemma>research</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>302</start_char>
+			<end_char>310</end_char>
+		</Token>
+		<Token Id="8">
+			<text>communities</text>
+			<lemma>community</lemma>
+			<upos>NOUN</upos>
+			<xpos>NNS</xpos>
+			<feats>Number=Plur</feats>
+			<start_char>311</start_char>
+			<end_char>322</end_char>
+		</Token>
+		<Token Id="9">
+			<text>Software</text>
+			<lemma>Software</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>322</start_char>
+			<end_char>330</end_char>
+		</Token>
+		<Token Id="10">
+			<text>development</text>
+			<lemma>development</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>331</start_char>
+			<end_char>342</end_char>
+		</Token>
+		<Token Id="11">
+			<text>is</text>
+			<lemma>be</lemma>
+			<upos>AUX</upos>
+			<xpos>VBZ</xpos>
+			<feats>Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin</feats>
+			<start_char>343</start_char>
+			<end_char>345</end_char>
+		</Token>
+		<Token Id="12">
+			<text>an</text>
+			<lemma>a</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Ind|PronType=Art</feats>
+			<start_char>346</start_char>
+			<end_char>348</end_char>
+		</Token>
+		<Token Id="13">
+			<text>increasingly</text>
+			<lemma>increasingly</lemma>
+			<upos>ADV</upos>
+			<xpos>RB</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>349</start_char>
+			<end_char>361</end_char>
+		</Token>
+		<Token Id="14">
+			<text>vital</text>
+			<lemma>vital</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>362</start_char>
+			<end_char>367</end_char>
+		</Token>
+		<Token Id="15">
+			<text>part</text>
+			<lemma>part</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>368</start_char>
+			<end_char>372</end_char>
+		</Token>
+		<Token Id="16">
+			<text>of</text>
+			<lemma>of</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>373</start_char>
+			<end_char>375</end_char>
+		</Token>
+		<Token Id="17">
+			<text>research</text>
+			<lemma>research</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>376</start_char>
+			<end_char>384</end_char>
+		</Token>
+		<Token Id="18">
+			<text>,</text>
+			<lemma>,</lemma>
+			<upos>PUNCT</upos>
+			<xpos>,</xpos>
+			<start_char>384</start_char>
+			<end_char>385</end_char>
+		</Token>
+		<Token Id="19">
+			<text>but</text>
+			<lemma>but</lemma>
+			<upos>CCONJ</upos>
+			<xpos>CC</xpos>
+			<start_char>386</start_char>
+			<end_char>389</end_char>
+		</Token>
+		<Token Id="20">
+			<text>if</text>
+			<lemma>if</lemma>
+			<upos>SCONJ</upos>
+			<xpos>IN</xpos>
+			<start_char>390</start_char>
+			<end_char>392</end_char>
+		</Token>
+		<Token Id="21">
+			<text>not</text>
+			<lemma>not</lemma>
+			<upos>PART</upos>
+			<xpos>RB</xpos>
+			<feats>Polarity=Neg</feats>
+			<start_char>393</start_char>
+			<end_char>396</end_char>
+		</Token>
+		<Token Id="22">
+			<text>done</text>
+			<lemma>do</lemma>
+			<upos>VERB</upos>
+			<xpos>VBN</xpos>
+			<feats>Tense=Past|VerbForm=Part</feats>
+			<start_char>397</start_char>
+			<end_char>401</end_char>
+		</Token>
+		<Token Id="23">
+			<text>sustainably</text>
+			<lemma>sustainably</lemma>
+			<upos>ADV</upos>
+			<xpos>RB</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>402</start_char>
+			<end_char>413</end_char>
+		</Token>
+		<Token Id="24">
+			<text>the</text>
+			<lemma>the</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Def|PronType=Art</feats>
+			<start_char>414</start_char>
+			<end_char>417</end_char>
+		</Token>
+		<Token Id="25">
+			<text>result</text>
+			<lemma>result</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>418</start_char>
+			<end_char>424</end_char>
+		</Token>
+		<Token Id="26">
+			<text>is</text>
+			<lemma>be</lemma>
+			<upos>AUX</upos>
+			<xpos>VBZ</xpos>
+			<feats>Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin</feats>
+			<start_char>425</start_char>
+			<end_char>427</end_char>
+		</Token>
+		<Token Id="27">
+			<text>often</text>
+			<lemma>often</lemma>
+			<upos>ADV</upos>
+			<xpos>RB</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>428</start_char>
+			<end_char>433</end_char>
+		</Token>
+		<Token Id="28">
+			<text>unmaintainable</text>
+			<lemma>unmaintainable</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos|Polarity=Neg</feats>
+			<start_char>434</start_char>
+			<end_char>448</end_char>
+		</Token>
+		<Token Id="29">
+			<text>software</text>
+			<lemma>software</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>449</start_char>
+			<end_char>457</end_char>
+		</Token>
+		<Token Id="30">
+			<text>and</text>
+			<lemma>and</lemma>
+			<upos>CCONJ</upos>
+			<xpos>CC</xpos>
+			<start_char>458</start_char>
+			<end_char>461</end_char>
+		</Token>
+		<Token Id="31">
+			<text>irreproducible</text>
+			<lemma>irreproducible</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>462</start_char>
+			<end_char>476</end_char>
+		</Token>
+		<Token Id="32">
+			<text>science</text>
+			<lemma>science</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>477</start_char>
+			<end_char>484</end_char>
+		</Token>
+		<Token Id="33">
+			<text>.</text>
+			<lemma>.</lemma>
+			<upos>PUNCT</upos>
+			<xpos>.</xpos>
+			<start_char>484</start_char>
+			<end_char>485</end_char>
+		</Token>
+	</Sent>
+	<Sent Id="4">
+		<Token Id="1">
+			<text>This</text>
+			<lemma>this</lemma>
+			<upos>PRON</upos>
+			<xpos>DT</xpos>
+			<feats>Number=Sing|PronType=Dem</feats>
+			<start_char>486</start_char>
+			<end_char>490</end_char>
+		</Token>
+		<Token Id="2">
+			<text>is</text>
+			<lemma>be</lemma>
+			<upos>AUX</upos>
+			<xpos>VBZ</xpos>
+			<feats>Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin</feats>
+			<start_char>491</start_char>
+			<end_char>493</end_char>
+		</Token>
+		<Token Id="3">
+			<text>due</text>
+			<lemma>due</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>494</start_char>
+			<end_char>497</end_char>
+		</Token>
+		<Token Id="4">
+			<text>to</text>
+			<lemma>to</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>498</start_char>
+			<end_char>500</end_char>
+		</Token>
+		<Token Id="5">
+			<text>a</text>
+			<lemma>a</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Ind|PronType=Art</feats>
+			<start_char>501</start_char>
+			<end_char>502</end_char>
+		</Token>
+		<Token Id="6">
+			<text>lack</text>
+			<lemma>lack</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>503</start_char>
+			<end_char>507</end_char>
+		</Token>
+		<Token Id="7">
+			<text>of</text>
+			<lemma>of</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>508</start_char>
+			<end_char>510</end_char>
+		</Token>
+		<Token Id="8">
+			<text>software</text>
+			<lemma>software</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>511</start_char>
+			<end_char>519</end_char>
+		</Token>
+		<Token Id="9">
+			<text>engineering</text>
+			<lemma>engineering</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>520</start_char>
+			<end_char>531</end_char>
+		</Token>
+		<Token Id="10">
+			<text>training</text>
+			<lemma>training</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>532</start_char>
+			<end_char>540</end_char>
+		</Token>
+		<Token Id="11">
+			<text>for</text>
+			<lemma>for</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>541</start_char>
+			<end_char>544</end_char>
+		</Token>
+		<Token Id="12">
+			<text>scientists</text>
+			<lemma>scientist</lemma>
+			<upos>NOUN</upos>
+			<xpos>NNS</xpos>
+			<feats>Number=Plur</feats>
+			<start_char>545</start_char>
+			<end_char>555</end_char>
+		</Token>
+		<Token Id="13">
+			<text>,</text>
+			<lemma>,</lemma>
+			<upos>PUNCT</upos>
+			<xpos>,</xpos>
+			<start_char>555</start_char>
+			<end_char>556</end_char>
+		</Token>
+		<Token Id="14">
+			<text>limited</text>
+			<lemma>limited</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>557</start_char>
+			<end_char>564</end_char>
+		</Token>
+		<Token Id="15">
+			<text>funding</text>
+			<lemma>funding</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>565</start_char>
+			<end_char>572</end_char>
+		</Token>
+		<Token Id="16">
+			<text>for</text>
+			<lemma>for</lemma>
+			<upos>SCONJ</upos>
+			<xpos>IN</xpos>
+			<start_char>573</start_char>
+			<end_char>576</end_char>
+		</Token>
+		<Token Id="17">
+			<text>maintaining</text>
+			<lemma>maintain</lemma>
+			<upos>VERB</upos>
+			<xpos>VBG</xpos>
+			<feats>VerbForm=Ger</feats>
+			<start_char>577</start_char>
+			<end_char>588</end_char>
+		</Token>
+		<Token Id="18">
+			<text>existing</text>
+			<lemma>exist</lemma>
+			<upos>VERB</upos>
+			<xpos>VBG</xpos>
+			<feats>VerbForm=Ger</feats>
+			<start_char>589</start_char>
+			<end_char>597</end_char>
+		</Token>
+		<Token Id="19">
+			<text>software</text>
+			<lemma>software</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>598</start_char>
+			<end_char>606</end_char>
+		</Token>
+		<Token Id="20">
+			<text>and</text>
+			<lemma>and</lemma>
+			<upos>CCONJ</upos>
+			<xpos>CC</xpos>
+			<start_char>607</start_char>
+			<end_char>610</end_char>
+		</Token>
+		<Token Id="21">
+			<text>few</text>
+			<lemma>few</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>611</start_char>
+			<end_char>614</end_char>
+		</Token>
+		<Token Id="22">
+			<text>permanent</text>
+			<lemma>permanent</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>615</start_char>
+			<end_char>624</end_char>
+		</Token>
+		<Token Id="23">
+			<text>software</text>
+			<lemma>software</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>625</start_char>
+			<end_char>633</end_char>
+		</Token>
+		<Token Id="24">
+			<text>developer</text>
+			<lemma>developer</lemma>
+			<upos>NOUN</upos>
+			<xpos>NN</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>634</start_char>
+			<end_char>643</end_char>
+		</Token>
+		<Token Id="25">
+			<text>positions</text>
+			<lemma>position</lemma>
+			<upos>NOUN</upos>
+			<xpos>NNS</xpos>
+			<feats>Number=Plur</feats>
+			<start_char>644</start_char>
+			<end_char>653</end_char>
+		</Token>
+		<Token Id="26">
+			<text>.</text>
+			<lemma>.</lemma>
+			<upos>PUNCT</upos>
+			<xpos>.</xpos>
+			<start_char>653</start_char>
+			<end_char>654</end_char>
+		</Token>
+	</Sent>
+	<Sent Id="5">
+		<Token Id="1">
+			<text>The</text>
+			<lemma>the</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Def|PronType=Art</feats>
+			<start_char>654</start_char>
+			<end_char>657</end_char>
+		</Token>
+		<Token Id="2">
+			<text>SSC</text>
+			<lemma>SSC</lemma>
+			<upos>PROPN</upos>
+			<xpos>NNP</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>658</start_char>
+			<end_char>661</end_char>
+		</Token>
+		<Token Id="3">
+			<text>addresses</text>
+			<lemma>address</lemma>
+			<upos>VERB</upos>
+			<xpos>VBZ</xpos>
+			<feats>Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin</feats>
+			<start_char>662</start_char>
+			<end_char>671</end_char>
+		</Token>
+		<Token Id="4">
+			<text>the</text>
+			<lemma>the</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Def|PronType=Art</feats>
+			<start_char>672</start_char>
+			<end_char>675</end_char>
+		</Token>
+		<Token Id="5">
+			<text>current</text>
+			<lemma>current</lemma>
+			<upos>ADJ</upos>
+			<xpos>JJ</xpos>
+			<feats>Degree=Pos</feats>
+			<start_char>676</start_char>
+			<end_char>683</end_char>
+		</Token>
+		<Token Id="6">
+			<text>shortcomings</text>
+			<lemma>shortcomings</lemma>
+			<upos>NOUN</upos>
+			<xpos>NNS</xpos>
+			<feats>Number=Plur</feats>
+			<start_char>684</start_char>
+			<end_char>696</end_char>
+		</Token>
+		<Token Id="7">
+			<text>by</text>
+			<lemma>by</lemma>
+			<upos>SCONJ</upos>
+			<xpos>IN</xpos>
+			<start_char>697</start_char>
+			<end_char>699</end_char>
+		</Token>
+		<Token Id="8">
+			<text>implementing</text>
+			<lemma>implement</lemma>
+			<upos>VERB</upos>
+			<xpos>VBG</xpos>
+			<feats>VerbForm=Ger</feats>
+			<start_char>700</start_char>
+			<end_char>712</end_char>
+		</Token>
+		<Token Id="9">
+			<text>the</text>
+			<lemma>the</lemma>
+			<upos>DET</upos>
+			<xpos>DT</xpos>
+			<feats>Definite=Def|PronType=Art</feats>
+			<start_char>713</start_char>
+			<end_char>716</end_char>
+		</Token>
+		<Token Id="10">
+			<text>three</text>
+			<lemma>three</lemma>
+			<upos>NUM</upos>
+			<xpos>CD</xpos>
+			<feats>NumType=Card</feats>
+			<start_char>717</start_char>
+			<end_char>722</end_char>
+		</Token>
+		<Token Id="11">
+			<text>pillars</text>
+			<lemma>pillar</lemma>
+			<upos>NOUN</upos>
+			<xpos>NNS</xpos>
+			<feats>Number=Plur</feats>
+			<start_char>723</start_char>
+			<end_char>730</end_char>
+		</Token>
+		<Token Id="12">
+			<text>of</text>
+			<lemma>of</lemma>
+			<upos>ADP</upos>
+			<xpos>IN</xpos>
+			<start_char>731</start_char>
+			<end_char>733</end_char>
+		</Token>
+		<Token Id="13">
+			<text>Development</text>
+			<lemma>Development</lemma>
+			<upos>PROPN</upos>
+			<xpos>NNP</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>734</start_char>
+			<end_char>745</end_char>
+		</Token>
+		<Token Id="14">
+			<text>,</text>
+			<lemma>,</lemma>
+			<upos>PUNCT</upos>
+			<xpos>,</xpos>
+			<start_char>745</start_char>
+			<end_char>746</end_char>
+		</Token>
+		<Token Id="15">
+			<text>Teaching</text>
+			<lemma>Teaching</lemma>
+			<upos>PROPN</upos>
+			<xpos>NNP</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>747</start_char>
+			<end_char>755</end_char>
+		</Token>
+		<Token Id="16">
+			<text>and</text>
+			<lemma>and</lemma>
+			<upos>CCONJ</upos>
+			<xpos>CC</xpos>
+			<start_char>756</start_char>
+			<end_char>759</end_char>
+		</Token>
+		<Token Id="17">
+			<text>Outreach</text>
+			<lemma>Outreach</lemma>
+			<upos>PROPN</upos>
+			<xpos>NNP</xpos>
+			<feats>Number=Sing</feats>
+			<start_char>760</start_char>
+			<end_char>768</end_char>
+		</Token>
+		<Token Id="18">
+			<text>.</text>
+			<lemma>.</lemma>
+			<upos>PUNCT</upos>
+			<xpos>.</xpos>
+			<start_char>768</start_char>
+			<end_char>769</end_char>
+		</Token>
+	</Sent>
+</doc>
