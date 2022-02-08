@@ -1,5 +1,5 @@
 {
-    "input": "example_de.txt",
+    "input": "test/test_files/example_de.txt",
     "output": "output_de",
     "tool": "spacy",
     "spacy_dict": {

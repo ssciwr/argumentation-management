@@ -58,17 +58,18 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self, outfile) -> str:
+    def postprocess(self, outname) -> str:
         # postprocess of the annotated dictionary
+        # fout = be.out_object.open_outfile(dict["output"])
         # sentencize using generic base output object
         # next step would be mwt, which is only applicable for languages like German and French
         # seems not to be available in spacy, how is it handled in cwb?
         jobs = [proc.strip() for proc in self.config["processors"].split(",")]
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        out_object_stanza.write_vrt(outfile, out)
+        out_object_stanza.write_vrt(outname, out)
         # encode
-        be.encode_corpus.encode_vrt("test", outfile, jobs, "stanza")
+        be.encode_corpus.encode_vrt("test", outname, jobs, "stanza")
 
 
 def ner(doc):
@@ -101,6 +102,8 @@ class out_object_stanza(be.out_object):
                     "Multi-word expressions not available currently"
                 )
             tid = token.id[0] + self.tstart
+            # for ent in getattr(sent, "ents"):
+            # print(ent)
             out, line = self.collect_results(token, tid, word, out)
             out.append(line + "\n")
         self.tstart = tid

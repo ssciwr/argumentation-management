@@ -259,9 +259,7 @@ class spacy_pipe(Spacy):
                 tmp = self.apply_to(chunk[1]).pass_results(ret=True)
             elif i > 0:
                 # apply pipe to chunk, keeping token index from previous chunk
-                tmp = self.apply_to(chunk[1]).pass_results(
-                    ret=True, start=be.find_last_idx(tmp) + 1
-                )
+                tmp = self.apply_to(chunk[1]).pass_results(ret=True, start=0)
             # append data from tmp pipe output to complete output
             for line in tmp:
                 out.append(line)

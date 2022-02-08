@@ -125,6 +125,10 @@ def chunk_sample_text(path: str) -> list:
         if all(elems == "" for elems in chunk):
             data.remove(chunk)
 
+    # we should be able to check for validity here -> can maybe outsource this to a function later
+    if xml_seen % 2 != 0:
+        # the number of xml elements in a valid document should always be even
+        raise RuntimeError("Encountered uneven number of XML elements in imput!")
     return data
 
 
