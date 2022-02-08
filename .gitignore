@@ -145,7 +145,8 @@ docker/
 .vscode
 
 #xml
-*.xml
+./*.xml
+src/annotator/*.xml
 
 # out folder
 out/
