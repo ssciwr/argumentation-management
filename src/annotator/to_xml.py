@@ -1,56 +1,68 @@
 from xml.etree.ElementTree import Element, tostring
 import xml.dom.minidom as mini
-import mstanza as ms
-import base as be
 
 
-def dict_to_xml(tag, d):
+def list_to_xml(tag: str, idx: int, List: list) -> Element:
+    """Convert a given list l of dictionaries d from stanza output into an xml element under
+    given tag with idx."""
 
-    elem = Element(tag)
-    for key, val in d.items():
-        child = Element(key)
-        child.text = str(val)
-        elem.append(child)
+    # root Element is tag
+    root = Element(tag)
+    # use attribute to distinguish sentences
+    root.attrib = {"Id": str(idx)}
+    # iterate list
+    for Dict in List:
+        # iterate key/value pairs
+        for key, val in Dict.items():
+            # if key is id we start new node for token
+            if key == "id":
+                node = Element("Token")
+                # attribute is token id
+                node.attrib = {"Id": str(val)}
+            elif key != "id":
+                # if key is not id we are inside of token, start sub_node
+                sub_node = Element(key)
+                sub_node.text = str(val)
+                # append sub_node with token attr to token node
+                node.append(sub_node)
+        # append the node to root
+        root.append(node)
 
-    return elem
+    return root
 
 
-if __name__ == "__main__":
-    dict = be.prepare_run.load_input_dict("./src/annotator/input")
-    outfile = dict["output"]
-    # take only the part of dict pertaining to stanza
-    stanza_dict = dict["stanza_dict"]
-    # to point to user-defined model directories
-    # stanza does not accommodate fully at the moment
-    mydict = ms.mstanza_preprocess.fix_dict_path(stanza_dict)
-    # stanza does not care about the extra comment keys
-    # but we remove them for subsequent processing just in case
-    # now we need to select the processors and "activate" the sub-dictionaries
-    mydict = be.prepare_run.update_dict(mydict)
-    mydict = be.prepare_run.activate_procs(mydict, "stanza_")
-    mytext = be.prepare_run.get_sample_text()
-    # mytext = "This is an example. And here we go."
-    # initialize instance of the class
-    obj = ms.mstanza_pipeline(mydict)
-    obj.init_pipeline()
-    out = obj.process_text(mytext)
-    # obj.postprocess(outfile)
+def dict_to_xml(tag: str, Dict: dict) -> Element:
+    """Basic function to convert a given dictionary d into an xml element under
+    given tag."""
 
-    dicts = out.to_dict()
+    # initialize root
+    root = Element(tag)
 
-    out_xml = ""
+    # iterate key/value pairs
+    for key, val in Dict.items():
+        # every key is a sepparate node
+        node = Element(key)
+        # text of node is value
+        node.text = str(val)
+        # append node to root
+        root.append(node)
 
-    for i, elem in enumerate(dicts, 1):
-        for j, el in enumerate(elem, 1):
-            out_xml += tostring(
-                dict_to_xml("SentID={}, TokID={}".format(i, j), el)
-            ).decode()
+    return root
 
-    with open("test.xml", "w") as file:
-        file.write(out_xml)
 
-    parsed = mini.parse("test.xml")
+def to_string(xml: Element) -> str:
+    """Function to turn xml object to str."""
 
-    print(parsed.toprettyxml())
-    # For the output:
-    # We need a module that transforms a generic dict into xml.
+    return tostring(xml, "unicode")
+
+
+def beautify(xml_str: str) -> str:
+    """Function to beautify xml output."""
+
+    return mini.parseString(xml_str).toprettyxml()
+
+
+def start_xml(tag: str) -> Element:
+    """Function to start xml object from given tag."""
+
+    return Element(tag)

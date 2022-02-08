@@ -41,7 +41,7 @@ class mstanza_pipeline:
 
     def __init__(self, config):
         self.config = config
-        print(config)
+        # print(config)
 
     def init_pipeline(self):
         # Initialize the pipeline using a configuration dict
