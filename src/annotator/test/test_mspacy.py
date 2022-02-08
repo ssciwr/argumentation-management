@@ -109,8 +109,17 @@ def test_pipe_multiple():
         "text\tNN\ttext\t-\tattr\tNOUN\n",
         ".\t.\t.\t-\tpunct\tPUNCT\n",
         "</s>\n",
+        "\n",
         '<subtextid="1"> \n',
+        "<s>\n",
+        "It\tPRP\tit\t-\tnsubj\tPRON\n",
+        "has\tVBZ\thave\t-\tROOT\tVERB\n",
+        "some\tDT\tsome\t-\tdet\tDET\n",
+        "subtext\tNN\tsubtext\t-\tdobj\tNOUN\n",
+        ".\t.\t.\t-\tpunct\tPUNCT\n",
+        "</s>\n",
         "</subtext> \n",
+        "\n",
         "</text> \n",
         '<textid="2"> \n',
         "<s>\n",
@@ -125,5 +134,4 @@ def test_pipe_multiple():
     ]
 
     assert type(results) == list
-    assert len(data) == 3
     assert check == results

@@ -41,7 +41,6 @@ class mstanza_pipeline:
 
     def __init__(self, config):
         self.config = config
-        print(config)
 
     def init_pipeline(self):
         # Initialize the pipeline using a configuration dict
@@ -67,7 +66,7 @@ class mstanza_pipeline:
         jobs = [proc.strip() for proc in self.config["processors"].split(",")]
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        be.out_object.write_vrt(outfile, out)
+        out_object_stanza.write_vrt(outfile, out)
         # encode
         be.encode_corpus.encode_vrt("test", outfile, jobs, "stanza")
 
