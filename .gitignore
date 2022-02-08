@@ -134,11 +134,15 @@ data/
 #other resources
 DW/
 src/annotator/test/models/
-
-# .vrt files
-*.vrt
 docker/
 !docker/get_models.py
 
 # vscode stuff
 .vscode
+
+# .vrt
+src/annotator/*.vrt
+./*.vrt
+
+# out folder
+out/
