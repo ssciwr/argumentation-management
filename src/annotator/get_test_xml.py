@@ -21,8 +21,13 @@ data = doc.to_dict()
 
 raw_xml = txml.Element("doc")
 
-for i, elem in enumerate(data, 1):
-    raw_xml.append(txml.list_to_xml("Sent", i, elem))
+sents = [txml.list_to_xml("Sent", i, elem) for i, elem in enumerate(data, 1)]
+
+for sent in sents:
+    raw_xml.append(sent)
+
+# for i, elem in enumerate(data, 1):
+#     raw_xml.append(txml.list_to_xml("Sent", i, elem))
 
 raw_xml = txml.to_string(raw_xml)
 
