@@ -261,7 +261,7 @@ class out_object:
         """Function to collect requested tags for tokens after applying pipeline to data.
 
         Args:
-                style[str]. Return line as string (STR) or dict (DICT)."""
+                style[str]. Return line as string (STR) for .vrt or dict (DICT) for .xml."""
 
         # always get token id and token text
         # line = str(tid + start) + " " + token.text
@@ -306,14 +306,15 @@ class out_object:
         # add what else we need
 
         if style == "STR":
-
+            # transform dict to str as before
             output = ""
             for i, (key, value) in enumerate(line.items()):
-                if key != "id" and i > 0:
+                # strip the id, and don't append \t for the "first" item
+                if key != "id" and i > 1:
                     output += "\t{}".format(value)
-                elif key != "id" and i == 0:
+                elif key != "id" and i == 1:
                     output += "{}".format(value)
-
+            # et voila, str
             return output
 
         elif style == "DICT":
@@ -322,7 +323,7 @@ class out_object:
 
     # define all of these as functions
     # these to be either internal or static methods
-    # we should have an option for vrt and one for xml writing
+    # we should have an option for vrt and one for xml writing -> ok
     # making them static for now
     @staticmethod
     def grab_ner(token, tid):
