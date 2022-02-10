@@ -201,7 +201,7 @@ class spacy_pipe(Spacy):
             out.append(chunks[i][0] + "\n")
             # self.doc is now current doc
             self.doc = doc
-            tmp = self.pass_results(ret=True, start=0)
+            tmp = self.pass_results("STR", ret=True, start=0)
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
@@ -215,7 +215,7 @@ class spacy_pipe(Spacy):
         else:
             return out
 
-    def pass_results(self, ret=False, start=0) -> list or None:
+    def pass_results(self, style, ret=False, start=0) -> list or None:
         """Function to build list with results from the doc object
         and write it to a .vrt file / encode to cwb directly.
 
@@ -226,14 +226,18 @@ class spacy_pipe(Spacy):
             start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
         """
 
-        out = out_object_spacy(self.doc, self.jobs, start=start).fetch_output()
+        out = out_object_spacy(self.doc, self.jobs, start=start).fetch_output(style)
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
-        if ret is False:
+        if ret is False and style == "STR":
             be.out_object.write_vrt(self.outname, out)
             # encode
             be.encode_corpus.encode_vrt("test", self.outname, self.jobs, "spacy")
+
+        elif ret is False and style == "DICT":
+            be.out_object.write_xml(self.outname.replace("/", "_"), self.outname, out)
+
         else:
             return out
 
@@ -256,10 +260,10 @@ class spacy_pipe(Spacy):
             out.append(chunks[i][0] + "\n")
             if i == 0:
                 # apply pipe to chunk, token index from 0
-                tmp = self.apply_to(chunk[1]).pass_results(ret=True)
+                tmp = self.apply_to(chunk[1]).pass_results("STR", ret=True)
             elif i > 0:
                 # apply pipe to chunk, keeping token index from previous chunk
-                tmp = self.apply_to(chunk[1]).pass_results(ret=True, start=0)
+                tmp = self.apply_to(chunk[1]).pass_results("STR", ret=True, start=0)
             # append data from tmp pipe output to complete output
             for line in tmp:
                 out.append(line)
@@ -323,16 +327,19 @@ class out_object_spacy(be.out_object):
         super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["spacy_names"]
 
-    def iterate(self, out, sent):
+    def iterate(self, out, sent, style):
         for token in sent:
             # multi-word expressions not available in spacy?
             # Setting word=token for now
             tid = copy.copy(token.i)
-            out, line = self.collect_results(token, tid, token, out)
-            out.append(line + "\n")
+            line = self.collect_results(token, tid, token, style)
+            if style == "STR":
+                out.append(line + "\n")
+            elif style == "DICT":
+                out.append(line)
         return out
 
-    def fetch_output(self) -> list:
+    def fetch_output(self, style) -> list:
         """Function to assemble the output list for a run. Can work with or without sentence
         level annotation and will check if doc is sentencized on its own."""
 
@@ -348,7 +355,10 @@ class out_object_spacy(be.out_object):
         # check if spacy doc object is sentencized
         if self.doc.has_annotation("SENT_START"):
             # apply sentence and sublevel annotation
-            out = self.assemble_output_sent(self.doc, self.jobs, start=self.start)
+            if style == "STR":
+                out = self.assemble_output_sent(self.doc, self.jobs, start=self.start)
+            elif style == "DICT":
+                out = self.assemble_output_xml(self.doc, self.jobs, start=self.start)
 
         # if not sentencized just iterate doc and extract results
         elif not self.doc.has_annotation("SENT_START"):

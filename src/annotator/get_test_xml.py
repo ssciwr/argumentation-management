@@ -18,6 +18,7 @@ doc = obj.process_text(text)
 
 data = doc.to_dict()
 
+print(type(data))
 
 raw_xml = txml.Element("doc")
 

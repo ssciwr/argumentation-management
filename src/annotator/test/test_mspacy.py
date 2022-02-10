@@ -90,8 +90,12 @@ def test_output_sent(pipe_sent):
     ]
     # this is quite specific, any way to generalize?
     test_obj, check_doc = pipe_sent
-    test_out = msp.out_object_spacy(test_obj.doc, test_obj.jobs, start=0).fetch_output()
-    check_out = msp.out_object_spacy(check_doc, test_obj.jobs, start=0).fetch_output()
+    test_out = msp.out_object_spacy(test_obj.doc, test_obj.jobs, start=0).fetch_output(
+        "STR"
+    )
+    check_out = msp.out_object_spacy(check_doc, test_obj.jobs, start=0).fetch_output(
+        "STR"
+    )
 
     assert test_out == check_out
     assert test_out == check
