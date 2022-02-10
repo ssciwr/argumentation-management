@@ -29,6 +29,7 @@ def test_init(init, load_object):
 
     mydict, mydict_test = init
     test_obj = load_object
+
     assert test_obj.outname == mydict["output"]
     assert test_obj.pretrained == mydict_test["pretrained"]
     assert test_obj.lang == mydict_test["lang"]
@@ -160,6 +161,7 @@ def test_pipe_multiple(load_object, chunked_data):
         "</text>\n",
     ]
 
+
     assert type(results_pipe) == list
     assert check_chunked == results_pipe
     assert check_chunked == results_alt
@@ -181,3 +183,7 @@ def test_sentencize():
 
     assert data_en == check_en
     assert data_de == check_de
+
+    assert type(results) == list
+    assert check == results
+

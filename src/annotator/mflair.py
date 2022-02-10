@@ -2,9 +2,9 @@ from flair.data import Sentence
 from flair.models import SequenceTagger
 from flair.models.sequence_tagger_model import MultiTagger
 from flair.data import Token
-import base as be
-import mspacy as msp
 from tqdm import tqdm
+import annotator.base as be
+import annotator.mspacy as msp
 
 
 class Flair:

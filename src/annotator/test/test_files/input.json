@@ -6,7 +6,7 @@
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
         "_lang_comment": "Language code for the language to build the Pipeline in",
         "lang": "en",
-        "_dir_comment": "directory where models are stored - this does not work for pipeline",
+        "_dir_comment": "directory where models are stored - this maynot work for pipeline",
         "dir": "./src/annotator/test/models/",  
         "_package_comment": "using the default model, for others see: https://stanfordnlp.github.io/stanza/models.html",
         "package": "default",
