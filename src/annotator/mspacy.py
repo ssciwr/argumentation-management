@@ -350,7 +350,7 @@ class out_object_spacy(be.out_object):
             # apply sentence and sublevel annotation
             out = self.assemble_output_sent(self.doc, self.jobs, start=self.start)
 
-        # if not sentencized just iterate doc and extract results
+        # if not sentencized just iterate doc and extract the results
         elif not self.doc.has_annotation("SENT_START"):
             out = self.iterate(out, self.doc)
         return out
