@@ -161,7 +161,6 @@ def test_pipe_multiple(load_object, chunked_data):
         "</text>\n",
     ]
 
-
     assert type(results_pipe) == list
     assert check_chunked == results_pipe
     assert check_chunked == results_alt
@@ -183,7 +182,3 @@ def test_sentencize():
 
     assert data_en == check_en
     assert data_de == check_de
-
-    assert type(results) == list
-    assert check == results
-
