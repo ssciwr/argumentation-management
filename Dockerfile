@@ -64,25 +64,19 @@ RUN conda run -n base python -m pip install cwb-ccc
 RUN conda install -c conda-forge spacy \
     && conda install -c \
         conda-forge spacy-lookups-data \
-    # && python -m spacy download en_core_web_sm \
-    # && python -m spacy download de_core_news_sm \
+    && python -m spacy download en_core_web_md \
+    && python -m spacy download de_core_news_sm \
     && conda clean -a -q -y
-#ENV SPACY_DIR = /home/jovyan/spacy
+ENV SPACY_DIR = /home/jovyan/spacy
 
 # install stanza
 COPY docker/get_models.py /home/jovyan/.
 RUN conda install -c \
         conda-forge stanza \
-    && conda clean -a -q -y \
-    && python get_models.py
-
-# install git and pip for local installation of annotator
-# RUN apt-get update \
-    # && apt-get install -y git \
-    # && apt-get install -y pip
+    && conda clean -a -q -y 
+    # && python get_models.py
 
 # install annotator from repository
-# I guess this would also provide the notebook
-RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management
-RUN cd argumentation_management/src/ \
-    && conda run -n base python -m pip install .
+RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management \
+    && cd argumentation_management/src/ \
+    && conda run -n base python -m pip install . 

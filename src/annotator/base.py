@@ -362,11 +362,13 @@ class encode_corpus:
 
     def __init__(self, corpusname, outname, jobs, tool) -> None:
         # self.corpusdir = "/home/jovyan/corpus"
-        self.corpusdir = "/home/inga/projects/corpus-workbench/cwb/corpora/"
+        # corpusdir and regdir need to be set from input dict
+        # plus we also need to set the corpus name from input dict
+        self.corpusdir = "/home/jovyan/shared/corpora/"
         self.corpusname = corpusname
         self.outname = outname
         # self.regdir = "/home/jovyan/registry"
-        self.regdir = "/home/inga/projects/corpus-workbench/cwb/registry/"
+        self.regdir = "/home/jovyan/shared/registry/"
         self.jobs = jobs
         self.tool = tool
         self.encodedir = self.corpusdir + corpusname
