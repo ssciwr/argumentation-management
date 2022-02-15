@@ -68,6 +68,18 @@ class prepare_run:
         mydict = {k: v for k, v in mydict.items() if not k.startswith("toolstring")}
         return mydict
 
+    @staticmethod
+    def get_jobs(dict_in: dict, tool=None) -> list:
+        """Convenience function to read in Jobs using the processors provided in dict. Can work with
+        basic input.json if provided a tool, or assumes it is in tool-specific dict if no tool is provided."""
+        if tool is not None:
+            return [
+                proc.strip()
+                for proc in dict_in["{}_dict".format(tool)]["processors"].split(",")
+            ]
+        elif tool is None:
+            return [proc.strip() for proc in dict_in["processors"].split(",")]
+
 
 # the below in a chunker class
 # I thought this would belong here rather than mspacy.
@@ -360,18 +372,21 @@ class out_object:
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
-    def __init__(self, corpusname, outname, jobs, tool) -> None:
+    def __init__(self, Dict) -> None:
         # self.corpusdir = "/home/jovyan/corpus"
         # corpusdir and regdir need to be set from input dict
         # plus we also need to set the corpus name from input dict
-        self.corpusdir = "/home/jovyan/shared/corpora/"
-        self.corpusname = corpusname
-        self.outname = outname
+        cwb_dict = Dict["cwb_dict"]
+        tool = Dict["tool"]
+
+        self.corpusdir = cwb_dict["corpus_dir"]
+        self.corpusname = cwb_dict["corpus_name"]
+        self.outname = Dict["output"]
         # self.regdir = "/home/jovyan/registry"
-        self.regdir = "/home/jovyan/shared/registry/"
-        self.jobs = jobs
+        self.regdir = cwb_dict["registry_dir"]
+        self.jobs = prepare_run.get_jobs(Dict, tool)
         self.tool = tool
-        self.encodedir = self.corpusdir + corpusname
+        self.encodedir = self.corpusdir + self.corpusname
         # create the new corpus' directory if not there yet
         try:
             os.makedirs(self.encodedir)

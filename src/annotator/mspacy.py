@@ -68,9 +68,7 @@ class Spacy:
                 )
 
         # get processors from dict
-        procs = config["processors"]
-        # strip out blank spaces and separate processors into list
-        self.jobs = [proc.strip() for proc in procs.split(",")]
+        self.jobs = be.prepare_run.get_jobs(config)
 
         # use specific device settings if requested
         if config["set_device"]:

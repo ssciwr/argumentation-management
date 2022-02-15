@@ -64,7 +64,8 @@ class mstanza_pipeline:
         # sentencize using generic base output object
         # next step would be mwt, which is only applicable for languages like German and French
         # seems not to be available in spacy, how is it handled in cwb?
-        jobs = [proc.strip() for proc in self.config["processors"].split(",")]
+        # jobs = [proc.strip() for proc in self.config["processors"].split(",")]
+        jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
         out_object_stanza.write_vrt(outname, out)

@@ -84,8 +84,21 @@ def test_chunker():
 # everything except the actual cwb command
 # we do not want to install it in CI/CD
 # to use dockerfile for workflow is left for later
+
+test_dict = {
+    "output": "test",
+    "tool": "stanza",
+    "cwb_dict": {
+        "corpus_name": "test",
+        "corpus_dir": "/home/jovyan/shared/corpora/",
+        "registry_dir": "/home/jovyan/shared/registry/",
+    },
+    "stanza_dict": {"processors": "tokenize, pos, lemma"},
+}
+
+
 def test_encode_vrt():
-    obj = be.encode_corpus("test", "test", ["tokenize", "pos", "lemma"], "stanza")
+    obj = be.encode_corpus(test_dict)
     line = " "
     line = obj._get_s_attributes(line)
     test_line = " -S s "
