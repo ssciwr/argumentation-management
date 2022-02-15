@@ -170,3 +170,48 @@ if __name__ == "__main__":
     # For the output:
     # We need a module that transforms a generic dict into xml.
 
+
+mflair main
+
+if __name__ == "__main__":
+
+    cfg = be.prepare_run.load_input_dict("src/annotator/input")
+    data = "This is a sentence. This is another sentence, or is it?"
+    flair_pipe(cfg).senter_spacy(data).apply_to().get_out()
+
+    # check that the indexing is correct -> no skips or setbacks
+
+    check = []
+    with open("Test_flair.vrt", "r") as file:
+        for line in file:
+            if not line.startswith("!") and not line.startswith("<"):
+                check.append(int(line.split()[0]))
+
+    for i, elem in enumerate(check):
+        if i > 0:
+            try:
+                assert elem - check[i - 1] == 1
+            except AssertionError:
+                print(i, elem)
+
+    data1 = be.chunk_sample_text("data/Original/plenary.vrt")
+
+    cfgman = {"input": "testplenary", "output": "out/test_chunk_flair", 
+    "flair_dict":{"lang": "de", "job": ["ner", "pos"]}}
+
+    flair_pipe(cfgman).get_multiple(data1)
+
+    # index check -> gibt noch ein paar Probleme, bin dran
+    # // scheint gefixed zu sein, schaue am Donnerstag nochmal drauf
+    check = []
+    with open("testplenary_flair.vrt", "r") as file:
+        for line in file:
+            if not line.startswith("!") and not line.startswith("<"):
+                check.append(int(line.split()[0]))
+
+    for i, elem in enumerate(check):
+        if i > 0:
+            try:
+                assert elem - check[i - 1] == 1
+            except AssertionError:
+                print(i, elem)
