@@ -24,7 +24,7 @@ class Spacy:
         # config = the input dictionary
         # output file name
         self.outname = config["output"]
-
+        self.dict = config
         config = be.prepare_run.update_dict(config["spacy_dict"])
         # check for pretrained
         # lets you initialize your models with information from raw text
@@ -68,7 +68,7 @@ class Spacy:
                 )
 
         # get processors from dict
-        self.jobs = be.prepare_run.get_jobs(config)
+        self.jobs = be.prepare_run.get_jobs(self.dict, "spacy")
 
         # use specific device settings if requested
         if config["set_device"]:
@@ -208,7 +208,7 @@ class spacy_pipe(Spacy):
 
         if ret is False:
             be.out_object.write_vrt(self.outname, out)
-            be.encode_corpus.encode_vrt("test_chunks", self.outname, self.jobs, "spacy")
+            be.encode_corpus.encode_vrt(self.dict)
 
         else:
             return out
@@ -231,7 +231,7 @@ class spacy_pipe(Spacy):
         if ret is False:
             be.out_object.write_vrt(self.outname, out)
             # encode
-            be.encode_corpus.encode_vrt("test", self.outname, self.jobs, "spacy")
+            be.encode_corpus.encode_vrt(self.dict)
         else:
             return out
 

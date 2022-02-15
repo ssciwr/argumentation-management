@@ -413,8 +413,8 @@ class encode_corpus:
         return line
 
     @classmethod
-    def encode_vrt(cls, corpusname, outname, jobs, tool):
-        obj = cls(corpusname, outname, jobs, tool)
+    def encode_vrt(cls, Dict):
+        obj = cls(Dict)
         line = " "
         # find out which options are to be encoded
         line = obj._get_s_attributes(line)
