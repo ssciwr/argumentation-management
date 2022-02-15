@@ -15,6 +15,36 @@ def load_object(init):
     return mf.flair_pipe(init)
 
 
+@pytest.fixture
+def apply_to(load_object):
+    """Get object in post-pipe state."""
+
+    test_obj = load_object
+
+    post_pipe = test_obj.senter_spacy(text_en).apply_to()
+
+    return post_pipe
+
+
+@pytest.fixture()
+def chunked_data():
+    """Get some chunked data."""
+
+    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
+    formated_text = text.replace(" ", "\n")
+
+    tmp = tempfile.NamedTemporaryFile()
+
+    tmp.write(formated_text.encode())
+    tmp.seek(0)
+
+    data = be.chunk_sample_text("{}".format(tmp.name))
+    # don't need this anymore
+    tmp.close()
+
+    return data
+
+
 def test_init(load_object, init):
     """Check that the initial values are as expected."""
 
@@ -39,17 +69,6 @@ def test_senter_spacy(load_object):
 
     check_en = [["This is a sentence.", 4], ["This is another sentence, or is it?", 11]]
     assert data_en == check_en
-
-
-@pytest.fixture
-def apply_to(load_object):
-    """Get object in post-pipe state."""
-
-    test_obj = load_object
-
-    post_pipe = test_obj.senter_spacy(text_en).apply_to()
-
-    return post_pipe
 
 
 def test_output(apply_to):
@@ -79,25 +98,6 @@ def test_output(apply_to):
     data_pipe = apply_to.get_out(ret=True)
 
     assert data_pipe == checklist
-
-
-@pytest.fixture()
-def chunked_data():
-    """Get some chunked data."""
-
-    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
-    formated_text = text.replace(" ", "\n")
-
-    tmp = tempfile.NamedTemporaryFile()
-
-    tmp.write(formated_text.encode())
-    tmp.seek(0)
-
-    data = be.chunk_sample_text("{}".format(tmp.name))
-    # don't need this anymore
-    tmp.close()
-
-    return data
 
 
 def test_get_multiple(chunked_data, load_object):
