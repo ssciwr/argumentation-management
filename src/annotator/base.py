@@ -137,10 +137,6 @@ def chunk_sample_text(path: str) -> list:
         if all(elems == "" for elems in chunk):
             data.remove(chunk)
 
-    # we should be able to check for validity here -> can maybe outsource this to a function later
-    if xml_seen % 2 != 0:
-        # the number of xml elements in a valid document should always be even
-        raise RuntimeError("Encountered uneven number of XML elements in imput!")
     return data
 
 
@@ -161,7 +157,7 @@ def find_last_idx(chunk: list) -> int:
         else:
             # if string doesnt start with "<" we can assume it contains the token index
             # in the first column
-            print(chunk[i].split()[0])
+            # print(chunk[i].split()[0])
             return int(chunk[i].split()[0])
 
 
