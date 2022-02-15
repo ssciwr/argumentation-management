@@ -63,7 +63,7 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self, outname: str) -> str:
+    def postprocess(self):
         # postprocess of the annotated dictionary
         # fout = be.out_object.open_outfile(dict["output"])
         # sentencize using generic base output object
@@ -72,7 +72,7 @@ class mstanza_pipeline:
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        out_object_stanza.write_vrt(outname, out)
+        out_object_stanza.write_vrt(self.Dict["output"], out)
         # encode
         be.encode_corpus.encode_vrt(self.Dict)
 

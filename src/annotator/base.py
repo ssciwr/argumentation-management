@@ -412,6 +412,40 @@ class encode_corpus:
             line += "-P lemma "
         return line
 
+    def setup(self):
+        """Funtion to check wheter a corpus directory exists. If existing directory is found,
+        requires input of "y" to overwrite existing files. Maybe add argument to force overwrite later?.
+        If directory is not found, an empty directory is created."""
+
+        # check if corpus directory exists
+        print("+++ Checking for corpus +++")
+        if os.path.isdir(self.encodedir):
+            # if yes, ask for overwrite
+            message = "Overwrite {} and {}?".format(
+                self.encodedir, self.regdir + self.corpusname
+            )
+            print(message)
+            purge = input("[y/n]")
+            # only overwrite if "y" to prevent accidental overwrite of data
+            if purge == "y":
+                print("+++ Purging old corpus +++")
+                command = "rm {}".format(self.regdir + self.corpusname)
+                print(command)
+                os.system(command)
+                command = "rm -r {}".format(self.encodedir)
+                print(command)
+                os.system(command)
+                print("+++ Purged old corpus! +++")
+                os.system("mkdir {}".format(self.encodedir))
+                return True
+            # if no permission is granted we return False for setup
+            else:
+                return False
+        elif not os.path.isdir(self.encodedir):
+            # if the directory doesn't exist we create one
+            os.system("mkdir {}".format(self.encodedir))
+            return True
+
     @classmethod
     def encode_vrt(cls, Dict):
         obj = cls(Dict)
@@ -419,27 +453,32 @@ class encode_corpus:
         # find out which options are to be encoded
         line = obj._get_s_attributes(line)
         line = obj._get_p_attributes(line)
-        # call the os with the encode command
-        print("Encoding the corpus...")
-        print("Options are:")
-        command = (
-            "cwb-encode -d "
-            + obj.encodedir
-            + " -xsBC9 -c ascii -f "
-            + obj.outname
-            + ".vrt -R "
-            + obj.regdir
-            + obj.corpusname
-            + line
-        )
-        print(command)
-        os.system(command)
-        print("Updating the registry entry...")
-        print("Options are:")
-        # call the os with the registry update command
-        command = "cwb-makeall -r " + obj.regdir + " -V " + obj.corpusname
-        print(command)
-        os.system(command)
+
+        purged = obj.setup()
+        if purged:
+            # call the os with the encode command
+            print("Encoding the corpus...")
+            print("Options are:")
+            command = (
+                "cwb-encode -d "
+                + obj.encodedir
+                + " -xsBC9 -c ascii -f "
+                + obj.outname
+                + ".vrt -R "
+                + obj.regdir
+                + obj.corpusname
+                + line
+            )
+            print(command)
+            os.system(command)
+            print("Updating the registry entry...")
+            print("Options are:")
+            # call the os with the registry update command
+            command = "cwb-makeall -r " + obj.regdir + " -V " + obj.corpusname
+            print(command)
+            os.system(command)
+        elif not purged:
+            return print(OSError("Error during setup, aborting..."))
 
 
 # en
