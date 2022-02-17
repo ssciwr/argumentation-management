@@ -146,3 +146,6 @@ src/annotator/*.vrt
 
 # out folder
 out/
+
+# xml
+src/annotator/*.xml
