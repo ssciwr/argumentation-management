@@ -1,8 +1,9 @@
 import pytest
 import mstanza as ma
+import base as be
 
-mydict_en = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
-mydict_de = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+mydict_en = be.prepare_run.load_input_dict("./test/test_files/test_stanza_en")
+mydict_de = be.prepare_run.load_input_dict("./test/test_files/test_stanza_de")
 
 
 @pytest.fixture()
@@ -92,7 +93,7 @@ def test_process_text_en(get_sample, get_sample_stanza):
     doc = str(docobj).replace("\n", "")
     doc = doc.replace(" ", "")
     test_doc = get_sample_stanza.replace(" ", "")
-    assert doc == test_doc
+    assert doc == test_doc.strip()
 
 
 @pytest.mark.lang("de")
@@ -105,7 +106,7 @@ def test_process_text_de(get_sample, get_sample_stanza):
     doc = str(docobj).replace("\n", "")
     doc = doc.replace(" ", "")
     test_doc = get_sample_stanza.replace(" ", "")
-    assert doc == test_doc
+    assert doc == test_doc.strip()
 
 
 @pytest.mark.lang("en")

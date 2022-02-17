@@ -2,12 +2,20 @@
     "input": "input.txt",
     "output": "out/output",
     "tool": "spacy",
+    "cwb_dict": {
+        "_corpus_name_comment": "Name of corpus to be annotated.",
+        "corpus_name": "test",
+        "_corpus_dir_comment": "Directory containing the corpus.",
+        "corpus_dir": "/home/jovyan/shared/corpora/",
+        "_registry_dir_comment": "Name of registry directory for cwb.",
+        "registry_dir": "/home/jovyan/shared/registry/"
+    },
     "stanza_dict": {
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
         "_lang_comment": "Language code for the language to build the Pipeline in",
         "lang": "en",
         "_dir_comment": "directory where models are stored - this maynot work for pipeline",
-        "dir": "./src/annotator/test/models/",  
+        "dir": "./test/models/",  
         "_package_comment": "using the default model, for others see: https://stanfordnlp.github.io/stanza/models.html",
         "package": "default",
         "_processors_comment": "Comma-separated list of processors to use, can also be given as a dictionary: {'tokenize': 'ewt', 'pos': 'ewt'}",

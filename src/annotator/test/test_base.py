@@ -18,6 +18,24 @@ def init_dict(request):
     return mydict
 
 
+test_dict = {
+    "output": "test",
+    "tool": "stanza",
+    "cwb_dict": {
+        "corpus_name": "test",
+        "corpus_dir": "/home/jovyan/shared/corpora/",
+        "registry_dir": "/home/jovyan/shared/registry/",
+    },
+    "stanza_dict": {"processors": "tokenize, pos, lemma"},
+}
+
+
+@pytest.fixture
+def get_obj():
+    obj = be.encode_corpus(test_dict)
+    return obj
+
+
 @pytest.mark.skip
 def test_get_cores():
     pass
@@ -84,8 +102,10 @@ def test_chunker():
 # everything except the actual cwb command
 # we do not want to install it in CI/CD
 # to use dockerfile for workflow is left for later
-def test_encode_vrt():
-    obj = be.encode_corpus("test", "test", ["tokenize", "pos", "lemma"], "stanza")
+
+
+def test_encode_vrt(get_obj):
+    obj = get_obj
     line = " "
     line = obj._get_s_attributes(line)
     test_line = " -S s "
@@ -93,3 +113,24 @@ def test_encode_vrt():
     line = obj._get_p_attributes(line)
     test_line += "-P pos -P lemma "
     assert line == test_line
+
+
+def test_setup(monkeypatch, get_obj):
+
+    tmp = tempfile.TemporaryDirectory()
+    obj = get_obj
+    obj.encodedir = tmp.name
+
+    monkeypatch.setattr("builtins.input", lambda _: "y")
+
+    assert obj.setup() is True
+
+    answers = iter(["n", "n"])
+    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+
+    assert obj.setup() is False
+
+    answers = iter(["n", "y", "{}".format(tmp.name), "test", "test", "y"])
+    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+
+    assert obj.setup() is True

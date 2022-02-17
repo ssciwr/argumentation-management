@@ -24,7 +24,7 @@ class Spacy:
         # config = the input dictionary
         # output file name
         self.outname = config["output"]
-
+        self.dict = config
         config = be.prepare_run.update_dict(config["spacy_dict"])
         # check for pretrained
         # lets you initialize your models with information from raw text
@@ -68,9 +68,7 @@ class Spacy:
                 )
 
         # get processors from dict
-        procs = config["processors"]
-        # strip out blank spaces and separate processors into list
-        self.jobs = [proc.strip() for proc in procs.split(",")]
+        self.jobs = be.prepare_run.get_jobs(self.dict, "spacy")
 
         # use specific device settings if requested
         if config["set_device"]:
@@ -210,7 +208,7 @@ class spacy_pipe(Spacy):
 
         if ret is False:
             be.out_object.write_vrt(self.outname, out)
-            be.encode_corpus.encode_vrt("test_chunks", self.outname, self.jobs, "spacy")
+            be.encode_corpus.encode_vrt(self.dict)
 
         else:
             return out
@@ -233,7 +231,7 @@ class spacy_pipe(Spacy):
         if ret is False:
             be.out_object.write_vrt(self.outname, out)
             # encode
-            be.encode_corpus.encode_vrt("test", self.outname, self.jobs, "spacy")
+            be.encode_corpus.encode_vrt(self.dict)
         else:
             return out
 
@@ -254,12 +252,8 @@ class spacy_pipe(Spacy):
         for i, chunk in enumerate(chunks):
             # get the "< >" opening statement
             out.append(chunks[i][0] + "\n")
-            if i == 0:
-                # apply pipe to chunk, token index from 0
-                tmp = self.apply_to(chunk[1]).pass_results(ret=True)
-            elif i > 0:
-                # apply pipe to chunk, keeping token index from previous chunk
-                tmp = self.apply_to(chunk[1]).pass_results(ret=True, start=0)
+            # apply pipe to chunk, token index from 0
+            tmp = self.apply_to(chunk[1]).pass_results(ret=True)
             # append data from tmp pipe output to complete output
             for line in tmp:
                 out.append(line)
