@@ -2,8 +2,12 @@ import pytest
 import mstanza as ma
 import base as be
 
-mydict_en = be.prepare_run.load_input_dict("./test/test_files/test_stanza_en")
-mydict_de = be.prepare_run.load_input_dict("./test/test_files/test_stanza_de")
+mydict_en = be.prepare_run.load_input_dict("./test/test_files/test_stanza_en")[
+    "stanza_dict"
+]
+mydict_de = be.prepare_run.load_input_dict("./test/test_files/test_stanza_de")[
+    "stanza_dict"
+]
 
 
 @pytest.fixture()

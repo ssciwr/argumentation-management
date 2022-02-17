@@ -12,7 +12,7 @@ def init():
 
     mydict = be.prepare_run.load_input_dict("test/test_files/input")
     mydict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
-    return mydict, mydict_test
+    return mydict["spacy_dict"], mydict_test
 
 
 @pytest.fixture()
@@ -71,10 +71,9 @@ def test_init(init, load_object):
     """Check if the parameters from the input dict are loaded into the
     pipe object as expected."""
 
-    mydict, mydict_test = init
+    mydict_test = init[1]
     test_obj = load_object
 
-    assert test_obj.outname == mydict["output"]
     assert test_obj.pretrained == mydict_test["pretrained"]
     assert test_obj.lang == mydict_test["lang"]
     assert test_obj.type == mydict_test["text_type"]

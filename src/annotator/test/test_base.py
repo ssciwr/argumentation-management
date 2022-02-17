@@ -32,7 +32,7 @@ test_dict = {
 
 @pytest.fixture
 def get_obj():
-    obj = be.encode_corpus(test_dict)
+    obj = be.encode_corpus(be.prepare_run.get_encoding(test_dict))
     return obj
 
 
