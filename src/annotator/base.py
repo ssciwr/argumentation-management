@@ -368,19 +368,19 @@ class out_object:
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
-    def __init__(self, Dict) -> None:
+    def __init__(self, mydict) -> None:
         # self.corpusdir = "/home/jovyan/corpus"
         # corpusdir and regdir need to be set from input dict
         # plus we also need to set the corpus name from input dict
-        cwb_dict = Dict["cwb_dict"]
-        tool = Dict["tool"]
+        cwb_dict = mydict["cwb_dict"]
+        tool = mydict["tool"]
 
         self.corpusdir = cwb_dict["corpus_dir"]
         self.corpusname = cwb_dict["corpus_name"]
-        self.outname = Dict["output"]
+        self.outname = mydict["output"]
         # self.regdir = "/home/jovyan/registry"
         self.regdir = cwb_dict["registry_dir"]
-        self.jobs = prepare_run.get_jobs(Dict, tool)
+        self.jobs = prepare_run.get_jobs(mydict, tool)
         self.tool = tool
         self.encodedir = self.corpusdir + self.corpusname
         # create the new corpus' directory if not there yet
@@ -443,8 +443,8 @@ class encode_corpus:
             return True
 
     @classmethod
-    def encode_vrt(cls, Dict):
-        obj = cls(Dict)
+    def encode_vrt(cls, mydict):
+        obj = cls(mydict)
         line = " "
         # find out which options are to be encoded
         line = obj._get_s_attributes(line)

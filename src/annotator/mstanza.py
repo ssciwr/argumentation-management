@@ -39,11 +39,11 @@ class mstanza_pipeline:
        annotated (dictionary): The output dictionary with annotated tokens.
     """
 
-    def __init__(self, Dict: dict):
+    def __init__(self, mydict: dict):
         # we need the full dict to get the parameters for encoding
-        self.Dict = Dict
+        self.mydict = mydict
         # just extract the stanza specific config here, is also less work for the user.
-        self.config = be.prepare_run.update_dict(Dict["stanza_dict"])
+        self.config = be.prepare_run.update_dict(mydict["stanza_dict"])
         # does the activate_procs routine actually do anything here? Pytests work with and without it.
         self.config = be.prepare_run.activate_procs(self.config, "stanza_")
 
@@ -72,9 +72,9 @@ class mstanza_pipeline:
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        out_object_stanza.write_vrt(self.Dict["output"], out)
-        # encode
-        be.encode_corpus.encode_vrt(self.Dict)
+        out_object_stanza.write_vrt(self.mydict["output"], out)
+        # encode -> move this out of here
+        be.encode_corpus.encode_vrt(self.mydict)
 
 
 def ner(doc):
