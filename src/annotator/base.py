@@ -375,19 +375,15 @@ class encode_corpus:
         cwb_dict = mydict["cwb_dict"]
         tool = mydict["tool"]
 
-        self.corpusdir = cwb_dict["corpus_dir"]
+        self.corpusdir = self.fix_path(cwb_dict["corpus_dir"])
         self.corpusname = cwb_dict["corpus_name"]
         self.outname = mydict["output"]
         # self.regdir = "/home/jovyan/registry"
-        self.regdir = cwb_dict["registry_dir"]
+        self.regdir = self.fix_path(cwb_dict["registry_dir"])
         self.jobs = prepare_run.get_jobs(mydict, tool)
         self.tool = tool
         self.encodedir = self.corpusdir + self.corpusname
-        # create the new corpus' directory if not there yet
-        try:
-            os.makedirs(self.encodedir)
-        except OSError:
-            pass
+
         # get attribute names
         self.attrnames = out_object.get_names()
         self.attrnames = self.attrnames[self.tool + "_names"]
@@ -408,7 +404,7 @@ class encode_corpus:
             line += "-P lemma "
         return line
 
-    def setup(self):
+    def setup(self) -> bool:
         """Funtion to check wheter a corpus directory exists. If existing directory is found,
         requires input of "y" to overwrite existing files. Maybe add argument to force overwrite later?.
         If directory is not found, an empty directory is created."""
@@ -420,27 +416,67 @@ class encode_corpus:
             message = "Overwrite {} and {}?".format(
                 self.encodedir, self.regdir + self.corpusname
             )
-            print(message)
+            print(message, flush=True)
             purge = input("[y/n]")
             # only overwrite if "y" to prevent accidental overwrite of data
             if purge == "y":
                 print("+++ Purging old corpus +++")
-                command = "rm {}".format(self.regdir + self.corpusname)
-                print(command)
-                os.system(command)
+                if os.path.isfile(self.regdir + self.corpusname):
+                    command = "rm {}".format(self.regdir + self.corpusname)
+                    print(command)
+                    os.system(command)
                 command = "rm -r {}".format(self.encodedir)
                 print(command)
                 os.system(command)
                 print("+++ Purged old corpus! +++")
                 os.system("mkdir {}".format(self.encodedir))
                 return True
-            # if no permission is granted we return False for setup
+            # if no permission is granted we ask what to do
             else:
-                return False
+                while True:
+                    print("Continue encoding? [y/n]", flush=True)
+                    cont = input("[y/n]")
+                    if cont == "y":
+                        self.corpusdir = self.fix_path(
+                            self.query("Please provide corpus directory path: ")
+                        )
+                        print("Set new encode directory: {}".format(self.corpusdir))
+                        self.regdir = self.fix_path(
+                            self.query("Please provide registry directory path: ")
+                        )
+                        print("Set new registry directory: {}".format(self.regdir))
+                        self.corpusname = self.query("Please provide corpusname: ")
+                        print("Set new corpusname: {}".format(self.corpusname))
+                        self.encodedir = self.corpusdir + self.corpusname
+                        return self.setup()
+                    elif cont == "n":
+                        return False
+                    else:
+                        print("Invalid input, please type 'y' or 'n'.", flush=True)
+                        input("[y/n")
+
         elif not os.path.isdir(self.encodedir):
             # if the directory doesn't exist we create one
             os.system("mkdir {}".format(self.encodedir))
+            print("Created directory {}.".format(self.encodedir), flush=True)
             return True
+
+    @staticmethod
+    def query(query: str) -> str:
+        """Function to flush query to output and return provided input."""
+
+        print(query, flush=True)
+        return input(query)
+
+    @staticmethod
+    def fix_path(path: str) -> str:
+        """Convenience function to fix provided paths to directories if neccessary."""
+
+        if not path.endswith("/"):
+            path += "/"
+        if not path.startswith("/"):
+            path = "/" + path
+        return path
 
     @classmethod
     def encode_vrt(cls, mydict):
@@ -449,7 +485,6 @@ class encode_corpus:
         # find out which options are to be encoded
         line = obj._get_s_attributes(line)
         line = obj._get_p_attributes(line)
-
         purged = obj.setup()
         if purged:
             # call the os with the encode command
