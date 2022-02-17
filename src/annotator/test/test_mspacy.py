@@ -124,7 +124,7 @@ def test_pipe_multiple(load_object, chunked_data):
     # lets just quickly emulate a file for our input, maybe change the chunker to also allow for direct string input down the line?
     data = chunked_data
     results_pipe = test_obj.pipe_multiple(data, ret=True)
-    results_alt = test_obj.get_multiple(data, ret=True)
+    # results_alt = test_obj.get_multiple(data, ret=True)
 
     # using spacy 3.2.1 and en_core_web_md 3.2.0
     check_chunked = [
@@ -163,7 +163,7 @@ def test_pipe_multiple(load_object, chunked_data):
 
     assert type(results_pipe) == list
     assert check_chunked == results_pipe
-    assert check_chunked == results_alt
+    # assert check_chunked == results_alt
 
 
 def test_sentencize():
