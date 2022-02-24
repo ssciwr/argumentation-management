@@ -244,7 +244,11 @@
                     "default": "en_core_web_md",
                     "description": "Pretrained/trained model to load and use components from. IF model is not installed as package a path to the directory containing the models config.cfg file can be provided.",
                     "title": "Selected model:",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "en_core_web_md",
+                      "en_core_web_sm"
+                    ]
                   },
                   "lang": {
                     "default": "en",
@@ -260,12 +264,6 @@
                     "default": "news",
                     "description": "Type of text to be processed, current options: news, biomed for de and news for en.",
                     "title": "Text type:",
-                    "type": "string"
-                  },
-                  "processors": {
-                    "default": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
-                    "description": "List of processors to be used in the pipeline. Sepparated by ',' may contain whitespaces.",
-                    "title": "Processors:",
                     "type": "string"
                   },
                   "pretrained": {
@@ -308,6 +306,25 @@
                     "title": "Configuration parameters",
                     "type": "object"
                   },
+                  "processors": {
+                    "default": ["tok2vec", "senter", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"],
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "tok2vec",
+                        "senter",
+                        "tagger",
+                        "parser",
+                        "attribute_ruler",
+                        "lemmatizer",
+                        "ner"
+                        ],
+                        "title": "Processor"
+                      },
+                      "title": "Processors"
+                    },
+                  
                   "type": {
                     "const": "spacy",
                     "type": "string"

@@ -66,7 +66,8 @@ class Spacy:
                 )
 
         # get processors from dict
-        self.jobs = be.prepare_run.get_jobs(config)
+        self.jobs = config["processors"]
+        # self.jobs = be.prepare_run.get_jobs(config)
 
         # use specific device settings if requested
         if config["set_device"]:
