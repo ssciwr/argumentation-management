@@ -206,33 +206,25 @@
                      "type": "object"
                  },
                  "stanza_sentiment": {
-                        "oneOf": [
-                            {
-                                "properties": {
-                                    "batch_size": {
-                                        "type": "null",
-                                        "default": null,
-                                        "title": "Process whole corpus at once."
-                                    }
-                                },
-                                "title": "Apply stanza-sentiment to complete corpus at once.",
-                                "type": "object" 
-                            },
-                            {
-                                "properties": {
-                                    "batch_size": {
-                                        "type": "integer",
-                                        "default": 2,
-                                        "title": "Number of chunks:",
-                                        "minimum": 2
-                                    }
-                                },
-                                "title": "Chunk corpus for Stanza-sentiment.",
-                                "type": "object"
-                            }
-                        ],
-                        "description": "Assign per-sentence sentiment scores, dependency: - 'tokenize, mwt'"
-
+                  "properties": {
+                    "batch_size": {
+                      "anyOf": [
+                        {
+                          "type": "null",
+                          "default": null,
+                          "title": "Run corpus as one."
+                        },
+                        {
+                          "type": "integer",
+                          "default": 2,
+                          "minimum": 2,
+                          "title": "Number of chunks:"
+                        }
+                      ],
+                      "title": "Run everything at once (None) or if set to integer, processing is broken into chunks of that size"
+                    }
+                  },
+                  "type": "object"
                  },
                  "stanza_constituency": {
                      "properties": {
@@ -250,7 +242,71 @@
                 "properties": {
                   "model": {
                     "default": "en_core_web_md",
+                    "description": "Pretrained/trained model to load and use components from. IF model is not installed as package a path to the directory containing the models config.cfg file can be provided.",
+                    "title": "Selected model:",
                     "type": "string"
+                  },
+                  "lang": {
+                    "default": "en",
+                    "description": "Language of the text to be annotated to chose model if no specific model is given.",
+                    "title": "Language:",
+                    "enum": [
+                      "en",
+                      "de"
+                    ],
+                    "type": "string"
+                  },
+                  "text_type": {
+                    "default": "news",
+                    "description": "Type of text to be processed, current options: news, biomed for de and news for en.",
+                    "title": "Text type:",
+                    "type": "string"
+                  },
+                  "processors": {
+                    "default": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
+                    "description": "List of processors to be used in the pipeline. Sepparated by ',' may contain whitespaces.",
+                    "title": "Processors:",
+                    "type": "string"
+                  },
+                  "pretrained": {
+                    "anyOf": [
+                      {
+                        "title": "False",
+                        "const": false,
+                        "type": "boolean"
+                      },
+                      {
+                        "title": "Path to model:",
+                        "type": "string"
+                      }
+                    ],
+                    "description": "Use a complete pretrained model - initialization of model with information from raw text instead of randomly.",
+                    "title": "Use pretrained model?"
+                  },
+                  "set_device": {
+                    "default": false,
+                    "description": "Request job to be run on CPU only (require_CPU), on GPU if available (prefer_GPU), only on GPU (require_GPU, will fail if no GPU), default by false.",
+                    "title": "Set device?",
+                    "enum": [
+                      "prefer_GPU",
+                      "require_GPU",
+                      "require_CPU",
+                      false
+                    ],
+                    "type": ["boolean", "string"]
+                  },
+                  "config": {
+                    "properties": {
+                      "nlp.batch_size": {
+                        "default": 256,
+                        "title": "Nlp batch size:",
+                        "description": "Default batch size for pipe.",
+                        "type": "integer"
+                      }
+                    },
+                    "description": "Parameters set here are usually defined in a models .cfg file and don't need to be changed.",
+                    "title": "Configuration parameters",
+                    "type": "object"
                   },
                   "type": {
                     "const": "spacy",
@@ -262,6 +318,12 @@
               },
               {
                 "properties": {
+                  "filename": {
+                    "default": "Test",
+                    "description": "Name of .vrt file to create.",
+                    "title": "Filename",
+                    "type": "string"
+                  },
                   "lang": {
                     "default": "en",
                     "description": "Language code for the language to use",
@@ -271,6 +333,17 @@
                     ],
                     "title": "Language",
                     "type": "string"
+                  },
+                  "job": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "ner",
+                        "pos"
+                      ]
+                      },
+                    "title": "Job"
                   },
                   "type": {
                     "const": "flair",

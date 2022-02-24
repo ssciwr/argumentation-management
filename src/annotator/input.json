@@ -107,8 +107,6 @@
         "pretrained": false,
         "_set_device_comment": "Request job to be run on CPU only (require_CPU), on GPU if available (prefer_GPU), only on GPU (require_GPU, will fail if no GPU), default by false.",
         "set_device": false,
-        "_exclude_comment": "Components from pipeline that are specifically not to be loaded upon initialization. If none are given all components will be loaded, only those specified in preocessors will be run.",
-        "exclude": false,
         "config": {
             "_nlp.batch_size_comment": "Default batch size for pipe.",
             "nlp.batch_size": 256,
