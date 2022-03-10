@@ -33,7 +33,7 @@ class prepare_run:
     # load the dictionary
     @staticmethod
     def load_input_dict(name):
-        with open("{}.json".format(name)) as f:
+        with open("{}.json".format(name), "r") as f:
             mydict = json.load(f)
         return mydict
 

@@ -102,7 +102,7 @@
         "_text_type_comment": "Type of text to be processed, current options: news, biomed for de and news for en.",
         "text_type": "news",
         "_processors_comment": "List of processors to be used in the pipeline. Sepparated by ',' may contain whitespaces.",
-        "processors": ["tok2vec", "senter", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"],
+        "processors": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
         "_pretrained_comment": "Use a complete pretrained model - initialization of model with information from raw text instead of randomly.",
         "pretrained": false,
         "_set_device_comment": "Request job to be run on CPU only (require_CPU), on GPU if available (prefer_GPU), only on GPU (require_GPU, will fail if no GPU), default by false.",

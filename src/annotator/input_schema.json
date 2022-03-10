@@ -307,22 +307,9 @@
                     "type": "object"
                   },
                   "processors": {
-                    "default": ["tok2vec", "senter", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"],
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "enum": [
-                        "tok2vec",
-                        "senter",
-                        "tagger",
-                        "parser",
-                        "attribute_ruler",
-                        "lemmatizer",
-                        "ner"
-                        ],
-                        "title": "Processor"
-                      },
-                      "title": "Processors"
+                    "default": "tok2vec ,senter, tagger, parser, attribute_ruler, lemmatizer, ner",
+                    "type": "string",
+                    "title": "Processors"
                     },
                   
                   "type": {

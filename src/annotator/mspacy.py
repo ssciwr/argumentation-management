@@ -66,8 +66,8 @@ class Spacy:
                 )
 
         # get processors from dict
-        self.jobs = config["processors"]
-        # self.jobs = be.prepare_run.get_jobs(config)
+        # self.jobs = config["processors"]
+        self.jobs = be.prepare_run.get_jobs(config)
 
         # use specific device settings if requested
         if config["set_device"]:
@@ -110,7 +110,9 @@ class spacy_pipe(Spacy):
                     self.nlp = sp.load(self.model)
 
             except OSError:
-                print("Could not find {} on system.".format(self.model))
+                raise OSError(
+                    "Could not find {} in standard directory.".format(self.model)
+                )
 
             print(">>>")
 
