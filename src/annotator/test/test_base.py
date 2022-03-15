@@ -47,6 +47,11 @@ def test_load_input_dict(init_dict):
     assert mydict == init_dict
 
 
+@pytest.mark.dictname("test/test_files/input2")
+def test_validate_input_dict(init_dict):
+    be.prepare_run.validate_input_dict(init_dict)
+
+
 @pytest.mark.dictname("test/test_files/input_short")
 def test_update_dict(init_dict):
     mydict = be.prepare_run.load_input_dict("input")
