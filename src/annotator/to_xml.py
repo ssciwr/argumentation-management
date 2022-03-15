@@ -3,7 +3,7 @@ import xml.dom.minidom as mini
 import annotator.base as be
 
 
-def list_to_xml(tag: str, idx: int, List: list) -> Element:
+def list_to_xml(tag: str, idx: int, mylist: list) -> Element:
     """Convert a given list l of dictionaries d from stanza output into an xml element under
     given tag with idx."""
 
@@ -12,9 +12,9 @@ def list_to_xml(tag: str, idx: int, List: list) -> Element:
     # use attribute to distinguish sentences
     root.attrib = {"Id": str(idx)}
     # iterate list
-    for Dict in List:
+    for mydict in mylist:
         # iterate key/value pairs
-        for key, val in Dict.items():
+        for key, val in mydict.items():
             # if key is id we start new node for token
             if key == "id":
                 node = Element("Token")
@@ -32,7 +32,7 @@ def list_to_xml(tag: str, idx: int, List: list) -> Element:
     return root
 
 
-def dict_to_xml(tag: str, Dict: dict) -> Element:
+def dict_to_xml(tag: str, mydict: dict) -> Element:
     """Basic function to convert a given dictionary d into an xml element under
     given tag."""
 
@@ -40,7 +40,7 @@ def dict_to_xml(tag: str, Dict: dict) -> Element:
     root = Element(tag)
 
     # iterate key/value pairs
-    for key, val in Dict.items():
+    for key, val in mydict.items():
         # every key is a sepparate node
         node = Element(key)
         # text of node is value
