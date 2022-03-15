@@ -1,6 +1,6 @@
 {
     "lang": "en",
-    "dir": "./src/annotator/test/models/",  
+    "dir": "./test/models/",  
     "package": "default",
     "processors": "tokenize,pos,lemma",  
     "logging_level": "INFO",  

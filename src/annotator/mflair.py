@@ -3,9 +3,9 @@ from flair.data import Sentence
 from flair.models import SequenceTagger
 from flair.models.sequence_tagger_model import MultiTagger
 from flair.data import Token
-import base as be
-import mspacy as msp
 from tqdm import tqdm
+import annotator.base as be
+import annotator.mspacy as msp
 
 
 class Flair:
@@ -92,12 +92,12 @@ class flair_pipe(Flair):
         Args:
                 ret[bool]=False: Return output as list (True) or write to file (False).
                 start[int]=0: Start index for data. (Maybe not needed?)."""
-
+  
         out = out_object_flair(self.sentences, self.job, start=0).start_output().out
         for sent in self.sentences:
 
             out.append("<s>\n")
-            out = out_object_flair(sent, self.job, start=start).iterate_tokens(out)
+            out = out_object_flair(sent, self.job, start=0).iterate_tokens(out)
             out.append("</s>\n")
 
         if ret:
@@ -134,7 +134,8 @@ class flair_pipe(Flair):
 
             tmp_ = self.senter_spacy(chunk[1]).apply_to()
             for sent in tmp_.sentences:
-                out = out_object_flair(sent, tmp_.job, start=start).iterate_tokens(out)
+
+                out = out_object_flair(sent, tmp_.job, start=0).iterate_tokens(out)
 
             # append the "< >" closing statement
             if chunk[2] != "":

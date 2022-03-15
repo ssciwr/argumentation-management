@@ -38,15 +38,16 @@ class mstanza_pipeline:
     """Stanza main processing class.
 
     Args:
-       config (dictionary): The input dictionary with the stanza options.
+       config (dictionary): The full input dictionary.
        text (string): The raw text that is to be processed.
        text (list of strings): Several raw texts to be processed simultaneously.
        annotated (dictionary): The output dictionary with annotated tokens.
     """
 
-    def __init__(self, config: dict):
-        self.config = config
-        # print(config)
+    def __init__(self, mydict: dict):
+        # we need the full dict to get the parameters for encoding
+        self.config = mydict
+
 
     def init_pipeline(self):
         """Function to initialize the pipeline based on input dict."""
@@ -76,22 +77,23 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self, outfile: str) -> None:
+    def postprocess(self, out_param: dict) -> None:
         """Funtion to write post-pipeline data to .vrt file and encode for CWB.
 
         Args:
-                outfile[str]: Name of .vrt file to create."""
+                out_param[dict]: Parameters for output."""
 
         # postprocess of the annotated dictionary
+        # fout = be.out_object.open_outfile(dict["output"])
         # sentencize using generic base output object
         # next step would be mwt, which is only applicable for languages like German and French
         # seems not to be available in spacy, how is it handled in cwb?
-        jobs = [proc.strip() for proc in self.config["processors"].split(",")]
+        jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        out_object_stanza.write_vrt(outfile, out)
-        # encode
-        be.encode_corpus.encode_vrt("test", outfile, jobs, "stanza")
+
+        out_object_stanza.write_vrt(out_param["output"], out)
+        be.encode_corpus.encode_vrt(out_param)
 
 
 def ner(doc) -> dict:
@@ -133,6 +135,7 @@ class out_object_stanza(be.out_object):
                 )
             tid = token.id[0] + self.tstart
             line = self.collect_results(token, tid, word, style)
+
             out.append(line + "\n")
         self.tstart = tid
         return out

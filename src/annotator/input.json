@@ -2,12 +2,20 @@
     "input": "input.txt",
     "output": "out/output",
     "tool": "spacy",
+    "cwb_dict": {
+        "_corpus_name_comment": "Name of corpus to be annotated.",
+        "corpus_name": "test",
+        "_corpus_dir_comment": "Directory containing the corpus.",
+        "corpus_dir": "/home/jovyan/shared/corpora/",
+        "_registry_dir_comment": "Name of registry directory for cwb.",
+        "registry_dir": "/home/jovyan/shared/registry/"
+    },
     "stanza_dict": {
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
         "_lang_comment": "Language code for the language to build the Pipeline in",
         "lang": "en",
-        "_dir_comment": "directory where models are stored - this does not work for pipeline",
-        "dir": "./src/annotator/test/models/",  
+        "_dir_comment": "directory where models are stored - this maynot work for pipeline",
+        "dir": "./test/models/",  
         "_package_comment": "using the default model, for others see: https://stanfordnlp.github.io/stanza/models.html",
         "package": "default",
         "_processors_comment": "Comma-separated list of processors to use, can also be given as a dictionary: {'tokenize': 'ewt', 'pos': 'ewt'}",
@@ -99,8 +107,6 @@
         "pretrained": false,
         "_set_device_comment": "Request job to be run on CPU only (require_CPU), on GPU if available (prefer_GPU), only on GPU (require_GPU, will fail if no GPU), default by false.",
         "set_device": false,
-        "_exclude_comment": "Components from pipeline that are specifically not to be loaded upon initialization. If none are given all components will be loaded, only those specified in preocessors will be run.",
-        "exclude": false,
         "config": {
             "_nlp.batch_size_comment": "Default batch size for pipe.",
             "nlp.batch_size": 256,

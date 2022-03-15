@@ -1,8 +1,7 @@
 # the base class and utilities are contained in this module
 import json
-from logging import raiseExceptions
+import jsonschema
 import os
-from numpy import string_
 import to_xml as txml
 
 
@@ -51,6 +50,13 @@ class prepare_run:
             mydict = json.load(f)
         return mydict
 
+    # load the dictionary schema and validate against
+    @staticmethod
+    def validate_input_dict(dict_in: dict) -> None:
+        with open("{}.json".format("input_schema"), "r") as f:
+            myschema = json.load(f)
+        jsonschema.validate(instance=dict_in, schema=myschema)
+
     @staticmethod
     def update_dict(dict_in: dict) -> dict:
         """Remove unnecessary keys in dict and move processor-specific keys one level up.
@@ -88,13 +94,44 @@ class prepare_run:
         mydict = {k: v for k, v in mydict.items() if not k.startswith("toolstring")}
         return mydict
 
+    @staticmethod
+    def get_jobs(dict_in: dict, tool=None) -> list:
+        """Convenience function to read in Jobs using the processors provided in dict. Can work with
+        basic input.json if provided a tool, or assumes it is in tool-specific dict if no tool is provided."""
+        if tool is not None:
+            return [
+                proc.strip()
+                for proc in dict_in["{}_dict".format(tool)]["processors"].split(",")
+            ]
+        elif tool is None:
+            return [proc.strip() for proc in dict_in["processors"].split(",")]
+
+    @staticmethod
+    def get_encoding(dict_in: dict) -> dict:
+        """Function to fetch the parameters needed for encoding from the input.json."""
+
+        new_dict = {}
+
+        for key, value in dict_in.items():
+
+            if type(value) != dict or type(value) == dict and key == "cwb_dict":
+                new_dict[key] = value
+            # elif type(value) == dict and key == "cwb_dict":
+            #    new_dict[key] = value
+
+        new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
+            "processors"
+        ]
+
+        return new_dict
+
 
 # the below in a chunker class
 # I thought this would belong here rather than mspacy.
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
     Assumes that there is one layer (no nested <> </> statements) of text elements to be separated."""
-
+    
     # list for data chunks
     data = []
     # index to refer to current chunk
@@ -263,6 +300,7 @@ class out_object:
         Args:
                 style[str]. Return line as string (STR) for .vrt or dict (DICT) for .xml."""
 
+
         # always get token id and token text
         # line = str(tid + start) + " " + token.text
         line = {"id": str(tid), "text": token.text}
@@ -324,6 +362,7 @@ class out_object:
     # define all of these as functions
     # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing -> ok
+
     # making them static for now
     @staticmethod
     def grab_ner(token, tid):
@@ -440,33 +479,35 @@ class out_object:
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
-    def __init__(self, corpusname, outname, jobs, tool) -> None:
+    def __init__(self, mydict) -> None:
+
         # self.corpusdir = "/home/jovyan/corpus"
-        self.corpusdir = "/home/inga/projects/corpus-workbench/cwb/corpora/"
-        self.corpusname = corpusname
-        self.outname = outname
+        # corpusdir and regdir need to be set from input dict
+        # plus we also need to set the corpus name from input dict
+        cwb_dict = mydict["cwb_dict"]
+        tool = mydict["tool"]
+
+        self.corpusdir = self.fix_path(cwb_dict["corpus_dir"])
+        self.corpusname = cwb_dict["corpus_name"]
+        self.outname = mydict["output"]
         # self.regdir = "/home/jovyan/registry"
-        self.regdir = "/home/inga/projects/corpus-workbench/cwb/registry/"
-        self.jobs = jobs
+        self.regdir = self.fix_path(cwb_dict["registry_dir"])
+        self.jobs = prepare_run.get_jobs(mydict)
         self.tool = tool
-        self.encodedir = self.corpusdir + corpusname
-        # create the new corpus' directory if not there yet
-        try:
-            os.makedirs(self.encodedir)
-        except OSError:
-            pass
+        self.encodedir = self.corpusdir + self.corpusname
+
         # get attribute names
         self.attrnames = out_object.get_names()
         self.attrnames = self.attrnames[self.tool + "_names"]
 
-    def _get_s_attributes(self, line: str) -> str:
+    def _get_s_attributes(self, line) -> str:
         if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
             print("Encoding s-attribute <s>...")
             line += "-S s "
         return line
 
     # the order here is important for vrt files and MUST NOT be changed!!!
-    def _get_p_attributes(self, line: str) -> str:
+    def _get_p_attributes(self, line) -> str:
         if any(attr in self.attrnames["proc_pos"] for attr in self.jobs):
             print("Encoding p-attribute POS...")
             line += "-P pos "
@@ -475,34 +516,113 @@ class encode_corpus:
             line += "-P lemma "
         return line
 
+    def setup(self) -> bool:
+        """Funtion to check wheter a corpus directory exists. If existing directory is found,
+        requires input of "y" to overwrite existing files. Maybe add argument to force overwrite later?.
+        If directory is not found, an empty directory is created."""
+
+        # check if corpus directory exists
+        print("+++ Checking for corpus +++")
+        if os.path.isdir(self.encodedir):
+            # if yes, ask for overwrite
+            message = "Overwrite {} and {}?".format(
+                self.encodedir, self.regdir + self.corpusname
+            )
+            print(message, flush=True)
+            purge = input("[y/n]")
+            # only overwrite if "y" to prevent accidental overwrite of data
+            if purge == "y":
+                print("+++ Purging old corpus +++")
+                if os.path.isfile(self.regdir + self.corpusname):
+                    command = "rm {}".format(self.regdir + self.corpusname)
+                    print(command)
+                    os.system(command)
+                command = "rm -r {}".format(self.encodedir)
+                print(command)
+                os.system(command)
+                print("+++ Purged old corpus! +++")
+                os.system("mkdir {}".format(self.encodedir))
+                return True
+            # if no permission is granted we ask what to do
+            else:
+                while True:
+                    print("Continue encoding? [y/n]", flush=True)
+                    cont = input("[y/n]")
+                    if cont == "y":
+                        self.corpusdir = self.fix_path(
+                            self.query("Please provide corpus directory path: ")
+                        )
+                        print("Set new encode directory: {}".format(self.corpusdir))
+                        self.regdir = self.fix_path(
+                            self.query("Please provide registry directory path: ")
+                        )
+                        print("Set new registry directory: {}".format(self.regdir))
+                        self.corpusname = self.query("Please provide corpusname: ")
+                        print("Set new corpusname: {}".format(self.corpusname))
+                        self.encodedir = self.corpusdir + self.corpusname
+                        return self.setup()
+                    elif cont == "n":
+                        return False
+                    else:
+                        print("Invalid input, please type 'y' or 'n'.", flush=True)
+                        input("[y/n")
+
+        elif not os.path.isdir(self.encodedir):
+            # if the directory doesn't exist we create one
+            os.system("mkdir {}".format(self.encodedir))
+            print("Created directory {}.".format(self.encodedir), flush=True)
+            return True
+
+    @staticmethod
+    def query(query: str) -> str:
+        """Function to flush query to output and return provided input."""
+
+        print(query, flush=True)
+        return input(query)
+
+    @staticmethod
+    def fix_path(path: str) -> str:
+        """Convenience function to fix provided paths to directories if neccessary."""
+
+        if not path.endswith("/"):
+            path += "/"
+        if not path.startswith("/"):
+            path = "/" + path
+        return path
+
     @classmethod
-    def encode_vrt(cls, corpusname: str, outname: str, jobs: list, tool: str) -> None:
-        obj = cls(corpusname, outname, jobs, tool)
+    def encode_vrt(cls, mydict):
+        obj = cls(mydict)
+
         line = " "
         # find out which options are to be encoded
         line = obj._get_s_attributes(line)
         line = obj._get_p_attributes(line)
-        # call the os with the encode command
-        print("Encoding the corpus...")
-        print("Options are:")
-        command = (
-            "cwb-encode -d "
-            + obj.encodedir
-            + " -xsBC9 -c ascii -f "
-            + obj.outname
-            + ".vrt -R "
-            + obj.regdir
-            + obj.corpusname
-            + line
-        )
-        print(command)
-        os.system(command)
-        print("Updating the registry entry...")
-        print("Options are:")
-        # call the os with the registry update command
-        command = "cwb-makeall -r " + obj.regdir + " -V " + obj.corpusname
-        print(command)
-        os.system(command)
+        purged = obj.setup()
+        if purged:
+            # call the os with the encode command
+            print("Encoding the corpus...")
+            print("Options are:")
+            command = (
+                "cwb-encode -d "
+                + obj.encodedir
+                + " -xsBC9 -c ascii -f "
+                + obj.outname
+                + ".vrt -R "
+                + obj.regdir
+                + obj.corpusname
+                + line
+            )
+            print(command)
+            os.system(command)
+            print("Updating the registry entry...")
+            print("Options are:")
+            # call the os with the registry update command
+            command = "cwb-makeall -r " + obj.regdir + " -V " + obj.corpusname
+            print(command)
+            os.system(command)
+        elif not purged:
+            return print(OSError("Error during setup, aborting..."))
 
 
 # en

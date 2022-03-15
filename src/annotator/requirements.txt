@@ -1,5 +1,4 @@
 spacy
 stanza
 flair
-jsonschema
-./src/
+numpy

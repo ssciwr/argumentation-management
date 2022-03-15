@@ -12,7 +12,7 @@ def init():
 
     mydict = be.prepare_run.load_input_dict("test/test_files/input")
     mydict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
-    return mydict, mydict_test
+    return mydict["spacy_dict"], mydict_test
 
 
 @pytest.fixture()
@@ -21,23 +21,6 @@ def load_object(init):
 
     test_obj = msp.spacy_pipe(init[0])
     return test_obj
-
-
-def test_init(init, load_object):
-    """Check if the parameters from the input dict are loaded into the
-    pipe object as expected."""
-
-    mydict, mydict_test = init
-    test_obj = load_object
-    assert test_obj.outname == mydict["output"]
-    assert test_obj.pretrained == mydict_test["pretrained"]
-    assert test_obj.lang == mydict_test["lang"]
-    assert test_obj.type == mydict_test["text_type"]
-    assert test_obj.model == mydict_test["model"]
-    assert test_obj.jobs == [
-        proc.strip() for proc in mydict_test["processors"].split(",")
-    ]
-    assert test_obj.config == be.prepare_run.update_dict(mydict_test["config"])
 
 
 @pytest.fixture()
@@ -64,6 +47,41 @@ def pipe_sent(init, load_object):
         assert test_token.tag == token.tag
         assert test_token.sent_start == token.sent_start
     return test_obj.apply_to(text), check_doc
+
+
+@pytest.fixture()
+def chunked_data():
+    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
+    formated_text = text.replace(" ", "\n")
+
+    tmp = tempfile.NamedTemporaryFile()
+
+    tmp.write(formated_text.encode())
+    tmp.seek(0)
+    # print(tmp.read().decode())
+    data = be.chunk_sample_text("{}".format(tmp.name))
+    # print(data)
+    # don't need this anymore
+    tmp.close()
+
+    return data
+
+
+def test_init(init, load_object):
+    """Check if the parameters from the input dict are loaded into the
+    pipe object as expected."""
+
+    mydict_test = init[1]
+    test_obj = load_object
+
+    assert test_obj.pretrained == mydict_test["pretrained"]
+    assert test_obj.lang == mydict_test["lang"]
+    assert test_obj.type == mydict_test["text_type"]
+    assert test_obj.model == mydict_test["model"]
+    assert test_obj.jobs == [
+        proc.strip() for proc in mydict_test["processors"].split(",")
+    ]
+    assert test_obj.config == be.prepare_run.update_dict(mydict_test["config"])
 
 
 def test_output_sent(pipe_sent):
@@ -96,27 +114,8 @@ def test_output_sent(pipe_sent):
     check_out = msp.out_object_spacy(check_doc, test_obj.jobs, start=0).fetch_output(
         "STR"
     )
-
     assert test_out == check_out
     assert test_out == check
-
-
-@pytest.fixture()
-def chunked_data():
-    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
-    formated_text = text.replace(" ", "\n")
-
-    tmp = tempfile.NamedTemporaryFile()
-
-    tmp.write(formated_text.encode())
-    tmp.seek(0)
-    # print(tmp.read().decode())
-    data = be.chunk_sample_text("{}".format(tmp.name))
-    # print(data)
-    # don't need this anymore
-    tmp.close()
-
-    return data
 
 
 def test_pipe_multiple(load_object, chunked_data):
@@ -127,7 +126,7 @@ def test_pipe_multiple(load_object, chunked_data):
     # lets just quickly emulate a file for our input, maybe change the chunker to also allow for direct string input down the line?
     data = chunked_data
     results_pipe = test_obj.pipe_multiple(data, ret=True)
-    results_alt = test_obj.get_multiple(data, ret=True)
+    # results_alt = test_obj.get_multiple(data, ret=True)
 
     # using spacy 3.2.1 and en_core_web_md 3.2.0
     check_chunked = [
@@ -166,7 +165,8 @@ def test_pipe_multiple(load_object, chunked_data):
 
     assert type(results_pipe) == list
     assert check_chunked == results_pipe
-    assert check_chunked == results_alt
+    # assert check_chunked == results_alt
+
 
 
 def test_sentencize():
