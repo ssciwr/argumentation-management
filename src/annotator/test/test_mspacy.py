@@ -167,6 +167,7 @@ def test_pipe_multiple(load_object, chunked_data):
     # assert check_chunked == results_alt
 
 
+
 def test_sentencize():
 
     text_en = "This is a sentence. This is another sentence, or is it?"

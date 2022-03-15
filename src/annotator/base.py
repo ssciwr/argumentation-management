@@ -131,7 +131,7 @@ class prepare_run:
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
     Assumes that there is one layer (no nested <> </> statements) of text elements to be separated."""
-    
+
     # list for data chunks
     data = []
     # index to refer to current chunk
@@ -294,12 +294,25 @@ class out_object:
         # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
-    def collect_results(self, token, tid: int, word, style: str) -> tuple:
+    @staticmethod
+    def switch_style(line: dict) -> str:
+        """Switch style from DICT to STR"""
+
+        output = ""
+        for i, (key, value) in enumerate(line.items()):
+            # strip the id, and don't append \t for the "first" item
+            if key != "id" and i > 1:
+                output += "\t{}".format(value)
+            elif key != "id" and i == 1:
+                output += "{}".format(value)
+        return output
+
+    def collect_results(self, token, tid: int, word, style: str) -> dict or str:
+
         """Function to collect requested tags for tokens after applying pipeline to data.
 
         Args:
                 style[str]. Return line as string (STR) for .vrt or dict (DICT) for .xml."""
-
 
         # always get token id and token text
         # line = str(tid + start) + " " + token.text
@@ -317,43 +330,34 @@ class out_object:
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
-            line["POS"] = out_object.grab_tag(token, tid, word, self.attrnames["pos"])
+
+            line["POS"] = out_object.grab_tag(word, self.attrnames["pos"])
 
         if self.attrnames["proc_lemma"] in self.jobs:
-            line["LEMMA"] = out_object.grab_lemma(
-                token, tid, word, self.attrnames["lemma"]
-            )
+            line["LEMMA"] = out_object.grab_lemma(word, self.attrnames["lemma"])
 
         if "ner" in self.jobs:
-            line["NER"] = out_object.grab_ner(token, tid)
+            line["NER"] = out_object.grab_ent(token)
 
         if "entity_ruler" in self.jobs:
-            line["RULER"] = out_object.grab_ruler(token, tid)
+            line["RULER"] = out_object.grab_ent(token)
 
         if "entity_linker" in self.jobs:
-            line["LINKER"] = out_object.grab_linker(token, tid)
+            line["LINKER"] = out_object.grab_linker(token)
 
         if "morphologizer" in self.jobs:
-            line["MORPH"] = out_object.grab_morph(token, tid)
+            line["MORPH"] = out_object.grab_morph(token)
 
         if "parser" in self.jobs:
-            line["PARSER"] = out_object.grab_dep(token, tid)
+            line["PARSER"] = out_object.grab_dep(token)
 
         if "attribute_ruler" in self.jobs:
-            line["ATTR"] = out_object.grab_att(token, tid)
+            line["ATTR"] = out_object.grab_att(token)
         # add what else we need
 
         if style == "STR":
-            # transform dict to str as before
-            output = ""
-            for i, (key, value) in enumerate(line.items()):
-                # strip the id, and don't append \t for the "first" item
-                if key != "id" and i > 1:
-                    output += "\t{}".format(value)
-                elif key != "id" and i == 1:
-                    output += "{}".format(value)
-            # et voila, str
-            return output
+
+            return self.switch_style(line)
 
         elif style == "DICT":
 
@@ -363,20 +367,13 @@ class out_object:
     # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing -> ok
 
+
     # making them static for now
     @staticmethod
-    def grab_ner(token, tid):
-        # attributes:
-        # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if token.ent_type_ != "":
-            tag = token.ent_type_
-        else:
-            tag = "-"
-        return tag
+    def grab_ent(token):
 
-    @staticmethod
-    def grab_ruler(token, tid):
         # attributes:
+        # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.ent_type_ != "":
             tag = token.ent_type_
@@ -385,7 +382,8 @@ class out_object:
         return tag
 
     @staticmethod
-    def grab_linker(token, tid):
+    def grab_linker(token):
+
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
         if token.ent_type_ != "":
@@ -395,7 +393,8 @@ class out_object:
         return tag
 
     @staticmethod
-    def grab_lemma(token, tid, word, attrname):
+    def grab_lemma(word, attrname):
+
         # attributes:
         # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
@@ -406,7 +405,8 @@ class out_object:
         return tag
 
     @staticmethod
-    def grab_morph(token, tid):
+    def grab_morph(token):
+
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
         if token.pos_ != "":
@@ -416,7 +416,8 @@ class out_object:
         return tag
 
     @staticmethod
-    def grab_tag(token, tid, word, attrname):
+    def grab_tag(word, attrname):
+
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
@@ -426,7 +427,8 @@ class out_object:
         return tag
 
     @staticmethod
-    def grab_dep(token, tid):
+    def grab_dep(token):
+
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
         if token.dep_ != "":
@@ -436,7 +438,8 @@ class out_object:
         return tag
 
     @staticmethod
-    def grab_att(token, tid):
+    def grab_att(token):
+
         # attributes:
         if token.pos_ != "":
             tag = token.pos_
@@ -457,9 +460,10 @@ class out_object:
         print("+++ Finished writing {}.vrt +++".format(outname))
 
     @staticmethod
-    def write_xml(docID: str, outname: str, out: list) -> None:
+    def write_xml(docid: str, outname: str, out: list) -> None:
 
-        raw_xml = txml.start_xml(docID)
+        raw_xml = txml.start_xml(docid)
+
         sents = [txml.list_to_xml("Sent", i, elem) for i, elem in enumerate(out, 1)]
 
         for sent in sents:
