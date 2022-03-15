@@ -1,12 +1,9 @@
 # the base class and utilities are contained in this module
 import json
-from logging import raiseExceptions
+import jsonschema
 import os
 
-from numpy import string_
 
-
-# the below functions in a class with attributes
 class prepare_run:
     def __init__(self) -> None:
         pass
@@ -36,9 +33,16 @@ class prepare_run:
     # load the dictionary
     @staticmethod
     def load_input_dict(name):
-        with open("{}.json".format(name)) as f:
+        with open("{}.json".format(name), "r") as f:
             mydict = json.load(f)
         return mydict
+
+    # load the dictionary schema and validate against
+    @staticmethod
+    def validate_input_dict(dict_in: dict) -> None:
+        with open("{}.json".format("input_schema"), "r") as f:
+            myschema = json.load(f)
+        jsonschema.validate(instance=dict_in, schema=myschema)
 
     @staticmethod
     def update_dict(dict_in) -> dict:
@@ -79,6 +83,25 @@ class prepare_run:
             ]
         elif tool is None:
             return [proc.strip() for proc in dict_in["processors"].split(",")]
+
+    @staticmethod
+    def get_encoding(dict_in: dict) -> dict:
+        """Function to fetch the parameters needed for encoding from the input.json."""
+
+        new_dict = {}
+
+        for key, value in dict_in.items():
+
+            if type(value) != dict or type(value) == dict and key == "cwb_dict":
+                new_dict[key] = value
+            # elif type(value) == dict and key == "cwb_dict":
+            #    new_dict[key] = value
+
+        new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
+            "processors"
+        ]
+
+        return new_dict
 
 
 # the below in a chunker class
@@ -380,7 +403,7 @@ class encode_corpus:
         self.outname = mydict["output"]
         # self.regdir = "/home/jovyan/registry"
         self.regdir = self.fix_path(cwb_dict["registry_dir"])
-        self.jobs = prepare_run.get_jobs(mydict, tool)
+        self.jobs = prepare_run.get_jobs(mydict)
         self.tool = tool
         self.encodedir = self.corpusdir + self.corpusname
 

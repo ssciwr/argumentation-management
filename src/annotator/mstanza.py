@@ -41,11 +41,7 @@ class mstanza_pipeline:
 
     def __init__(self, mydict: dict):
         # we need the full dict to get the parameters for encoding
-        self.mydict = mydict
-        # just extract the stanza specific config here, is also less work for the user.
-        self.config = be.prepare_run.update_dict(mydict["stanza_dict"])
-        # does the activate_procs routine actually do anything here? Pytests work with and without it.
-        self.config = be.prepare_run.activate_procs(self.config, "stanza_")
+        self.config = mydict
 
     def init_pipeline(self):
         # Initialize the pipeline using a configuration dict
@@ -63,7 +59,7 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self):
+    def postprocess(self, out_param: dict):
         # postprocess of the annotated dictionary
         # fout = be.out_object.open_outfile(dict["output"])
         # sentencize using generic base output object
@@ -72,9 +68,8 @@ class mstanza_pipeline:
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        out_object_stanza.write_vrt(self.mydict["output"], out)
-        # encode -> move this out of here
-        be.encode_corpus.encode_vrt(self.mydict)
+        out_object_stanza.write_vrt(out_param["output"], out)
+        be.encode_corpus.encode_vrt(out_param)
 
 
 def ner(doc):

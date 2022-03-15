@@ -32,7 +32,7 @@ test_dict = {
 
 @pytest.fixture
 def get_obj():
-    obj = be.encode_corpus(test_dict)
+    obj = be.encode_corpus(be.prepare_run.get_encoding(test_dict))
     return obj
 
 
@@ -45,6 +45,11 @@ def test_get_cores():
 def test_load_input_dict(init_dict):
     mydict = be.prepare_run.load_input_dict("input")
     assert mydict == init_dict
+
+
+@pytest.mark.dictname("test/test_files/input2")
+def test_validate_input_dict(init_dict):
+    be.prepare_run.validate_input_dict(init_dict)
 
 
 @pytest.mark.dictname("test/test_files/input_short")

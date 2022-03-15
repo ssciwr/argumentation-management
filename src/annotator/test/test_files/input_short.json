@@ -5,7 +5,6 @@
     "processors": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
     "pretrained": false,
     "set_device": false,
-    "exclude": false,
     "config": {
         "_nlp.batch_size_comment": "Default batch size for pipe.",
         "nlp.batch_size": 256,

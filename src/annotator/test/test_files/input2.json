@@ -1,0 +1,8 @@
+{
+  "input": "input",
+  "corpus_name": "test",
+  "language": "en",
+  "document_type": "text",
+  "processing_option": "fast",
+  "processing_type": "tokenize"
+}
