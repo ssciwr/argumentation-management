@@ -92,10 +92,10 @@ class prepare_run:
 
         for key, value in dict_in.items():
 
-            if type(value) != dict:
+            if type(value) != dict or type(value) == dict and key == "cwb_dict":
                 new_dict[key] = value
-            elif type(value) == dict and key == "cwb_dict":
-                new_dict[key] = value
+            # elif type(value) == dict and key == "cwb_dict":
+            #    new_dict[key] = value
 
         new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
             "processors"
