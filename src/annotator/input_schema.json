@@ -322,21 +322,6 @@
             "title": "Text type:",
             "type": "string"
           },
-          "pretrained": {
-            "anyOf": [
-              {
-                "title": "False",
-                "const": false,
-                "type": "boolean"
-              },
-              {
-                "title": "Path to model:",
-                "type": "string"
-              }
-            ],
-            "description": "Use a complete pretrained model - initialization of model with information from raw text instead of randomly.",
-            "title": "Use pretrained model?"
-          },
           "set_device": {
             "default": false,
             "description": "Request job to be run on CPU only (require_CPU), on GPU if available (prefer_GPU), only on GPU (require_GPU, will fail if no GPU), default by false.",

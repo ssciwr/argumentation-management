@@ -3,7 +3,6 @@
     "lang": "en",
     "text_type": "news",
     "processors": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
-    "pretrained": false,
     "set_device": false,
     "config": {
         "_nlp.batch_size_comment": "Default batch size for pipe.",

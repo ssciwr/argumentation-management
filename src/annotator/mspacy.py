@@ -24,13 +24,6 @@ class Spacy:
         # config = the input dictionary
         # output file name
         config = be.prepare_run.update_dict(config)
-        # check for pretrained
-        # lets you initialize your models with information from raw text
-        # you would do this if you had generated the model yourself
-        self.pretrained = config["pretrained"]
-
-        if self.pretrained:
-            self.model = self.pretrained
 
         # here we put some sensible default values
         # in general, it should also be possible
@@ -91,56 +84,44 @@ class spacy_pipe(Spacy):
     def __init__(self, config: dict):
         super().__init__(config)
         # use a specific pipeline if requested
-        if self.pretrained:
-            # load pipeline
-            print("Loading full pipeline {}.".format(self.pretrained))
+        self.validated = []
+        # define language -> is this smart or do we want to load a model and disable?
+        # -> changed it to load a model and disable, as I was experiencing inconsistencies
+        # with building from base language even for just the two models I tried
+        try:
+            if self.config:
+                self.nlp = sp.load(self.model, config=self.config)
+            else:
+                self.nlp = sp.load(self.model)
 
-            self.nlp = sp.load(self.pretrained)
+        except OSError:
+            raise OSError("Could not find {} in standard directory.".format(self.model))
 
-        # initialize pipeline
-        else:
-            self.validated = []
-            # define language -> is this smart or do we want to load a model and disable?
-            # -> changed it to load a model and disable, as I was experiencing inconsistencies
-            # with building from base language even for just the two models I tried
-            try:
-                if self.config:
-                    self.nlp = sp.load(self.model, config=self.config)
-                else:
-                    self.nlp = sp.load(self.model)
+        print(">>>")
 
-            except OSError:
-                raise OSError(
-                    "Could not find {} in standard directory.".format(self.model)
+        # find which processors are available in model
+        components = [component[0] for component in self.nlp.components]
+
+        # go through the requested processors
+        for component in self.jobs:
+            # check if the keywords requested correspond to available components in pipeline
+            if component in components:
+                # if yes:
+                print("Loading component {} from {}.".format(component, self.model))
+                # add to list of validated components
+                self.validated.append(component)
+
+            # if no, there is maybe a typo, display some info and try to link to spacy webpage of model
+            # -> links may not work if they change their websites structure in the future
+            else:
+                print("Component '{}' not found in {}.".format(component, self.model))
+                message = "You may have tried to add a processor that isn't defined in the source model.\n\
+                        \rIf you're loading a pretrained spaCy pipeline you may find a list of available keywords at:\n\
+                        \rhttps://spacy.io/models/{}#{}".format(
+                    "{}".format(self.model.split("_")[0]),
+                    self.model,
                 )
-
-            print(">>>")
-
-            # find which processors are available in model
-            components = [component[0] for component in self.nlp.components]
-
-            # go through the requested processors
-            for component in self.jobs:
-                # check if the keywords requested correspond to available components in pipeline
-                if component in components:
-                    # if yes:
-                    print("Loading component {} from {}.".format(component, self.model))
-                    # add to list of validated components
-                    self.validated.append(component)
-
-                # if no, there is maybe a typo, display some info and try to link to spacy webpage of model
-                # -> links may not work if they change their websites structure in the future
-                else:
-                    print(
-                        "Component '{}' not found in {}.".format(component, self.model)
-                    )
-                    message = "You may have tried to add a processor that isn't defined in the source model.\n\
-                            \rIf you're loading a pretrained spaCy pipeline you may find a list of available keywords at:\n\
-                            \rhttps://spacy.io/models/{}#{}".format(
-                        "{}".format(self.model.split("_")[0]),
-                        self.model,
-                    )
-                    raise ValueError(message)
+                raise ValueError(message)
             print(">>>")
 
             # assemble list of excluded components from list of available components and
