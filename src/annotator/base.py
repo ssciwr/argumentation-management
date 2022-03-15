@@ -1,9 +1,9 @@
 # the base class and utilities are contained in this module
 import json
+import jsonschema
 import os
 
 
-# the below functions in a class with attributes
 class prepare_run:
     def __init__(self) -> None:
         pass
@@ -36,6 +36,13 @@ class prepare_run:
         with open("{}.json".format(name), "r") as f:
             mydict = json.load(f)
         return mydict
+
+    # load the dictionary schema and validate against
+    @staticmethod
+    def validate_input_dict(dict_in: dict) -> None:
+        with open("{}.json".format("input_schema"), "r") as f:
+            myschema = json.load(f)
+        jsonschema.validate(instance=dict_in, schema=myschema)
 
     @staticmethod
     def update_dict(dict_in) -> dict:
