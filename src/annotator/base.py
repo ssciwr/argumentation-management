@@ -308,6 +308,7 @@ class out_object:
         return output
 
     def collect_results(self, token, tid: int, word, style: str) -> dict or str:
+
         """Function to collect requested tags for tokens after applying pipeline to data.
 
         Args:
@@ -329,6 +330,7 @@ class out_object:
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
+
             line["POS"] = out_object.grab_tag(word, self.attrnames["pos"])
 
         if self.attrnames["proc_lemma"] in self.jobs:
@@ -365,9 +367,11 @@ class out_object:
     # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing -> ok
 
+
     # making them static for now
     @staticmethod
     def grab_ent(token):
+
         # attributes:
         # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
@@ -379,6 +383,7 @@ class out_object:
 
     @staticmethod
     def grab_linker(token):
+
         # attributes:
         # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
         if token.ent_type_ != "":
@@ -389,6 +394,7 @@ class out_object:
 
     @staticmethod
     def grab_lemma(word, attrname):
+
         # attributes:
         # spacy
         # Lemmatizer -> Token.lemma, Token.lemma_
@@ -400,6 +406,7 @@ class out_object:
 
     @staticmethod
     def grab_morph(token):
+
         # attributes:
         # Morphologizer -> Token.pos, Token.pos_, Token.morph
         if token.pos_ != "":
@@ -410,6 +417,7 @@ class out_object:
 
     @staticmethod
     def grab_tag(word, attrname):
+
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
@@ -420,6 +428,7 @@ class out_object:
 
     @staticmethod
     def grab_dep(token):
+
         # attributes:
         # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
         if token.dep_ != "":
@@ -430,6 +439,7 @@ class out_object:
 
     @staticmethod
     def grab_att(token):
+
         # attributes:
         if token.pos_ != "":
             tag = token.pos_
@@ -453,6 +463,7 @@ class out_object:
     def write_xml(docid: str, outname: str, out: list) -> None:
 
         raw_xml = txml.start_xml(docid)
+
         sents = [txml.list_to_xml("Sent", i, elem) for i, elem in enumerate(out, 1)]
 
         for sent in sents:

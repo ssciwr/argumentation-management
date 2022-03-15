@@ -9,6 +9,9 @@ mydict_de = be.prepare_run.load_input_dict("./test/test_files/test_stanza_de")[
     "stanza_dict"
 ]
 
+mydict_en = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+mydict_de = {"lang": "de", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+
 
 @pytest.fixture()
 def set_file_dict():

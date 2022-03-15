@@ -74,7 +74,6 @@ def test_init(init, load_object):
     mydict_test = init[1]
     test_obj = load_object
 
-    assert test_obj.pretrained == mydict_test["pretrained"]
     assert test_obj.lang == mydict_test["lang"]
     assert test_obj.type == mydict_test["text_type"]
     assert test_obj.model == mydict_test["model"]
