@@ -12,7 +12,12 @@ class mstanza_preprocess:
         pass
 
     @staticmethod
-    def fix_dict_path(dict) -> dict:
+    def fix_dict_path(dict: dict) -> dict:
+        """Function to update the model path in given input dict.
+
+        Args:
+                dict[dict]: Dictionary containing path to be updated."""
+
         # brute force to get model paths
         for key, value in dict.items():
             if "model" in key.lower():
@@ -43,15 +48,28 @@ class mstanza_pipeline:
         # we need the full dict to get the parameters for encoding
         self.config = mydict
 
+
     def init_pipeline(self):
+        """Function to initialize the pipeline based on input dict."""
+
         # Initialize the pipeline using a configuration dict
         self.nlp = sa.Pipeline(**self.config)
 
     def process_text(self, text: str) -> dict:
+        """Funtion to apply pipeline to provided textual data.
+
+        Args:
+                text[str]: Textual Data as string."""
+
         self.doc = self.nlp(text)  # Run the pipeline on the pretokenized input text
         return self.doc  # stanza prints result as dictionary
 
     def process_multiple_texts(self, textlist: list) -> dict:
+        """Function to process multiple texts.
+
+        Args:
+                textlist[list]: List containing the texts."""
+
         # Wrap each document with a stanza.Document object
         in_docs = [sa.Document([], text=d) for d in textlist]
         self.mdocs = self.nlp(
@@ -59,7 +77,12 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self, out_param: dict):
+    def postprocess(self, out_param: dict) -> None:
+        """Funtion to write post-pipeline data to .vrt file and encode for CWB.
+
+        Args:
+                out_param[dict]: Parameters for output."""
+
         # postprocess of the annotated dictionary
         # fout = be.out_object.open_outfile(dict["output"])
         # sentencize using generic base output object
@@ -68,11 +91,14 @@ class mstanza_pipeline:
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
+
         out_object_stanza.write_vrt(out_param["output"], out)
         be.encode_corpus.encode_vrt(out_param)
 
 
-def ner(doc):
+def ner(doc) -> dict:
+    """Function to extract NER tags from Doc Object."""
+
     named_entities = defaultdict(list)
 
     for ent in doc.ents:
@@ -90,21 +116,26 @@ class out_object_stanza(be.out_object):
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs, start):
+    def __init__(self, doc, jobs: list, start: int):
         super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["stanza_names"]
 
     # add new method for stanza iteration over tokens/words/ents
-    def iterate(self, out, sent):
+    def iterate(self, out: list, sent, style: str) -> list:
+        """Function to iterate through sentence object and extract data to list.
+
+        Args:
+                out[list]: List containing the collected output.
+                sent[stanza sent-Object]: Object containing annotated sentence."""
+
         for token, word in zip(getattr(sent, "tokens"), getattr(sent, "words")):
             if token.text != word.text:
                 raise NotImplementedError(
                     "Multi-word expressions not available currently"
                 )
             tid = token.id[0] + self.tstart
-            # for ent in getattr(sent, "ents"):
-            # print(ent)
-            out, line = self.collect_results(token, tid, word, out)
+            line = self.collect_results(token, tid, word, style)
+
             out.append(line + "\n")
         self.tstart = tid
         return out

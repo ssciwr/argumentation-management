@@ -15,6 +15,7 @@ def load_object(init):
     return mf.flair_pipe(init)
 
 
+
 @pytest.fixture
 def apply_to(load_object):
     """Get object in post-pipe state."""
@@ -99,7 +100,7 @@ def test_output(apply_to):
 
     assert data_pipe == checklist
 
-
+    
 def test_get_multiple(chunked_data, load_object):
     """Check that chunked data is annotated and returned as expected."""
 

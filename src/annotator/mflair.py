@@ -1,3 +1,4 @@
+from tracemalloc import start
 from flair.data import Sentence
 from flair.models import SequenceTagger
 from flair.models.sequence_tagger_model import MultiTagger
@@ -8,6 +9,8 @@ import annotator.mspacy as msp
 
 
 class Flair:
+    """Base class for Flair, reads in the basic parameters."""
+
     def __init__(self, config):
 
         self.outname = config["output"]
@@ -21,6 +24,8 @@ class Flair:
 
 
 class flair_pipe(Flair):
+    """Pipeline class for Flair, build pipeline from config and apply it to data.
+    Inherits basic parameters from base class."""
 
     # initialize flair NER by loading the tagger specified by lang
     def __init__(self, lang):
@@ -82,7 +87,12 @@ class flair_pipe(Flair):
         return self
 
     def get_out(self, ret=False, start=0) -> list or None:
+        """Assemble output post-pipeline.
 
+        Args:
+                ret[bool]=False: Return output as list (True) or write to file (False).
+                start[int]=0: Start index for data. (Maybe not needed?)."""
+  
         out = out_object_flair(self.sentences, self.job, start=0).start_output().out
         for sent in self.sentences:
 
@@ -124,6 +134,7 @@ class flair_pipe(Flair):
 
             tmp_ = self.senter_spacy(chunk[1]).apply_to()
             for sent in tmp_.sentences:
+
                 out = out_object_flair(sent, tmp_.job, start=0).iterate_tokens(out)
 
             # append the "< >" closing statement
@@ -162,6 +173,8 @@ class flair_pipe(Flair):
 
 
 class out_object_flair(be.out_object):
+    """Postprocessing class for Flair. Inherits base out_object."""
+
     def __init__(self, doc, jobs, start) -> None:
         super().__init__(doc, jobs, start)
         self.job = jobs
@@ -194,7 +207,11 @@ class out_object_flair(be.out_object):
 
     @staticmethod
     def assemble_output(token: Token, out: list) -> list:
-        """Build output line from a token."""
+        """Build output line from a token.
+
+        Args:
+                token[Token]: Annotated token.
+                out[list]: Assembled output."""
 
         out.append("{}".format(token.text))
         for label in token.labels:

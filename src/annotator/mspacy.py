@@ -24,13 +24,6 @@ class Spacy:
         # config = the input dictionary
         # output file name
         config = be.prepare_run.update_dict(config)
-        # check for pretrained
-        # lets you initialize your models with information from raw text
-        # you would do this if you had generated the model yourself
-        self.pretrained = config["pretrained"]
-
-        if self.pretrained:
-            self.model = self.pretrained
 
         # here we put some sensible default values
         # in general, it should also be possible
@@ -91,56 +84,44 @@ class spacy_pipe(Spacy):
     def __init__(self, config: dict):
         super().__init__(config)
         # use a specific pipeline if requested
-        if self.pretrained:
-            # load pipeline
-            print("Loading full pipeline {}.".format(self.pretrained))
+        self.validated = []
+        # define language -> is this smart or do we want to load a model and disable?
+        # -> changed it to load a model and disable, as I was experiencing inconsistencies
+        # with building from base language even for just the two models I tried
+        try:
+            if self.config:
+                self.nlp = sp.load(self.model, config=self.config)
+            else:
+                self.nlp = sp.load(self.model)
 
-            self.nlp = sp.load(self.pretrained)
+        except OSError:
+            raise OSError("Could not find {} in standard directory.".format(self.model))
 
-        # initialize pipeline
-        else:
-            self.validated = []
-            # define language -> is this smart or do we want to load a model and disable?
-            # -> changed it to load a model and disable, as I was experiencing inconsistencies
-            # with building from base language even for just the two models I tried
-            try:
-                if self.config:
-                    self.nlp = sp.load(self.model, config=self.config)
-                else:
-                    self.nlp = sp.load(self.model)
+        print(">>>")
 
-            except OSError:
-                raise OSError(
-                    "Could not find {} in standard directory.".format(self.model)
+        # find which processors are available in model
+        components = [component[0] for component in self.nlp.components]
+
+        # go through the requested processors
+        for component in self.jobs:
+            # check if the keywords requested correspond to available components in pipeline
+            if component in components:
+                # if yes:
+                print("Loading component {} from {}.".format(component, self.model))
+                # add to list of validated components
+                self.validated.append(component)
+
+            # if no, there is maybe a typo, display some info and try to link to spacy webpage of model
+            # -> links may not work if they change their websites structure in the future
+            else:
+                print("Component '{}' not found in {}.".format(component, self.model))
+                message = "You may have tried to add a processor that isn't defined in the source model.\n\
+                        \rIf you're loading a pretrained spaCy pipeline you may find a list of available keywords at:\n\
+                        \rhttps://spacy.io/models/{}#{}".format(
+                    "{}".format(self.model.split("_")[0]),
+                    self.model,
                 )
-
-            print(">>>")
-
-            # find which processors are available in model
-            components = [component[0] for component in self.nlp.components]
-
-            # go through the requested processors
-            for component in self.jobs:
-                # check if the keywords requested correspond to available components in pipeline
-                if component in components:
-                    # if yes:
-                    print("Loading component {} from {}.".format(component, self.model))
-                    # add to list of validated components
-                    self.validated.append(component)
-
-                # if no, there is maybe a typo, display some info and try to link to spacy webpage of model
-                # -> links may not work if they change their websites structure in the future
-                else:
-                    print(
-                        "Component '{}' not found in {}.".format(component, self.model)
-                    )
-                    message = "You may have tried to add a processor that isn't defined in the source model.\n\
-                            \rIf you're loading a pretrained spaCy pipeline you may find a list of available keywords at:\n\
-                            \rhttps://spacy.io/models/{}#{}".format(
-                        "{}".format(self.model.split("_")[0]),
-                        self.model,
-                    )
-                    raise ValueError(message)
+                raise ValueError(message)
             print(">>>")
 
             # assemble list of excluded components from list of available components and
@@ -200,7 +181,7 @@ class spacy_pipe(Spacy):
             out.append(chunks[i][0] + "\n")
             # self.doc is now current doc
             self.doc = doc
-            tmp = self.pass_results(ret=True, start=0)
+            tmp = self.pass_results("STR", ret=True, start=0)
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
@@ -213,7 +194,8 @@ class spacy_pipe(Spacy):
         else:
             return out
 
-    def pass_results(self, out_param=None, ret=False, start=0) -> list or None:
+    def pass_results(self, style, out_param=None, ret=False, start=0) -> list or None:
+
         """Function to build list with results from the doc object
         and write it to a .vrt file / encode to cwb directly.
 
@@ -225,14 +207,19 @@ class spacy_pipe(Spacy):
             start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
         """
 
-        out = out_object_spacy(self.doc, self.jobs, start=start).fetch_output()
+        out = out_object_spacy(self.doc, self.jobs, start=start).fetch_output(style)
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
-        if ret is False and out_param is not None:
+        if ret is False and style == "STR" and out_param is not None:
             be.out_object.write_vrt(out_param["output"], out)
             # encode
             be.encode_corpus.encode_vrt(out_param)
+
+        elif ret is False and style == "DICT" and out_param is not None:
+            be.out_object.write_xml(
+                out_param["output"].replace("/", "_"), out_param["output"], out
+            )
 
         elif ret is True:
             return out
@@ -260,7 +247,8 @@ class spacy_pipe(Spacy):
             # get the "< >" opening statement
             out.append(chunks[i][0] + "\n")
             # apply pipe to chunk, token index from 0
-            tmp = self.apply_to(chunk[1]).pass_results(ret=True)
+            tmp = self.apply_to(chunk[1]).pass_results("STR", ret=True)
+
             # append data from tmp pipe output to complete output
             for line in tmp:
                 out.append(line)
@@ -324,16 +312,19 @@ class out_object_spacy(be.out_object):
         super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["spacy_names"]
 
-    def iterate(self, out, sent):
+    def iterate(self, out, sent, style):
         for token in sent:
             # multi-word expressions not available in spacy?
             # Setting word=token for now
             tid = copy.copy(token.i)
-            out, line = self.collect_results(token, tid, token, out)
-            out.append(line + "\n")
+            line = self.collect_results(token, tid, token, style)
+            if style == "STR":
+                out.append(line + "\n")
+            elif style == "DICT":
+                out.append(line)
         return out
 
-    def fetch_output(self) -> list:
+    def fetch_output(self, style) -> list:
         """Function to assemble the output list for a run. Can work with or without sentence
         level annotation and will check if doc is sentencized on its own."""
 
@@ -349,9 +340,12 @@ class out_object_spacy(be.out_object):
         # check if spacy doc object is sentencized
         if self.doc.has_annotation("SENT_START"):
             # apply sentence and sublevel annotation
-            out = self.assemble_output_sent(self.doc, self.jobs, start=self.start)
+            if style == "STR":
+                out = self.assemble_output_sent(self.doc, self.jobs, start=self.start)
+            elif style == "DICT":
+                out = self.assemble_output_xml(self.doc, self.jobs, start=self.start)
 
         # if not sentencized just iterate doc and extract the results
         elif not self.doc.has_annotation("SENT_START"):
-            out = self.iterate(out, self.doc)
+            out = self.iterate(out, self.doc, style)
         return out

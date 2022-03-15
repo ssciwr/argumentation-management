@@ -2,6 +2,7 @@
     "input": "input.txt",
     "output": "out/output",
     "tool": "spacy",
+
     "cwb_dict": {
         "_corpus_name_comment": "Name of corpus to be annotated.",
         "corpus_name": "test",
@@ -10,6 +11,7 @@
         "_registry_dir_comment": "Name of registry directory for cwb.",
         "registry_dir": "/home/jovyan/shared/registry/"
     },
+
     "stanza_dict": {
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
         "_lang_comment": "Language code for the language to build the Pipeline in",
@@ -103,8 +105,6 @@
         "text_type": "news",
         "_processors_comment": "List of processors to be used in the pipeline. Sepparated by ',' may contain whitespaces.",
         "processors": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
-        "_pretrained_comment": "Use a complete pretrained model - initialization of model with information from raw text instead of randomly.",
-        "pretrained": false,
         "_set_device_comment": "Request job to be run on CPU only (require_CPU), on GPU if available (prefer_GPU), only on GPU (require_GPU, will fail if no GPU), default by false.",
         "set_device": false,
         "config": {
