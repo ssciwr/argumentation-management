@@ -2,7 +2,7 @@ import pytest
 import mstanza as ma
 
 mydict_en = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
-mydict_de = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+mydict_de = {"lang": "de", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
 
 
 @pytest.fixture()
