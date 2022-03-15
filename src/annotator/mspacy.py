@@ -213,8 +213,7 @@ class spacy_pipe(Spacy):
         else:
             return out
 
-          
-    def pass_results(self, style, outparam=None, ret=False, start=0) -> list or None:
+    def pass_results(self, style, out_param=None, ret=False, start=0) -> list or None:
 
         """Function to build list with results from the doc object
         and write it to a .vrt file / encode to cwb directly.
@@ -234,10 +233,12 @@ class spacy_pipe(Spacy):
         if ret is False and style == "STR" and out_param is not None:
             be.out_object.write_vrt(out_param["output"], out)
             # encode
-            be.encode_corpus.encode_vrt(outparam)
+            be.encode_corpus.encode_vrt(out_param)
 
         elif ret is False and style == "DICT" and out_param is not None:
-            be.out_object.write_xml(out_param["output"].replace("/", "_"), out_param["output"], out)
+            be.out_object.write_xml(
+                out_param["output"].replace("/", "_"), out_param["output"], out
+            )
 
         elif ret is True:
             return out
@@ -365,5 +366,5 @@ class out_object_spacy(be.out_object):
 
         # if not sentencized just iterate doc and extract the results
         elif not self.doc.has_annotation("SENT_START"):
-            out = self.iterate(out, self.doc)
+            out = self.iterate(out, self.doc, style)
         return out
