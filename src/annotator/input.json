@@ -6,9 +6,9 @@
         "_corpus_name_comment": "Name of corpus to be annotated.",
         "corpus_name": "test",
         "_corpus_dir_comment": "Directory containing the corpus.",
-        "corpus_dir": "/home/jovyan/shared/corpora/",
+        "corpus_dir": "/home/christian/test/corp",
         "_registry_dir_comment": "Name of registry directory for cwb.",
-        "registry_dir": "/home/jovyan/shared/registry/"
+        "registry_dir": "/home/christian/test/reg/"
     },
     "stanza_dict": {
         "_comment": "Main stanza dictionary; processor-specific options are set with keys {processor_name}_{argument_name}",
