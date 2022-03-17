@@ -211,7 +211,10 @@ class spacy_pipe(Spacy):
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
-        outfile = out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
+        if out_param is not None:
+            outfile = (
+                out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
+            )
         if ret is False and style == "STR" and out_param is not None:
             be.out_object.write_vrt(outfile, out)
             # encode
