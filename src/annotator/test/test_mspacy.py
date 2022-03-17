@@ -67,6 +67,53 @@ def chunked_data():
     return data
 
 
+def test_model_selection():
+    dictl = [
+        {
+            "model": False,
+            "lang": "en",
+            "text_type": "news",
+            "processors": "senter",
+            "set_device": "prefer_GPU",
+            "config": {},
+        },
+        {
+            "model": False,
+            "lang": "de",
+            "text_type": "news",
+            "processors": "senter",
+            "set_device": False,
+            "config": {},
+        },
+        {
+            "model": False,
+            "lang": "en",
+            "text_type": "biomed",
+            "processors": "senter",
+            "set_device": "require_CPU",
+            "config": {},
+        },
+    ]
+
+    modell = ["en_core_web_md", "de_core_news_md", "en_core_sci_md"]
+
+    for config, model in zip(dictl, modell):
+        test_obj = msp.mSpacy(config)
+        assert test_obj.model == model
+
+    invalid = {
+        "model": False,
+        "lang": "invalid",
+        "text_type": "news",
+        "processors": "senter",
+        "set_device": False,
+        "config": {},
+    }
+
+    with pytest.raises(ValueError):
+        test_obj = msp.mSpacy(invalid)
+
+
 def test_init(init, load_object):
     """Check if the parameters from the input dict are loaded into the
     pipe object as expected."""
@@ -125,7 +172,7 @@ def test_pipe_multiple(load_object, chunked_data):
     # lets just quickly emulate a file for our input, maybe change the chunker to also allow for direct string input down the line?
     data = chunked_data
     results_pipe = test_obj.pipe_multiple(data, ret=True)
-    # results_alt = test_obj.get_multiple(data, ret=True)
+    results_alt = test_obj.get_multiple(data, ret=True)
 
     # using spacy 3.2.1 and en_core_web_md 3.2.0
     check_chunked = [
@@ -164,8 +211,7 @@ def test_pipe_multiple(load_object, chunked_data):
 
     assert type(results_pipe) == list
     assert check_chunked == results_pipe
-    # assert check_chunked == results_alt
-
+    assert check_chunked == results_alt
 
 
 def test_sentencize():

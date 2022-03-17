@@ -12,7 +12,7 @@ from tqdm import (
 available_lang = ["en", "de"]
 
 
-class Spacy:
+class mSpacy:
     """Base class for spaCy module.
 
     Args:
@@ -40,13 +40,14 @@ class Spacy:
             if self.lang == "en":
                 if self.type == "news":
                     self.model = "en_core_web_md"
+                elif self.type == "biomed":
+                    # uses the scispacy package for processing biomedical text
+                    self.model = "en_core_sci_md"
 
             elif self.lang == "de":
                 if self.type == "news":
                     self.model = "de_core_news_md"
-                elif self.type == "biomed":
-                    # uses the scispacy package for processing biomedical text
-                    self.model = "en_core_sci_md"
+
             # make sure to throw an exception if language is not found
             # the available languages should be stored in a list somewhere
             # put it on top of the module for now, find a better place for it later.
@@ -66,9 +67,9 @@ class Spacy:
         if config["set_device"]:
             if config["set_device"] == "prefer_GPU":
                 sp.prefer_gpu()
-            elif config["require_GPU"] == "require_GPU":
+            elif config["set_device"] == "require_GPU":
                 sp.require_gpu()
-            elif config["require_CPU"] == "require_CPU":
+            elif config["set_device"] == "require_CPU":
                 sp.require_cpu()
 
         self.config = config["config"]
@@ -76,7 +77,7 @@ class Spacy:
 
 
 # build the pipeline from config-dict
-class spacy_pipe(Spacy):
+class spacy_pipe(mSpacy):
     """Assemble pipeline from config, apply pipeline to data and write results to .vrt file."""
 
     # init with specified config, this may be changed later?
