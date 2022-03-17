@@ -211,15 +211,14 @@ class spacy_pipe(Spacy):
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
+        outfile = out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
         if ret is False and style == "STR" and out_param is not None:
-            be.out_object.write_vrt(out_param["output"], out)
+            be.out_object.write_vrt(outfile, out)
             # encode
             be.encode_corpus.encode_vrt(out_param)
 
         elif ret is False and style == "DICT" and out_param is not None:
-            be.out_object.write_xml(
-                out_param["output"].replace("/", "_"), out_param["output"], out
-            )
+            be.out_object.write_xml(outfile.replace("/", "_"), outfile, out)
 
         elif ret is True:
             return out
@@ -349,3 +348,20 @@ class out_object_spacy(be.out_object):
         elif not self.doc.has_annotation("SENT_START"):
             out = self.iterate(out, self.doc, style)
         return out
+
+
+if __name__ == "__main__":
+    # read in input.json
+    mydict = be.prepare_run.load_input_dict("./src/annotator/input")
+    mydict["tool"] = "spacy"
+    mydict["input"] = "./src/annotator/test/test_files/example_en.txt"
+    spacy_dict = mydict["spacy_dict"]
+    # load the pipeline from the config
+    pipe = spacy_pipe(spacy_dict)
+    data = be.prepare_run.get_text(mydict["input"])
+    # apply pipeline to data
+    annotated = pipe.apply_to(data)
+    # get the dict for encoding
+    # encoding_dict = be.prepare_run.get_encoding(mydict)
+    # Write vrt and encode
+    annotated.pass_results("DICT", mydict, ret=False)

@@ -153,5 +153,9 @@ src/annotator/*.vrt
 # out folder
 out/
 
+# corpora and registry folder
+corpora/
+registry/
+
 # xml
 src/annotator/*.xml

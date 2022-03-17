@@ -48,7 +48,6 @@ class mstanza_pipeline:
         # we need the full dict to get the parameters for encoding
         self.config = mydict
 
-
     def init_pipeline(self):
         """Function to initialize the pipeline based on input dict."""
 
@@ -91,8 +90,8 @@ class mstanza_pipeline:
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-
-        out_object_stanza.write_vrt(out_param["output"], out)
+        outfile = out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
+        out_object_stanza.write_vrt(outfile, out)
         be.encode_corpus.encode_vrt(out_param)
 
 
@@ -139,3 +138,27 @@ class out_object_stanza(be.out_object):
             out.append(line + "\n")
         self.tstart = tid
         return out
+
+
+if __name__ == "__main__":
+    # read in input.json
+    mydict = be.prepare_run.load_input_dict("./src/annotator/input")
+    mydict["tool"] = "stanza"
+    mydict["input"] = "./src/annotator/test/test_files/example_de.txt"
+    stanza_dict = mydict["stanza_dict"]
+    stanza_dict = be.prepare_run.update_dict(stanza_dict)
+    stanza_dict["lang"] = "de"
+    stanza_dict["processors"] = "tokenize,pos,mwt,lemma"
+    stanza_dict["dir"] = "./src/annotator/test/models/"
+    stanza_dict = be.prepare_run.activate_procs(stanza_dict, "stanza_")
+    data = be.prepare_run.get_text(mydict["input"])
+    # initialize the pipeline with the dict
+    stanza_pipe = mstanza_pipeline(stanza_dict)
+    # to get the working pipeline we have to use the inbuilt initialize function
+    stanza_pipe.init_pipeline()
+    # apply pipeline to data
+    results = stanza_pipe.process_text(data)
+    # get the dict for encoding
+    # encoding_dict = be.prepare_run.get_encoding(mydict)
+    # Write vrt and encode
+    stanza_pipe.postprocess(mydict)
