@@ -77,7 +77,7 @@ def test_fix_dict_path():
         "dir": "./test/models",
         "tokenize_model_path": "en/tokenize/combined.pt",
     }
-    mydict = ma.mstanza_preprocess.fix_dict_path(mydict)
+    mydict = ma.Stanza.fix_dict_path(mydict)
     test_mydict = {
         "dir": "./test/models",
         "tokenize_model_path": "./test/models/en/tokenize/combined.pt",
@@ -85,17 +85,11 @@ def test_fix_dict_path():
     assert mydict == test_mydict
 
 
-def test_init_pipeline():
-    obj = ma.mstanza_pipeline(mydict_en)
-    obj.init_pipeline()
-
-
 @pytest.mark.lang("en")
-def test_process_text_en(get_sample, get_sample_stanza):
+def test_apply_to_en(get_sample, get_sample_stanza):
     text = get_sample
-    obj = ma.mstanza_pipeline(mydict_en)
-    obj.init_pipeline()
-    docobj = obj.process_text(text)
+    obj = ma.Stanza(mydict_en)
+    docobj = obj.apply_to(text)
     # clean up the returned object, convert to string
     doc = str(docobj).replace("\n", "")
     doc = doc.replace(" ", "")
@@ -104,11 +98,10 @@ def test_process_text_en(get_sample, get_sample_stanza):
 
 
 @pytest.mark.lang("de")
-def test_process_text_de(get_sample, get_sample_stanza):
+def test_apply_to_de(get_sample, get_sample_stanza):
     text = get_sample
-    obj = ma.mstanza_pipeline(mydict_de)
-    obj.init_pipeline()
-    docobj = obj.process_text(text)
+    obj = ma.Stanza(mydict_de)
+    docobj = obj.apply_to(text)
     # clean up the returned object, convert to string
     doc = str(docobj).replace("\n", "")
     doc = doc.replace(" ", "")
@@ -122,9 +115,8 @@ def test_out_object_stanza_tok(get_sample, get_out_sample):
     text = get_sample
     procstring = "tokenize"
     mydict_en["processors"] = procstring
-    obj = ma.mstanza_pipeline(mydict_en)
-    obj.init_pipeline()
-    docobj = obj.process_text(text)
+    obj = ma.Stanza(mydict_en)
+    docobj = obj.apply_to(text)
     # now call the postprocessing
     out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
     test_out = get_out_sample
@@ -139,9 +131,8 @@ def test_out_object_stanza_tok_pos(get_sample, get_out_sample):
     text = get_sample
     procstring = "tokenize,pos"
     mydict_en["processors"] = procstring
-    obj = ma.mstanza_pipeline(mydict_en)
-    obj.init_pipeline()
-    docobj = obj.process_text(text)
+    obj = ma.Stanza(mydict_en)
+    docobj = obj.apply_to(text)
     # now call the postprocessing
     out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
     test_out = get_out_sample
@@ -156,9 +147,8 @@ def test_out_object_stanza_tok_pos_lemma(get_sample, get_out_sample):
     text = get_sample
     procstring = "tokenize,pos,lemma"
     mydict_en["processors"] = procstring
-    obj = ma.mstanza_pipeline(mydict_en)
-    obj.init_pipeline()
-    docobj = obj.process_text(text)
+    obj = ma.Stanza(mydict_en)
+    docobj = obj.apply_to(text)
     # now call the postprocessing
     out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
     test_out = get_out_sample
@@ -172,9 +162,8 @@ def test_out_object_stanza_vrt(get_sample):
     text = get_sample
     procstring = "tokenize,pos,lemma"
     outfile = "./test/test_files/example_en"
-    obj = ma.mstanza_pipeline(mydict_en)
-    obj.init_pipeline()
-    docobj = obj.process_text(text)
+    obj = ma.Stanza(mydict_en)
+    docobj = obj.apply_to(text)
     # now call the postprocessing
     out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
     file_out = open(outfile + "_test.vrt", "r")

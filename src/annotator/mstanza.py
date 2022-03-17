@@ -4,12 +4,21 @@ import stanza as sa
 import base as be
 
 
-class mstanza_preprocess:
-    """Preprocessing for stanza document annotation. Collection
-    of preprocessing steps to be carried out initially."""
+class Stanza:
+    """Stanza main processing class.
 
-    def __init__(self) -> None:
-        pass
+    Args:
+       config (dictionary): The full input dictionary.
+       text (string): The raw text that is to be processed.
+       text (list of strings): Several raw texts to be processed simultaneously.
+       annotated (dictionary): The output dictionary with annotated tokens.
+    """
+
+    def __init__(self, config: dict):
+        # we need the full dict to get the parameters for encoding
+        self.config = config
+        # Initialize the pipeline using a configuration dict
+        self.nlp = sa.Pipeline(**self.config)
 
     @staticmethod
     def fix_dict_path(dict: dict) -> dict:
@@ -33,28 +42,7 @@ class mstanza_preprocess:
                 print(dict[key], " updated!")
         return dict
 
-
-class mstanza_pipeline:
-    """Stanza main processing class.
-
-    Args:
-       config (dictionary): The full input dictionary.
-       text (string): The raw text that is to be processed.
-       text (list of strings): Several raw texts to be processed simultaneously.
-       annotated (dictionary): The output dictionary with annotated tokens.
-    """
-
-    def __init__(self, mydict: dict):
-        # we need the full dict to get the parameters for encoding
-        self.config = mydict
-
-    def init_pipeline(self):
-        """Function to initialize the pipeline based on input dict."""
-
-        # Initialize the pipeline using a configuration dict
-        self.nlp = sa.Pipeline(**self.config)
-
-    def process_text(self, text: str) -> dict:
+    def apply_to(self, text: str) -> dict:
         """Funtion to apply pipeline to provided textual data.
 
         Args:
@@ -153,11 +141,9 @@ if __name__ == "__main__":
     stanza_dict = be.prepare_run.activate_procs(stanza_dict, "stanza_")
     data = be.prepare_run.get_text(mydict["input"])
     # initialize the pipeline with the dict
-    stanza_pipe = mstanza_pipeline(stanza_dict)
-    # to get the working pipeline we have to use the inbuilt initialize function
-    stanza_pipe.init_pipeline()
+    stanza_pipe = Stanza(stanza_dict)
     # apply pipeline to data
-    results = stanza_pipe.process_text(data)
+    results = stanza_pipe.apply_to(data)
     # get the dict for encoding
     # encoding_dict = be.prepare_run.get_encoding(mydict)
     # Write vrt and encode
