@@ -11,13 +11,12 @@ def get_data():
         "dir": "./test/models/",
         "processors": "tokenize,pos,lemma",
     }
-    obj = ma.mstanza_pipeline(mydict)
-    obj.init_pipeline()
+    obj = ma.Stanza(mydict)
 
     with open("./test/test_files/example_en.txt") as f:
         text = f.read().replace("\n", "")
 
-    doc = obj.process_text(text)
+    doc = obj.apply_to(text)
 
     return doc.to_dict()
 

@@ -64,7 +64,7 @@ class Stanza:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self, out_param: dict) -> None:
+    def pass_results(self, out_param: dict) -> None:
         """Funtion to write post-pipeline data to .vrt file and encode for CWB.
 
         Args:
@@ -147,4 +147,4 @@ if __name__ == "__main__":
     # get the dict for encoding
     # encoding_dict = be.prepare_run.get_encoding(mydict)
     # Write vrt and encode
-    stanza_pipe.postprocess(mydict)
+    stanza_pipe.pass_results(mydict)
