@@ -49,7 +49,7 @@ class Stanza:
                 text[str]: Textual Data as string."""
 
         self.doc = self.nlp(text)  # Run the pipeline on the pretokenized input text
-        return self.doc  # stanza prints result as dictionary
+        return self
 
     def process_multiple_texts(self, textlist: list) -> dict:
         """Function to process multiple texts.
@@ -137,9 +137,5 @@ if __name__ == "__main__":
     data = be.prepare_run.get_text(mydict["input"])
     # initialize the pipeline with the dict
     stanza_pipe = Stanza(stanza_dict)
-    # apply pipeline to data
-    results = stanza_pipe.apply_to(data)
-    # get the dict for encoding
-    # encoding_dict = be.prepare_run.get_encoding(mydict)
-    # Write vrt and encode
-    stanza_pipe.pass_results(mydict)
+    # apply pipeline to data, and encode
+    stanza_pipe.apply_to(data).pass_results(mydict)
