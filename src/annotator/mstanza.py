@@ -15,7 +15,7 @@ class Stanza:
     """
 
     def __init__(self, config: dict):
-        # we need the full dict to get the parameters for encoding
+        # get the stanza dict
         self.config = config
         # Initialize the pipeline using a configuration dict
         self.nlp = sa.Pipeline(**self.config)
@@ -28,6 +28,7 @@ class Stanza:
                 dict[dict]: Dictionary containing path to be updated."""
 
         # brute force to get model paths
+        # as we do not allow self-trained models, this will be removed
         for key, value in dict.items():
             if "model" in key.lower():
                 # if there is a prepending ".", remove it
@@ -48,7 +49,7 @@ class Stanza:
         Args:
                 text[str]: Textual Data as string."""
 
-        self.doc = self.nlp(text)  # Run the pipeline on the pretokenized input text
+        self.doc = self.nlp(text)  # Run the pipeline on the input text
         return self
 
     def process_multiple_texts(self, textlist: list) -> dict:
@@ -64,7 +65,7 @@ class Stanza:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def pass_results(self, out_param: dict) -> None:
+    def pass_results(self, mydict: dict) -> None:
         """Funtion to write post-pipeline data to .vrt file and encode for CWB.
 
         Args:
@@ -73,9 +74,9 @@ class Stanza:
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        outfile = out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
+        outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
         out_object_stanza.write_vrt(outfile, out)
-        be.encode_corpus.encode_vrt(out_param)
+        be.encode_corpus.encode_vrt(mydict)
 
 
 def ner(doc) -> dict:
