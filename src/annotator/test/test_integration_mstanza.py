@@ -7,7 +7,7 @@ def test_integration_mstanza():
     mydict = be.prepare_run.load_input_dict("./input")
     mydict["tool"] = "stanza"
     mydict["input"] = "./test/test_files/example_de.txt"
-    mydict["advanced_options"]["output_dir"] = "../../out/"
+    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
     stanza_dict = mydict["stanza_dict"]
     stanza_dict["lang"] = "de"
     stanza_dict["processors"] = "tokenize,pos,mwt,lemma"
