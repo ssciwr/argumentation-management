@@ -246,48 +246,27 @@ class out_object:
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        # spacy
-        # for sent in doc.sents:
-        # stanza
-        # for sent in doc.sentences:
-        # general
-        # count stanza tokens continuously and not starting from 1 every new sentence.
+        print(obj.attrnames)
         if "sentence" not in obj.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         obj.tstart = 0
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append("<s>\n")
-            # iterate through the tokens of the sentence, this is just a slice of
-            # the full doc
-            # spacy
-            # for token in sent:
-            # stanza
-            # for multi-word tokens this could prove problematic
-            # we have to distinguish btw token and word in that case
-            # for token, word in zip(sent.tokens, sent.words):
-            # general
             out = obj.iterate(out, sent, "STR")
             out.append("</s>\n")
         return out
 
     @classmethod
     def assemble_output_xml(cls, doc, jobs, start):
-
         obj = cls(doc, jobs, start)
-
         out = []
-
         if "sentence" not in obj.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
-
         obj.tstart = 0
-
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append([])
-
             obj.iterate(out[-1], sent, "DICT")
-
         return out
 
     @staticmethod
