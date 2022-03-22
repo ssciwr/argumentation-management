@@ -82,6 +82,16 @@ def test_init(init, load_object):
     ]
     assert test_obj.config == be.prepare_run.update_dict(mydict_test["config"])
 
+def test_apply_to(load_object):
+    text = """This is an example text. This is a second sentence."""
+    test_obj = load_object.apply_to(text)
+    assert str(test_obj.doc) == text
+
+def test_pass_results(load_object):
+    text = """This is an example text. This is a second sentence."""
+    mydict={"advanced_options": {"output_dir": "./out/"},
+            "corpus_name": "test"}
+    load_object.apply_to(text).pass_results(style="STR", out_param=mydict)
 
 def test_output_sent(pipe_sent):
     """Check if output is as expected, use current output as example result.

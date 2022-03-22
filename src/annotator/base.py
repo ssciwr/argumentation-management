@@ -443,7 +443,6 @@ class out_object:
 
     @staticmethod
     def write_xml(docid: str, outname: str, out: list) -> None:
-        print(docid)
         raw_xml = txml.start_xml(docid)
 
         sents = [txml.list_to_xml("Sent", i, elem) for i, elem in enumerate(out, 1)]
