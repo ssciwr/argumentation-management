@@ -1,5 +1,6 @@
 # the base class and utilities are contained in this module
 import json
+from click import command
 import jsonschema
 import os
 import to_xml as txml
@@ -367,7 +368,6 @@ class out_object:
     # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing -> ok
 
-
     # making them static for now
     @staticmethod
     def grab_ent(token):
@@ -627,6 +627,41 @@ class encode_corpus:
             os.system(command)
         elif not purged:
             return print(OSError("Error during setup, aborting..."))
+
+
+class decode_corpus(encode_corpus):
+    """Class to decode corpus from cwb. Inherits encode_corpus."""
+
+    def __init__(self, mydict) -> None:
+        super().__init__(mydict)
+
+
+    def decode_to_file(self, directory=os.getcwd(), verbose=True):
+        """Function to decode a given corpus to a .out file. If the directory to write to is not
+        supposed to be the current one it can be given as paramater. Location needed relative to current
+        directory."""
+
+        if not directory.endswith("/"):
+            directory+="/"
+        if directory != os.getcwd()+"/":
+            setback = os.getcwd()+"/"
+            outpath = setback+directory+self.corpusname
+        else:
+            setback = directory
+            outpath = setback+self.corpusname
+        if not os.path.isdir(outpath):
+            os.system("mkdir {}".format(outpath))
+        if verbose == True:
+            command = "cd {} && cwb-decode -r {} {} -ALL > {}.out && cd {}".format(
+                self.corpusdir, self.regdir, self.corpusname, outpath, setback
+            )
+        elif verbose == False:
+            command = "cd {} && cwb-decode -C -r {} {} -ALL > {}.out && cd {}".format(
+                self.corpusdir, self.regdir, self.corpusname, outpath, setback
+            )            
+        print("Decoding corpus into directory: {}".format(outpath))
+        os.system(command)
+        print("File {}.out written in {}.".format(self.corpusname, outpath))
 
 
 # en

@@ -2,3 +2,4 @@ spacy
 stanza
 flair
 numpy
+somajo

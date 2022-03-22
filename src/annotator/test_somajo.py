@@ -5,7 +5,9 @@ text = """The Scientific Software Center strives to improve scientific software 
 
 if __name__ == "__main__":
 
-    default_dict = be.prepare_run.load_input_dict("src/annotator/input")
+    default_dict = be.prepare_run.load_input_dict("src/annotator/input_local")
     mydict = be.prepare_run.get_encoding(default_dict)
 
     msomajo.pretokenize(text, "en_PTB", mydict)
+
+    be.decode_corpus(mydict).decode_to_file(directory="out", verbose=False)
