@@ -1,6 +1,5 @@
 # the base class and utilities are contained in this module
 import json
-from click import command
 import jsonschema
 import os
 import to_xml as txml
@@ -635,33 +634,74 @@ class decode_corpus(encode_corpus):
     def __init__(self, mydict) -> None:
         super().__init__(mydict)
 
-
-    def decode_to_file(self, directory=os.getcwd(), verbose=True):
+    def decode_to_file(
+        self,
+        directory=os.getcwd(),
+        verbose=True,
+        specific={"P-Attributes": [], "S-Attributes": []},
+    ):
         """Function to decode a given corpus to a .out file. If the directory to write to is not
         supposed to be the current one it can be given as paramater. Location needed relative to current
         directory."""
 
+        # set up the directories
         if not directory.endswith("/"):
-            directory+="/"
-        if directory != os.getcwd()+"/":
-            setback = os.getcwd()+"/"
-            outpath = setback+directory+self.corpusname
+            directory += "/"
+        if directory != os.getcwd() + "/":
+            setback = os.getcwd() + "/"
+            outpath = setback + directory + self.corpusname
         else:
             setback = directory
-            outpath = setback+self.corpusname
+            outpath = setback + self.corpusname
         if not os.path.isdir(outpath):
             os.system("mkdir {}".format(outpath))
-        if verbose == True:
-            command = "cd {} && cwb-decode -r {} {} -ALL > {}.out && cd {}".format(
-                self.corpusdir, self.regdir, self.corpusname, outpath, setback
-            )
-        elif verbose == False:
-            command = "cd {} && cwb-decode -C -r {} {} -ALL > {}.out && cd {}".format(
-                self.corpusdir, self.regdir, self.corpusname, outpath, setback
-            )            
-        print("Decoding corpus into directory: {}".format(outpath))
-        os.system(command)
-        print("File {}.out written in {}.".format(self.corpusname, outpath))
+
+        # build and execute the command line input
+        p_attr = specific["P-Attributes"]
+        s_attr = specific["S-Attributes"]
+
+        # should always be the same
+        base_command = "cd {} && cwb-decode ".format(self.corpusdir)
+
+        # decide type of output, verbose or not
+        if not verbose:
+            base_command += "-C "
+
+        # set registry and define corpus for cwb-decode
+        base_command += "-r {} {} ".format(self.regdir, self.corpusname)
+
+        # set up the out-pipe and return to working directory
+        pipe = "> {}.out && cd {}".format(outpath, setback)
+
+        # if there are no specified p or s attributes we just decode all
+        if p_attr == [] and s_attr == []:
+            command = base_command + "-ALL " + pipe
+
+            print("Decoding corpus into directory: {}".format(outpath))
+            print(command)
+            os.system(command)
+            print("File {}.out written in {}.".format(self.corpusname, outpath))
+
+        # if there are specified p or s attributes we only decode these
+        elif p_attr or s_attr != [] or p_attr != [] and s_attr != []:
+
+            p_string = ""
+            s_string = ""
+
+            for p_att in p_attr:
+                p_string += "-P {} ".format(p_att)
+
+            for s_att in s_attr:
+                s_string += "-S {} ".format(s_att)
+
+            print("Decoding corpus into directory: {}".format(outpath))
+            print("Grabbing p-Attributes: {}".format(p_string))
+            print("Grabbing s-Attributes: {}".format(s_string))
+
+            command = base_command + p_string + s_string + pipe
+            print(command)
+            os.system(command)
+            print("File {}.out written in {}.".format(self.corpusname, outpath))
 
 
 # en
