@@ -91,7 +91,7 @@ def test_apply_to_en(get_sample, get_sample_stanza):
     obj = ma.Stanza(mydict_en)
     docobj = obj.apply_to(text)
     # clean up the returned object, convert to string
-    doc = str(docobj).replace("\n", "")
+    doc = str(docobj.doc).replace("\n", "")
     doc = doc.replace(" ", "")
     test_doc = get_sample_stanza.replace(" ", "")
     assert doc == test_doc.strip()
@@ -103,7 +103,7 @@ def test_apply_to_de(get_sample, get_sample_stanza):
     obj = ma.Stanza(mydict_de)
     docobj = obj.apply_to(text)
     # clean up the returned object, convert to string
-    doc = str(docobj).replace("\n", "")
+    doc = str(docobj.doc).replace("\n", "")
     doc = doc.replace(" ", "")
     test_doc = get_sample_stanza.replace(" ", "")
     assert doc == test_doc.strip()
@@ -118,7 +118,7 @@ def test_out_object_stanza_tok(get_sample, get_out_sample):
     obj = ma.Stanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
+    out = ma.out_object_stanza.assemble_output_sent(docobj.doc, procstring, start=0)
     test_out = get_out_sample
     # compare as string not as list
     # reading in as list will add further \n
@@ -134,7 +134,7 @@ def test_out_object_stanza_tok_pos(get_sample, get_out_sample):
     obj = ma.Stanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
+    out = ma.out_object_stanza.assemble_output_sent(docobj.doc, procstring, start=0)
     test_out = get_out_sample
     # compare as string not as list
     # reading in as list will add further \n
@@ -150,7 +150,7 @@ def test_out_object_stanza_tok_pos_lemma(get_sample, get_out_sample):
     obj = ma.Stanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
+    out = ma.out_object_stanza.assemble_output_sent(docobj.doc, procstring, start=0)
     test_out = get_out_sample
     # compare as string not as list
     # reading in as list will add further \n
@@ -165,7 +165,7 @@ def test_out_object_stanza_vrt(get_sample):
     obj = ma.Stanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out = ma.out_object_stanza.assemble_output_sent(docobj, procstring, start=0)
+    out = ma.out_object_stanza.assemble_output_sent(docobj.doc, procstring, start=0)
     file_out = open(outfile + "_test.vrt", "r")
     # call vrt writing
     ma.out_object_stanza.write_vrt(outfile, out)
