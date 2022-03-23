@@ -9,9 +9,6 @@ from tqdm import (
 )  # for progress in pipe_multiple, might be interesting for large corpora down the line
 
 
-available_lang = ["en", "de"]
-
-
 class mSpacy:
     """Base class for spaCy module.
 
@@ -52,12 +49,7 @@ class mSpacy:
             # the available languages should be stored in a list somewhere
             # put it on top of the module for now, find a better place for it later.
             else:
-                raise ValueError(
-                    """Languages not available yet. Only {} models have been implemented.
-                Aborting...""".format(
-                        available_lang
-                    )
-                )
+                raise ValueError("""Languages not available yet. Aborting...""")
 
         # get processors from dict
         # self.jobs = config["processors"]
