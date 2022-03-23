@@ -99,31 +99,35 @@ class prepare_run:
         """Convenience function to read in Jobs using the processors provided in dict. Can work with
         basic input.json if provided a tool, or assumes it is in tool-specific dict if no tool is provided."""
         if tool is not None:
+            print(dict_in["{}_dict".format(tool)]["processors"])
             return [
                 proc.strip()
                 for proc in dict_in["{}_dict".format(tool)]["processors"].split(",")
             ]
         elif tool is None:
+            print(dict_in["processors"])
             return [proc.strip() for proc in dict_in["processors"].split(",")]
 
-    @staticmethod
-    def get_encoding(dict_in: dict) -> dict:
-        """Function to fetch the parameters needed for encoding from the input.json."""
+    # @staticmethod
+    # def get_encoding(dict_in: dict) -> dict:
+    # """Function to fetch the parameters needed for encoding from the input.json."""
 
-        new_dict = {}
 
-        for key, value in dict_in.items():
-
-            if type(value) != dict or type(value) == dict and key == "cwb_dict":
-                new_dict[key] = value
-            # elif type(value) == dict and key == "cwb_dict":
-            #    new_dict[key] = value
-
-        new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
-            "processors"
-        ]
-
-        return new_dict
+#
+# new_dict = {}
+#
+# for key, value in dict_in.items():
+#
+# if type(value) != dict or type(value) == dict and key == "cwb_dict":
+# new_dict[key] = value
+# elif type(value) == dict and key == "cwb_dict":
+#    new_dict[key] = value
+#
+# new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
+# "processors"
+# ]
+#
+# return new_dict
 
 
 # the below in a chunker class
@@ -242,48 +246,27 @@ class out_object:
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        # spacy
-        # for sent in doc.sents:
-        # stanza
-        # for sent in doc.sentences:
-        # general
-        # count stanza tokens continuously and not starting from 1 every new sentence.
+        print(obj.attrnames)
         if "sentence" not in obj.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         obj.tstart = 0
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append("<s>\n")
-            # iterate through the tokens of the sentence, this is just a slice of
-            # the full doc
-            # spacy
-            # for token in sent:
-            # stanza
-            # for multi-word tokens this could prove problematic
-            # we have to distinguish btw token and word in that case
-            # for token, word in zip(sent.tokens, sent.words):
-            # general
             out = obj.iterate(out, sent, "STR")
             out.append("</s>\n")
         return out
 
     @classmethod
     def assemble_output_xml(cls, doc, jobs, start):
-
         obj = cls(doc, jobs, start)
-
         out = []
-
         if "sentence" not in obj.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
-
         obj.tstart = 0
-
         for sent in getattr(obj.doc, obj.attrnames["sentence"]):
             out.append([])
-
             obj.iterate(out[-1], sent, "DICT")
-
         return out
 
     @staticmethod
@@ -366,7 +349,6 @@ class out_object:
     # define all of these as functions
     # these to be either internal or static methods
     # we should have an option for vrt and one for xml writing -> ok
-
 
     # making them static for now
     @staticmethod
@@ -461,7 +443,6 @@ class out_object:
 
     @staticmethod
     def write_xml(docid: str, outname: str, out: list) -> None:
-
         raw_xml = txml.start_xml(docid)
 
         sents = [txml.list_to_xml("Sent", i, elem) for i, elem in enumerate(out, 1)]
@@ -476,7 +457,7 @@ class out_object:
         with open("{}_.xml".format(outname), "w") as file:
             file.write(xml)
 
-        print("+++ Finished writing {}.xml +++".format(outname.replace("/", "_")))
+        print("+++ Finished writing {}.xml +++".format(outname))
 
 
 # encode the generated files
@@ -488,15 +469,14 @@ class encode_corpus:
         # self.corpusdir = "/home/jovyan/corpus"
         # corpusdir and regdir need to be set from input dict
         # plus we also need to set the corpus name from input dict
-        cwb_dict = mydict["cwb_dict"]
         tool = mydict["tool"]
+        dirs_dict = mydict["advanced_options"]
 
-        self.corpusdir = self.fix_path(cwb_dict["corpus_dir"])
-        self.corpusname = cwb_dict["corpus_name"]
-        self.outname = mydict["output"]
-        # self.regdir = "/home/jovyan/registry"
-        self.regdir = self.fix_path(cwb_dict["registry_dir"])
-        self.jobs = prepare_run.get_jobs(mydict)
+        self.corpusdir = self.fix_path(dirs_dict["corpus_dir"])
+        self.corpusname = mydict["corpus_name"]
+        self.outname = dirs_dict["output_dir"] + mydict["corpus_name"]
+        self.regdir = self.fix_path(dirs_dict["registry_dir"])
+        self.jobs = prepare_run.get_jobs(mydict, tool=tool)
         self.tool = tool
         self.encodedir = self.corpusdir + self.corpusname
 
@@ -590,8 +570,8 @@ class encode_corpus:
 
         if not path.endswith("/"):
             path += "/"
-        if not path.startswith("/"):
-            path = "/" + path
+        # if not path.startswith("/"):
+        # path = "/" + path
         return path
 
     @classmethod
