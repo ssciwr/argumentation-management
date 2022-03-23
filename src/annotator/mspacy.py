@@ -9,7 +9,7 @@ from tqdm import (
 )  # for progress in pipe_multiple, might be interesting for large corpora down the line
 
 
-class mSpacy:
+class MySpacy:
     """Base class for spaCy module.
 
     Args:
@@ -69,7 +69,7 @@ class mSpacy:
 
 
 # build the pipeline from config-dict
-class spacy_pipe(mSpacy):
+class spacy_pipe(MySpacy):
     """Assemble pipeline from config, apply pipeline to data and write results to .vrt file."""
 
     # init with specified config, this may be changed later?

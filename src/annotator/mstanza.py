@@ -4,7 +4,7 @@ import stanza as sa
 import base as be
 
 
-class Stanza:
+class MyStanza:
     """Stanza main processing class.
 
     Args:
@@ -19,29 +19,6 @@ class Stanza:
         self.config = config
         # Initialize the pipeline using a configuration dict
         self.nlp = sa.Pipeline(**self.config)
-
-    @staticmethod
-    def fix_dict_path(dict: dict) -> dict:
-        """Function to update the model path in given input dict.
-
-        Args:
-                dict[dict]: Dictionary containing path to be updated."""
-
-        # brute force to get model paths
-        # as we do not allow self-trained models, this will be removed
-        for key, value in dict.items():
-            if "model" in key.lower():
-                # if there is a prepending ".", remove it
-                # be careful not to remove the dot before the file ending
-                if "." in value[0:2]:
-                    value = value.replace(".", "", 1)
-                # prepend a slash to make sure
-                value = "/" + value
-                # combine the path from dir with the one from model
-                value = dict["dir"] + value
-                dict.update({key: value})
-                print(dict[key], " updated!")
-        return dict
 
     def apply_to(self, text: str) -> dict:
         """Funtion to apply pipeline to provided textual data.

@@ -18,7 +18,7 @@ def test_integration_mstanza():
     stanza_dict = be.prepare_run.activate_procs(stanza_dict, "stanza_")
     data = be.prepare_run.get_text(mydict["input"])
     # initialize the pipeline with the dict
-    stanza_pipe = ma.Stanza(stanza_dict)
+    stanza_pipe = ma.MyStanza(stanza_dict)
     # apply pipeline to data and encode
     stanza_pipe.apply_to(data).pass_results(mydict)
     # maybe here assert that written vrt is same as safe version

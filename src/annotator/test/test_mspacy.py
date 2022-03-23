@@ -103,7 +103,7 @@ def test_model_selection():
     modell = ["en_core_web_md", "de_core_news_md", "en_core_sci_md"]
 
     for config, model in zip(dictl, modell):
-        test_obj = msp.mSpacy(config)
+        test_obj = msp.MySpacy(config)
         assert test_obj.model == model
 
     invalid = {
@@ -116,7 +116,7 @@ def test_model_selection():
     }
 
     with pytest.raises(ValueError):
-        test_obj = msp.mSpacy(invalid)
+        test_obj = msp.MySpacy(invalid)
 
 
 def test_init(init, load_object):
@@ -228,6 +228,7 @@ def test_pipe_multiple(load_object, chunked_data):
     assert type(results_pipe) == list
     assert check_chunked == results_pipe
     assert check_chunked == results_alt
+
 
 def test_sentencize():
 
