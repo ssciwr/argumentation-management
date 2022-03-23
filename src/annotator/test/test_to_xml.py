@@ -11,7 +11,7 @@ def get_data():
         "dir": "./test/models/",
         "processors": "tokenize,pos,lemma",
     }
-    obj = ma.Stanza(mydict)
+    obj = ma.MyStanza(mydict)
 
     with open("./test/test_files/example_en.txt") as f:
         text = f.read().replace("\n", "")

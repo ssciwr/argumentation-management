@@ -132,7 +132,7 @@ def test_init(init, load_object):
     assert test_obj.jobs == [
         proc.strip() for proc in mydict_test["processors"].split(",")
     ]
-    assert test_obj.config == be.prepare_run.update_dict(mydict_test["config"])
+    assert test_obj.config == mydict_test["config"]
 
 
 def test_apply_to(load_object, get_text):

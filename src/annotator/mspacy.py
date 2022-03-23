@@ -20,7 +20,7 @@ class MySpacy:
 
         # config = the input dictionary
         # output file name
-        config = be.prepare_run.update_dict(config)
+        # config = be.prepare_run.update_dict(config)
 
         # here we put some sensible default values
         # in general, it should also be possible
@@ -65,7 +65,7 @@ class MySpacy:
                 sp.require_cpu()
 
         self.config = config["config"]
-        self.config = be.prepare_run.update_dict(self.config)
+        # self.config = be.prepare_run.update_dict(self.config)
 
 
 # build the pipeline from config-dict

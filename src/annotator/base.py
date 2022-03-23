@@ -18,15 +18,6 @@ class prepare_run:
         # as this method is not available on all os's
         return len(os.sched_getaffinity(0))
 
-    # read the sample data - this will be in test_base
-    # method will be removed
-    @staticmethod
-    def get_sample_text():
-        name = "data/Original/iued_test_original.txt"
-        with open(name, "r") as myfile:
-            data = myfile.read().replace("\n", "")
-        return data
-
     @staticmethod
     def get_text(path: str) -> str:
         """Convenience function to read in data from specified path as string.
@@ -58,16 +49,17 @@ class prepare_run:
         jsonschema.validate(instance=dict_in, schema=myschema)
 
     @staticmethod
-    def update_dict(dict_in: dict) -> dict:
-        """Remove unnecessary keys in dict and move processor-specific keys one level up.
+    def set_processors(dict_in: dict) -> dict:
+        """Update the processor and language settings in the tool sub-dict.
 
         Args:
-                dict_in[dict]: Dict to be updated."""
+                mydict[dict]: Dict containing parameters."""
 
-        # remove all comments - their keys start with "_"
-        # also do not select sub-dictionaries
-        dict_out = {k: v for k, v in dict_in.items() if not k.startswith("_")}
-        return dict_out
+        mytool = dict_in["tool"]
+        mydict = dict_in
+        mydict[mytool + "_dict"]["processors"] = mydict["processing_type"]
+        mydict[mytool + "_dict"]["lang"] = mydict["language"]
+        return mydict
 
     @staticmethod
     def activate_procs(mydict: dict, toolstring: str) -> dict:
