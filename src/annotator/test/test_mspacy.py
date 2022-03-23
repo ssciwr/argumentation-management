@@ -6,16 +6,16 @@ import base as be
 import tempfile
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def init():
     """Load the input dicts"""
 
     mydict = be.prepare_run.load_input_dict("test/test_files/input")
-    mydict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
-    return mydict["spacy_dict"], mydict_test
+    subdict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
+    return mydict["spacy_dict"], subdict_test, mydict
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def load_object(init):
     """Initialize the test object"""
 
@@ -23,20 +23,25 @@ def load_object(init):
     return test_obj
 
 
+@pytest.fixture(scope="module")
+def get_text():
+    """Get the sample text for testing."""
+    text = """This is an example text. This is a second sentence."""
+    return text
+
+
 @pytest.fixture()
-def pipe_sent(init, load_object):
+def pipe_sent(init, load_object, get_text):
     """Check if applying pipeline through mspacy leads to same result as applying
     same pipeline through spacy directly."""
-
-    text = """This is an example text. This is a second sentence."""
 
     test_obj = load_object
     mydict = init[1]
     # as this pipe config should just load all of a model, results
     # should be equivalent to using:
     nlp = sp.load(mydict["model"])
-    check_doc = nlp(text)
-    test_doc = test_obj.apply_to(text).doc
+    check_doc = nlp(get_text)
+    test_doc = test_obj.apply_to(get_text).doc
     assert test_doc.has_annotation("SENT_START")
     # there seems to be no __eq__() definition for either doc or token in spacy
     # so just compare a couple of attributes for every token?
@@ -46,7 +51,7 @@ def pipe_sent(init, load_object):
         assert test_token.pos == token.pos
         assert test_token.tag == token.tag
         assert test_token.sent_start == token.sent_start
-    return test_obj.apply_to(text), check_doc
+    return test_obj.apply_to(get_text), check_doc
 
 
 @pytest.fixture()
@@ -82,16 +87,17 @@ def test_init(init, load_object):
     ]
     assert test_obj.config == be.prepare_run.update_dict(mydict_test["config"])
 
-def test_apply_to(load_object):
-    text = """This is an example text. This is a second sentence."""
-    test_obj = load_object.apply_to(text)
-    assert str(test_obj.doc) == text
 
-def test_pass_results(load_object):
-    text = """This is an example text. This is a second sentence."""
-    mydict={"advanced_options": {"output_dir": "./out/"},
-            "corpus_name": "test"}
-    load_object.apply_to(text).pass_results(style="STR", out_param=mydict)
+def test_apply_to(load_object, get_text):
+    test_obj = load_object.apply_to(get_text)
+    assert str(test_obj.doc) == get_text
+
+
+def test_pass_results(init, load_object, get_text):
+    mydict = init[2]
+    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
+    load_object.apply_to(get_text).pass_results(style="STR", out_param=mydict)
+
 
 def test_output_sent(pipe_sent):
     """Check if output is as expected, use current output as example result.
@@ -175,7 +181,6 @@ def test_pipe_multiple(load_object, chunked_data):
     assert type(results_pipe) == list
     assert check_chunked == results_pipe
     # assert check_chunked == results_alt
-
 
 
 def test_sentencize():
