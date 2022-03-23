@@ -8,6 +8,8 @@ def test_integration_mstanza():
     mydict["tool"] = "stanza"
     mydict["input"] = "./test/test_files/example_de.txt"
     mydict["advanced_options"]["output_dir"] = "./test/test_files/"
+    # validate the input dict
+    be.prepare_run.validate_input_dict(mydict)
     stanza_dict = mydict["stanza_dict"]
     stanza_dict["lang"] = "de"
     stanza_dict["processors"] = "tokenize,pos,mwt,lemma"
