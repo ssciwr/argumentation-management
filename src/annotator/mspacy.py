@@ -63,6 +63,16 @@ class mSpacy:
         # self.jobs = config["processors"]
         self.jobs = be.prepare_run.get_jobs(config)
 
+        # if we ask for lemma and/or POS we force tok2vec to boost accuracy
+        if (
+            "lemmatizer" in self.jobs
+            or "tagger" in self.jobs
+            or "lemmatizer"
+            and "tagger" in self.jobs
+        ):
+            if "tok2vec" not in self.jobs:
+                self.jobs = ["tok2vec"] + self.jobs
+
         # use specific device settings if requested
         if config["set_device"]:
             if config["set_device"] == "prefer_GPU":

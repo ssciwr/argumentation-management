@@ -78,7 +78,7 @@ def test_model_selection():
             "model": False,
             "lang": "en",
             "text_type": "news",
-            "processors": "senter",
+            "processors": "lemmatizer, tagger",
             "set_device": "prefer_GPU",
             "config": {},
         },
@@ -86,7 +86,7 @@ def test_model_selection():
             "model": False,
             "lang": "de",
             "text_type": "news",
-            "processors": "senter",
+            "processors": "tagger",
             "set_device": False,
             "config": {},
         },
@@ -94,7 +94,7 @@ def test_model_selection():
             "model": False,
             "lang": "en",
             "text_type": "biomed",
-            "processors": "senter",
+            "processors": "lemmatizer",
             "set_device": "require_CPU",
             "config": {},
         },
@@ -105,6 +105,9 @@ def test_model_selection():
     for config, model in zip(dictl, modell):
         test_obj = msp.mSpacy(config)
         assert test_obj.model == model
+        assert test_obj.jobs == ["tok2vec"] + [
+            proc.strip() for proc in config["processors"].split(",")
+        ]
 
     invalid = {
         "model": False,
