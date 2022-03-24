@@ -10,4 +10,4 @@ if __name__ == "__main__":
 
     msomajo.pretokenize(text, "en_PTB", mydict)
 
-    be.decode_corpus(mydict).decode_to_file(directory="out", verbose=False)
+    be.decode_corpus(mydict).decode_to_file(directory="out")

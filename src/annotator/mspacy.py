@@ -1,3 +1,4 @@
+from annotator.base import out_object
 import spacy as sp
 from spacy.tokens.doc import Doc
 from spacy.lang.en import English
@@ -218,14 +219,16 @@ class spacy_pipe(mSpacy):
             start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
         """
 
-        out = out_object_spacy(self.doc, self.jobs, start=start).fetch_output(style)
+        out_obj = out_object_spacy(self.doc, self.jobs, start=start)
+        out = out_obj.fetch_output(style)
+        ptags = out_obj.ptags
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
         if ret is False and style == "STR" and out_param is not None:
             be.out_object.write_vrt(out_param["output"], out)
             # encode
-            be.encode_corpus.encode_vrt(out_param)
+            be.encode_corpus.encode_vrt(out_param, ptags)
 
         elif ret is False and style == "DICT" and out_param is not None:
             be.out_object.write_xml(
@@ -322,6 +325,7 @@ class out_object_spacy(be.out_object):
     def __init__(self, doc, jobs, start):
         super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["spacy_names"]
+        self.ptags = self.get_ptags()
 
     def iterate(self, out, sent, style):
         for token in sent:

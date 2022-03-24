@@ -46,9 +46,11 @@ def test_load_input_dict(init_dict):
     mydict = be.prepare_run.load_input_dict("input")
     assert mydict == init_dict
 
+
 @pytest.mark.dictname("test/test_files/input2")
 def test_validate_input_dict(init_dict):
     be.prepare_run.validate_input_dict(init_dict)
+
 
 @pytest.mark.dictname("test/test_files/input_short")
 def test_update_dict(init_dict):
@@ -113,7 +115,7 @@ def test_encode_vrt(get_obj):
     line = obj._get_s_attributes(line)
     test_line = " -S s "
     assert line == test_line
-    line = obj._get_p_attributes(line)
+    line = obj._get_p_attributes(line, ptags=["pos", "lemma"])
     test_line += "-P pos -P lemma "
     assert line == test_line
 

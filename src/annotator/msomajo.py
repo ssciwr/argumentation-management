@@ -56,4 +56,4 @@ def pretokenize(text: list or str, model: str, mydict: dict, split_sentences=Tru
     tokenized = tokenize(text, model, split_sentences=split_sentences)
 
     be.out_object.write_vrt(mydict["output"], tokenized)
-    be.encode_corpus.encode_vrt(mydict)
+    be.encode_corpus.encode_vrt(mydict, ptags=None)

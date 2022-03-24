@@ -1,6 +1,5 @@
 # the base class and utilities are contained in this module
 import json
-from click import command
 import jsonschema
 import os
 import to_xml as txml
@@ -308,6 +307,40 @@ class out_object:
                 output += "{}".format(value)
         return output
 
+    def get_ptags(self) -> list:
+        """Function to easily collect the current ptags in a list.
+
+        !!!
+        Does the same case selection as out_object.collect_results, so the order
+        of .vrt and this list should always be identical. If you change one
+        MAKE SURE to also change the other.
+        !!!
+        """
+
+        ptags = []
+
+        if self.attrnames["proc_pos"] in self.jobs:
+            ptags.append("pos")
+        if self.attrnames["proc_lemma"] in self.jobs:
+            ptags.append("lemma")
+        if "ner" in self.jobs:
+            ptags.append("NER")
+        if "entity_ruler" in self.jobs:
+            ptags.append("RULER")
+        if "entity_linker" in self.jobs:
+            ptags.append("LINKER")
+        if "morphologizer" in self.jobs:
+            ptags.append("MORPH")
+        if "parser" in self.jobs:
+            ptags.append("PARSER")
+        if "attribute_ruler" in self.jobs:
+            ptags.append("ATTR")
+
+        if ptags != []:
+            return ptags
+        else:
+            return None
+
     def collect_results(self, token, tid: int, word, style: str) -> dict or str:
 
         """Function to collect requested tags for tokens after applying pipeline to data.
@@ -510,14 +543,11 @@ class encode_corpus:
             line += "-S s "
         return line
 
-    # the order here is important for vrt files and MUST NOT be changed!!!
-    def _get_p_attributes(self, line) -> str:
-        if any(attr in self.attrnames["proc_pos"] for attr in self.jobs):
-            print("Encoding p-attribute POS...")
-            line += "-P pos "
-        if any(attr in self.attrnames["proc_lemma"] for attr in self.jobs):
-            print("Encoding p-attribute lemma...")
-            line += "-P lemma "
+    def _get_p_attributes(self, line, ptags) -> str:
+        if ptags is not None:
+            for tag in ptags:
+                print("Encoding p-attribute: {}".format(tag))
+                line += "-P {} ".format(tag)
         return line
 
     def setup(self) -> bool:
@@ -595,13 +625,13 @@ class encode_corpus:
         return path
 
     @classmethod
-    def encode_vrt(cls, mydict):
+    def encode_vrt(cls, mydict, ptags):
         obj = cls(mydict)
 
         line = " "
         # find out which options are to be encoded
         line = obj._get_s_attributes(line)
-        line = obj._get_p_attributes(line)
+        line = obj._get_p_attributes(line, ptags)
         purged = obj.setup()
         if purged:
             # call the os with the encode command
@@ -635,33 +665,74 @@ class decode_corpus(encode_corpus):
     def __init__(self, mydict) -> None:
         super().__init__(mydict)
 
-
-    def decode_to_file(self, directory=os.getcwd(), verbose=True):
+    def decode_to_file(
+        self,
+        directory=os.getcwd(),
+        verbose=True,
+        specific={"P-Attributes": [], "S-Attributes": []},
+    ):
         """Function to decode a given corpus to a .out file. If the directory to write to is not
         supposed to be the current one it can be given as paramater. Location needed relative to current
         directory."""
 
+        # set up the directories
         if not directory.endswith("/"):
-            directory+="/"
-        if directory != os.getcwd()+"/":
-            setback = os.getcwd()+"/"
-            outpath = setback+directory+self.corpusname
+            directory += "/"
+        if directory != os.getcwd() + "/":
+            setback = os.getcwd() + "/"
+            outpath = setback + directory + self.corpusname
         else:
             setback = directory
-            outpath = setback+self.corpusname
+            outpath = setback + self.corpusname
         if not os.path.isdir(outpath):
             os.system("mkdir {}".format(outpath))
-        if verbose == True:
-            command = "cd {} && cwb-decode -r {} {} -ALL > {}.out && cd {}".format(
-                self.corpusdir, self.regdir, self.corpusname, outpath, setback
-            )
-        elif verbose == False:
-            command = "cd {} && cwb-decode -C -r {} {} -ALL > {}.out && cd {}".format(
-                self.corpusdir, self.regdir, self.corpusname, outpath, setback
-            )            
-        print("Decoding corpus into directory: {}".format(outpath))
-        os.system(command)
-        print("File {}.out written in {}.".format(self.corpusname, outpath))
+
+        # build and execute the command line input
+        p_attr = specific["P-Attributes"]
+        s_attr = specific["S-Attributes"]
+
+        # should always be the same
+        base_command = "cd {} && cwb-decode ".format(self.corpusdir)
+
+        # decide type of output, verbose or not
+        if not verbose:
+            base_command += "-C "
+
+        # set registry and define corpus for cwb-decode
+        base_command += "-r {} {} ".format(self.regdir, self.corpusname)
+
+        # set up the out-pipe and return to working directory
+        pipe = "> {}.out && cd {}".format(outpath, setback)
+
+        # if there are no specified p or s attributes we just decode all
+        if p_attr == [] and s_attr == []:
+            command = base_command + "-ALL " + pipe
+
+            print("Decoding corpus into directory: {}".format(outpath))
+            print(command)
+            os.system(command)
+            print("File {}.out written in {}.".format(self.corpusname, outpath))
+
+        # if there are specified p or s attributes we only decode these
+        elif p_attr or s_attr != [] or p_attr != [] and s_attr != []:
+
+            p_string = ""
+            s_string = ""
+
+            for p_att in p_attr:
+                p_string += "-P {} ".format(p_att)
+
+            for s_att in s_attr:
+                s_string += "-S {} ".format(s_att)
+
+            print("Decoding corpus into directory: {}".format(outpath))
+            print("Grabbing p-Attributes: {}".format(p_string))
+            print("Grabbing s-Attributes: {}".format(s_string))
+
+            command = base_command + p_string + s_string + pipe
+            print(command)
+            os.system(command)
+            print("File {}.out written in {}.".format(self.corpusname, outpath))
 
 
 # en

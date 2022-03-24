@@ -48,7 +48,6 @@ class mstanza_pipeline:
         # we need the full dict to get the parameters for encoding
         self.config = mydict
 
-
     def init_pipeline(self):
         """Function to initialize the pipeline based on input dict."""
 
@@ -90,10 +89,11 @@ class mstanza_pipeline:
         # seems not to be available in spacy, how is it handled in cwb?
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
+        ptags = out_object_stanza(self.doc, jobs, start=0).get_ptags()
         # write out to .vrt
 
         out_object_stanza.write_vrt(out_param["output"], out)
-        be.encode_corpus.encode_vrt(out_param)
+        be.encode_corpus.encode_vrt(out_param, ptags)
 
 
 def ner(doc) -> dict:
