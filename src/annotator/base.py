@@ -49,19 +49,6 @@ class prepare_run:
         jsonschema.validate(instance=dict_in, schema=myschema)
 
     @staticmethod
-    def set_processors(dict_in: dict) -> dict:
-        """Update the processor and language settings in the tool sub-dict.
-
-        Args:
-                mydict[dict]: Dict containing parameters."""
-
-        mytool = dict_in["tool"]
-        mydict = dict_in
-        mydict[mytool + "_dict"]["processors"] = mydict["processing_type"]
-        mydict[mytool + "_dict"]["lang"] = mydict["language"]
-        return mydict
-
-    @staticmethod
     def activate_procs(mydict: dict, toolstring: str) -> dict:
         """Move processor-specific keys one level up.
 

@@ -17,16 +17,6 @@ class MySpacy:
     """
 
     def __init__(self, config: dict):
-
-        # config = the input dictionary
-        # output file name
-        # config = be.prepare_run.update_dict(config)
-
-        # here we put some sensible default values
-        # in general, it should also be possible
-        # that the user puts in a language and selected model
-        # so if model is already set, we should not overwrite it
-        # I believe this would then eliminate the `elif` case for pretrained above
         self.lang = config["lang"]
         self.type = config["text_type"]
         if "model" in config and config["model"] is not False:
@@ -34,6 +24,8 @@ class MySpacy:
             print("Using selected model {}.".format(self.model))
         else:
             # now here goes the default model if none was selected
+            # this all to be moved to base or another spot where the pipeline
+            # is set
             if self.lang == "en":
                 if self.type == "news":
                     self.model = "en_core_web_md"
@@ -51,11 +43,10 @@ class MySpacy:
             else:
                 raise ValueError("""Languages not available yet. Aborting...""")
 
-        # get processors from dict
-        # self.jobs = config["processors"]
         self.jobs = be.prepare_run.get_jobs(config)
 
         # use specific device settings if requested
+        # this also to be set in the pipeline decision
         if config["set_device"]:
             if config["set_device"] == "prefer_GPU":
                 sp.prefer_gpu()
@@ -65,7 +56,6 @@ class MySpacy:
                 sp.require_cpu()
 
         self.config = config["config"]
-        # self.config = be.prepare_run.update_dict(self.config)
 
 
 # build the pipeline from config-dict
