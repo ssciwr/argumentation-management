@@ -6,18 +6,16 @@ class SetConfig:
 
 
     Here we set the pipelines depending on:
-    1. processing option;
-    2. processing type;
-    3. text type and language (-> model selection);
-    4. manually selected tool.
+    1. processing option and processing type;
+    2. text type and language (-> model selection).
     """
 
     def __init__(self, mydict: dict) -> None:
         # select method
         self.processing_option = {
-            "fast": self.pipe_fast,
-            "accurate": self.pipe_accurate,
-            "manual": self.pipe_manual,
+            "fast": self._pipe_fast,
+            "accurate": self._pipe_accurate,
+            "manual": self._pipe_manual,
         }
         self.accurate_dict = {
             "sentencize": "spacy",
@@ -27,29 +25,38 @@ class SetConfig:
             "ner": "stanza",
         }
         self.case = self.processing_option[mydict["processing_option"]]
+        self.case(mydict)
         # select language and model
+        if "spacy" in self.tool:
+            self._set_model_spacy()
+        if "stanza" in self.tool:
+            self._set_model_stanza()
 
-    def pipe_fast(self, mydict: dict):
+    def _pipe_fast(self, mydict: dict):
         """Fast pipeline for efficient processing. Uses SpaCy."""
+        print("Selected fast pipeline.")
         # make sure processors are ordered and correct
         processors = self._get_processors(mydict["processing_type"])
         self._order_processors(processors)
         self.tool = "spacy"
 
-    def pipe_accurate(self, mydict):
+    def _pipe_accurate(self, mydict):
         """Accurate pipeline for accurate processing. Uses SpaCy and
         Stanza."""
+        print("Selected accurate pipeline.")
         # find out which processors are being used
         # and order according to ordered dict
         processors = self._get_processors(mydict["processing_type"])
         self._order_processors(processors)
         self._get_tools()
 
-    def pipe_manual(self, mydict):
+    def _pipe_manual(self, mydict):
         """Manual selection of tools per processor type."""
+        print("Selected manual pipeline.")
         # here we assume that the user set the processors in the correct order
         self.processors = self._get_processors(mydict["processing_type"])
         # convert to list and make sure the list of tools has no blanks
+        # here we assume that the tools are are written correctly and exist
         self.tool = self._get_processors(mydict["tool"])
 
     def _get_processors(self, processors: list) -> list:
@@ -80,6 +87,16 @@ class SetConfig:
             self.tool.append(self.accurate_dict[component])
         print("added tool {} for components {}".format(self.tool, self.processors))
 
+    def _set_model_spacy(self):
+        """Update the model depending on language and text option - spacy."""
+        print("Setting model and language options for SpaCy.")
+        pass
+
+    def _set_model_stanza(self):
+        """Update the model depending on language and text option - stanza."""
+        print("Setting model and language options for Stanza.")
+        pass
+
     @staticmethod
     def set_processors(dict_in: dict) -> dict:
         """Update the processor and language settings in the tool sub-dict.
@@ -99,7 +116,6 @@ class SetConfig:
 
 if __name__ == "__main__":
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
-    print(mydict["processing_option"])
     mydict["processing_option"] = "accurate"
     mydict["processing_type"] = "pos  ,lemma, tokenize"
     obj = SetConfig(mydict)
