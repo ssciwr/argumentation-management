@@ -1,11 +1,12 @@
 import base as be
+import pipe as pe
 import mstanza as ma
 
 
 def test_integration_mstanza():
     # read in input.json
     mydict = be.prepare_run.load_input_dict("./input")
-    mydict = be.prepare_run.set_processors(mydict)
+    mydict = pe.SetConfig.set_processors(mydict)
     mydict["tool"] = "stanza"
     mydict["input"] = "./test/test_files/example_de.txt"
     mydict["advanced_options"]["output_dir"] = "./test/test_files/"

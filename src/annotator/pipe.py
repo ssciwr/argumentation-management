@@ -27,30 +27,39 @@ class SetConfig:
             "ner": "stanza",
         }
         self.case = self.processing_option[mydict["processing_option"]]
-        print("Selected option {}".format(self.case))
-        self.case(mydict)
+        # select language and model
 
     def pipe_fast(self, mydict: dict):
         """Fast pipeline for efficient processing. Uses SpaCy."""
+        # make sure processors are ordered and correct
+        processors = self._get_processors(mydict["processing_type"])
+        self._order_processors(processors)
         self.tool = "spacy"
-        self.processors = mydict["processing_type"]
 
     def pipe_accurate(self, mydict):
         """Accurate pipeline for accurate processing. Uses SpaCy and
         Stanza."""
         # find out which processors are being used
         # and order according to ordered dict
-        self._get_processors(mydict["processing_type"])
+        processors = self._get_processors(mydict["processing_type"])
+        self._order_processors(processors)
         self._get_tools()
 
     def pipe_manual(self, mydict):
-        pass
+        """Manual selection of tools per processor type."""
+        # here we assume that the user set the processors in the correct order
+        self.processors = self._get_processors(mydict["processing_type"])
+        # convert to list and make sure the list of tools has no blanks
+        self.tool = self._get_processors(mydict["tool"])
 
-    def _get_processors(self, processors: list):
+    def _get_processors(self, processors: list) -> list:
         # here we want to make sure the list of processors is clean and in correct order
         # separate the processor list at the comma
         processors = processors.split(",")
         processors = [i.strip() for i in processors]
+        return processors
+
+    def _order_processors(self, processors: list):
         # order the processors based on the order dictionary
         order = {"sentencize": 0, "tokenize": 1, "pos": 2, "lemma": 3, "ner": 4}
         templist = [order.get(x) for x in processors]
