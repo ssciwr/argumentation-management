@@ -4,12 +4,21 @@ import stanza as sa
 import base as be
 
 
-class mstanza_preprocess:
-    """Preprocessing for stanza document annotation. Collection
-    of preprocessing steps to be carried out initially."""
+class Stanza:
+    """Stanza main processing class.
 
-    def __init__(self) -> None:
-        pass
+    Args:
+       config (dictionary): The full input dictionary.
+       text (string): The raw text that is to be processed.
+       text (list of strings): Several raw texts to be processed simultaneously.
+       annotated (dictionary): The output dictionary with annotated tokens.
+    """
+
+    def __init__(self, config: dict):
+        # get the stanza dict
+        self.config = config
+        # Initialize the pipeline using a configuration dict
+        self.nlp = sa.Pipeline(**self.config)
 
     @staticmethod
     def fix_dict_path(dict: dict) -> dict:
@@ -19,6 +28,7 @@ class mstanza_preprocess:
                 dict[dict]: Dictionary containing path to be updated."""
 
         # brute force to get model paths
+        # as we do not allow self-trained models, this will be removed
         for key, value in dict.items():
             if "model" in key.lower():
                 # if there is a prepending ".", remove it
@@ -33,35 +43,14 @@ class mstanza_preprocess:
                 print(dict[key], " updated!")
         return dict
 
-
-class mstanza_pipeline:
-    """Stanza main processing class.
-
-    Args:
-       config (dictionary): The full input dictionary.
-       text (string): The raw text that is to be processed.
-       text (list of strings): Several raw texts to be processed simultaneously.
-       annotated (dictionary): The output dictionary with annotated tokens.
-    """
-
-    def __init__(self, mydict: dict):
-        # we need the full dict to get the parameters for encoding
-        self.config = mydict
-
-    def init_pipeline(self):
-        """Function to initialize the pipeline based on input dict."""
-
-        # Initialize the pipeline using a configuration dict
-        self.nlp = sa.Pipeline(**self.config)
-
-    def process_text(self, text: str) -> dict:
+    def apply_to(self, text: str) -> dict:
         """Funtion to apply pipeline to provided textual data.
 
         Args:
                 text[str]: Textual Data as string."""
 
-        self.doc = self.nlp(text)  # Run the pipeline on the pretokenized input text
-        return self.doc  # stanza prints result as dictionary
+        self.doc = self.nlp(text)  # Run the pipeline on the input text
+        return self
 
     def process_multiple_texts(self, textlist: list) -> dict:
         """Function to process multiple texts.
@@ -76,25 +65,20 @@ class mstanza_pipeline:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def postprocess(self, out_param: dict) -> None:
+    def pass_results(self, mydict: dict) -> None:
         """Funtion to write post-pipeline data to .vrt file and encode for CWB.
 
         Args:
                 out_param[dict]: Parameters for output."""
 
-        # postprocess of the annotated dictionary
-        # fout = be.out_object.open_outfile(dict["output"])
-        # sentencize using generic base output object
-        # next step would be mwt, which is only applicable for languages like German and French
-        # seems not to be available in spacy, how is it handled in cwb?
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         ptags = out_object_stanza(self.doc, jobs, start=0).get_ptags()
         stags = out_object_stanza(self.doc, jobs, start=0).get_stags()
         # write out to .vrt
-
-        out_object_stanza.write_vrt(out_param["output"], out)
-        be.encode_corpus.encode_vrt(out_param, ptags, stags)
+        outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
+        out_object_stanza.write_vrt(outfile, out)
+        be.encode_corpus.encode_vrt(mydict, ptags, stags)
 
 
 def ner(doc) -> dict:
