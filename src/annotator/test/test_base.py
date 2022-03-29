@@ -1,7 +1,14 @@
 import pytest
+import unittest.mock
 import json
+import os
 import base as be
 import tempfile
+
+
+@pytest.fixture()
+def get_path():
+    return os.getcwd()
 
 
 @pytest.fixture()
@@ -35,6 +42,13 @@ test_dict = {
 def get_obj():
     # obj = be.encode_corpus(be.prepare_run.get_encoding(test_dict))
     obj = be.encode_corpus(test_dict)
+    return obj
+
+
+@pytest.fixture
+def get_obj_dec():
+    # obj = be.encode_corpus(be.prepare_run.get_encoding(test_dict))
+    obj = be.decode_corpus(test_dict)
     return obj
 
 
@@ -121,6 +135,7 @@ def test_purge():
 
 
 def test_encode_vrt(get_obj):
+
     obj = get_obj
     line = " "
     line = obj._get_s_attributes(line, stags=["s"])
@@ -150,3 +165,21 @@ def test_setup(monkeypatch, get_obj):
     monkeypatch.setattr("builtins.input", lambda _: next(answers))
 
     assert obj.setup() is True
+
+
+# I have no idea why this works
+@unittest.mock.patch("os.system")
+def test_decode(get_path, get_obj_dec):
+
+    obj = get_obj_dec
+    obj.decode_to_file()
+
+    os.system.assert_called_once_with(
+        "cd {} && cwb-decode -r {} {} -ALL > {}.out && cd {}".format(
+            obj.corpusdir,
+            obj.regdir,
+            obj.corpusname,
+            os.getcwd() + "/" + obj.corpusname,
+            os.getcwd() + "/",
+        )
+    )

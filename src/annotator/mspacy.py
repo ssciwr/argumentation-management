@@ -1,4 +1,3 @@
-from annotator.base import out_object
 import spacy as sp
 from spacy.tokens.doc import Doc
 from spacy.lang.en import English

@@ -114,25 +114,33 @@ class prepare_run:
     # def get_encoding(dict_in: dict) -> dict:
     # """Function to fetch the parameters needed for encoding from the input.json."""
 
-
-#
-# new_dict = {}
-#
-# for key, value in dict_in.items():
-#
-# if type(value) != dict or type(value) == dict and key == "cwb_dict":
-# new_dict[key] = value
-# elif type(value) == dict and key == "cwb_dict":
-#    new_dict[key] = value
-#
-# new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
-# "processors"
-# ]
-#
-# return new_dict
+    #
+    # new_dict = {}
+    #
+    # for key, value in dict_in.items():
+    #
+    # if type(value) != dict or type(value) == dict and key == "cwb_dict":
+    # new_dict[key] = value
+    # elif type(value) == dict and key == "cwb_dict":
+    #    new_dict[key] = value
+    #
+    # new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
+    # "processors"
+    # ]
+    #
+    # return new_dict
 
     @staticmethod
     def pretokenize(text, mydict: dict, tokenizer: callable, arguments: dict):
+        """Wrapper for a tokenizer function that returns a string in vrt format and a boolean
+        indicating if the text is sentencized or not. The tokenized text is then encoded into
+        cwb.
+
+        [Args]:
+                text: Text to be tokenized in format required by tokenizer.
+                mydict[dict]: Dict containing information for cwb encoding.
+                tokenizer[callable]: Tokenizer function.
+                arguments[dict]: Arguments to be passed to the tokenizer, i.e. language, model etc."""
 
         tokenized, senctencized = tokenizer(text, **arguments)
         out_object.write_vrt(mydict["output"], tokenized)
