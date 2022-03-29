@@ -19,12 +19,13 @@ def init_dict(request):
 
 
 test_dict = {
-    "output": "test",
     "tool": "stanza",
-    "cwb_dict": {
-        "corpus_name": "test",
-        "corpus_dir": "/home/jovyan/shared/corpora/",
-        "registry_dir": "/home/jovyan/shared/registry/",
+    "corpus_name": "test",
+    "advanced_options": {
+        "output_dir": "./out/",
+        "output_format": "STR",
+        "corpus_dir": "./corpora/",
+        "registry_dir": "./registry/",
     },
     "stanza_dict": {"processors": "tokenize, pos, lemma"},
 }
@@ -32,7 +33,8 @@ test_dict = {
 
 @pytest.fixture
 def get_obj():
-    obj = be.encode_corpus(be.prepare_run.get_encoding(test_dict))
+    # obj = be.encode_corpus(be.prepare_run.get_encoding(test_dict))
+    obj = be.encode_corpus(test_dict)
     return obj
 
 

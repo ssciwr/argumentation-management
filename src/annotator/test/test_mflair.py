@@ -15,7 +15,6 @@ def load_object(init):
     return mf.flair_pipe(init)
 
 
-
 @pytest.fixture
 def apply_to(load_object):
     """Get object in post-pipe state."""
@@ -52,9 +51,12 @@ def test_init(load_object, init):
     test_obj = load_object
     check_dict = init
 
-    assert test_obj.outname == check_dict["output"]
+    assert (
+        test_obj.outname
+        == check_dict["advanced_options"]["output_dir"] + check_dict["corpus_name"]
+    )
     assert test_obj.input == check_dict["input"]
-    assert test_obj.lang == check_dict["flair_dict"]["lang"]
+    assert test_obj.lang == check_dict["language"]
     assert test_obj.job == check_dict["flair_dict"]["job"]
 
 
@@ -100,7 +102,7 @@ def test_output(apply_to):
 
     assert data_pipe == checklist
 
-    
+
 def test_get_multiple(chunked_data, load_object):
     """Check that chunked data is annotated and returned as expected."""
 

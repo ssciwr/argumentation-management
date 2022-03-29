@@ -224,16 +224,18 @@ class spacy_pipe(mSpacy):
         ptags = out_obj.ptags
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
-        # temporary, this should not be a problem. right?
+        # temporary, this should not be a problem.
+        if out_param is not None:
+            outfile = (
+                out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
+            )
         if ret is False and style == "STR" and out_param is not None:
-            be.out_object.write_vrt(out_param["output"], out)
+            be.out_object.write_vrt(outfile, out)
             # encode
             be.encode_corpus.encode_vrt(out_param, ptags)
 
         elif ret is False and style == "DICT" and out_param is not None:
-            be.out_object.write_xml(
-                out_param["output"].replace("/", "_"), out_param["output"], out
-            )
+            be.out_object.write_xml(outfile.replace("/", "_"), outfile, out)
 
         elif ret is True:
             return out
