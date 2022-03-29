@@ -109,10 +109,19 @@ def test_chunker():
 # to use dockerfile for workflow is left for later
 
 
+def test_purge():
+
+    inputs = ["ä", "ü", "ö", " ", "  ", "ß", " ü"]
+    outputs = ["ae", "ue", "oe", "", "", "ss", "ue"]
+
+    for input, output in zip(inputs, outputs):
+        assert be.out_object.purge(input) == output
+
+
 def test_encode_vrt(get_obj):
     obj = get_obj
     line = " "
-    line = obj._get_s_attributes(line)
+    line = obj._get_s_attributes(line, stags=["s"])
     test_line = " -S s "
     assert line == test_line
     line = obj._get_p_attributes(line, ptags=["pos", "lemma"])

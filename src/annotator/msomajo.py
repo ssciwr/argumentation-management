@@ -1,20 +1,5 @@
 from somajo import SoMaJo
 import annotator.base as be
-import re
-
-
-def purge(tokenized: str) -> str:
-    """Function to search and replace problematic patterns in tokens
-    after pretokenization."""
-
-    # expand these with more if neccessary, correct mapping is important!
-    patterns = ["ä", "ü", "ö", "ß", " "]
-    solutions = ["ae", "ue", "oe", "ss", ""]
-
-    for pattern, solution in zip(patterns, solutions):
-        tokenized = re.sub("[{}]".format(pattern), solution, tokenized)
-
-    return tokenized
 
 
 def tokenize(text: list or str, model: str, split_sentences=True) -> str:
@@ -45,15 +30,7 @@ def tokenize(text: list or str, model: str, split_sentences=True) -> str:
             out += token.text + "\n"
         out += "</s>\n"
 
-    out = purge(out)
+    out = be.out_object.purge(out)
+    sentencized = True
 
-    return out
-
-
-def pretokenize(text: list or str, model: str, mydict: dict, split_sentences=True):
-    """Function to run the pretokenize process with somajo and encode to corpus."""
-
-    tokenized = tokenize(text, model, split_sentences=split_sentences)
-
-    be.out_object.write_vrt(mydict["output"], tokenized)
-    be.encode_corpus.encode_vrt(mydict, ptags=None)
+    return out, sentencized

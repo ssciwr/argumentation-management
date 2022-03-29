@@ -3,3 +3,4 @@ stanza
 flair
 numpy
 somajo
+treetaggerwrapper

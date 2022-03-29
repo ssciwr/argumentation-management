@@ -1,7 +1,9 @@
 # the base class and utilities are contained in this module
+from ast import arg
 import json
 import jsonschema
 import os
+import re
 import to_xml as txml
 
 
@@ -124,6 +126,16 @@ class prepare_run:
         ]
 
         return new_dict
+
+    @staticmethod
+    def pretokenize(text, mydict: dict, tokenizer: callable, arguments: dict):
+
+        tokenized, senctencized = tokenizer(text, **arguments)
+        out_object.write_vrt(mydict["output"], tokenized)
+        if senctencized:
+            encode_corpus.encode_vrt(mydict, ptags=None, stags=["s"])
+        else:
+            encode_corpus.encode_vrt(mydict, ptags=None, stags=None)
 
 
 # the below in a chunker class
@@ -341,6 +353,14 @@ class out_object:
         else:
             return None
 
+    def get_stags(self) -> list:
+
+        stags = []
+        if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
+            stags.append("s")
+
+        return stags
+
     def collect_results(self, token, tid: int, word, style: str) -> dict or str:
 
         """Function to collect requested tags for tokens after applying pipeline to data.
@@ -481,15 +501,36 @@ class out_object:
         return tag
 
     @staticmethod
+    def purge(out_string: str) -> str:
+        """Function to search and replace problematic patterns in tokens
+        before encoding."""
+
+        # expand these with more if neccessary, correct mapping is important!
+        patterns = ["ä", "ü", "ö", "ß", " "]
+        solutions = ["ae", "ue", "oe", "ss", ""]
+
+        for pattern, solution in zip(patterns, solutions):
+            out_string = out_string.replace(pattern, solution)
+
+        return out_string
+
+    @staticmethod
     def write_vrt(outname: str, out: list) -> None:
         """Function to write list to a .vrt file.
 
         [Args]:
             ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
         """
+
+        string = ""
+        for line in out:
+            string += line
+
+        string = out_object.purge(string)
+
         with open("{}.vrt".format(outname), "w") as file:
-            for line in out:
-                file.write(line)
+            file.write(string)
+
         print("+++ Finished writing {}.vrt +++".format(outname))
 
     @staticmethod
@@ -537,13 +578,14 @@ class encode_corpus:
         self.attrnames = out_object.get_names()
         self.attrnames = self.attrnames[self.tool + "_names"]
 
-    def _get_s_attributes(self, line) -> str:
-        if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
-            print("Encoding s-attribute <s>...")
-            line += "-S s "
+    def _get_s_attributes(self, line: str, stags: list) -> str:
+        if stags is not None:
+            for tag in stags:
+                print("Encoding s-attribute: {}".format(tag))
+                line += "-S {} ".format(tag)
         return line
 
-    def _get_p_attributes(self, line, ptags) -> str:
+    def _get_p_attributes(self, line: str, ptags: list) -> str:
         if ptags is not None:
             for tag in ptags:
                 print("Encoding p-attribute: {}".format(tag))
@@ -625,12 +667,12 @@ class encode_corpus:
         return path
 
     @classmethod
-    def encode_vrt(cls, mydict, ptags):
+    def encode_vrt(cls, mydict, ptags, stags):
         obj = cls(mydict)
 
         line = " "
         # find out which options are to be encoded
-        line = obj._get_s_attributes(line)
+        line = obj._get_s_attributes(line, stags)
         line = obj._get_p_attributes(line, ptags)
         purged = obj.setup()
         if purged:
