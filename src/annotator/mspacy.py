@@ -222,9 +222,10 @@ class spacy_pipe(mSpacy):
         out_obj = out_object_spacy(self.doc, self.jobs, start=start)
         out = out_obj.fetch_output(style)
         ptags = out_obj.ptags
+        stags = out_obj.stags
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
-        # temporary, this should not be a problem.
+        # temporary, this should not be a problem. right?
         if out_param is not None:
             outfile = (
                 out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
@@ -232,10 +233,12 @@ class spacy_pipe(mSpacy):
         if ret is False and style == "STR" and out_param is not None:
             be.out_object.write_vrt(outfile, out)
             # encode
-            be.encode_corpus.encode_vrt(out_param, ptags)
+            be.encode_corpus.encode_vrt(out_param, ptags, stags)
 
         elif ret is False and style == "DICT" and out_param is not None:
-            be.out_object.write_xml(outfile.replace("/", "_"), outfile, out)
+            be.out_object.write_xml(
+                out_param["output"].replace("/", "_"), out_param["output"], out
+            )
 
         elif ret is True:
             return out
@@ -328,6 +331,7 @@ class out_object_spacy(be.out_object):
         super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["spacy_names"]
         self.ptags = self.get_ptags()
+        self.stags = self.get_stags()
 
     def iterate(self, out, sent, style):
         for token in sent:
