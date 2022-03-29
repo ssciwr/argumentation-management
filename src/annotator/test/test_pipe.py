@@ -47,3 +47,24 @@ def test_order_proessors(get_mydict):
     processors = obj._get_processors(get_mydict["processors"])
     obj._order_processors(processors)
     assert obj.processors == ["tokenize", "pos", "lemma"]
+
+
+def test_get_tools(get_mydict):
+    get_mydict["processors"] = " lemma, tokenize, pos  "
+    obj = pe.SetConfig(get_mydict)
+    processors = obj._get_processors(get_mydict["processors"])
+    obj._order_processors(processors)
+    obj._get_tools()
+    assert obj.tool == ["spacy", "stanza", "stanza"]
+
+
+def test_set_model_spacy():
+    pass
+
+
+def test_set_model_stanza():
+    pass
+
+
+def test_set_processors(get_mydict):
+    obj = pe.SetConfig(get_mydict)

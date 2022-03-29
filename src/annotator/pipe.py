@@ -59,7 +59,7 @@ class SetConfig:
         # here we assume that the tools are are written correctly and exist
         self.tool = self._get_processors(mydict["tool"])
 
-    def _get_processors(self, processors: list) -> list:
+    def _get_processors(self, processors: str) -> list:
         # here we want to make sure the list of processors is clean and in correct order
         # separate the processor list at the comma
         processors = processors.split(",")
