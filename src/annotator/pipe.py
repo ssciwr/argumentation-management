@@ -38,7 +38,7 @@ class SetConfig:
         # make sure processors are ordered and correct
         processors = self._get_processors(mydict["processing_type"])
         self._order_processors(processors)
-        self.tool = "spacy"
+        self.tool = ["spacy"]
 
     def _pipe_accurate(self, mydict):
         """Accurate pipeline for accurate processing. Uses SpaCy and
