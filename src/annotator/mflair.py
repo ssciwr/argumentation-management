@@ -1,4 +1,4 @@
-from tracemalloc import start
+# from tracemalloc import start
 from flair.data import Sentence
 from flair.models import SequenceTagger
 from flair.models.sequence_tagger_model import MultiTagger
@@ -13,11 +13,11 @@ class Flair:
 
     def __init__(self, config):
 
-        self.outname = config["output"]
+        self.outname = config["advanced_options"]["output_dir"] + config["corpus_name"]
         self.input = config["input"]
+        self.lang = config["language"]
 
         config = config["flair_dict"]
-        self.lang = config["lang"]
         self.job = config["job"]
 
         # load in a tagger based on the job I guess
@@ -92,7 +92,7 @@ class flair_pipe(Flair):
         Args:
                 ret[bool]=False: Return output as list (True) or write to file (False).
                 start[int]=0: Start index for data. (Maybe not needed?)."""
-  
+
         out = out_object_flair(self.sentences, self.job, start=0).start_output().out
         for sent in self.sentences:
 
