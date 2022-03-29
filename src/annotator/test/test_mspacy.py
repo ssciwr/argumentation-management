@@ -1,4 +1,3 @@
-from json import load
 import pytest
 import spacy as sp
 import mspacy as msp
@@ -42,16 +41,7 @@ def pipe_sent(init, load_object, get_text):
     nlp = sp.load(mydict["model"])
     check_doc = nlp(get_text)
     test_doc = test_obj.apply_to(get_text).doc
-    assert test_doc.has_annotation("SENT_START")
-    # there seems to be no __eq__() definition for either doc or token in spacy
-    # so just compare a couple of attributes for every token?
-    for test_token, token in zip(test_doc, check_doc):
-        assert test_token.text == token.text
-        assert test_token.lemma == token.lemma
-        assert test_token.pos == token.pos
-        assert test_token.tag == token.tag
-        assert test_token.sent_start == token.sent_start
-    return test_obj.apply_to(get_text), check_doc
+    return test_obj.apply_to(get_text), check_doc, test_doc
 
 
 @pytest.fixture()
@@ -70,6 +60,20 @@ def chunked_data():
     tmp.close()
 
     return data
+
+
+def test_pipe(pipe_sent):
+    _, check_doc, test_doc = pipe_sent
+
+    assert test_doc.has_annotation("SENT_START")
+    # there seems to be no __eq__() definition for either doc or token in spacy
+    # so just compare a couple of attributes for every token?
+    for test_token, token in zip(test_doc, check_doc):
+        assert test_token.text == token.text
+        assert test_token.lemma == token.lemma
+        assert test_token.pos == token.pos
+        assert test_token.tag == token.tag
+        assert test_token.sent_start == token.sent_start
 
 
 def test_model_selection():
@@ -172,7 +176,7 @@ def test_output_sent(pipe_sent):
         "</s>\n",
     ]
     # this is quite specific, any way to generalize?
-    test_obj, check_doc = pipe_sent
+    test_obj, check_doc, _ = pipe_sent
     test_out = msp.out_object_spacy(test_obj.doc, test_obj.jobs, start=0).fetch_output(
         "STR"
     )
@@ -231,6 +235,7 @@ def test_pipe_multiple(load_object, chunked_data):
     assert type(results_pipe) == list
     assert check_chunked == results_pipe
     assert check_chunked == results_alt
+
 
 def test_sentencize():
 
