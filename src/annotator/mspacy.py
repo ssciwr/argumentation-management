@@ -9,10 +9,7 @@ from tqdm import (
 )  # for progress in pipe_multiple, might be interesting for large corpora down the line
 
 
-available_lang = ["en", "de"]
-
-
-class mSpacy:
+class MySpacy:
     """Base class for spaCy module.
 
     Args:
@@ -20,16 +17,6 @@ class mSpacy:
     """
 
     def __init__(self, config: dict):
-
-        # config = the input dictionary
-        # output file name
-        config = be.prepare_run.update_dict(config)
-
-        # here we put some sensible default values
-        # in general, it should also be possible
-        # that the user puts in a language and selected model
-        # so if model is already set, we should not overwrite it
-        # I believe this would then eliminate the `elif` case for pretrained above
         self.lang = config["lang"]
         self.type = config["text_type"]
         if "model" in config and config["model"] is not False:
@@ -37,6 +24,8 @@ class mSpacy:
             print("Using selected model {}.".format(self.model))
         else:
             # now here goes the default model if none was selected
+            # this all to be moved to base or another spot where the pipeline
+            # is set
             if self.lang == "en":
                 if self.type == "news":
                     self.model = "en_core_web_md"
@@ -52,15 +41,8 @@ class mSpacy:
             # the available languages should be stored in a list somewhere
             # put it on top of the module for now, find a better place for it later.
             else:
-                raise ValueError(
-                    """Languages not available yet. Only {} models have been implemented.
-                Aborting...""".format(
-                        available_lang
-                    )
-                )
+                raise ValueError("""Languages not available yet. Aborting...""")
 
-        # get processors from dict
-        # self.jobs = config["processors"]
         self.jobs = be.prepare_run.get_jobs(config)
 
         # if we ask for lemma and/or POS we force tok2vec to boost accuracy
@@ -74,6 +56,7 @@ class mSpacy:
                 self.jobs = ["tok2vec"] + self.jobs
 
         # use specific device settings if requested
+        # this also to be set in the pipeline decision
         if config["set_device"]:
             if config["set_device"] == "prefer_GPU":
                 sp.prefer_gpu()
@@ -83,11 +66,10 @@ class mSpacy:
                 sp.require_cpu()
 
         self.config = config["config"]
-        self.config = be.prepare_run.update_dict(self.config)
 
 
 # build the pipeline from config-dict
-class spacy_pipe(mSpacy):
+class spacy_pipe(MySpacy):
     """Assemble pipeline from config, apply pipeline to data and write results to .vrt file."""
 
     # init with specified config, this may be changed later?
