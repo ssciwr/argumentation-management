@@ -19,29 +19,6 @@ class MySpacy:
     def __init__(self, config: dict):
         self.lang = config["lang"]
         self.type = config["text_type"]
-        if "model" in config and config["model"] is not False:
-            self.model = config["model"]
-            print("Using selected model {}.".format(self.model))
-        else:
-            # now here goes the default model if none was selected
-            # this all to be moved to base or another spot where the pipeline
-            # is set
-            if self.lang == "en":
-                if self.type == "news":
-                    self.model = "en_core_web_md"
-                elif self.type == "biomed":
-                    # uses the scispacy package for processing biomedical text
-                    self.model = "en_core_sci_md"
-
-            elif self.lang == "de":
-                if self.type == "news":
-                    self.model = "de_core_news_md"
-
-            # make sure to throw an exception if language is not found
-            # the available languages should be stored in a list somewhere
-            # put it on top of the module for now, find a better place for it later.
-            else:
-                raise ValueError("""Languages not available yet. Aborting...""")
 
         self.jobs = be.prepare_run.get_jobs(config)
 

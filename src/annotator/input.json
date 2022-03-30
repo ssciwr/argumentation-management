@@ -18,7 +18,7 @@
         "lang": "en",
         "dir": "./test/models/",  
         "package": "default",
-        "processors": "tokenize,pos,lemma",  
+        "processors": [],  
         "logging_level": "INFO",  
         "verbose": true,
         "use_GPU": false,
@@ -57,8 +57,7 @@
     "spacy_dict": {
         "model": "en_core_web_md",
         "lang": "en",
-        "text_type": "news",
-        "processors": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
+        "processors": [],
         "set_device": false,
         "config": {
             "nlp.batch_size": 256
