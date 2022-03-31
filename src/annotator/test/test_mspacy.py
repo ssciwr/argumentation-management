@@ -18,6 +18,15 @@ def init():
 def load_object(init):
     """Initialize the test object"""
 
+    init[0]["processors"] = [
+        "tok2vec",
+        "senter",
+        "tagger",
+        "parser",
+        "attribute_ruler",
+        "lemmatizer",
+        "ner",
+    ]
     test_obj = msp.spacy_pipe(init[0])
     return test_obj
 
@@ -76,69 +85,61 @@ def test_pipe(pipe_sent):
         assert test_token.sent_start == token.sent_start
 
 
-def test_model_selection():
+def test_init():
     dictl = [
         {
-            "model": False,
+            "model": "en_core_web_md",
             "lang": "en",
-            "text_type": "news",
-            "processors": "lemmatizer, tagger",
+            "processors": ["lemmatizer", "tagger"],
             "set_device": "prefer_GPU",
             "config": {},
         },
         {
-            "model": False,
+            "model": "de_core_news_md",
             "lang": "de",
-            "text_type": "news",
-            "processors": "tagger",
+            "processors": ["tagger"],
             "set_device": False,
             "config": {},
         },
         {
-            "model": False,
+            "model": "de_core_news_md",
+            "lang": "de",
+            "processors": ["lemmatizer"],
+            "set_device": False,
+            "config": {},
+        },
+        {
+            "model": "en_core_web_md",
             "lang": "en",
-            "text_type": "biomed",
-            "processors": "lemmatizer",
-            "set_device": "require_CPU",
+            "processors": ["tok2vec", "lemmatizer", "tagger"],
+            "set_device": "prefer_GPU",
             "config": {},
         },
     ]
 
-    modell = ["en_core_web_md", "de_core_news_md", "en_core_sci_md"]
-
-    for config, model in zip(dictl, modell):
-        test_obj = msp.MySpacy(config)
+    modell = ["en_core_web_md", "de_core_news_md", "de_core_news_md", "en_core_web_md"]
+    processors = [
+        ["lemmatizer", "tagger", "tok2vec"],
+        ["tagger", "tok2vec"],
+        ["lemmatizer", "tok2vec"],
+        ["tok2vec", "lemmatizer", "tagger"],
+    ]
+    # should also check for CPU/GPU here
+    for subdict, model, procs in zip(dictl, modell, processors):
+        test_obj = msp.MySpacy(subdict)
         assert test_obj.model == model
-        assert test_obj.jobs == ["tok2vec"] + [
-            proc.strip() for proc in config["processors"].split(",")
-        ]
-
-    invalid = {
-        "model": False,
-        "lang": "invalid",
-        "text_type": "news",
-        "processors": "senter",
-        "set_device": False,
-        "config": {},
-    }
-
-    with pytest.raises(ValueError):
-        test_obj = msp.MySpacy(invalid)
+        assert test_obj.jobs == procs
 
 
-def test_init(init, load_object):
+def test_init_pipe(init, load_object):
     """Check if the parameters from the input dict are loaded into the
     pipe object as expected."""
 
     mydict_test = init[1]
     test_obj = load_object
 
-    assert test_obj.lang == mydict_test["lang"]
-    assert test_obj.type == mydict_test["text_type"]
     assert test_obj.model == mydict_test["model"]
-    assert test_obj.jobs == [
-        proc.strip() for proc in mydict_test["processors"].split(",")
-    ]
+    assert test_obj.jobs == mydict_test["processors"]
     assert test_obj.config == mydict_test["config"]
 
 
@@ -150,6 +151,8 @@ def test_apply_to(load_object, get_text):
 def test_pass_results(init, load_object, get_text):
     mydict = init[2]
     mydict["advanced_options"]["output_dir"] = "./test/test_files/"
+    mydict["advanced_options"]["corpus_dir"] = "./test/test_files/"
+    mydict["advanced_options"]["registry_dir"] = "./test/test_files/"
     load_object.apply_to(get_text).pass_results(style="STR", mydict=mydict)
 
 

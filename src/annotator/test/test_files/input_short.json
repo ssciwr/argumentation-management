@@ -2,7 +2,7 @@
     "model": "en_core_web_md",
     "lang": "en",
     "text_type": "news",
-    "processors": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
+    "processors": ["tok2vec", "senter", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"],
     "set_device": false,
     "config": {
         "nlp.batch_size": 256

@@ -79,13 +79,10 @@ class prepare_run:
         basic input.json if provided a tool, or assumes it is in tool-specific dict if no tool is provided."""
         if tool is not None:
             print(dict_in["{}_dict".format(tool)]["processors"])
-            return [
-                proc.strip()
-                for proc in dict_in["{}_dict".format(tool)]["processors"].split(",")
-            ]
+            return dict_in["{}_dict".format(tool)]["processors"]
         elif tool is None:
             print(dict_in["processors"])
-            return [proc.strip() for proc in dict_in["processors"].split(",")]
+            return dict_in["processors"]
 
     # @staticmethod
     # def get_encoding(dict_in: dict) -> dict:

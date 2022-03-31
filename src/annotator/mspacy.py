@@ -13,14 +13,13 @@ class MySpacy:
     """Base class for spaCy module.
 
     Args:
-        config[dict]: Dict containing the setup for the spaCy run.
+        subdict[dict]: Dict containing the setup for the spaCy run.
     """
 
-    def __init__(self, config: dict):
-        self.lang = config["lang"]
-        self.type = config["text_type"]
-
-        self.jobs = be.prepare_run.get_jobs(config)
+    def __init__(self, subdict: dict):
+        self.jobs = subdict["processors"]
+        # we need to map the jobs to spacy notation
+        self.model = subdict["model"]
 
         # if we ask for lemma and/or POS we force tok2vec to boost accuracy
         if (
@@ -30,19 +29,19 @@ class MySpacy:
             and "tagger" in self.jobs
         ):
             if "tok2vec" not in self.jobs:
-                self.jobs = ["tok2vec"] + self.jobs
+                self.jobs.append("tok2vec")
 
         # use specific device settings if requested
         # this also to be set in the pipeline decision
-        if config["set_device"]:
-            if config["set_device"] == "prefer_GPU":
+        if subdict["set_device"]:
+            if subdict["set_device"] == "prefer_GPU":
                 sp.prefer_gpu()
-            elif config["set_device"] == "require_GPU":
+            elif subdict["set_device"] == "require_GPU":
                 sp.require_gpu()
-            elif config["set_device"] == "require_CPU":
+            elif subdict["set_device"] == "require_CPU":
                 sp.require_cpu()
 
-        self.config = config["config"]
+        self.config = subdict["config"]
 
 
 # build the pipeline from config-dict
@@ -55,14 +54,8 @@ class spacy_pipe(MySpacy):
         super().__init__(config)
         # use a specific pipeline if requested
         self.validated = []
-        # define language -> is this smart or do we want to load a model and disable?
-        # -> changed it to load a model and disable, as I was experiencing inconsistencies
-        # with building from base language even for just the two models I tried
         try:
-            if self.config:
-                self.nlp = sp.load(self.model, config=self.config)
-            else:
-                self.nlp = sp.load(self.model)
+            self.nlp = sp.load(self.model, config=self.config)
 
         except OSError:
             raise OSError("Could not find {} in standard directory.".format(self.model))
