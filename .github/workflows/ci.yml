@@ -37,8 +37,8 @@ jobs:
         curl "${HOME_URL}/tree-tagger-linux-3.2.4.tar.gz" --output tree-tagger-linux-3.2.4.tar.gz
         curl "${HOME_URL}/tagger-scripts.tar.gz" --output tagger-scripts.tar.gz
         curl "${HOME_URL}/install-tagger.sh" --output install-tagger.sh
-        curl "${HOME_URL}/german.par.gz --output german.par.gz
-        curl "${HOME_URL}/english.par.gz --output english.par.gz
+        curl "${HOME_URL}/german.par.gz" --output german.par.gz
+        curl "${HOME_URL}/english.par.gz" --output english.par.gz
         sh install-tagger.sh
         cd ..
     - name: Get the models 
