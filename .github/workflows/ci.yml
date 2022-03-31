@@ -31,8 +31,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt
         python -m pip install -r requirements-dev.txt
-        mkdir treetagger
-        cd treetagger
+        declar RET=${PWD}
+        mkdir ~/treetagger
+        cd ~/treetagger
         declare HOME_URL=${HOME_URL:-http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data}
         curl -sSL "${HOME_URL}/tree-tagger-linux-3.2.4.tar.gz" --output tree-tagger-linux-3.2.4.tar.gz
         curl -sSL "${HOME_URL}/tagger-scripts.tar.gz" --output tagger-scripts.tar.gz
@@ -40,9 +41,7 @@ jobs:
         curl -sSL "${HOME_URL}/german.par.gz" --output german.par.gz
         curl -sSL "${HOME_URL}/english.par.gz" --output english.par.gz
         sh install-tagger.sh
-        cd ..
-        PATH=$PATH:/home/runner/work/argumentation-management/argumentation-management/treetagger/cmd
-        PATH=$PATH:/home/runner/work/argumentation-management/argumentation-management/treetagger/bin
+        cd ~/${RET}
     - name: Get the models 
       run: |
         source src/annotator/test/setup_tests.sh
