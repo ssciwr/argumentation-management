@@ -1,9 +1,7 @@
 # the base class and utilities are contained in this module
-from ast import arg
 import json
 import jsonschema
 import os
-import re
 import to_xml as txml
 
 

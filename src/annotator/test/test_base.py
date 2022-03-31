@@ -47,7 +47,6 @@ def get_obj():
 
 @pytest.fixture
 def get_obj_dec():
-    # obj = be.encode_corpus(be.prepare_run.get_encoding(test_dict))
     obj = be.decode_corpus(test_dict)
     return obj
 
@@ -167,19 +166,48 @@ def test_setup(monkeypatch, get_obj):
     assert obj.setup() is True
 
 
-# I have no idea why this works
 @unittest.mock.patch("os.system")
-def test_decode(get_path, get_obj_dec):
+def test_decode(os_system, get_path, get_obj_dec):
 
+    path = get_path
     obj = get_obj_dec
     obj.decode_to_file()
 
-    os.system.assert_called_once_with(
+    os_system.assert_called_with(
         "cd {} && cwb-decode -r {} {} -ALL > {}.out && cd {}".format(
             obj.corpusdir,
             obj.regdir,
             obj.corpusname,
-            os.getcwd() + "/" + obj.corpusname,
-            os.getcwd() + "/",
+            path + "/" + obj.corpusname,
+            path + "/",
+        )
+    )
+
+    obj.decode_to_file(verbose=False)
+
+    os_system.assert_called_with(
+        "cd {} && cwb-decode -C -r {} {} -ALL > {}.out && cd {}".format(
+            obj.corpusdir,
+            obj.regdir,
+            obj.corpusname,
+            path + "/" + obj.corpusname,
+            path + "/",
+        )
+    )
+
+    obj.decode_to_file(
+        specific={
+            "P-Attributes": ["test_p_0", "test_p_1"],
+            "S-Attributes": ["test_s_0", "test_s_1"],
+        }
+    )
+
+    os_system.assert_called_with(
+        "cd {} && cwb-decode -r {} {} -P test_p_0 -P test_p_1 -S test_s_0 -S test_s_1 > {}.out && cd {}".format(
+            obj.corpusdir,
+            obj.regdir,
+            obj.corpusname,
+            path + "/" + obj.corpusname,
+            path + "/",
         )
     )
