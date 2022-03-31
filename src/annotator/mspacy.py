@@ -131,11 +131,16 @@ class spacy_pipe(MySpacy):
             self.nlp = sp.load(**self.cfg)
 
     # call the build pipeline on the data
-    def apply_to(self, data: str) -> Doc:
+    def apply_to(self, data: str, pretokenized: bool = False) -> Doc:
         """Apply the objects pipeline to a given data string."""
 
+        if pretokenized:
+            docs = [self.nlp(Doc(self.nlp.vocab, sent)) for sent in data]
+            self.doc = Doc.from_docs(docs)
+            # self.doc = Doc.from_docs(list(self.nlp.pipe(data)))
         # apply to data while disabling everything that wasnt requested
-        self.doc = self.nlp(data)
+        elif not pretokenized:
+            self.doc = self.nlp(data)
         return self
 
     # or apply to chunked data

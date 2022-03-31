@@ -14,11 +14,14 @@ class MyStanza:
        annotated (dictionary): The output dictionary with annotated tokens.
     """
 
-    def __init__(self, config: dict):
+    def __init__(self, config: dict, pretokenized: bool = False):
         # get the stanza dict
         self.config = config
         # Initialize the pipeline using a configuration dict
-        self.nlp = sa.Pipeline(**self.config)
+        if pretokenized:
+            self.nlp = sa.Pipeline(**self.config, tokenize_pretokenized=True)
+        elif not pretokenized:
+            self.nlp = sa.Pipeline(**self.config)
 
     def apply_to(self, text: str) -> dict:
         """Funtion to apply pipeline to provided textual data.
@@ -42,7 +45,7 @@ class MyStanza:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def pass_results(self, mydict: dict) -> None:
+    def pass_results(self, mydict: dict, ret: bool = False) -> None:
         """Funtion to write post-pipeline data to .vrt file and encode for CWB.
 
         Args:
@@ -51,9 +54,13 @@ class MyStanza:
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         # write out to .vrt
-        outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-        out_object_stanza.write_vrt(outfile, out)
-        be.encode_corpus.encode_vrt(mydict)
+        if ret:
+            return out
+
+        elif not ret:
+            outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
+            out_object_stanza.write_vrt(outfile, out)
+            be.encode_corpus.encode_vrt(mydict)
 
 
 def ner(doc) -> dict:

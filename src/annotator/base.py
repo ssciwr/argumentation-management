@@ -87,6 +87,27 @@ class prepare_run:
             print(dict_in["processors"])
             return [proc.strip() for proc in dict_in["processors"].split(",")]
 
+    @staticmethod
+    def load_tokens_from_vrt(path: str) -> list:
+
+        # best way to do this as each tool uses different approaches?
+        # -> this provides us with list of tokens or list of sentences
+        # as nested lists with tokens
+        # -> maybe we can use this as a common starting point and then build
+        # the tool-specific input from this in the modules?
+        with open(path, "r") as file:
+
+            out = []
+            for line in file:
+                if line.startswith("<s>"):
+                    out.append([])
+                elif line.startswith("<"):
+                    pass
+                else:
+                    out[-1].append(line.split()[0].replace("\n", ""))
+
+        return out
+
     # @staticmethod
     # def get_encoding(dict_in: dict) -> dict:
     # """Function to fetch the parameters needed for encoding from the input.json."""
@@ -225,7 +246,7 @@ class out_object:
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        print(obj.attrnames)
+        # print(obj.attrnames)
         if "sentence" not in obj.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
