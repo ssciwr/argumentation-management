@@ -126,8 +126,8 @@ def test_chunker():
 
 def test_purge():
 
-    inputs = ["ä", "ü", "ö", " ", "  ", "ß", " ü"]
-    outputs = ["ae", "ue", "oe", "", "", "ss", "ue"]
+    inputs = [" ", "  "]
+    outputs = ["", ""]
 
     for input, output in zip(inputs, outputs):
         assert be.out_object.purge(input) == output

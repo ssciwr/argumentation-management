@@ -495,11 +495,8 @@ class out_object:
         before encoding."""
 
         # expand these with more if neccessary, correct mapping is important!
-        patterns = ["ä", "ü", "ö", "ß", " "]
-        solutions = ["ae", "ue", "oe", "ss", ""]
 
-        for pattern, solution in zip(patterns, solutions):
-            out_string = out_string.replace(pattern, solution)
+        out_string = out_string.replace(" ", "")
 
         return out_string
 
