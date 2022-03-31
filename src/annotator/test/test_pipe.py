@@ -13,7 +13,7 @@ def test_pipe_fast(get_mydict):
     get_mydict["processing_option"] = "fast"
     get_mydict["processing_type"] = "lemma, tokenize, pos"
     obj = pe.SetConfig(get_mydict)
-    assert obj.tool == ["spacy"]
+    assert obj.tool == ["spacy", "spacy", "spacy"]
     assert obj.processors == ["tokenize", "pos", "lemma"]
 
 
@@ -34,7 +34,7 @@ def test_pipe_manual(get_mydict):
     assert obj.processors == ["tokenize", "pos", "lemma"]
     get_mydict["tool"] = "spacy"
     obj = pe.SetConfig(get_mydict)
-    assert obj.tool == ["spacy"]
+    assert obj.tool == ["spacy", "spacy", "spacy"]
 
 
 def test_get_processors(get_mydict):

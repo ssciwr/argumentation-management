@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 import base as be
 
 
@@ -24,9 +25,26 @@ class SetConfig:
             "lemma": "stanza",
             "ner": "stanza",
         }
+        self.map_processors = {
+            "spacy": {
+                "sentencize": "senter",
+                "tokenize": "tok2vec",
+                "lemma": "lemmatizer",
+                "pos": "tagger",
+                "ner": "ner",
+            },
+            "stanza": {
+                "tokenize": "tokenize",
+                "lemma": "lemma",
+                "pos": "pos",
+                "mwt": "mwt",
+            },
+        }
         self.mydict = mydict
         self.case = self.processing_option[self.mydict["processing_option"]]
         self.case()
+        # validate that processors and tool have same length
+        self._validate_processors()
         # select language and model
         if "spacy" in self.tool:
             self._set_model_spacy()
@@ -40,7 +58,10 @@ class SetConfig:
         # make sure processors are ordered and correct
         processors = self._get_processors(self.mydict["processing_type"])
         self._order_processors(processors)
-        self.tool = ["spacy"]
+        # get length of processors and repeat spacy as many time for each
+        # option
+        self.tool = ["spacy" for i in self.processors]
+        print(self.tool)
 
     def _pipe_accurate(self):
         """Accurate pipeline for accurate processing. Uses SpaCy and
@@ -60,6 +81,8 @@ class SetConfig:
         # convert to list and make sure the list of tools has no blanks
         # here we assume that the tools are are written correctly and exist
         self.tool = self._get_processors(self.mydict["tool"])
+        if len(self.tool) == 1 and len(self.processors) != 1:
+            self.tool = [self.tool[0] for i in self.processors]
 
     def _get_processors(self, processors: str) -> list:
         # here we want to make sure the list of processors is clean and in correct order
@@ -83,6 +106,10 @@ class SetConfig:
         for component in ordlist:
             self.processors.append(component)
 
+    def _validate_processors(self):
+        if len(self.processors) != len(self.tool):
+            raise ValueError("Selected tool does not match selected processors!")
+
     def _get_tools(self) -> None:
         self.tool = []
         for component in self.processors:
@@ -103,15 +130,15 @@ class SetConfig:
             if self.mydict["language"] == "en":
                 if self.mydict["document_type"] == "text":
                     # standard text
-                    print("Found standard text)")
+                    print("Found standard text")
                     self.model = "en_core_web_md"
                 elif self.mydict["document_type"] == "scientific":
                     # scientific text, use the scispacy package for biomedical text
-                    print("Found scientific text)")
+                    print("Found scientific text")
                     self.model = "en_core_sci_md"
                 elif self.mydict["document_type"] == "historic":
                     # historic, use model for old language
-                    print("Found historic text)")
+                    print("Found historic text")
                     self.model = "en_core_web_md"
             elif self.mydict["language"] == "de":
                 if self.type == "text":
@@ -143,11 +170,13 @@ class SetConfig:
         """Update the processor and language settings in the tool sub-dict."""
         # here we need to more generally map the pipeline
         # and add in the defaults for each tool
-        for i, mytool in enumerate(self.tool):
-            if len(self.tool) == 1:
-                self.mydict[mytool + "_dict"]["processors"] = self.processors
-            elif len(self.tool) > 1:
-                self.mydict[mytool + "_dict"]["processors"].append(self.processors[i])
+        # better to zip tool and processors and then select the ones with same tool
+        for proc, mytool in zip(self.processors, self.tool):
+            # map to new name
+            myname = self.map_processors[mytool][proc]
+            print("found name {} for tool {} and proc {}".format(myname, mytool, proc))
+            self.mydict[mytool + "_dict"]["processors"].append(myname)
+            # we don't need the language for spacy
             self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
             if self.model:
                 self.mydict[mytool + "_dict"]["model"] = self.model
