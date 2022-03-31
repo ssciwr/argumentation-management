@@ -2,7 +2,7 @@ import treetaggerwrapper as ttw
 import annotator.base as be
 
 
-def tokenize(text: str, lang: str) -> str:
+def tokenize(text: str, lang: str) -> str and bool:
     """Function to tokenize text using treetaggerwrapper.TreeTagger.tag_text. Text is provided as string.
 
     [Args]:

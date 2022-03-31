@@ -308,7 +308,7 @@ class out_object:
                 output += "{}".format(value)
         return output
 
-    def get_ptags(self) -> list:
+    def get_ptags(self) -> list or None:
         """Function to easily collect the current ptags in a list.
 
         !!!

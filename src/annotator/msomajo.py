@@ -2,7 +2,7 @@ from somajo import SoMaJo
 import annotator.base as be
 
 
-def tokenize(text: list or str, model: str, split_sentences=True) -> str:
+def tokenize(text: list or str, model: str, split_sentences=True) -> str and bool:
     """Function to tokenize text using somajo.tokenize_text. Text may be provided as
     string or as list of strings.
 
