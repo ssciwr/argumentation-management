@@ -41,6 +41,8 @@ jobs:
         curl -sSL "${HOME_URL}/english.par.gz" --output english.par.gz
         sh install-tagger.sh
         cd ..
+        PATH=$PATH:/home/runner/work/argumentation-management/argumentation-management/treetagger/cmd
+        PATH=$PATH:/home/runner/work/argumentation-management/argumentation-management/treetagger/bin
     - name: Get the models 
       run: |
         source src/annotator/test/setup_tests.sh
