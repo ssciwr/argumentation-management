@@ -32,6 +32,9 @@ def test_pipe_manual(get_mydict):
     obj = pe.SetConfig(get_mydict)
     assert obj.tool == ["spacy", "stanza", "spacy"]
     assert obj.processors == ["tokenize", "pos", "lemma"]
+    get_mydict["tool"] = "spacy"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.tool == ["spacy"]
 
 
 def test_get_processors(get_mydict):
@@ -58,8 +61,21 @@ def test_get_tools(get_mydict):
     assert obj.tool == ["spacy", "stanza", "stanza"]
 
 
-def test_set_model_spacy():
-    pass
+def test_set_model_spacy(get_mydict):
+    get_mydict["model"] = "mymodel"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.model == "mymodel"
+    get_mydict.pop("model", None)
+    get_mydict["document_type"] = "text"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.model == "en_core_web_md"
+    get_mydict["document_type"] = "scientific"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.model == "en_core_sci_md"
+    get_mydict["document_type"] = "historic"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.model == "en_core_web_md"
+    get_mydict["language"] = "de"
 
 
 def test_set_model_stanza():

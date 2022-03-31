@@ -59,8 +59,7 @@ class SetConfig:
         self.processors = self._get_processors(self.mydict["processing_type"])
         # convert to list and make sure the list of tools has no blanks
         # here we assume that the tools are are written correctly and exist
-        self.tool = []
-        self.tool.append(self._get_processors(self.mydict["tool"]))
+        self.tool = self._get_processors(self.mydict["tool"])
 
     def _get_processors(self, processors: str) -> list:
         # here we want to make sure the list of processors is clean and in correct order
@@ -104,12 +103,15 @@ class SetConfig:
             if self.mydict["language"] == "en":
                 if self.mydict["document_type"] == "text":
                     # standard text
+                    print("Found standard text)")
                     self.model = "en_core_web_md"
                 elif self.mydict["document_type"] == "scientific":
                     # scientific text, use the scispacy package for biomedical text
+                    print("Found scientific text)")
                     self.model = "en_core_sci_md"
                 elif self.mydict["document_type"] == "historic":
                     # historic, use model for old language
+                    print("Found historic text)")
                     self.model = "en_core_web_md"
             elif self.mydict["language"] == "de":
                 if self.type == "text":
@@ -135,7 +137,6 @@ class SetConfig:
         print("Setting model and language options for Stanza.")
         # see here for a selection of models:
         # https://stanfordnlp.github.io/stanza/available_models.html
-        # we only select based on language, not text type
         pass
 
     def set_processors(self) -> dict:
@@ -147,7 +148,7 @@ class SetConfig:
                 self.mydict[mytool + "_dict"]["processors"] = self.processors
             elif len(self.tool) > 1:
                 self.mydict[mytool + "_dict"]["processors"].append(self.processors[i])
-            mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
+            self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
             if self.model:
                 self.mydict[mytool + "_dict"]["model"] = self.model
         return self.mydict
