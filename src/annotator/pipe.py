@@ -60,7 +60,7 @@ class SetConfig:
         self._order_processors(processors)
         # get length of processors and repeat spacy as many time for each
         # option
-        self.tool = ["spacy" for i in self.processors]
+        self.tool = ["spacy" for _ in self.processors]
         print(self.tool)
 
     def _pipe_accurate(self):
@@ -82,7 +82,7 @@ class SetConfig:
         # here we assume that the tools are are written correctly and exist
         self.tool = self._get_processors(self.mydict["tool"])
         if len(self.tool) == 1 and len(self.processors) != 1:
-            self.tool = [self.tool[0] for i in self.processors]
+            self.tool = [self.tool[0] for _ in self.processors]
 
     def _get_processors(self, processors: str) -> list:
         # here we want to make sure the list of processors is clean and in correct order
