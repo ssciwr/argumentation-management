@@ -119,10 +119,10 @@ def test_init():
 
     modell = ["en_core_web_md", "de_core_news_md", "de_core_news_md", "en_core_web_md"]
     processors = [
-        ["lemmatizer", "tagger", "tok2vec"],
-        ["tagger", "tok2vec"],
-        ["lemmatizer", "tok2vec"],
-        ["tok2vec", "lemmatizer", "tagger"],
+        ["lemmatizer", "tagger", "tok2vec", "attribute_ruler"],
+        ["tagger", "tok2vec", "attribute_ruler"],
+        ["lemmatizer", "tok2vec", "attribute_ruler"],
+        ["tok2vec", "lemmatizer", "tagger", "attribute_ruler"],
     ]
     # should also check for CPU/GPU here
     for subdict, model, procs in zip(dictl, modell, processors):

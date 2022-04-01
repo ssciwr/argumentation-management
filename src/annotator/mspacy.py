@@ -22,6 +22,7 @@ class MySpacy:
         self.model = subdict["model"]
 
         # if we ask for lemma and/or POS we force tok2vec to boost accuracy
+        # also add in attribute ruler as it is cheap
         if (
             "lemmatizer" in self.jobs
             or "tagger" in self.jobs
@@ -30,6 +31,8 @@ class MySpacy:
         ):
             if "tok2vec" not in self.jobs:
                 self.jobs.append("tok2vec")
+            if "attribute_ruler" not in self.jobs:
+                self.jobs.append("attribute_ruler")
 
         # use specific device settings if requested
         # this also to be set in the pipeline decision
