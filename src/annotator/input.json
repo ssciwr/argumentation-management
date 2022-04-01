@@ -9,8 +9,8 @@
     "advanced_options": {
         "output_dir": "./out/",
         "output_format": "STR",
-        "corpus_dir": "./corpora/",
-        "registry_dir": "./registry/",
+        "corpus_dir": "./test/corpora/",
+        "registry_dir": "./test/registry/",
         "multiprocessing": false,
         "use_GPU": false
     },

@@ -161,10 +161,19 @@ class SetConfig:
 
     def _set_model_stanza(self):
         """Update the model depending on language and text option - stanza."""
-        print("Setting model and language options for Stanza.")
+        print("Setting language options for Stanza.")
+        print(
+            """If you require a model other than the default for the
+        specified language, you will need to set it manually."""
+        )
         # see here for a selection of models:
         # https://stanfordnlp.github.io/stanza/available_models.html
-        pass
+        if "model" in self.mydict:
+            self.model = self.mydict["model"]
+            print("Using selected model {}.".format(self.model))
+        else:
+            # select based on language
+            self.model = None
 
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""
@@ -180,6 +189,11 @@ class SetConfig:
             self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
             if self.model:
                 self.mydict[mytool + "_dict"]["model"] = self.model
+        # For stanza, processors must be comma-separated string
+        # (no spaces)
+        if "stanza" in self.tool:
+            temp = ",".join(self.mydict[mytool + "_dict"]["processors"])
+            self.mydict[mytool + "_dict"]["processors"] = temp
         return self.mydict
 
 

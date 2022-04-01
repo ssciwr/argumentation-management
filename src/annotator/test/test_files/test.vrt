@@ -1,4 +1,5 @@
 <s>
+<<<<<<< HEAD
 This	DT	this		nsubj	PRON
 is	VBZ	be		ROOT	AUX
 an	DT	an		det	DET
@@ -13,4 +14,78 @@ a	DT	a		det	DET
 second	JJ	second	ORDINAL	amod	ADJ
 sentence	NN	sentence		attr	NOUN
 .	.	.		punct	PUNCT
+=======
+Das	DET	der
+Feld	NOUN	Feld
+der	DET	der
+Computerchemie	NOUN	Computerchemie
+erfreut	VERB	erfreuen
+sich	PRON	er|es|sie
+seit	ADP	seit
+einiger	PRON	einige
+Zeit	NOUN	Zeit
+einer	DET	ein
+stetig	ADJ	stetig
+zunehmenden	ADJ	zunehmend
+Auf-merksamkeit	NOUN	Auf-merksamkeit
+.	PUNCT	.
+</s>
+<s>
+Hierbei	ADV	hierbei
+ist	AUX	sein
+es	PRON	es
+für	ADP	für
+die	DET	der
+Berechnung	NOUN	Berechnung
+von	ADP	von
+chemisch	ADJ	chemisch
+relevanten	ADJ	relevant
+Systemen	NOUN	System
+von	ADP	von
+Interesse	NOUN	Interesse
+,	PUNCT	,
+möglichst	ADV	möglichst
+große	ADJ	groß
+Systeme	NOUN	System
+(	PUNCT	(
+Moleküle	NOUN	Molekül
+)	PUNCT	)
+durch	ADP	durch
+effiziente	ADJ	effizient
+Nutzung	NOUN	Nutzung
+von	ADP	von
+Rechen	NOUN	Rechen
+-	PUNCT	-
+und	CCONJ	und
+Speicherressourcen	NOUN	Speicherressourcen
+zugänglich	ADJ	zugänglich
+zu	PART	zu
+machen	VERB	machen
+.	PUNCT	.
+</s>
+<s>
+Die	DET	der
+Herausforderung	NOUN	Herausforderung
+besteht	VERB	bestehen
+darin	PRON	darin
+,	PUNCT	,
+dass	SCONJ	dass
+mit	ADP	mit
+der	DET	der
+zunehmenden	ADJ	zunehmend
+Anzahl	NOUN	Anzahl
+von	ADP	von
+Atomen	NOUN	Atome
+in	ADP	in
+größeren	ADJ	groß
+Systemen	NOUN	System
+auch	ADV	auch
+die	DET	der
+Anzahl	NOUN	Anzahl
+der	DET	der
+internen	ADJ	intern
+Freiheitsgrade	NOUN	Freiheitsgrade
+zunimmt	VERB	zunimmen
+.	PUNCT	.
+>>>>>>> 2237ccf (reworked integration tests stanza)
 </s>

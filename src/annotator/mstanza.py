@@ -51,7 +51,7 @@ class MyStanza:
                 out_param[dict]: Parameters for output.
                 add[bool]: Indicates if a new corpus should be started or if tags should be added to existing corpus."""
 
-        jobs = be.prepare_run.get_jobs(self.config)
+        jobs = self.config["processors"].split(",")
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         obj = out_object_stanza(self.doc, jobs, start=0)
         ptags = ptags or obj.get_ptags()
