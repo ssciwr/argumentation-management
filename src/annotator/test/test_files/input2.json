@@ -1,6 +1,6 @@
 {
   "input": "input",
-  "corpus_name": "test",
+  "corpus_name": "test-corpus",
   "language": "en",
   "document_type": "text",
   "processing_option": "fast",
