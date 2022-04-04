@@ -48,6 +48,11 @@ jobs:
         python -m spacy download en_core_web_sm
         python -m spacy download en_core_web_md
         python -m spacy download de_core_news_md
+    - name: Create test directories
+      run: |
+        mkdir src/annotator/test/corpora
+        mkdir src/annotator/test/registry
+        mkdir src/annotator/test/out
     - name: Run pytest
       run: |
         cd src/annotator
