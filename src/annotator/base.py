@@ -501,7 +501,8 @@ class encode_corpus:
         self.regdir = self.fix_path(dirs_dict["registry_dir"])
         self.corpusname = mydict["corpus_name"]
         self.outname = dirs_dict["output_dir"] + mydict["corpus_name"]
-        self.encodedir = self.corpusdir + self.corpusname
+        self.encodedir = self.corpusdir
+        print("Found outdir {}".format(self.encodedir))
 
         # get attribute names
         self.attrnames = out_object.get_names()
