@@ -83,12 +83,16 @@ class SetConfig:
         self.tool = self._get_processors(self.mydict["tool"])
         if len(self.tool) == 1 and len(self.processors) != 1:
             self.tool = [self.tool[0] for _ in self.processors]
+        print(self.tool, self.processors)
 
     def _get_processors(self, processors: str) -> list:
         # here we want to make sure the list of processors is clean and in correct order
         # separate the processor list at the comma
-        processors = processors.split(",")
-        processors = [i.strip() for i in processors]
+        if "," in processors:
+            processors = processors.split(",")
+            processors = [i.strip() for i in processors]
+        else:
+            processors = [processors]
         return processors
 
     def _order_processors(self, processors: list) -> None:
@@ -185,15 +189,15 @@ class SetConfig:
             myname = self.map_processors[mytool][proc]
             print("found name {} for tool {} and proc {}".format(myname, mytool, proc))
             self.mydict[mytool + "_dict"]["processors"].append(myname)
+            print(self.mydict[mytool + "_dict"]["processors"])
             # we don't need the language for spacy
             self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
             if self.model:
                 self.mydict[mytool + "_dict"]["model"] = self.model
         # For stanza, processors must be comma-separated string
         # (no spaces)
-        if "stanza" in self.tool:
-            temp = ",".join(self.mydict[mytool + "_dict"]["processors"])
-            self.mydict[mytool + "_dict"]["processors"] = temp
+        temp = ",".join(self.mydict["stanza_dict"]["processors"])
+        self.mydict["stanza_dict"]["processors"] = temp
         return self.mydict
 
 

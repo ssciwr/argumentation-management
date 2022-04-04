@@ -1,3 +1,4 @@
+from webbrowser import get
 import pytest
 import pipe as pe
 import base as be
@@ -23,18 +24,29 @@ def test_pipe_accurate(get_mydict):
     obj = pe.SetConfig(get_mydict)
     assert obj.tool == ["spacy", "stanza", "stanza"]
     assert obj.processors == ["tokenize", "pos", "lemma"]
+    assert get_mydict["spacy_dict"]["processors"] == ["tok2vec"]
+    assert get_mydict["stanza_dict"]["processors"] == "pos,lemma"
 
 
-def test_pipe_manual(get_mydict):
+def test_pipe_manual_multiple(get_mydict):
     get_mydict["processing_option"] = "manual"
     get_mydict["tool"] = "spacy, stanza, spacy"
     get_mydict["processing_type"] = "tokenize, pos, lemma"
     obj = pe.SetConfig(get_mydict)
     assert obj.tool == ["spacy", "stanza", "spacy"]
     assert obj.processors == ["tokenize", "pos", "lemma"]
+    assert get_mydict["spacy_dict"]["processors"] == ["tok2vec", "lemmatizer"]
+    assert get_mydict["stanza_dict"]["processors"] == "pos"
+
+
+def test_pipe_manual_one(get_mydict):
+    get_mydict["processing_option"] = "manual"
     get_mydict["tool"] = "spacy"
+    get_mydict["processing_type"] = "tokenize, pos, lemma"
     obj = pe.SetConfig(get_mydict)
     assert obj.tool == ["spacy", "spacy", "spacy"]
+    assert obj.processors == ["tokenize", "pos", "lemma"]
+    assert get_mydict["spacy_dict"]["processors"] == ["tok2vec", "tagger", "lemmatizer"]
 
 
 def test_get_processors(get_mydict):
