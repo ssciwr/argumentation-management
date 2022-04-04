@@ -24,7 +24,7 @@ def test_integration_mstanza(load_data):
     mydict["document_type"] = "text"
     mydict["processing_option"] = "manual"
     mydict["processing_type"] = "tokenize,pos,mwt,lemma"
-    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
+    mydict["advanced_options"]["output_dir"] = "./test/out/"
     # validate the input dict
     be.prepare_run.validate_input_dict(mydict)
     # load the pipe object for updating dict with settings
