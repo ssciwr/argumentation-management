@@ -1,4 +1,3 @@
-from json import load
 import pytest
 import spacy as sp
 import mspacy as msp
@@ -42,16 +41,7 @@ def pipe_sent(init, load_object, get_text):
     nlp = sp.load(mydict["model"])
     check_doc = nlp(get_text)
     test_doc = test_obj.apply_to(get_text).doc
-    assert test_doc.has_annotation("SENT_START")
-    # there seems to be no __eq__() definition for either doc or token in spacy
-    # so just compare a couple of attributes for every token?
-    for test_token, token in zip(test_doc, check_doc):
-        assert test_token.text == token.text
-        assert test_token.lemma == token.lemma
-        assert test_token.pos == token.pos
-        assert test_token.tag == token.tag
-        assert test_token.sent_start == token.sent_start
-    return test_obj.apply_to(get_text), check_doc
+    return test_obj.apply_to(get_text), check_doc, test_doc
 
 
 @pytest.fixture()
@@ -70,6 +60,20 @@ def chunked_data():
     tmp.close()
 
     return data
+
+
+def test_pipe(pipe_sent):
+    _, check_doc, test_doc = pipe_sent
+
+    assert test_doc.has_annotation("SENT_START")
+    # there seems to be no __eq__() definition for either doc or token in spacy
+    # so just compare a couple of attributes for every token?
+    for test_token, token in zip(test_doc, check_doc):
+        assert test_token.text == token.text
+        assert test_token.lemma == token.lemma
+        assert test_token.pos == token.pos
+        assert test_token.tag == token.tag
+        assert test_token.sent_start == token.sent_start
 
 
 def test_model_selection():
@@ -103,7 +107,7 @@ def test_model_selection():
     modell = ["en_core_web_md", "de_core_news_md", "en_core_sci_md"]
 
     for config, model in zip(dictl, modell):
-        test_obj = msp.mSpacy(config)
+        test_obj = msp.MySpacy(config)
         assert test_obj.model == model
         assert test_obj.jobs == ["tok2vec"] + [
             proc.strip() for proc in config["processors"].split(",")
@@ -119,7 +123,7 @@ def test_model_selection():
     }
 
     with pytest.raises(ValueError):
-        test_obj = msp.mSpacy(invalid)
+        test_obj = msp.MySpacy(invalid)
 
 
 def test_init(init, load_object):
@@ -135,7 +139,7 @@ def test_init(init, load_object):
     assert test_obj.jobs == [
         proc.strip() for proc in mydict_test["processors"].split(",")
     ]
-    assert test_obj.config == be.prepare_run.update_dict(mydict_test["config"])
+    assert test_obj.config == mydict_test["config"]
 
 
 def test_apply_to(load_object, get_text):
@@ -172,7 +176,7 @@ def test_output_sent(pipe_sent):
         "</s>\n",
     ]
     # this is quite specific, any way to generalize?
-    test_obj, check_doc = pipe_sent
+    test_obj, check_doc, _ = pipe_sent
     test_out = msp.out_object_spacy(test_obj.doc, test_obj.jobs, start=0).fetch_output(
         "STR"
     )

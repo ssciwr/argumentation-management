@@ -67,19 +67,10 @@ def test_validate_input_dict(init_dict):
     be.prepare_run.validate_input_dict(init_dict)
 
 
-@pytest.mark.dictname("test/test_files/input_short")
-def test_update_dict(init_dict):
-    mydict = be.prepare_run.load_input_dict("input")
-    mydict = mydict["spacy_dict"]
-    mydict = be.prepare_run.update_dict(mydict)
-    assert mydict == init_dict
-
-
 @pytest.mark.dictname("test/test_files/input_stanza")
 def test_activate_procs(init_dict):
     mydict = be.prepare_run.load_input_dict("input")
     mydict = mydict["stanza_dict"]
-    mydict = be.prepare_run.update_dict(mydict)
     mydict_content = be.prepare_run.activate_procs(mydict, "stanza_")
     assert mydict_content == init_dict
     # test for empty procs
