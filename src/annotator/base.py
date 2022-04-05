@@ -89,24 +89,43 @@ class prepare_run:
 
     # @staticmethod
     # def get_encoding(dict_in: dict) -> dict:
-    # """Function to fetch the parameters needed for encoding from the input.json."""
+    #     """Function to fetch the parameters needed for encoding from the input.json."""
 
+    #     new_dict = {}
 
-#
-# new_dict = {}
-#
-# for key, value in dict_in.items():
-#
-# if type(value) != dict or type(value) == dict and key == "cwb_dict":
-# new_dict[key] = value
-# elif type(value) == dict and key == "cwb_dict":
-#    new_dict[key] = value
-#
-# new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
-# "processors"
-# ]
-#
-# return new_dict
+    #     for key, value in dict_in.items():
+
+    #         if type(value) != dict or type(value) == dict and key == "advanced_options":
+    #             new_dict[key] = value
+    #         elif type(value) == dict and key == "advanced_options":
+    #             new_dict[key] = value
+
+    #     new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
+    #     "processors"
+    #     ]
+
+    #     return new_dict
+
+    @staticmethod
+    def pretokenize(text, mydict: dict, tokenizer: callable, arguments: dict):
+        """Wrapper for a tokenizer function that returns a string in vrt format and a boolean
+        indicating if the text is sentencized or not. The tokenized text is then encoded into
+        cwb.
+
+        [Args]:
+                text: Text to be tokenized in format required by tokenizer.
+                mydict[dict]: Dict containing information for cwb encoding.
+                tokenizer[callable]: Tokenizer function.
+                arguments[dict]: Arguments to be passed to the tokenizer, i.e. language, model etc."""
+
+        tokenized, senctencized = tokenizer(text, **arguments)
+        out_object.write_vrt(
+            mydict["advanced_options"]["output_dir"] + mydict["corpus_name"], tokenized
+        )
+        if senctencized:
+            encode_corpus.encode_vrt(mydict, ptags=None, stags=["s"])
+        else:
+            encode_corpus.encode_vrt(mydict, ptags=None, stags=None)
 
 
 # the below in a chunker class
@@ -191,6 +210,10 @@ def find_last_idx(chunk: list) -> int:
             return int(chunk[i].split()[0])
 
 
+# set the string to be used for undefined tags
+NOT_DEF = " "
+
+
 # the base out_object class
 # this class is inherited in the different modules
 # selected methods are overwritten/added depending on the requirements
@@ -269,6 +292,48 @@ class out_object:
                 output += "{}".format(value)
         return output
 
+    def get_ptags(self) -> list or None:
+        """Function to easily collect the current ptags in a list.
+
+        !!!
+        Does the same case selection as out_object.collect_results, so the order
+        of .vrt and this list should always be identical. If you change one
+        MAKE SURE to also change the other.
+        !!!
+        """
+
+        ptags = []
+
+        if self.attrnames["proc_pos"] in self.jobs:
+            ptags.append("pos")
+        if self.attrnames["proc_lemma"] in self.jobs:
+            ptags.append("lemma")
+        if "ner" in self.jobs:
+            ptags.append("NER")
+        if "entity_ruler" in self.jobs:
+            ptags.append("RULER")
+        if "entity_linker" in self.jobs:
+            ptags.append("LINKER")
+        if "morphologizer" in self.jobs:
+            ptags.append("MORPH")
+        if "parser" in self.jobs:
+            ptags.append("PARSER")
+        if "attribute_ruler" in self.jobs:
+            ptags.append("ATTR")
+
+        if ptags != []:
+            return ptags
+        else:
+            return None
+
+    def get_stags(self) -> list:
+
+        stags = []
+        if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
+            stags.append("s")
+
+        return stags
+
     def collect_results(self, token, tid: int, word, style: str) -> dict or str:
 
         """Function to collect requested tags for tokens after applying pipeline to data.
@@ -339,7 +404,7 @@ class out_object:
         if token.ent_type_ != "":
             tag = token.ent_type_
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -350,7 +415,7 @@ class out_object:
         if token.ent_type_ != "":
             tag = token.ent_kb_id_
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -362,7 +427,7 @@ class out_object:
         if word.lemma != "":
             tag = getattr(word, attrname)
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -373,7 +438,7 @@ class out_object:
         if token.pos_ != "":
             tag = token.pos_ + "" + token.morph
         elif token.pos_ == "":
-            tag = "-" + token.morph
+            tag = NOT_DEF + token.morph
         return tag
 
     @staticmethod
@@ -384,7 +449,7 @@ class out_object:
         if getattr(word, attrname) != "":
             tag = getattr(word, attrname)
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -395,7 +460,7 @@ class out_object:
         if token.dep_ != "":
             tag = token.dep_
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -405,8 +470,19 @@ class out_object:
         if token.pos_ != "":
             tag = token.pos_
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
+
+    @staticmethod
+    def purge(out_string: str) -> str:
+        """Function to search and replace problematic patterns in tokens
+        before encoding."""
+
+        # expand these with more if neccessary, correct mapping is important!
+
+        out_string = out_string.replace(" ", "")
+
+        return out_string
 
     @staticmethod
     def write_vrt(outname: str, out: list) -> None:
@@ -415,9 +491,16 @@ class out_object:
         [Args]:
             ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
         """
+
+        string = ""
+        for line in out:
+            string += line
+
+        string = out_object.purge(string)
+
         with open("{}.vrt".format(outname), "w") as file:
-            for line in out:
-                file.write(line)
+            file.write(string)
+
         print("+++ Finished writing {}.vrt +++".format(outname))
 
     @staticmethod
@@ -444,13 +527,11 @@ class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
     def __init__(self, mydict) -> None:
-
         # self.corpusdir = "/home/jovyan/corpus"
         # corpusdir and regdir need to be set from input dict
         # plus we also need to set the corpus name from input dict
         tool = mydict["tool"]
         dirs_dict = mydict["advanced_options"]
-
         self.corpusdir = self.fix_path(dirs_dict["corpus_dir"])
         self.corpusname = mydict["corpus_name"]
         self.outname = dirs_dict["output_dir"] + mydict["corpus_name"]
@@ -463,20 +544,18 @@ class encode_corpus:
         self.attrnames = out_object.get_names()
         self.attrnames = self.attrnames[self.tool + "_names"]
 
-    def _get_s_attributes(self, line) -> str:
-        if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
-            print("Encoding s-attribute <s>...")
-            line += "-S s "
+    def _get_s_attributes(self, line: str, stags: list) -> str:
+        if stags is not None:
+            for tag in stags:
+                print("Encoding s-attribute: {}".format(tag))
+                line += "-S {} ".format(tag)
         return line
 
-    # the order here is important for vrt files and MUST NOT be changed!!!
-    def _get_p_attributes(self, line) -> str:
-        if any(attr in self.attrnames["proc_pos"] for attr in self.jobs):
-            print("Encoding p-attribute POS...")
-            line += "-P pos "
-        if any(attr in self.attrnames["proc_lemma"] for attr in self.jobs):
-            print("Encoding p-attribute lemma...")
-            line += "-P lemma "
+    def _get_p_attributes(self, line: str, ptags: list) -> str:
+        if ptags is not None:
+            for tag in ptags:
+                print("Encoding p-attribute: {}".format(tag))
+                line += "-P {} ".format(tag)
         return line
 
     def setup(self) -> bool:
@@ -554,13 +633,13 @@ class encode_corpus:
         return path
 
     @classmethod
-    def encode_vrt(cls, mydict):
+    def encode_vrt(cls, mydict, ptags, stags):
         obj = cls(mydict)
 
         line = " "
         # find out which options are to be encoded
-        line = obj._get_s_attributes(line)
-        line = obj._get_p_attributes(line)
+        line = obj._get_s_attributes(line, stags)
+        line = obj._get_p_attributes(line, ptags)
         purged = obj.setup()
         if purged:
             # call the os with the encode command
@@ -586,6 +665,82 @@ class encode_corpus:
             os.system(command)
         elif not purged:
             return print(OSError("Error during setup, aborting..."))
+
+
+class decode_corpus(encode_corpus):
+    """Class to decode corpus from cwb. Inherits encode_corpus."""
+
+    def __init__(self, mydict) -> None:
+        super().__init__(mydict)
+
+    def decode_to_file(
+        self,
+        directory=os.getcwd(),
+        verbose=True,
+        specific={"P-Attributes": [], "S-Attributes": []},
+    ):
+        """Function to decode a given corpus to a .out file. If the directory to write to is not
+        supposed to be the current one it can be given as paramater. Location needed relative to current
+        directory."""
+
+        # set up the directories
+        if not directory.endswith("/"):
+            directory += "/"
+        if directory != os.getcwd() + "/":
+            setback = os.getcwd() + "/"
+            outpath = setback + directory + self.corpusname
+        else:
+            setback = directory
+            outpath = setback + self.corpusname
+        if not os.path.isdir(outpath):
+            os.system("mkdir {}".format(outpath))
+
+        # build and execute the command line input
+        p_attr = specific["P-Attributes"]
+        s_attr = specific["S-Attributes"]
+
+        # should always be the same
+        base_command = "cd {} && cwb-decode ".format(self.corpusdir)
+
+        # decide type of output, verbose or not
+        if not verbose:
+            base_command += "-C "
+
+        # set registry and define corpus for cwb-decode
+        base_command += "-r {} {} ".format(self.regdir, self.corpusname)
+
+        # set up the out-pipe and return to working directory
+        pipe = "> {}.out && cd {}".format(outpath, setback)
+
+        # if there are no specified p or s attributes we just decode all
+        if p_attr == [] and s_attr == []:
+            command = base_command + "-ALL " + pipe
+
+            print("Decoding corpus into directory: {}".format(outpath))
+            print(command)
+            os.system(command)
+            print("File {}.out written in {}.".format(self.corpusname, outpath))
+
+        # if there are specified p or s attributes we only decode these
+        elif p_attr or s_attr != [] or p_attr != [] and s_attr != []:
+
+            p_string = ""
+            s_string = ""
+
+            for p_att in p_attr:
+                p_string += "-P {} ".format(p_att)
+
+            for s_att in s_attr:
+                s_string += "-S {} ".format(s_att)
+
+            print("Decoding corpus into directory: {}".format(outpath))
+            print("Grabbing p-Attributes: {}".format(p_string))
+            print("Grabbing s-Attributes: {}".format(s_string))
+
+            command = base_command + p_string + s_string + pipe
+            print(command)
+            os.system(command)
+            print("File {}.out written in {}.".format(self.corpusname, outpath))
 
 
 # en
