@@ -160,4 +160,5 @@ registry/
 # xml
 src/annotator/*.xml
 
+# local json
 src/annotator/input_local.json
