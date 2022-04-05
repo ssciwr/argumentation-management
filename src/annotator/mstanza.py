@@ -63,7 +63,7 @@ class MyStanza:
         elif not ret:
             outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
             out_object_stanza.write_vrt(outfile, out)
-            be.encode_corpus.encode_vrt(mydict)
+            be.encode_corpus.encode_vrt(mydict, ptags, stags)
 
 
 def ner(doc) -> dict:
