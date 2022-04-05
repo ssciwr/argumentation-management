@@ -17,8 +17,8 @@ if __name__ == "__main__":
     # spacy
 
     spacy_dict = mydict["spacy_dict"]
-    encoding_dict = be.prepare_run.get_encoding(mydict)
-    ms.spacy_pipe(spacy_dict).apply_to(data).pass_results("STR", encoding_dict)
+    # encoding_dict = be.prepare_run.get_encoding(mydict)
+    ms.spacy_pipe(spacy_dict).apply_to(data).pass_results("STR", mydict)
 
     # stanza
 
@@ -33,4 +33,4 @@ if __name__ == "__main__":
 
     # stanza_pipe.postprocess(encoding_dict)
 
-    be.decode_corpus(encoding_dict).decode_to_file(directory="out", verbose=True)
+    be.decode_corpus(mydict).decode_to_file(directory="out", verbose=True)

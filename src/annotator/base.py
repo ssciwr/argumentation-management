@@ -110,23 +110,22 @@ class prepare_run:
 
     # @staticmethod
     # def get_encoding(dict_in: dict) -> dict:
-    # """Function to fetch the parameters needed for encoding from the input.json."""
+    #     """Function to fetch the parameters needed for encoding from the input.json."""
 
-    #
-    # new_dict = {}
-    #
-    # for key, value in dict_in.items():
-    #
-    # if type(value) != dict or type(value) == dict and key == "cwb_dict":
-    # new_dict[key] = value
-    # elif type(value) == dict and key == "cwb_dict":
-    #    new_dict[key] = value
-    #
-    # new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
-    # "processors"
-    # ]
-    #
-    # return new_dict
+    #     new_dict = {}
+
+    #     for key, value in dict_in.items():
+
+    #         if type(value) != dict or type(value) == dict and key == "advanced_options":
+    #             new_dict[key] = value
+    #         elif type(value) == dict and key == "advanced_options":
+    #             new_dict[key] = value
+
+    #     new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
+    #     "processors"
+    #     ]
+
+    #     return new_dict
 
     @staticmethod
     def pretokenize(text, mydict: dict, tokenizer: callable, arguments: dict):
@@ -141,7 +140,9 @@ class prepare_run:
                 arguments[dict]: Arguments to be passed to the tokenizer, i.e. language, model etc."""
 
         tokenized, senctencized = tokenizer(text, **arguments)
-        out_object.write_vrt(mydict["output"], tokenized)
+        out_object.write_vrt(
+            mydict["advanced_options"]["output_dir"] + mydict["corpus_name"], tokenized
+        )
         if senctencized:
             encode_corpus.encode_vrt(mydict, ptags=None, stags=["s"])
         else:
@@ -228,6 +229,10 @@ def find_last_idx(chunk: list) -> int:
             # in the first column
             # print(chunk[i].split()[0])
             return int(chunk[i].split()[0])
+
+
+# set the string to be used for undefined tags
+NOT_DEF = " "
 
 
 # the base out_object class
@@ -420,7 +425,7 @@ class out_object:
         if token.ent_type_ != "":
             tag = token.ent_type_
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -431,7 +436,7 @@ class out_object:
         if token.ent_type_ != "":
             tag = token.ent_kb_id_
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -443,7 +448,7 @@ class out_object:
         if word.lemma != "":
             tag = getattr(word, attrname)
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -454,7 +459,7 @@ class out_object:
         if token.pos_ != "":
             tag = token.pos_ + "" + token.morph
         elif token.pos_ == "":
-            tag = "-" + token.morph
+            tag = NOT_DEF + token.morph
         return tag
 
     @staticmethod
@@ -465,7 +470,7 @@ class out_object:
         if getattr(word, attrname) != "":
             tag = getattr(word, attrname)
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -476,7 +481,7 @@ class out_object:
         if token.dep_ != "":
             tag = token.dep_
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -486,7 +491,7 @@ class out_object:
         if token.pos_ != "":
             tag = token.pos_
         else:
-            tag = "-"
+            tag = NOT_DEF
         return tag
 
     @staticmethod
@@ -543,13 +548,11 @@ class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
     def __init__(self, mydict) -> None:
-
         # self.corpusdir = "/home/jovyan/corpus"
         # corpusdir and regdir need to be set from input dict
         # plus we also need to set the corpus name from input dict
         tool = mydict["tool"]
         dirs_dict = mydict["advanced_options"]
-
         self.corpusdir = self.fix_path(dirs_dict["corpus_dir"])
         self.corpusname = mydict["corpus_name"]
         self.outname = dirs_dict["output_dir"] + mydict["corpus_name"]

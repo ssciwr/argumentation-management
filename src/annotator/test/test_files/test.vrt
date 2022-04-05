@@ -1,16 +1,16 @@
 <s>
-This	DT	this	-	nsubj	PRON
-is	VBZ	be	-	ROOT	AUX
-an	DT	an	-	det	DET
-example	NN	example	-	compound	NOUN
-text	NN	text	-	attr	NOUN
-.	.	.	-	punct	PUNCT
+This	DT	this		nsubj	PRON
+is	VBZ	be		ROOT	AUX
+an	DT	an		det	DET
+example	NN	example		compound	NOUN
+text	NN	text		attr	NOUN
+.	.	.		punct	PUNCT
 </s>
 <s>
-This	DT	this	-	nsubj	PRON
-is	VBZ	be	-	ROOT	AUX
-a	DT	a	-	det	DET
+This	DT	this		nsubj	PRON
+is	VBZ	be		ROOT	AUX
+a	DT	a		det	DET
 second	JJ	second	ORDINAL	amod	ADJ
-sentence	NN	sentence	-	attr	NOUN
-.	.	.	-	punct	PUNCT
+sentence	NN	sentence		attr	NOUN
+.	.	.		punct	PUNCT
 </s>
