@@ -61,7 +61,6 @@ class SetConfig:
         # get length of processors and repeat spacy as many time for each
         # option
         self.tool = ["spacy" for _ in self.processors]
-        print(self.tool)
 
     def _pipe_accurate(self):
         """Accurate pipeline for accurate processing. Uses SpaCy and
@@ -189,7 +188,6 @@ class SetConfig:
             myname = self.map_processors[mytool][proc]
             print("found name {} for tool {} and proc {}".format(myname, mytool, proc))
             self.mydict[mytool + "_dict"]["processors"].append(myname)
-            print(self.mydict[mytool + "_dict"]["processors"])
             # we don't need the language for spacy
             self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
             if self.model:

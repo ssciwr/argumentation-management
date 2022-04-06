@@ -30,9 +30,9 @@ class MySpacy:
             and "tagger" in self.jobs
         ):
             if "tok2vec" not in self.jobs:
-                self.jobs.append("tok2vec")
-            if "attribute_ruler" not in self.jobs:
-                self.jobs.append("attribute_ruler")
+                self.jobs = ["tok2vec"] + self.jobs
+        if "attribute_ruler" not in self.jobs:
+            self.jobs.append("attribute_ruler")
 
         # use specific device settings if requested
         # this also to be set in the pipeline decision
