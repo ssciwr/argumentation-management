@@ -147,13 +147,13 @@ class SetConfig:
             elif self.mydict["language"] == "de":
                 if self.mydict["document_type"] == "text":
                     # standard text
-                    self.model = "de_core_news_md"
+                    self.model = "de_core_news_sm"
                 elif self.mydict["document_type"] == "scientific":
                     # scientific text
-                    self.model = "de_core_news_md"
+                    self.model = "de_core_news_sm"
                 elif self.mydict["document_type"] == "historic":
                     # historic, use model for old language
-                    self.model = "de_core_news_md"
+                    self.model = "de_core_news_sm"
             else:
                 # make sure to throw an exception if language is not found
                 raise ValueError(
