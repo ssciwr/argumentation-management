@@ -73,11 +73,12 @@ ENV SPACY_DIR = /home/jovyan/spacy
 COPY docker/get_models.py /home/jovyan/.
 RUN conda install -c \
         conda-forge stanza \
-    && conda clean -a -q -y 
-    # && python get_models.py
+    && conda clean -a -q -y \
+    && python get_models.py
 
 # install annotator from repository
 RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management \
+    && cd argumentation_management \
     && git checkout input-3 \
-    && cd argumentation_management/src/ \
+    && cd src/ \
     && conda run -n base python -m pip install . 

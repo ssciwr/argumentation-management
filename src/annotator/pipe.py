@@ -139,7 +139,7 @@ class SetConfig:
                 elif self.mydict["document_type"] == "scientific":
                     # scientific text, use the scispacy package for biomedical text
                     print("Found scientific text")
-                    self.model = "en_core_sci_md"
+                    self.model = "en_core_sci_sm"
                 elif self.mydict["document_type"] == "historic":
                     # historic, use model for old language
                     print("Found historic text")
