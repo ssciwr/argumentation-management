@@ -78,5 +78,6 @@ RUN conda install -c \
 
 # install annotator from repository
 RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management \
+    && git checkout input-3 \
     && cd argumentation_management/src/ \
     && conda run -n base python -m pip install . 

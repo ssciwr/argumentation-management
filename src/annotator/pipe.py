@@ -1,5 +1,5 @@
 from multiprocessing.sharedctypes import Value
-import base as be
+import annotator.base as be
 
 
 class SetConfig:
@@ -19,8 +19,8 @@ class SetConfig:
             "manual": self._pipe_manual,
         }
         self.accurate_dict = {
-            "sentencize": "spacy",
-            "tokenize": "spacy",
+            "sentencize": "stanza",
+            "tokenize": "stanza",
             "pos": "stanza",
             "lemma": "stanza",
             "ner": "stanza",
@@ -145,7 +145,7 @@ class SetConfig:
                     print("Found historic text")
                     self.model = "en_core_web_md"
             elif self.mydict["language"] == "de":
-                if self.type == "text":
+                if self.mydict["document_type"] == "text":
                     # standard text
                     self.model = "de_core_news_md"
                 elif self.mydict["document_type"] == "scientific":

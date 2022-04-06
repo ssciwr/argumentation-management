@@ -2,7 +2,7 @@
 import json
 import jsonschema
 import os
-import to_xml as txml
+import annotator.to_xml as txml
 
 
 # the below functions in a class with attributes
