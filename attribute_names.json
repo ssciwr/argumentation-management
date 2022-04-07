@@ -18,5 +18,15 @@
         "pos": "tag_",
         "lemma": "lemma_",
         "ner": "ent_type_"
+    },
+    "treetagger_names": {
+        "proc_sent": "",
+        "proc_lemma": "lemma",
+        "proc_pos": "pos",
+        "sentence": "",
+        "token": "word",
+        "pos": "pos",
+        "lemma": "lemma",
+        "ner": ""
     }
 }

@@ -68,5 +68,10 @@
         "filename": "Test",
         "lang": "en",
         "job": ["ner", "pos"]
+    },
+    "treetagger_dict":{
+        "lang": "en",
+        "_tagopt": "Additional options for the treetagger to use, default is -token -lemma -sgml -quiet",
+        "tagopt": "-token -lemma -sgml -quiet"
     }
 }

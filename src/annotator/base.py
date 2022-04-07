@@ -240,7 +240,7 @@ class out_object:
         return f
 
     @classmethod
-    def assemble_output_sent(cls, doc, jobs: list, start: int) -> list:
+    def assemble_output_sent(cls, doc, jobs: list, start: int = 0) -> list:
         """Template function to assemble output for tool at sentence level."""
 
         obj = cls(doc, jobs, start)
@@ -248,7 +248,7 @@ class out_object:
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        print(obj.attrnames)
+        # print(obj.attrnames)
         if "sentence" not in obj.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
