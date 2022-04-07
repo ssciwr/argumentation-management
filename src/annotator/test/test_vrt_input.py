@@ -24,8 +24,8 @@ def test_spacy_pretokenized(setup, grab_data):
 
     data = grab_data
     mydict = setup
-    pipe = msp.spacy_pipe(mydict["spacy_dict"])
-    annotated = pipe.apply_to(data, pretokenized=True)
+    pipe = msp.spacy_pipe(mydict["spacy_dict"], pretokenized=True)
+    annotated = pipe.apply_to(data)
     out = annotated.pass_results("STR", mydict, ret=True)
 
     check = [

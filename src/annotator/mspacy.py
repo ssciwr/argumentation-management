@@ -75,7 +75,7 @@ class spacy_pipe(MySpacy):
 
     # init with specified config, this may be changed later?
     # -> Right now needs quite specific instuctions
-    def __init__(self, config: dict, pretokenized):
+    def __init__(self, config: dict, pretokenized=False):
         super().__init__(config, pretokenized)
         # use a specific pipeline if requested
         self.validated = []
