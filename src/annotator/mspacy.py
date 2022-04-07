@@ -136,9 +136,9 @@ class spacy_pipe(MySpacy):
         """Apply the objects pipeline to a given data string."""
 
         if self.pretokenized:
+            # expects list[list[str]] as input
             docs = [self.nlp(Doc(self.nlp.vocab, sent)) for sent in data]
             self.doc = Doc.from_docs(docs)
-            # self.doc = Doc.from_docs(list(self.nlp.pipe(data)))
         # apply to data while disabling everything that wasnt requested
         elif not self.pretokenized:
             self.doc = self.nlp(data)
