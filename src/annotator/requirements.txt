@@ -2,3 +2,5 @@ spacy
 stanza
 flair
 numpy
+somajo
+treetaggerwrapper

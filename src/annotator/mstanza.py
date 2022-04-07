@@ -54,6 +54,9 @@ class MyStanza:
 
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
+        obj = out_object_stanza(self.doc, jobs, start=0)
+        ptags = obj.get_ptags()
+        stags = obj.get_stags()
         # write out to .vrt
         if ret:
             return out
@@ -61,7 +64,7 @@ class MyStanza:
         elif not ret:
             outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
             out_object_stanza.write_vrt(outfile, out)
-            be.encode_corpus.encode_vrt(mydict)
+            be.encode_corpus.encode_vrt(mydict, ptags, stags)
 
 
 def ner(doc) -> dict:
