@@ -88,3 +88,18 @@ RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_
     && git checkout input-3 \
     && cd src/ \
     && conda run -n base python -m pip install . 
+
+# install m-giza
+RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
+  && cd mgiza/mgizapp \
+  && cmake . \
+  && make \
+  && make install \
+  && cd ..
+ENV MGIZA_DIR=/home/jovyan/mgiza
+
+# install hunalign
+RUN wget ftp://ftp.mokk.bme.hu/Hunglish/src/hunalign/latest/hunalign-1.1.tgz \
+  && tar zxvf hunalign-1.1.tgz \
+  && cd hunalign-1.1/src/hunalign \
+  && make
