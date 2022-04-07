@@ -101,9 +101,15 @@ class out_object_stanza(be.out_object):
 
         for token, word in zip(getattr(sent, "tokens"), getattr(sent, "words")):
             if token.text != word.text:
-                raise NotImplementedError(
-                    "Multi-word expressions not available currently"
+                print(
+                    "Found MWT - please check if annotated correctly!!! Token {} != word {}.".format(
+                        token.text, word.text
+                    )
                 )
+                print("Because I am not sure how CWB handles these s-attributes.")
+                # raise NotImplementedError(
+                # "Multi-word expressions not available currently"
+                # )
             tid = token.id[0] + self.tstart
             line = self.collect_results(token, tid, word, style)
 

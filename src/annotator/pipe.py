@@ -184,9 +184,9 @@ class SetConfig:
 
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""
-        # here we need to more generally map the pipeline
-        # and add in the defaults for each tool
-        # better to zip tool and processors and then select the ones with same tool
+        # first purge already existing processors in tooldict
+        for mytool in self.tool:
+            self.mydict[mytool + "_dict"]["processors"] = []
         for proc, mytool in zip(self.processors, self.tool):
             # map to new name
             myname = self.map_processors[mytool][proc]

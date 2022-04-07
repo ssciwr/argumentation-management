@@ -1,0 +1,6 @@
+El Scientific Software Center se esfuerza por mejorar el desarrollo de software científico para garantizar la ciencia reproducible y la sostenibilidad del software. La SSC también actúa como enlace entre las diferentes disciplinas científicas, posibilitando la colaboración y la investigación interdisciplinar.
+El papel actual del software en las comunidades de investigación
+
+El desarrollo de software es una parte cada vez más vital de la investigación, pero si no se realiza de manera sostenible, el resultado suele ser un software imposible de mantener y una ciencia irreproducible. Esto se debe a la falta de capacitación en ingeniería de software para los científicos, la financiación limitada para mantener el software existente y los pocos puestos permanentes de desarrollador de software.
+
+El SSC aborda las deficiencias actuales mediante la implementación de los tres pilares de Desarrollo, Enseñanza y Extensión.
