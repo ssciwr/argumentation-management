@@ -44,7 +44,12 @@ class prepare_run:
     # load the dictionary schema and validate against
     @staticmethod
     def validate_input_dict(dict_in: dict) -> None:
-        with open("{}.json".format("input_schema"), "r") as f:
+        with open(
+            "{}.json".format(
+                "/home/jovyan/argumentation_management/src/annotator/input_schema"
+            ),
+            "r",
+        ) as f:
             myschema = json.load(f)
         jsonschema.validate(instance=dict_in, schema=myschema)
 
@@ -236,7 +241,9 @@ class out_object:
     def get_names() -> dict:
         """Load attribute names for specific tools."""
 
-        mydict = prepare_run.load_input_dict("attribute_names")
+        mydict = prepare_run.load_input_dict(
+            "/home/jovyan/argumentation_management/src/annotator/attribute_names"
+        )
         # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 

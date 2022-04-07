@@ -187,6 +187,7 @@ class SetConfig:
             # map to new name
             myname = self.map_processors[mytool][proc]
             print("found name {} for tool {} and proc {}".format(myname, mytool, proc))
+            print("ggg {}".format(self.mydict[mytool + "_dict"]["processors"]))
             self.mydict[mytool + "_dict"]["processors"].append(myname)
             # we don't need the language for spacy
             self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
