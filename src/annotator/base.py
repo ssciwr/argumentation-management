@@ -632,7 +632,7 @@ class encode_corpus:
             command = (
                 "cwb-encode -d "
                 + obj.encodedir
-                + " -xsBC9 -c ascii -f "
+                + " -xsBC9 -c utf8 -f "
                 + obj.outname
                 + ".vrt -R "
                 + obj.regdir

@@ -87,4 +87,5 @@ RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_
     && cd argumentation_management \
     && git checkout input-3 \
     && cd src/ \
+    && ls \
     && conda run -n base python -m pip install . 
