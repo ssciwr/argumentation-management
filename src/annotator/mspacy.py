@@ -16,7 +16,7 @@ class MySpacy:
         config[dict]: Dict containing the setup for the spaCy run.
     """
 
-    def __init__(self, config: dict):
+    def __init__(self, config: dict, pretokenized: bool = False):
         self.lang = config["lang"]
         self.type = config["text_type"]
         if "model" in config and config["model"] is not False:
@@ -45,6 +45,7 @@ class MySpacy:
 
         self.jobs = be.prepare_run.get_jobs(config)
 
+        self.pretokenized = pretokenized
         # if we ask for lemma and/or POS we force tok2vec to boost accuracy
         if (
             "lemmatizer" in self.jobs
@@ -74,8 +75,8 @@ class spacy_pipe(MySpacy):
 
     # init with specified config, this may be changed later?
     # -> Right now needs quite specific instuctions
-    def __init__(self, config: dict):
-        super().__init__(config)
+    def __init__(self, config: dict, pretokenized):
+        super().__init__(config, pretokenized)
         # use a specific pipeline if requested
         self.validated = []
         # define language -> is this smart or do we want to load a model and disable?
@@ -131,15 +132,15 @@ class spacy_pipe(MySpacy):
             self.nlp = sp.load(**self.cfg)
 
     # call the build pipeline on the data
-    def apply_to(self, data: str, pretokenized: bool = False) -> Doc:
+    def apply_to(self, data: str) -> Doc:
         """Apply the objects pipeline to a given data string."""
 
-        if pretokenized:
+        if self.pretokenized:
             docs = [self.nlp(Doc(self.nlp.vocab, sent)) for sent in data]
             self.doc = Doc.from_docs(docs)
             # self.doc = Doc.from_docs(list(self.nlp.pipe(data)))
         # apply to data while disabling everything that wasnt requested
-        elif not pretokenized:
+        elif not self.pretokenized:
             self.doc = self.nlp(data)
         return self
 

@@ -17,10 +17,11 @@ class MyStanza:
     def __init__(self, config: dict, pretokenized: bool = False):
         # get the stanza dict
         self.config = config
+        self.pretokenized = pretokenized
         # Initialize the pipeline using a configuration dict
-        if pretokenized:
+        if self.pretokenized:
             self.nlp = sa.Pipeline(**self.config, tokenize_pretokenized=True)
-        elif not pretokenized:
+        elif not self.pretokenized:
             self.nlp = sa.Pipeline(**self.config)
 
     def apply_to(self, text: str) -> dict:
