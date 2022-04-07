@@ -15,7 +15,16 @@
       "default": "en",
       "enum": [
         "en",
-        "de"
+        "de",
+        "ar",
+        "be",
+        "fr",
+        "it",
+        "js",
+        "pt",
+        "ru",
+        "es",
+        "uk"
       ],
       "title": "Document language:",
       "type": "string"

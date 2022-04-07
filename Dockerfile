@@ -72,7 +72,6 @@ RUN conda install -c conda-forge spacy \
     && python -m spacy download pt_core_news_md \
     && python -m spacy download ru_core_news_md \
     && python -m spacy download es_core_news_md \
-
     && conda clean -a -q -y
 ENV SPACY_DIR = /home/jovyan/spacy
 

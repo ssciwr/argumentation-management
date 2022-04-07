@@ -144,15 +144,19 @@ class SetConfig:
                     print("Found historic text")
                     self.model = "en_core_web_md"
             elif self.mydict["language"] == "de":
-                if self.mydict["document_type"] == "text":
-                    # standard text
-                    self.model = "de_core_news_sm"
-                elif self.mydict["document_type"] == "scientific":
-                    # scientific text
-                    self.model = "de_core_news_sm"
-                elif self.mydict["document_type"] == "historic":
-                    # historic, use model for old language
-                    self.model = "de_core_news_sm"
+                self.model = "de_core_news_md"
+            elif self.mydict["language"] == "fr":
+                self.model = "fr_core_news_md"
+            elif self.mydict["language"] == "it":
+                self.model = "it_core_news_md"
+            elif self.mydict["language"] == "ja":
+                self.model = "ja_core_news_md"
+            elif self.mydict["language"] == "pt":
+                self.model = "pt_core_news_md"
+            elif self.mydict["language"] == "ru":
+                self.model = "ru_core_news_md"
+            elif self.mydict["language"] == "es":
+                self.model = "es_core_news_md"
             else:
                 # make sure to throw an exception if language is not found
                 raise ValueError(
