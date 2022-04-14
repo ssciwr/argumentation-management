@@ -1,5 +1,6 @@
 import annotator.base as be
 import annotator.mtreetagger as mtt
+import annotator.mspacy as msp
 
 if __name__ == "__main__":
     data = be.prepare_run.get_text("src/annotator/test/test_files/example_en.txt")
@@ -10,7 +11,16 @@ if __name__ == "__main__":
 
     out = pipe.apply_to(data)
 
-    print(out.doc)
-    out.pass_results(mydict, "DICT")
+    out.pass_results(mydict, "STR")
 
-    # be.decode_corpus(mydict).decode_to_file("out/")
+    mydict["tool"] = "spacy"
+    spacy_dict = mydict["spacy_dict"]
+    # load the pipeline from the config
+    pipe = msp.spacy_pipe(spacy_dict)
+    # apply pipeline to data
+    annotated = pipe.apply_to(data)
+    # get the dict for encoding
+    # encoding_dict = be.prepare_run.get_encoding(mydict)
+    # Write vrt and encode
+    annotated.pass_results(mydict, add=True)
+    be.decode_corpus(mydict).decode_to_file("out/")

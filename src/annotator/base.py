@@ -636,6 +636,8 @@ class encode_corpus:
 
     @classmethod
     def encode_vrt(cls, mydict, ptags, stags):
+        """Encode a new corpus into CWB from an existing vrt file."""
+
         obj = cls(mydict)
 
         line = " "
@@ -667,6 +669,81 @@ class encode_corpus:
             os.system(command)
         elif not purged:
             return print(OSError("Error during setup, aborting..."))
+
+    @classmethod
+    def add_tags_to_corpus(cls, mydict, ptags, stags):
+        """Function to add tags to an already existing corpus. Should be used with
+        pretokenized text decoded from said corpus to assure correct alignment."""
+
+        obj = cls(mydict)
+
+        # edit the vrt file to remove the words, this could maybe be done
+        # before the vrt is even written in the first place if we know
+        # that we want to an existing corpus
+        new = ""
+        with open(obj.outname + ".vrt", "r") as vrt:
+            lines = vrt.readlines()
+            for line in lines:
+                if not line.startswith("<"):
+                    new += line.split("\t", 1)[1]
+                else:
+                    new += line
+
+        with open(obj.outname + ".vrt", "w") as vrt:
+            vrt.write(new)
+
+        # check which attributes are already present in the corpus
+        with open(obj.regdir + obj.corpusname, "r+") as registry:
+            attributes = []
+            structures = []
+            for line in registry:
+                if line.startswith("ATTRIBUTE"):
+                    attributes.append(line.split()[1])
+                if line.startswith("STRUCTURE"):
+                    structures.append(line.split()[1])
+
+            # if ptags are already present we change them to ptag_tool, if this is also
+            # already present we throw an error as the annotation does already exist
+            for i, ptag in enumerate(ptags):
+                if ptag in attributes:
+                    print("Renaming {} to {}".format(ptag, ptag + "_" + obj.tool))
+                    ptags[i] = ptag + "_" + obj.tool
+                    if ptags[i] in attributes:
+                        raise RuntimeError(
+                            "Ptag {} does already exist for this tool.".format(ptag)
+                        )
+
+            # remove existing structural tags
+            for stag in stags:
+                if stag in structures:
+                    stags.remove(stag)
+
+            # build the command for encoding
+            line = " "
+            for ptag in ptags:
+                line += "-P {} ".format(ptag)
+            line = obj._get_s_attributes(line, stags)
+            # the "-p -" removes the inbuilt "word" attribute from the encoding process
+            command = (
+                "cwb-encode -d"
+                + obj.encodedir
+                + " -xsBC9 -c utf8 -f "
+                + obj.outname
+                + ".vrt -p - "
+                + line
+            )
+            print(command)
+            os.system(command)
+
+            # update the registry with the new attributes
+            print("Updating the registry entry...")
+            registry.seek(0, 2)
+            print("Adding ptags:")
+            for ptag in ptags:
+                print(ptag)
+                registry.write("ATTRIBUTE {}\n".format(ptag))
+            for stag in stags:
+                registry.write("STRUCTURE {}\n".format(stag))
 
 
 class decode_corpus(encode_corpus):

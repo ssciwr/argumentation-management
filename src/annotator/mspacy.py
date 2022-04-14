@@ -188,7 +188,7 @@ class spacy_pipe(MySpacy):
             return out
 
     def pass_results(
-        self, out_param=None, style: str = "STR", ret=False, start=0
+        self, out_param=None, style: str = "STR", ret=False, start=0, add=False
     ) -> list or None:
 
         """Function to build list with results from the doc object
@@ -213,10 +213,14 @@ class spacy_pipe(MySpacy):
             outfile = (
                 out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
             )
-        if ret is False and style == "STR" and out_param is not None:
+        if ret is False and style == "STR" and out_param is not None and add is False:
             be.out_object.write_vrt(outfile, out)
             # encode
             be.encode_corpus.encode_vrt(out_param, ptags, stags)
+
+        elif ret is False and style == "STR" and out_param is not None and add is True:
+            be.out_object.write_vrt(outfile, out)
+            be.encode_corpus.add_tags_to_corpus(out_param, ptags, stags)
 
         elif ret is False and style == "DICT" and out_param is not None:
             be.out_object.write_xml(
