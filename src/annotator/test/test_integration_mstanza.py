@@ -1,6 +1,6 @@
-import base as be
-import pipe as pe
-import mstanza as ma
+import annotator.base as be
+import annotator.pipe as pe
+import annotator.mstanza as ma
 
 
 def test_integration_mstanza():
