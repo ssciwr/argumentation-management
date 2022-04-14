@@ -150,7 +150,7 @@ def test_apply_to(load_object, get_text):
 def test_pass_results(init, load_object, get_text):
     mydict = init[2]
     mydict["advanced_options"]["output_dir"] = "./test/test_files/"
-    load_object.apply_to(get_text).pass_results(style="STR", out_param=mydict)
+    load_object.apply_to(get_text).pass_results(style="STR", mydict=mydict)
 
 
 def test_output_sent(pipe_sent):

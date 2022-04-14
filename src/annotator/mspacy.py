@@ -174,7 +174,7 @@ class spacy_pipe(MySpacy):
             out.append(chunks[i][0] + "\n")
             # self.doc is now current doc
             self.doc = doc
-            tmp = self.pass_results("STR", ret=True, start=0)
+            tmp = self.pass_results(style="STR", ret=True, start=0)
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
@@ -188,7 +188,12 @@ class spacy_pipe(MySpacy):
             return out
 
     def pass_results(
-        self, out_param=None, style: str = "STR", ret=False, start=0, add=False
+        self,
+        mydict: dict or None = None,
+        style: str = "STR",
+        ret: bool = False,
+        start: int = 0,
+        add: bool = False,
     ) -> list or None:
 
         """Function to build list with results from the doc object
@@ -197,9 +202,10 @@ class spacy_pipe(MySpacy):
         -> can only be called after pipeline was applied.
 
         Args:
-            out_param[dict]: Dict containing the information to encode the .vrt for cwb.
+            mydict[dict]: Dict containing the information to encode the .vrt for cwb.
             ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
             start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
+            add[bool]: Indicates if a new corpus should be started or if tags should be added to existing corpus.
         """
 
         out_obj = out_object_spacy(self.doc, self.jobs, start=start)
@@ -209,22 +215,20 @@ class spacy_pipe(MySpacy):
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
         # temporary, this should not be a problem. right?
-        if out_param is not None:
-            outfile = (
-                out_param["advanced_options"]["output_dir"] + out_param["corpus_name"]
-            )
-        if ret is False and style == "STR" and out_param is not None and add is False:
+        if mydict is not None:
+            outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
+        if ret is False and style == "STR" and mydict is not None and add is False:
             be.out_object.write_vrt(outfile, out)
             # encode
-            be.encode_corpus.encode_vrt(out_param, ptags, stags)
+            be.encode_corpus.encode_vrt(mydict, ptags, stags)
 
-        elif ret is False and style == "STR" and out_param is not None and add is True:
+        elif ret is False and style == "STR" and mydict is not None and add is True:
             be.out_object.write_vrt(outfile, out)
-            be.encode_corpus.add_tags_to_corpus(out_param, ptags, stags)
+            be.encode_corpus.add_tags_to_corpus(mydict, ptags, stags)
 
-        elif ret is False and style == "DICT" and out_param is not None:
+        elif ret is False and style == "DICT" and mydict is not None:
             be.out_object.write_xml(
-                out_param["output"].replace("/", "_"), out_param["output"], out
+                mydict["output"].replace("/", "_"), mydict["output"], out
             )
 
         elif ret is True:
@@ -253,7 +257,7 @@ class spacy_pipe(MySpacy):
             # get the "< >" opening statement
             out.append(chunks[i][0] + "\n")
             # apply pipe to chunk, token index from 0
-            tmp = self.apply_to(chunk[1]).pass_results("STR", ret=True)
+            tmp = self.apply_to(chunk[1]).pass_results(style="STR", ret=True)
 
             # append data from tmp pipe output to complete output
             for line in tmp:

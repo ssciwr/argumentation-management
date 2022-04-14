@@ -1,5 +1,6 @@
 # the base class and utilities are contained in this module
 import json
+from pyclbr import Class
 import jsonschema
 import os
 import to_xml as txml
@@ -590,21 +591,28 @@ class encode_corpus:
             # if no permission is granted we ask what to do
             else:
                 while True:
-                    print("Continue encoding? [y/n]", flush=True)
-                    cont = input("[y/n]")
+                    print("Continue encoding?", flush=True)
+                    cont = self.query("[y/n]")
                     if cont == "y":
-                        self.corpusdir = self.fix_path(
-                            self.query("Please provide corpus directory path: ")
-                        )
-                        print("Set new encode directory: {}".format(self.corpusdir))
-                        self.regdir = self.fix_path(
-                            self.query("Please provide registry directory path: ")
-                        )
-                        print("Set new registry directory: {}".format(self.regdir))
-                        self.corpusname = self.query("Please provide corpusname: ")
-                        print("Set new corpusname: {}".format(self.corpusname))
-                        self.encodedir = self.corpusdir + self.corpusname
-                        return self.setup()
+                        print("Keep old parameters?", flush=True)
+                        keep = self.query("[y/n]")
+                        if keep == "y":
+                            return self.setup()
+                        elif keep == "n":
+                            self.corpusdir = self.fix_path(
+                                self.query("Please provide corpus directory path: ")
+                            )
+                            print("Set new encode directory: {}".format(self.corpusdir))
+                            self.regdir = self.fix_path(
+                                self.query("Please provide registry directory path: ")
+                            )
+                            print("Set new registry directory: {}".format(self.regdir))
+                            self.corpusname = self.query("Please provide corpusname: ")
+                            print("Set new corpusname: {}".format(self.corpusname))
+                            self.encodedir = self.corpusdir + self.corpusname
+                            return self.setup()
+                        else:
+                            pass
                     elif cont == "n":
                         return False
                     else:
@@ -621,7 +629,6 @@ class encode_corpus:
     def query(query: str) -> str:
         """Function to flush query to output and return provided input."""
 
-        print(query, flush=True)
         return input(query)
 
     @staticmethod
@@ -671,7 +678,7 @@ class encode_corpus:
             return print(OSError("Error during setup, aborting..."))
 
     @classmethod
-    def add_tags_to_corpus(cls, mydict, ptags, stags):
+    def add_tags_to_corpus(cls: Class, mydict: dict, ptags: list, stags: list):
         """Function to add tags to an already existing corpus. Should be used with
         pretokenized text decoded from said corpus to assure correct alignment."""
 
@@ -679,7 +686,11 @@ class encode_corpus:
 
         # edit the vrt file to remove the words, this could maybe be done
         # before the vrt is even written in the first place if we know
-        # that we want to an existing corpus
+        # that we want to add to an existing corpus
+
+        # not really happy with how this is handled right now
+        #########################################################
+
         new = ""
         with open(obj.outname + ".vrt", "r") as vrt:
             lines = vrt.readlines()
@@ -691,6 +702,8 @@ class encode_corpus:
 
         with open(obj.outname + ".vrt", "w") as vrt:
             vrt.write(new)
+
+        ##########################################################
 
         # check which attributes are already present in the corpus
         with open(obj.regdir + obj.corpusname, "r+") as registry:

@@ -62,7 +62,7 @@ class treetagger_pipe:
 
         return self
 
-    def pass_results(self, mydict: dict, style: str = "STR") -> None:
+    def pass_results(self, mydict: dict, style: str = "STR", add: bool = False) -> None:
         """Pass the results to CWB through a vrt file or write xml file.
 
         [Args]:
@@ -92,8 +92,14 @@ class treetagger_pipe:
             stags = obj.get_stags()
 
             outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-            out_object_treetagger.write_vrt(outfile, out)
-            be.encode_corpus.encode_vrt(mydict, ptags, stags)
+
+            if not add:
+                out_object_treetagger.write_vrt(outfile, out)
+                be.encode_corpus.encode_vrt(mydict, ptags, stags)
+
+            elif add:
+                be.out_object.write_vrt(outfile, out)
+                be.encode_corpus.add_tags_to_corpus(mydict, ptags, stags)
 
         elif style == "DICT":
             be.out_object.write_xml(
