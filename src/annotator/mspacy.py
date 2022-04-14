@@ -187,7 +187,9 @@ class spacy_pipe(MySpacy):
         else:
             return out
 
-    def pass_results(self, style, out_param=None, ret=False, start=0) -> list or None:
+    def pass_results(
+        self, out_param=None, style: str = "STR", ret=False, start=0
+    ) -> list or None:
 
         """Function to build list with results from the doc object
         and write it to a .vrt file / encode to cwb directly.

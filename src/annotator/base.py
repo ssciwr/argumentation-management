@@ -334,7 +334,7 @@ class out_object:
 
         return stags
 
-    def collect_results(self, token, tid: int, word, style: str) -> dict or str:
+    def collect_results(self, token, tid: int, word, style: str = "STR") -> dict or str:
 
         """Function to collect requested tags for tokens after applying pipeline to data.
 
@@ -505,6 +505,8 @@ class out_object:
 
     @staticmethod
     def write_xml(docid: str, outname: str, out: list) -> None:
+        """This function may not work for all tools and should not be used at the moment."""
+
         raw_xml = txml.start_xml(docid)
 
         sents = [txml.list_to_xml("Sent", i, elem) for i, elem in enumerate(out, 1)]

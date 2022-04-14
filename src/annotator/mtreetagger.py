@@ -44,32 +44,50 @@ class treetagger_pipe:
     and subsequent encoding of the results into CWB."""
 
     def __init__(self, config: dict):
-        self.lang = config["lang"]
+        self.config = config
+        self.lang = self.config["lang"]
 
-        tagopt = config["tagopt"]
+        tagopt = self.config["tagopt"]
 
         self.tagger = ttw.TreeTagger(TAGLANG=self.lang, TAGOPT=tagopt)
 
     def apply_to(self, text: str) -> list:
+        """Apply pipeline to the textual data."""
 
         tags = self.tagger.tag_text(
             text, notagurl=True, notagemail=True, notagip=True, notagdns=True
         )
+        # convert the output from namedtuples in a list into dictionaries in a list
         self.doc = [item._asdict() for item in ttw.make_tags(tags)]
 
         return self
 
-    def pass_results(self, mydict: dict, style: str) -> None:
+    def pass_results(self, mydict: dict, style: str = "STR") -> None:
+        """Pass the results to CWB through a vrt file or write xml file.
 
+        [Args]:
+                mydict[dict]: Dict containing the encoding information.
+                style[str]: Decides between CWB encoding "STR" or xml output "DICT"
+                            -> xml output does not work currently."""
+
+        # grab the processor info from the first dict in the doc-list. It is consistent for all
         self.jobs = [key for key in self.doc[0].keys()]
+
+        # integrate the found processors into the config
+        processors = ""
+        for job in self.jobs:
+            processors += job
+        self.config["processors"] = processors
 
         if style == "STR":
 
             obj = out_object_treetagger(self.doc, self.jobs)
 
             out = []
+            # grab the tagged string
             out = obj.iterate(out)
 
+            # check for tags for encoding, for this tool it should be POS and Lemma
             ptags = obj.get_ptags()
             stags = obj.get_stags()
 
@@ -86,12 +104,17 @@ class treetagger_pipe:
 
 
 class out_object_treetagger(be.out_object):
+    """Class to define how information will be extracted from the doc object
+    resulting from the treetagger pipeline."""
+
     def __init__(self, doc, jobs: list, start: int = 0) -> None:
         super().__init__(doc, jobs, start)
         self.doc = doc
         self.attrnames = self.attrnames["treetagger_names"]
 
-    def iterate(self, out: list) -> list or dict:
+    def iterate(self, out: list) -> list:
+        """Iterate the list of tagged tokens and extract the information for
+        further processing."""
 
         for mydict in self.doc:
             out.append("")

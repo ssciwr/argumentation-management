@@ -1,5 +1,5 @@
-import base as be
-import mspacy as msp
+import annotator.base as be
+import annotator.mspacy as msp
 
 
 def test_integration_mspacy():
@@ -18,4 +18,4 @@ def test_integration_mspacy():
     # get the dict for encoding
     # encoding_dict = be.prepare_run.get_encoding(mydict)
     # Write vrt and encode
-    annotated.pass_results("STR", mydict, ret=False)
+    annotated.pass_results(mydict)
