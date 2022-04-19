@@ -62,7 +62,9 @@ class treetagger_pipe:
 
         return self
 
-    def pass_results(self, mydict: dict, style: str = "STR") -> None:
+    def pass_results(
+        self, mydict: dict, style: str = "STR", ptags: list or None = None
+    ) -> None:
         """Pass the results to CWB through a vrt file or write xml file.
 
         [Args]:
@@ -88,7 +90,7 @@ class treetagger_pipe:
             out = obj.iterate(out)
 
             # check for tags for encoding, for this tool it should be POS and Lemma
-            ptags = obj.get_ptags()
+            ptags = ptags or obj.get_ptags()
             stags = obj.get_stags()
 
             outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
