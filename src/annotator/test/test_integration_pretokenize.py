@@ -31,6 +31,7 @@ def test_integration_msomajo(setup):
 
 
 def test_integration_mtreetagger(setup):
+
     out = TemporaryDirectory()
     corp = TemporaryDirectory()
     reg = TemporaryDirectory()

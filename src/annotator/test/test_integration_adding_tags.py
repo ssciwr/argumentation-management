@@ -29,7 +29,8 @@ def test_integration_adding_tags(load_data):
     out = pipe.apply_to(data)
 
     out.pass_results(mydict, "STR")
-    os.system("cd {} && touch test".format(reg.name))
+    cwd = os.getcwd()
+    os.system("cd {} && touch test && cd {}".format(reg.name, cwd))
     mydict["tool"] = "spacy"
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config
