@@ -1,6 +1,6 @@
 import pytest
-import annotator.base as be
-import annotator.mtreetagger as mtt
+import base as be
+import mtreetagger as mtt
 from tempfile import TemporaryDirectory
 
 

@@ -1,7 +1,7 @@
 import pytest
-import annotator.base as be
-import annotator.msomajo as msm
-import annotator.mtreetagger as mtt
+import base as be
+import msomajo as msm
+import mtreetagger as mtt
 from tempfile import TemporaryDirectory
 
 

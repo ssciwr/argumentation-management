@@ -1,7 +1,7 @@
 import pytest
-import annotator.base as be
-import annotator.pipe as pe
-import annotator.mstanza as ma
+import base as be
+import pipe as pe
+import mstanza as ma
 from tempfile import TemporaryDirectory
 
 

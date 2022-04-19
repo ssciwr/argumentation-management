@@ -1,7 +1,7 @@
 import pytest
-import annotator.base as be
-import annotator.mtreetagger as mtt
-import annotator.mspacy as msp
+import base as be
+import mtreetagger as mtt
+import mspacy as msp
 from tempfile import TemporaryDirectory
 import os
 
