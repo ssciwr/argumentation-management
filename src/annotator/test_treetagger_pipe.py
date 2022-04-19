@@ -22,5 +22,7 @@ if __name__ == "__main__":
     # get the dict for encoding
     # encoding_dict = be.prepare_run.get_encoding(mydict)
     # Write vrt and encode
-    annotated.pass_results(mydict, add=True)
+    annotated.pass_results(
+        mydict, add=True, ptags=["test1", "test2", "test3", "test4", "test5"]
+    )
     be.decode_corpus(mydict).decode_to_file("out/")

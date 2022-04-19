@@ -1,7 +1,7 @@
 # the stanza class object for stanza nlp
 from collections import defaultdict
 import stanza as sa
-import base as be
+import annotator.base as be
 
 
 class MyStanza:
@@ -42,7 +42,9 @@ class MyStanza:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def pass_results(self, mydict: dict, add: bool = False) -> None:
+    def pass_results(
+        self, mydict: dict, add: bool = False, ptags: list or None = None
+    ) -> None:
         """Funtion to write post-pipeline data to .vrt file and encode for CWB.
 
         Args:
@@ -52,7 +54,7 @@ class MyStanza:
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         obj = out_object_stanza(self.doc, jobs, start=0)
-        ptags = obj.get_ptags()
+        ptags = ptags or obj.get_ptags()
         stags = obj.get_stags()
         # write out to .vrt
         outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]

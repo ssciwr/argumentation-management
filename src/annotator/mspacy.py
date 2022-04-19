@@ -194,6 +194,7 @@ class spacy_pipe(MySpacy):
         ret: bool = False,
         start: int = 0,
         add: bool = False,
+        ptags: list or None = None,
     ) -> list or None:
 
         """Function to build list with results from the doc object
@@ -210,7 +211,7 @@ class spacy_pipe(MySpacy):
 
         out_obj = out_object_spacy(self.doc, self.jobs, start=start)
         out = out_obj.fetch_output(style)
-        ptags = out_obj.ptags
+        ptags = ptags or out_obj.ptags
         stags = out_obj.stags
         # write to file -> This overwrites any existing file of given name;
         # as all of this should be handled internally and the files are only
