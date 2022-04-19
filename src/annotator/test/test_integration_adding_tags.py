@@ -1,11 +1,27 @@
+import pytest
 import annotator.base as be
 import annotator.mtreetagger as mtt
 import annotator.mspacy as msp
+from tempfile import TemporaryDirectory
 
-if __name__ == "__main__":
-    data = be.prepare_run.get_text("src/annotator/test/test_files/example_en.txt")
-    mydict = be.prepare_run.load_input_dict("src/annotator/input_local")
 
+@pytest.fixture()
+def load_data():
+    data = be.prepare_run.get_text("./test/test_files/example_en.txt")
+    return data
+
+
+def test_integration_adding_tags(load_data):
+
+    out = TemporaryDirectory()
+    corp = TemporaryDirectory()
+    reg = TemporaryDirectory()
+    mydict = be.prepare_run.load_input_dict("./input")
+    mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
+    mydict["advanced_options"]["corpus_dir"] = "{}".format(corp.name)
+    mydict["advanced_options"]["registry_dir"] = "{}".format(reg.name)
+
+    data = load_data
     treetagger_dict = mydict["treetagger_dict"]
     pipe = mtt.treetagger_pipe(treetagger_dict)
 
@@ -25,4 +41,3 @@ if __name__ == "__main__":
     annotated.pass_results(
         mydict, add=True, ptags=["test1", "test2", "test3", "test4", "test5"]
     )
-    be.decode_corpus(mydict).decode_to_file("out/")

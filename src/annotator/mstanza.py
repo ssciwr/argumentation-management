@@ -59,11 +59,10 @@ class MyStanza:
         # write out to .vrt
         outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
 
+        out_object_stanza.write_vrt(outfile, out)
         if not add:
-            out_object_stanza.write_vrt(outfile, out)
             be.encode_corpus.encode_vrt(mydict, ptags, stags)
         elif add:
-            be.out_object.write_vrt(outfile, out)
             be.encode_corpus.add_tags_to_corpus(mydict, ptags, stags)
 
 

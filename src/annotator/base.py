@@ -490,7 +490,7 @@ class out_object:
         """Function to write list to a .vrt file.
 
         [Args]:
-            ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
+            out[list]: List containing the lines for the .vrt file as strings.
         """
 
         string = ""
@@ -566,6 +566,7 @@ class encode_corpus:
         requires input of "y" to overwrite existing files. Maybe add argument to force overwrite later?.
         If directory is not found, an empty directory is created."""
 
+        options = "[y/n]"
         # check if corpus directory exists
         print("+++ Checking for corpus +++")
         if os.path.isdir(self.encodedir):
@@ -573,8 +574,7 @@ class encode_corpus:
             message = "Overwrite {} and {}?".format(
                 self.encodedir, self.regdir + self.corpusname
             )
-            print(message, flush=True)
-            purge = input("[y/n]")
+            purge = self.query(message, options)
             # only overwrite if "y" to prevent accidental overwrite of data
             if purge == "y":
                 print("+++ Purging old corpus +++")
@@ -591,23 +591,25 @@ class encode_corpus:
             # if no permission is granted we ask what to do
             else:
                 while True:
-                    print("Continue encoding?", flush=True)
-                    cont = self.query("[y/n]")
+                    cont = self.query("Continue encoding?", options)
                     if cont == "y":
-                        print("Keep old parameters?", flush=True)
-                        keep = self.query("[y/n]")
+                        keep = self.query("Keep old parameters?", options)
                         if keep == "y":
                             return self.setup()
                         elif keep == "n":
                             self.corpusdir = self.fix_path(
-                                self.query("Please provide corpus directory path: ")
+                                self.query("Please provide corpus directory path: ", "")
                             )
                             print("Set new encode directory: {}".format(self.corpusdir))
                             self.regdir = self.fix_path(
-                                self.query("Please provide registry directory path: ")
+                                self.query(
+                                    "Please provide registry directory path: ", ""
+                                )
                             )
                             print("Set new registry directory: {}".format(self.regdir))
-                            self.corpusname = self.query("Please provide corpusname: ")
+                            self.corpusname = self.query(
+                                "Please provide corpusname: ", ""
+                            )
                             print("Set new corpusname: {}".format(self.corpusname))
                             self.encodedir = self.corpusdir + self.corpusname
                             return self.setup()
@@ -616,8 +618,9 @@ class encode_corpus:
                     elif cont == "n":
                         return False
                     else:
-                        print("Invalid input, please type 'y' or 'n'.", flush=True)
-                        input("[y/n")
+                        cont = self.query(
+                            "Invalid input, please type 'y' or 'n'.", options
+                        )
 
         elif not os.path.isdir(self.encodedir):
             # if the directory doesn't exist we create one
@@ -626,10 +629,12 @@ class encode_corpus:
             return True
 
     @staticmethod
-    def query(query: str) -> str:
+    def query(query: str, options: str) -> str:
         """Function to flush query to output and return provided input."""
 
-        return input(query)
+        print(query, flush=True)
+
+        return input(options)
 
     @staticmethod
     def fix_path(path: str) -> str:
