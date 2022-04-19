@@ -1,6 +1,5 @@
 # the base class and utilities are contained in this module
 import json
-from pyclbr import Class
 import jsonschema
 import os
 import to_xml as txml
@@ -683,7 +682,7 @@ class encode_corpus:
             return print(OSError("Error during setup, aborting..."))
 
     @classmethod
-    def add_tags_to_corpus(cls: Class, mydict: dict, ptags: list, stags: list):
+    def add_tags_to_corpus(cls, mydict: dict, ptags: list, stags: list):
         """Function to add tags to an already existing corpus. Should be used with output based on
         pretokenized text decoded from said corpus to assure correct alignment.
 
