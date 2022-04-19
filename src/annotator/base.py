@@ -679,8 +679,15 @@ class encode_corpus:
 
     @classmethod
     def add_tags_to_corpus(cls: Class, mydict: dict, ptags: list, stags: list):
-        """Function to add tags to an already existing corpus. Should be used with
-        pretokenized text decoded from said corpus to assure correct alignment."""
+        """Function to add tags to an already existing corpus. Should be used with output based on
+        pretokenized text decoded from said corpus to assure correct alignment.
+
+        [Args]:
+                mydict[dict]: Dictionary containing the encoding information.
+                ptags[list]: List containing the ptags to be used. These are checked against ptags
+                            already present in the CWB corpus registry file.
+                stags[list]: List containing the stags present in the corpus.
+                            Only checked for the <s>...</s> structural attribute."""
 
         obj = cls(mydict)
 
