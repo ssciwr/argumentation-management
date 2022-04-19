@@ -1,6 +1,6 @@
 import pytest
-import base as be
-import mspacy as msp
+import annotator.base as be
+import annotator.mspacy as msp
 from tempfile import TemporaryDirectory
 
 
@@ -17,7 +17,7 @@ def test_integration_mspacy(load_data):
     # read in input.json
     mydict = be.prepare_run.load_input_dict("./input")
     mydict["tool"] = "spacy"
-    mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
+    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
     be.prepare_run.validate_input_dict(mydict)
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config

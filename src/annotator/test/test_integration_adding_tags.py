@@ -40,6 +40,4 @@ def test_integration_adding_tags(load_data):
     # get the dict for encoding
     # encoding_dict = be.prepare_run.get_encoding(mydict)
     # Write vrt and encode
-    annotated.pass_results(
-        mydict, add=True, ptags=["test1", "test2", "test3", "test4", "test5"]
-    )
+    annotated.pass_results(mydict, add=True)
