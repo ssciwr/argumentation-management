@@ -174,7 +174,7 @@ class spacy_pipe(MySpacy):
             out.append(chunks[i][0] + "\n")
             # self.doc is now current doc
             self.doc = doc
-            tmp = self.pass_results("STR", ret=True, start=0)
+            tmp = self.pass_results(ret=True, start=0)
             # append data from tmp output to complete output
             for line in tmp:
                 out.append(line)
@@ -249,7 +249,7 @@ class spacy_pipe(MySpacy):
             # get the "< >" opening statement
             out.append(chunks[i][0] + "\n")
             # apply pipe to chunk, token index from 0
-            tmp = self.apply_to(chunk[1]).pass_results("STR", ret=True)
+            tmp = self.apply_to(chunk[1]).pass_results(ret=True)
 
             # append data from tmp pipe output to complete output
             for line in tmp:
