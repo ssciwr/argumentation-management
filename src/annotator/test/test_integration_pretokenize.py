@@ -19,12 +19,10 @@ def setup():
 def test_integration_msomajo(setup):
 
     out = TemporaryDirectory()
-    corp = TemporaryDirectory()
-    reg = TemporaryDirectory()
+
     mydict, text = setup
     mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
-    mydict["advanced_options"]["corpus_dir"] = "{}".format(corp.name)
-    mydict["advanced_options"]["registry_dir"] = "{}".format(reg.name)
+
     be.prepare_run.pretokenize(
         text, mydict, msm.tokenize, arguments={"model": "en_PTB"}
     )
@@ -33,10 +31,8 @@ def test_integration_msomajo(setup):
 def test_integration_mtreetagger(setup):
 
     out = TemporaryDirectory()
-    corp = TemporaryDirectory()
-    reg = TemporaryDirectory()
+
     mydict, text = setup
     mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
-    mydict["advanced_options"]["corpus_dir"] = "{}".format(corp.name)
-    mydict["advanced_options"]["registry_dir"] = "{}".format(reg.name)
+
     be.prepare_run.pretokenize(text, mydict, mtt.tokenize, arguments={"lang": "en"})

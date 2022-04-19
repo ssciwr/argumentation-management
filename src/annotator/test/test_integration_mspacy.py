@@ -14,14 +14,10 @@ def test_integration_mspacy(load_data):
 
     # create temporary directories for the corpora
     out = TemporaryDirectory()
-    corp = TemporaryDirectory()
-    reg = TemporaryDirectory()
     # read in input.json
     mydict = be.prepare_run.load_input_dict("./input")
     mydict["tool"] = "spacy"
     mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
-    mydict["advanced_options"]["corpus_dir"] = "{}".format(corp.name)
-    mydict["advanced_options"]["registry_dir"] = "{}".format(reg.name)
     be.prepare_run.validate_input_dict(mydict)
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config
