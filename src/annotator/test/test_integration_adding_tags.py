@@ -3,6 +3,7 @@ import annotator.base as be
 import annotator.mtreetagger as mtt
 import annotator.mspacy as msp
 from tempfile import TemporaryDirectory
+import os
 
 
 @pytest.fixture()
@@ -28,7 +29,7 @@ def test_integration_adding_tags(load_data):
     out = pipe.apply_to(data)
 
     out.pass_results(mydict, "STR")
-
+    os.system("cd {} && mk test".format(reg.name))
     mydict["tool"] = "spacy"
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config
