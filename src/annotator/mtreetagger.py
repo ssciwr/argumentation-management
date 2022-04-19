@@ -1,5 +1,5 @@
 import treetaggerwrapper as ttw
-import annotator.base as be
+import base as be
 
 
 def tokenize(text: str, lang: str) -> str and bool:
