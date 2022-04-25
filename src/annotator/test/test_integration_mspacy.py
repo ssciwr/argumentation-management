@@ -1,18 +1,28 @@
+import pytest
 import annotator.base as be
 import annotator.mspacy as msp
+from tempfile import TemporaryDirectory
 
 
-def test_integration_mspacy():
+@pytest.fixture()
+def load_data():
+    data = be.prepare_run.get_text("./test/test_files/example_de.txt")
+    return data
+
+
+def test_integration_mspacy(load_data):
+
+    # create temporary directories for the corpora
+    out = TemporaryDirectory()
     # read in input.json
     mydict = be.prepare_run.load_input_dict("./input")
     mydict["tool"] = "spacy"
-    mydict["input"] = "./test/test_files/example_en.txt"
     mydict["advanced_options"]["output_dir"] = "./test/test_files/"
     be.prepare_run.validate_input_dict(mydict)
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config
     pipe = msp.spacy_pipe(spacy_dict)
-    data = be.prepare_run.get_text(mydict["input"])
+    data = load_data
     # apply pipeline to data
     annotated = pipe.apply_to(data)
     # get the dict for encoding

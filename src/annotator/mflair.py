@@ -205,8 +205,7 @@ class out_object_flair(be.out_object):
 
         return out
 
-    @staticmethod
-    def assemble_output(token: Token, out: list) -> list:
+    def assemble_output(self, token: Token, out: list) -> list:
         """Build output line from a token.
 
         Args:
@@ -214,10 +213,11 @@ class out_object_flair(be.out_object):
                 out[list]: Assembled output."""
 
         out.append("{}".format(token.text))
-        for label in token.labels:
-            if label.value != "O":
-                out[-1] += " " + label.value
-            elif label.value == "O":
+        for job in self.job:
+            label = token.get_label(job).value
+            if label != "O":
+                out[-1] += " " + label
+            elif label == "O":
                 out[-1] += " - "
 
         out[-1] += "\n"

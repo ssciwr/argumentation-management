@@ -1,14 +1,18 @@
 import pytest
-import annotator.base as be
-import annotator.mtreetagger as mtt
+=======
+import base as be
+import mtreetagger as mtt
+from tempfile import TemporaryDirectory
 
 
 def test_integration_mtreetagger():
+    out = TemporaryDirectory()
+
     data = be.prepare_run.get_text("test/test_files/example_en.txt")
     mydict = be.prepare_run.load_input_dict("input")
     mydict["tool"] = "treetagger"
     mydict["input"] = "./test/test_files/example_en.txt"
-    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
+    mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
 
     treetagger_dict = mydict["treetagger_dict"]
     pipe = mtt.treetagger_pipe(treetagger_dict)

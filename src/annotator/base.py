@@ -489,7 +489,7 @@ class out_object:
         """Function to write list to a .vrt file.
 
         [Args]:
-            ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
+            out[list]: List containing the lines for the .vrt file as strings.
         """
 
         string = ""
@@ -565,6 +565,7 @@ class encode_corpus:
         requires input of "y" to overwrite existing files. Maybe add argument to force overwrite later?.
         If directory is not found, an empty directory is created."""
 
+        options = "[y/n]"
         # check if corpus directory exists
         print("+++ Checking for corpus +++")
         if os.path.isdir(self.encodedir):
@@ -572,8 +573,7 @@ class encode_corpus:
             message = "Overwrite {} and {}?".format(
                 self.encodedir, self.regdir + self.corpusname
             )
-            print(message, flush=True)
-            purge = input("[y/n]")
+            purge = self.query(message, options)
             # only overwrite if "y" to prevent accidental overwrite of data
             if purge == "y":
                 print("+++ Purging old corpus +++")
@@ -590,26 +590,36 @@ class encode_corpus:
             # if no permission is granted we ask what to do
             else:
                 while True:
-                    print("Continue encoding? [y/n]", flush=True)
-                    cont = input("[y/n]")
+                    cont = self.query("Continue encoding?", options)
                     if cont == "y":
-                        self.corpusdir = self.fix_path(
-                            self.query("Please provide corpus directory path: ")
-                        )
-                        print("Set new encode directory: {}".format(self.corpusdir))
-                        self.regdir = self.fix_path(
-                            self.query("Please provide registry directory path: ")
-                        )
-                        print("Set new registry directory: {}".format(self.regdir))
-                        self.corpusname = self.query("Please provide corpusname: ")
-                        print("Set new corpusname: {}".format(self.corpusname))
-                        self.encodedir = self.corpusdir + self.corpusname
-                        return self.setup()
+                        keep = self.query("Keep old parameters?", options)
+                        if keep == "y":
+                            return self.setup()
+                        elif keep == "n":
+                            self.corpusdir = self.fix_path(
+                                self.query("Please provide corpus directory path: ", "")
+                            )
+                            print("Set new encode directory: {}".format(self.corpusdir))
+                            self.regdir = self.fix_path(
+                                self.query(
+                                    "Please provide registry directory path: ", ""
+                                )
+                            )
+                            print("Set new registry directory: {}".format(self.regdir))
+                            self.corpusname = self.query(
+                                "Please provide corpusname: ", ""
+                            )
+                            print("Set new corpusname: {}".format(self.corpusname))
+                            self.encodedir = self.corpusdir + self.corpusname
+                            return self.setup()
+                        else:
+                            pass
                     elif cont == "n":
                         return False
                     else:
-                        print("Invalid input, please type 'y' or 'n'.", flush=True)
-                        input("[y/n")
+                        cont = self.query(
+                            "Invalid input, please type 'y' or 'n'.", options
+                        )
 
         elif not os.path.isdir(self.encodedir):
             # if the directory doesn't exist we create one
@@ -618,11 +628,12 @@ class encode_corpus:
             return True
 
     @staticmethod
-    def query(query: str) -> str:
+    def query(query: str, options: str) -> str:
         """Function to flush query to output and return provided input."""
 
         print(query, flush=True)
-        return input(query)
+
+        return input(options)
 
     @staticmethod
     def fix_path(path: str) -> str:
@@ -636,6 +647,8 @@ class encode_corpus:
 
     @classmethod
     def encode_vrt(cls, mydict, ptags, stags):
+        """Encode a new corpus into CWB from an existing vrt file."""
+
         obj = cls(mydict)
 
         line = " "
@@ -667,6 +680,94 @@ class encode_corpus:
             os.system(command)
         elif not purged:
             return print(OSError("Error during setup, aborting..."))
+
+    @classmethod
+    def add_tags_to_corpus(cls, mydict: dict, ptags: list, stags: list):
+        """Function to add tags to an already existing corpus. Should be used with output based on
+        pretokenized text decoded from said corpus to assure correct alignment.
+
+        [Args]:
+                mydict[dict]: Dictionary containing the encoding information.
+                ptags[list]: List containing the ptags to be used. These are checked against ptags
+                            already present in the CWB corpus registry file.
+                stags[list]: List containing the stags present in the corpus.
+                            Only checked for the <s>...</s> structural attribute."""
+
+        obj = cls(mydict)
+
+        # edit the vrt file to remove the words, this could maybe be done
+        # before the vrt is even written in the first place if we know
+        # that we want to add to an existing corpus
+
+        # not really happy with how this is handled right now
+        #########################################################
+
+        new = ""
+        with open(obj.outname + ".vrt", "r") as vrt:
+            lines = vrt.readlines()
+            for line in lines:
+                if not line.startswith("<"):
+                    new += line.split("\t", 1)[1]
+                else:
+                    new += line
+
+        with open(obj.outname + ".vrt", "w") as vrt:
+            vrt.write(new)
+
+        ##########################################################
+
+        # check which attributes are already present in the corpus
+        with open(obj.regdir + obj.corpusname, "r+") as registry:
+            attributes = []
+            structures = []
+            for line in registry:
+                if line.startswith("ATTRIBUTE"):
+                    attributes.append(line.split()[1])
+                if line.startswith("STRUCTURE"):
+                    structures.append(line.split()[1])
+
+            # if ptags are already present we change them to ptag_tool, if this is also
+            # already present we throw an error as the annotation does already exist
+            for i, ptag in enumerate(ptags):
+                if ptag in attributes:
+                    print("Renaming {} to {}".format(ptag, ptag + "_" + obj.tool))
+                    ptags[i] = ptag + "_" + obj.tool
+                    if ptags[i] in attributes:
+                        raise RuntimeError(
+                            "Ptag {} does already exist for this tool.".format(ptag)
+                        )
+
+            # remove existing structural tags
+            for stag in stags:
+                if stag in structures:
+                    stags.remove(stag)
+
+            # build the command for encoding
+            line = " "
+            for ptag in ptags:
+                line += "-P {} ".format(ptag)
+            line = obj._get_s_attributes(line, stags)
+            # the "-p -" removes the inbuilt "word" attribute from the encoding process
+            command = (
+                "cwb-encode -d"
+                + obj.encodedir
+                + " -xsBC9 -c utf8 -f "
+                + obj.outname
+                + ".vrt -p - "
+                + line
+            )
+            print(command)
+            os.system(command)
+
+            # update the registry with the new attributes
+            print("Updating the registry entry...")
+            registry.seek(0, 2)
+            print("Adding ptags:")
+            for ptag in ptags:
+                print(ptag)
+                registry.write("ATTRIBUTE {}\n".format(ptag))
+            for stag in stags:
+                registry.write("STRUCTURE {}\n".format(stag))
 
 
 class decode_corpus(encode_corpus):

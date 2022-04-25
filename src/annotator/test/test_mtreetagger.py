@@ -1,7 +1,7 @@
 import re
 import pytest
-import annotator.mtreetagger as mtt
-import annotator.base as be
+import mtreetagger as mtt
+import base as be
 
 
 @pytest.fixture

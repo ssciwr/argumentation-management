@@ -151,10 +151,20 @@ def test_setup(monkeypatch, get_obj):
 
     assert obj.setup() is False
 
-    answers = iter(["n", "y", "{}".format(tmp.name), "test", "test", "y"])
+    answers = iter(["n", "y", "n", "{}".format(tmp.name), "test", "test", "y"])
     monkeypatch.setattr("builtins.input", lambda _: next(answers))
 
     assert obj.setup() is True
+
+    answers = iter(["n", "y", "y", "y"])
+    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+
+    assert obj.setup() is True
+
+    answers = iter(["n", "y", "y", "n", "n"])
+    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+
+    assert obj.setup() is False
 
 
 @unittest.mock.patch("os.system")
