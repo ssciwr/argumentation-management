@@ -1,5 +1,4 @@
 import pytest
-=======
 import base as be
 import mtreetagger as mtt
 from tempfile import TemporaryDirectory
