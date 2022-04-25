@@ -42,21 +42,28 @@ class MyStanza:
         )  # Call the neural pipeline on this list of documents
         return self.mdocs
 
-    def pass_results(self, mydict: dict) -> None:
+    def pass_results(
+        self, mydict: dict, add: bool = False, ptags: list or None = None
+    ) -> None:
         """Funtion to write post-pipeline data to .vrt file and encode for CWB.
 
         Args:
-                out_param[dict]: Parameters for output."""
+                out_param[dict]: Parameters for output.
+                add[bool]: Indicates if a new corpus should be started or if tags should be added to existing corpus."""
 
         jobs = be.prepare_run.get_jobs(self.config)
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         obj = out_object_stanza(self.doc, jobs, start=0)
-        ptags = obj.get_ptags()
+        ptags = ptags or obj.get_ptags()
         stags = obj.get_stags()
         # write out to .vrt
         outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
+
         out_object_stanza.write_vrt(outfile, out)
-        be.encode_corpus.encode_vrt(mydict, ptags, stags)
+        if not add:
+            be.encode_corpus.encode_vrt(mydict, ptags, stags)
+        elif add:
+            be.encode_corpus.add_tags_to_corpus(mydict, ptags, stags)
 
 
 def ner(doc) -> dict:
@@ -79,7 +86,7 @@ class out_object_stanza(be.out_object):
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs: list, start: int):
+    def __init__(self, doc, jobs: list, start: int = 0):
         super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["stanza_names"]
 
