@@ -48,6 +48,34 @@ jobs:
         python -m spacy download en_core_web_sm
         python -m spacy download en_core_web_md
         python -m spacy download de_core_news_md
+    - name: run test base
+      run: |
+        cd src/annotator
+        yes | python -m pytest -s test/test_base.py
+    - name: run test mspacy
+      run: |
+        cd src/annotator
+        yes | python -m pytest -s test/test_mspacy.py
+    - name: run test mstanza
+      run: |
+        cd src/annotator
+        yes | python -m pytest -s test/test_mstanza.py
+    - name: run test mflair
+      run: |
+        cd src/annotator
+        yes | python -m pytest -s test/test_mflair.py
+    - name: run test mtreetagger
+      run: |
+        cd src/annotator
+        yes | python -m pytest -s test/test_mtreetagger.py
+    - name: run test msomajo
+      run: |
+        cd src/annotator
+        yes | python -m pytest -s test/test_msomajo.py
+    - name: run test toxml
+      run: |
+        cd src/annotator
+        yes | python -m pytest -s test/test_to_xml.py
     - name: Run pytest
       run: |
         cd src/annotator
