@@ -1,5 +1,5 @@
 from somajo import SoMaJo
-import annotator.base as be
+import base as be
 
 
 def tokenize(text: list or str, model: str, split_sentences=True) -> str and bool:

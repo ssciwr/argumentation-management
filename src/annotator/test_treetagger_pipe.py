@@ -1,5 +1,5 @@
-import annotator.base as be
-import annotator.mtreetagger as mtt
+import base as be
+import mtreetagger as mtt
 
 if __name__ == "__main__":
     data = be.prepare_run.get_text("src/annotator/test/test_files/example_en.txt")
