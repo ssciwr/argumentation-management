@@ -66,6 +66,7 @@ class MyStanza:
             be.encode_corpus.add_tags_to_corpus(mydict, ptags, stags)
 
 
+# this should not be needed anymore
 def ner(doc) -> dict:
     """Function to extract NER tags from Doc Object."""
 
