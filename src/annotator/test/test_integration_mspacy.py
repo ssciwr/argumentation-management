@@ -1,5 +1,6 @@
 import pytest
 import base as be
+import pipe as pe
 import mspacy as msp
 from tempfile import TemporaryDirectory
 
