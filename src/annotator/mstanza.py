@@ -1,7 +1,7 @@
 # the stanza class object for stanza nlp
 from collections import defaultdict
 import stanza as sa
-import annotator.base as be
+import base as be
 
 
 class MyStanza:
@@ -90,6 +90,8 @@ class out_object_stanza(be.out_object):
     def __init__(self, doc, jobs: list, start: int = 0):
         super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["stanza_names"]
+        self.ptags = self.get_ptags()
+        self.stags = self.get_stags()
 
     # add new method for stanza iteration over tokens/words/ents
     def iterate(self, out: list, sent, style: str) -> list:

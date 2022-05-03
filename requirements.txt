@@ -1,5 +1,5 @@
 spacy
-stanza==1.3.0
+stanza
 flair
 jsonschema
 click==8.0.4
