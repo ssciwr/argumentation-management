@@ -22,10 +22,10 @@ def test_pipe_accurate(get_mydict):
     get_mydict["processing_option"] = "accurate"
     get_mydict["processing_type"] = " lemma, tokenize, pos  "
     obj = pe.SetConfig(get_mydict)
-    assert obj.tool == ["spacy", "stanza", "stanza"]
+    assert obj.tool == ["stanza", "stanza", "stanza"]
     assert obj.processors == ["tokenize", "pos", "lemma"]
-    assert get_mydict["spacy_dict"]["processors"] == ["tok2vec"]
-    assert get_mydict["stanza_dict"]["processors"] == "pos,lemma"
+    assert get_mydict["spacy_dict"]["processors"] == []
+    assert get_mydict["stanza_dict"]["processors"] == "tokenize,pos,lemma"
 
 
 def test_pipe_manual_multiple(get_mydict):
@@ -70,7 +70,7 @@ def test_get_tools(get_mydict):
     processors = obj._get_processors(get_mydict["processors"])
     obj._order_processors(processors)
     obj._get_tools()
-    assert obj.tool == ["spacy", "stanza", "stanza"]
+    assert obj.tool == ["stanza", "stanza", "stanza"]
 
 
 def test_set_model_spacy(get_mydict):
@@ -83,7 +83,7 @@ def test_set_model_spacy(get_mydict):
     assert obj.model == "en_core_web_md"
     get_mydict["document_type"] = "scientific"
     obj = pe.SetConfig(get_mydict)
-    assert obj.model == "en_core_sci_md"
+    assert obj.model == "en_core_sci_sm"
     get_mydict["document_type"] = "historic"
     obj = pe.SetConfig(get_mydict)
     assert obj.model == "en_core_web_md"

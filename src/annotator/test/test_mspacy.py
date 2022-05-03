@@ -64,8 +64,6 @@ def chunked_data():
     tmp.seek(0)
     # print(tmp.read().decode())
     data = be.chunk_sample_text("{}".format(tmp.name))
-    # print(data)
-    # don't need this anymore
     tmp.close()
 
     return data
@@ -119,9 +117,9 @@ def test_init():
 
     modell = ["en_core_web_md", "de_core_news_md", "de_core_news_md", "en_core_web_md"]
     processors = [
-        ["lemmatizer", "tagger", "tok2vec", "attribute_ruler"],
-        ["tagger", "tok2vec", "attribute_ruler"],
-        ["lemmatizer", "tok2vec", "attribute_ruler"],
+        ["tok2vec", "lemmatizer", "tagger", "attribute_ruler"],
+        ["tok2vec", "tagger", "attribute_ruler"],
+        ["tok2vec", "lemmatizer", "attribute_ruler"],
         ["tok2vec", "lemmatizer", "tagger", "attribute_ruler"],
     ]
     # should also check for CPU/GPU here
@@ -150,9 +148,6 @@ def test_apply_to(load_object, get_text):
 
 def test_pass_results(init, load_object, get_text):
     mydict = init[2]
-    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
-    mydict["advanced_options"]["corpus_dir"] = "./test/test_files/"
-    mydict["advanced_options"]["registry_dir"] = "./test/test_files/"
     load_object.apply_to(get_text).pass_results(style="STR", mydict=mydict)
 
 

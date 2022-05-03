@@ -22,7 +22,7 @@ def test_integration_mspacy(load_data):
     mydict["processing_option"] = "fast"
     mydict["processing_type"] = "tokenize, pos, lemma"
     mydict["input"] = "./test/test_files/example_en.txt"
-    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
+    mydict["advanced_options"]["output_dir"] = "./test/out/"
     be.prepare_run.validate_input_dict(mydict)
     # load the pipe object for updating dict with settings
     obj = pe.SetConfig(mydict)

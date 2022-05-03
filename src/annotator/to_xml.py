@@ -1,6 +1,6 @@
 from xml.etree.ElementTree import Element, tostring
 import xml.dom.minidom as mini
-import annotator.base as be
+import base as be
 
 
 def list_to_xml(tag: str, idx: int, mylist: list) -> Element:

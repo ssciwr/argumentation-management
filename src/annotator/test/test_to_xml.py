@@ -64,5 +64,4 @@ def test_beautify(get_data):
 
     with open("./test/test_files/example_en.xml", "r") as f:
         check_xml = f.read()
-
-    assert xml == check_xml
+    assert xml.strip() == check_xml.strip()
