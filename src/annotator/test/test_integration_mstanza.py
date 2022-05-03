@@ -1,15 +1,27 @@
+import pytest
 import base as be
 import pipe as pe
 import mstanza as ma
+from tempfile import TemporaryDirectory
 
 
-def test_integration_mstanza():
+@pytest.fixture()
+def load_data():
+    data = be.prepare_run.get_text("./test/test_files/example_de.txt")
+    return data
+
+
+def test_integration_mstanza(load_data):
+
+    # create temporary directories for the corpora
+    out = TemporaryDirectory()
+
     # read in input.json
     mydict = be.prepare_run.load_input_dict("./input")
     mydict = pe.SetConfig.set_processors(mydict)
     mydict["tool"] = "stanza"
-    mydict["input"] = "./test/test_files/example_de.txt"
-    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
+    mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
+
     # validate the input dict
     be.prepare_run.validate_input_dict(mydict)
     stanza_dict = mydict["stanza_dict"]
@@ -18,7 +30,7 @@ def test_integration_mstanza():
     stanza_dict["dir"] = "./test/models/"
     # stanza_dict = be.prepare_run.update_dict(stanza_dict)
     stanza_dict = be.prepare_run.activate_procs(stanza_dict, "stanza_")
-    data = be.prepare_run.get_text(mydict["input"])
+    data = load_data
     # initialize the pipeline with the dict
     stanza_pipe = ma.MyStanza(stanza_dict)
     # apply pipeline to data and encode

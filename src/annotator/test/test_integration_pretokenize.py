@@ -1,7 +1,8 @@
 import pytest
-import annotator.base as be
-import annotator.msomajo as msm
-import annotator.mtreetagger as mtt
+import base as be
+import msomajo as msm
+import mtreetagger as mtt
+from tempfile import TemporaryDirectory
 
 
 @pytest.fixture
@@ -16,12 +17,22 @@ def setup():
 
 
 def test_integration_msomajo(setup):
+
+    out = TemporaryDirectory()
+
     mydict, text = setup
+    mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
+
     be.prepare_run.pretokenize(
         text, mydict, msm.tokenize, arguments={"model": "en_PTB"}
     )
 
 
 def test_integration_mtreetagger(setup):
+
+    out = TemporaryDirectory()
+
     mydict, text = setup
+    mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
+
     be.prepare_run.pretokenize(text, mydict, mtt.tokenize, arguments={"lang": "en"})
