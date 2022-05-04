@@ -1,3 +1,4 @@
+import os
 import pytest
 import mstanza as ma
 import base as be
@@ -80,8 +81,8 @@ def test_apply_to_en(get_sample, get_sample_stanza):
     # clean up the returned object, convert to string
     doc = str(docobj.doc).replace("\n", "")
     doc = doc.replace(" ", "")
-    test_doc = get_sample_stanza.replace(" ", "")
-    assert doc == test_doc.strip()
+    test_doc = get_sample_stanza
+    assert doc == test_doc
 
 
 @pytest.mark.lang("de")
@@ -93,7 +94,7 @@ def test_apply_to_de(get_sample, get_sample_stanza):
     doc = str(docobj.doc).replace("\n", "")
     doc = doc.replace(" ", "")
     test_doc = get_sample_stanza.replace(" ", "")
-    assert doc == test_doc.strip()
+    assert doc == test_doc
 
 
 @pytest.mark.lang("en")
@@ -157,9 +158,8 @@ def test_out_object_stanza_vrt(get_sample):
     # call vrt writing
     ma.out_object_stanza.write_vrt(outfile, out)
     file = open(outfile + ".vrt", "r")
+    print("wrote " + outfile + ".vrt")
     assert file.read() == file_out.read()
-    import os
-
     if os.path.exists(outfile + ".vrt"):
         os.remove(outfile + ".vrt")
     else:

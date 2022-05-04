@@ -51,7 +51,7 @@ class MyStanza:
                 out_param[dict]: Parameters for output.
                 add[bool]: Indicates if a new corpus should be started or if tags should be added to existing corpus."""
 
-        jobs = be.prepare_run.get_jobs(self.config)
+        jobs = self.config["processors"].split(",")
         out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
         obj = out_object_stanza(self.doc, jobs, start=0)
         ptags = ptags or obj.get_ptags()
@@ -90,6 +90,8 @@ class out_object_stanza(be.out_object):
     def __init__(self, doc, jobs: list, start: int = 0):
         super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["stanza_names"]
+        self.ptags = self.get_ptags()
+        self.stags = self.get_stags()
 
     # add new method for stanza iteration over tokens/words/ents
     def iterate(self, out: list, sent, style: str) -> list:
@@ -101,9 +103,15 @@ class out_object_stanza(be.out_object):
 
         for token, word in zip(getattr(sent, "tokens"), getattr(sent, "words")):
             if token.text != word.text:
-                raise NotImplementedError(
-                    "Multi-word expressions not available currently"
+                print(
+                    "Found MWT - please check if annotated correctly!!! Token {} != word {}.".format(
+                        token.text, word.text
+                    )
                 )
+                print("Because I am not sure how CWB handles these s-attributes.")
+                # raise NotImplementedError(
+                # "Multi-word expressions not available currently"
+                # )
             tid = token.id[0] + self.tstart
             line = self.collect_results(token, tid, word, style)
 

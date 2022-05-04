@@ -44,48 +44,12 @@ class prepare_run:
     # load the dictionary schema and validate against
     @staticmethod
     def validate_input_dict(dict_in: dict) -> None:
-        with open("{}.json".format("input_schema"), "r") as f:
+        with open(
+            "{}.json".format("input_schema"),
+            "r",
+        ) as f:
             myschema = json.load(f)
         jsonschema.validate(instance=dict_in, schema=myschema)
-
-    @staticmethod
-    def activate_procs(mydict: dict, toolstring: str) -> dict:
-        """Move processor-specific keys one level up.
-
-        Args:
-                mydict[dict]: Dict containing parameters.
-                toolstring[str]: String indicating tool to be used."""
-
-        # find out which processors were selected
-        procs = mydict.get("processors", None)
-        if procs is None:
-            raise ValueError("Error: No processors defined!")
-        # separate the processor list at the comma
-        procs = procs.split(",")
-        # pick the corresponding dictionary and clean comments
-        for proc in procs:
-            mystring = toolstring + proc
-            mydict.update(
-                {k: v for k, v in mydict[mystring].items() if not k.startswith("_")}
-            )
-        # remove all other processor dictionaries that are not used
-        # this is not really necessary for stanza but doing it to keep the dict clean
-        mydict = {k: v for k, v in mydict.items() if not k.startswith("toolstring")}
-        return mydict
-
-    @staticmethod
-    def get_jobs(dict_in: dict, tool=None) -> list:
-        """Convenience function to read in Jobs using the processors provided in dict. Can work with
-        basic input.json if provided a tool, or assumes it is in tool-specific dict if no tool is provided."""
-        if tool is not None:
-            print(dict_in["{}_dict".format(tool)]["processors"])
-            return [
-                proc.strip()
-                for proc in dict_in["{}_dict".format(tool)]["processors"].split(",")
-            ]
-        elif tool is None:
-            print(dict_in["processors"])
-            return [proc.strip() for proc in dict_in["processors"].split(",")]
 
     # @staticmethod
     # def get_encoding(dict_in: dict) -> dict:
@@ -119,8 +83,10 @@ class prepare_run:
                 arguments[dict]: Arguments to be passed to the tokenizer, i.e. language, model etc."""
 
         tokenized, senctencized = tokenizer(text, **arguments)
+        # this all needs to be more streamlined not to repeat code
         out_object.write_vrt(
-            mydict["advanced_options"]["output_dir"] + mydict["corpus_name"], tokenized
+            mydict["advanced_options"]["output_dir"] + "/" + mydict["corpus_name"],
+            tokenized,
         )
         if senctencized:
             encode_corpus.encode_vrt(mydict, ptags=None, stags=["s"])
@@ -528,23 +494,27 @@ class out_object:
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
-    def __init__(self, mydict) -> None:
+    def __init__(self, mydict: dict) -> None:
+
         # self.corpusdir = "/home/jovyan/corpus"
         # corpusdir and regdir need to be set from input dict
         # plus we also need to set the corpus name from input dict
-        tool = mydict["tool"]
+        self.tool = mydict["tool"]
+        self.jobs = mydict["processing_type"]
         dirs_dict = mydict["advanced_options"]
+        dirs_dict["output_dir"] = self.fix_path(dirs_dict["output_dir"])
+        print("Writing to output dir {}".format(dirs_dict["output_dir"]))
         self.corpusdir = self.fix_path(dirs_dict["corpus_dir"])
+        self.regdir = self.fix_path(dirs_dict["registry_dir"])
         self.corpusname = mydict["corpus_name"]
         self.outname = dirs_dict["output_dir"] + mydict["corpus_name"]
-        self.regdir = self.fix_path(dirs_dict["registry_dir"])
-        self.jobs = prepare_run.get_jobs(mydict, tool=tool)
-        self.tool = tool
-        self.encodedir = self.corpusdir + self.corpusname
+        print("With outname {}".format(self.outname))
+        self.encodedir = self.corpusdir
+        print("Found outdir {}".format(self.encodedir))
 
         # get attribute names
         self.attrnames = out_object.get_names()
-        self.attrnames = self.attrnames[self.tool + "_names"]
+        # self.attrnames = self.attrnames[self.tool + "_names"]
 
     def _get_s_attributes(self, line: str, stags: list) -> str:
         if stags is not None:
@@ -663,7 +633,7 @@ class encode_corpus:
             command = (
                 "cwb-encode -d "
                 + obj.encodedir
-                + " -xsBC9 -c ascii -f "
+                + " -xsBC9 -c utf8 -f "
                 + obj.outname
                 + ".vrt -R "
                 + obj.regdir

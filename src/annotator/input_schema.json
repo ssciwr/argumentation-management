@@ -15,7 +15,16 @@
       "default": "en",
       "enum": [
         "en",
-        "de"
+        "de",
+        "ar",
+        "be",
+        "fr",
+        "it",
+        "ja",
+        "pt",
+        "ru",
+        "es",
+        "uk"
       ],
       "title": "Document language:",
       "type": "string"
@@ -43,12 +52,6 @@
     },
     "processing_type": {
       "default": "tokenize",
-      "enum": [
-        "tokenize",
-        "sentencize",
-        "POS",
-        "lemma"
-      ],
       "title": "Annotation type:",
       "type": "string"
     }
@@ -115,10 +118,10 @@
             "type": "string"
           },
           "processors": {
-            "default": "tokenize, pos, lemma",
+            "default": [],
             "description": "Comma-separated list of processors to use, can also be given as a dictionary: {'tokenize': 'ewt', 'pos': 'ewt'}",
             "title": "Processors to use:",
-            "type": "string"
+            "type": "list"
           },
           "logging_level": {
             "default": "INFO",
@@ -316,12 +319,6 @@
             ],
             "type": "string"
           },
-          "text_type": {
-            "default": "news",
-            "description": "Type of text to be processed, current options: news, biomed for de and news for en.",
-            "title": "Text type:",
-            "type": "string"
-          },
           "set_device": {
             "default": false,
             "description": "Request job to be run on CPU only (require_CPU), on GPU if available (prefer_GPU), only on GPU (require_GPU, will fail if no GPU), default by false.",
@@ -348,8 +345,8 @@
             "type": "object"
           },
           "processors": {
-            "default": "tok2vec ,senter, tagger, parser, attribute_ruler, lemmatizer, ner",
-            "type": "string",
+            "default": [],
+            "type": "list",
             "title": "Processors"
             },
           

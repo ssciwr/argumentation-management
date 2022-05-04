@@ -1,16 +1,16 @@
 {
     "input": "input.txt",
     "tool": "spacy",
-    "corpus_name": "test",
+    "corpus_name": "test-corpus",
     "language": "en",
     "document_type": "text",
     "processing_option": "fast",
     "processing_type": "tokenize",
     "advanced_options": {
-        "output_dir": "./out/",
+        "output_dir": "./test/out/",
         "output_format": "STR",
-        "corpus_dir": "./corpora/",
-        "registry_dir": "./registry/",
+        "corpus_dir": "./test/corpora/",
+        "registry_dir": "./test/registry/",
         "multiprocessing": false,
         "use_GPU": false
     },
@@ -18,7 +18,7 @@
         "lang": "en",
         "dir": "./test/models/",  
         "package": "default",
-        "processors": "tokenize,pos,lemma",  
+        "processors": [],  
         "logging_level": "INFO",  
         "verbose": true,
         "use_GPU": false,
@@ -57,8 +57,7 @@
     "spacy_dict": {
         "model": "en_core_web_md",
         "lang": "en",
-        "text_type": "news",
-        "processors": "tok2vec, senter, tagger, parser, attribute_ruler, lemmatizer, ner",
+        "processors": [],
         "set_device": false,
         "config": {
             "nlp.batch_size": 256

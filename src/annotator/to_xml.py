@@ -3,7 +3,6 @@ import xml.dom.minidom as mini
 import base as be
 
 
-
 def list_to_xml(tag: str, idx: int, mylist: list) -> Element:
     """Convert a given list l of dictionaries d from stanza output into an xml element under
     given tag with idx."""

@@ -26,15 +26,20 @@ def init_dict(request):
 
 
 test_dict = {
-    "tool": "stanza",
+    "input": "input.txt",
+    "tool": ["stanza", "stanza", "stanza"],
     "corpus_name": "test",
+    "language": "en",
+    "document_type": "text",
+    "processing_option": "manual",
+    "processing_type": ["tokenize", "pos", "lemma"],
     "advanced_options": {
         "output_dir": "./out/",
         "output_format": "STR",
         "corpus_dir": "./corpora/",
         "registry_dir": "./registry/",
     },
-    "stanza_dict": {"processors": "tokenize, pos, lemma"},
+    "stanza_dict": {"processors": ["tokenize", "pos", "lemma"]},
 }
 
 
@@ -65,22 +70,6 @@ def test_load_input_dict(init_dict):
 @pytest.mark.dictname("test/test_files/input2")
 def test_validate_input_dict(init_dict):
     be.prepare_run.validate_input_dict(init_dict)
-
-
-@pytest.mark.dictname("test/test_files/input_stanza")
-def test_activate_procs(init_dict):
-    mydict = be.prepare_run.load_input_dict("input")
-    mydict = mydict["stanza_dict"]
-    mydict_content = be.prepare_run.activate_procs(mydict, "stanza_")
-    assert mydict_content == init_dict
-    # test for empty procs
-    mydict["processors"] = None
-    with pytest.raises(ValueError):
-        assert be.prepare_run.activate_procs(mydict, "stanza_")
-
-
-# chunker class - to be completed
-# def test_chunker
 
 
 def test_chunker():

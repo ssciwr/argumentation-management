@@ -13,39 +13,16 @@ class MySpacy:
     """Base class for spaCy module.
 
     Args:
-        config[dict]: Dict containing the setup for the spaCy run.
+        subdict[dict]: Dict containing the setup for the spaCy run.
     """
 
-    def __init__(self, config: dict):
-        self.lang = config["lang"]
-        self.type = config["text_type"]
-        if "model" in config and config["model"] is not False:
-            self.model = config["model"]
-            print("Using selected model {}.".format(self.model))
-        else:
-            # now here goes the default model if none was selected
-            # this all to be moved to base or another spot where the pipeline
-            # is set
-            if self.lang == "en":
-                if self.type == "news":
-                    self.model = "en_core_web_md"
-                elif self.type == "biomed":
-                    # uses the scispacy package for processing biomedical text
-                    self.model = "en_core_sci_md"
-
-            elif self.lang == "de":
-                if self.type == "news":
-                    self.model = "de_core_news_md"
-
-            # make sure to throw an exception if language is not found
-            # the available languages should be stored in a list somewhere
-            # put it on top of the module for now, find a better place for it later.
-            else:
-                raise ValueError("""Languages not available yet. Aborting...""")
-
-        self.jobs = be.prepare_run.get_jobs(config)
+    def __init__(self, subdict: dict):
+        self.jobs = subdict["processors"]
+        # we need to map the jobs to spacy notation
+        self.model = subdict["model"]
 
         # if we ask for lemma and/or POS we force tok2vec to boost accuracy
+        # also add in attribute ruler as it is cheap
         if (
             "lemmatizer" in self.jobs
             or "tagger" in self.jobs
@@ -54,18 +31,20 @@ class MySpacy:
         ):
             if "tok2vec" not in self.jobs:
                 self.jobs = ["tok2vec"] + self.jobs
+        if "attribute_ruler" not in self.jobs:
+            self.jobs.append("attribute_ruler")
 
         # use specific device settings if requested
         # this also to be set in the pipeline decision
-        if config["set_device"]:
-            if config["set_device"] == "prefer_GPU":
+        if subdict["set_device"]:
+            if subdict["set_device"] == "prefer_GPU":
                 sp.prefer_gpu()
-            elif config["set_device"] == "require_GPU":
+            elif subdict["set_device"] == "require_GPU":
                 sp.require_gpu()
-            elif config["set_device"] == "require_CPU":
+            elif subdict["set_device"] == "require_CPU":
                 sp.require_cpu()
 
-        self.config = config["config"]
+        self.config = subdict["config"]
 
 
 # build the pipeline from config-dict
@@ -78,14 +57,8 @@ class spacy_pipe(MySpacy):
         super().__init__(config)
         # use a specific pipeline if requested
         self.validated = []
-        # define language -> is this smart or do we want to load a model and disable?
-        # -> changed it to load a model and disable, as I was experiencing inconsistencies
-        # with building from base language even for just the two models I tried
         try:
-            if self.config:
-                self.nlp = sp.load(self.model, config=self.config)
-            else:
-                self.nlp = sp.load(self.model)
+            self.nlp = sp.load(self.model, config=self.config)
 
         except OSError:
             raise OSError("Could not find {} in standard directory.".format(self.model))
