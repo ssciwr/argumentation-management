@@ -83,8 +83,10 @@ class prepare_run:
                 arguments[dict]: Arguments to be passed to the tokenizer, i.e. language, model etc."""
 
         tokenized, senctencized = tokenizer(text, **arguments)
+        # this all needs to be more streamlined not to repeat code
         out_object.write_vrt(
-            mydict["advanced_options"]["output_dir"] + mydict["corpus_name"], tokenized
+            mydict["advanced_options"]["output_dir"] + "/" + mydict["corpus_name"],
+            tokenized,
         )
         if senctencized:
             encode_corpus.encode_vrt(mydict, ptags=None, stags=["s"])
@@ -500,10 +502,13 @@ class encode_corpus:
         self.tool = mydict["tool"]
         self.jobs = mydict["processing_type"]
         dirs_dict = mydict["advanced_options"]
+        dirs_dict["output_dir"] = self.fix_path(dirs_dict["output_dir"])
+        print("Writing to output dir {}".format(dirs_dict["output_dir"]))
         self.corpusdir = self.fix_path(dirs_dict["corpus_dir"])
         self.regdir = self.fix_path(dirs_dict["registry_dir"])
         self.corpusname = mydict["corpus_name"]
         self.outname = dirs_dict["output_dir"] + mydict["corpus_name"]
+        print("With outname {}".format(self.outname))
         self.encodedir = self.corpusdir
         print("Found outdir {}".format(self.encodedir))
 
