@@ -166,8 +166,8 @@ class spacy_pipe(MySpacy):
             )
 
 
-def sentencize_spacy(lang: str, data: str) -> list:
-    """Function to sentencize given text data in either German or English language.
+def sentencize_spacy(model: str, data: str) -> list:
+    """Function to sentencize given text data.
 
     Args:
             data[str]: The text string to be split into sentences.
@@ -177,15 +177,8 @@ def sentencize_spacy(lang: str, data: str) -> list:
             as well as the number of tokens previous to the sentence to easily keep
             track of the correct token index for a given sentence in the list.
     """
-
-    if lang == "en":
-        nlp = English()
-        nlp.add_pipe("sentencizer")
-
-    elif lang == "de":
-        nlp = German()
-        nlp.add_pipe("sentencizer")
-
+    nlp = sp.load(model)
+    nlp.add_pipe("sentencizer")
     doc = nlp(data)
     assert doc.has_annotation("SENT_START")
 
@@ -256,11 +249,11 @@ if __name__ == "__main__":
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     mydict["processing_option"] = "accurate"
     mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
-    obj = pe.SetConfig(mydict)
+    pe.SetConfig(mydict)
     be.prepare_run.validate_input_dict(mydict)
     # now we still need to add the order of steps - processors was ordered list
     # need to access that and tools to call tools one by one
-    spacy_dict = obj.mydict["spacy_dict"]
+    spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config
     pipe = spacy_pipe(spacy_dict)
     data = be.prepare_run.get_text("./src/annotator/test/test_files/example_de.txt")
