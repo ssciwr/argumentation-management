@@ -185,56 +185,6 @@ def test_output_sent(pipe_sent):
     assert test_out == check
 
 
-def test_pipe_multiple(load_object, chunked_data):
-    """Check if the pipe_multiple function works correctly."""
-
-    test_obj = load_object
-
-    # lets just quickly emulate a file for our input, maybe change the chunker to also allow for direct string input down the line?
-    data = chunked_data
-    results_pipe = test_obj.pipe_multiple(data, ret=True)
-    results_alt = test_obj.get_multiple(data, ret=True)
-
-    # using spacy 3.2.1 and en_core_web_md 3.2.0
-    check_chunked = [
-        '<textid="1"> \n',
-        "<s>\n",
-        "This\tDT\tthis\t \tnsubj\tPRON\n",
-        "is\tVBZ\tbe\t \tROOT\tAUX\n",
-        "an\tDT\tan\t \tdet\tDET\n",
-        "example\tNN\texample\t \tcompound\tNOUN\n",
-        "text\tNN\ttext\t \tattr\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
-        "</s>\n",
-        "\n",
-        '<subtextid="1"> \n',
-        "<s>\n",
-        "It\tPRP\tit\t \tnsubj\tPRON\n",
-        "has\tVBZ\thave\t \tROOT\tVERB\n",
-        "some\tDT\tsome\t \tdet\tDET\n",
-        "subtext\tNN\tsubtext\t \tdobj\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
-        "</s>\n",
-        "</subtext> \n",
-        "\n",
-        "</text> \n",
-        '<textid="2"> \n',
-        "<s>\n",
-        "Here\tRB\there\t \tadvmod\tADV\n",
-        "is\tVBZ\tbe\t \tROOT\tAUX\n",
-        "some\tDT\tsome\t \tadvmod\tPRON\n",
-        "more\tJJR\tmore\t \tamod\tADJ\n",
-        "text\tNN\ttext\t \tnsubj\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
-        "</s>\n",
-        "</text>\n",
-    ]
-
-    assert type(results_pipe) == list
-    assert check_chunked == results_pipe
-    assert check_chunked == results_alt
-
-
 def test_sentencize():
 
     text_en = "This is a sentence. This is another sentence, or is it?"
