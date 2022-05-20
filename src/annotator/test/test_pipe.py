@@ -56,7 +56,7 @@ def test_get_processors(get_mydict):
     assert processors == ["lemma", "tokenize", "pos"]
 
 
-def test_order_proessors(get_mydict):
+def test_order_processors(get_mydict):
     get_mydict["processors"] = " lemma, tokenize, pos  "
     obj = pe.SetConfig(get_mydict)
     processors = obj._get_processors(get_mydict["processors"])
@@ -78,21 +78,37 @@ def test_set_model_spacy(get_mydict):
     obj = pe.SetConfig(get_mydict)
     assert obj.model == "mymodel"
     get_mydict.pop("model", None)
-    get_mydict["document_type"] = "text"
-    obj = pe.SetConfig(get_mydict)
-    assert obj.model == "en_core_web_md"
-    get_mydict["document_type"] = "scientific"
-    obj = pe.SetConfig(get_mydict)
-    assert obj.model == "en_core_sci_sm"
-    get_mydict["document_type"] = "historic"
-    obj = pe.SetConfig(get_mydict)
+    obj._set_model_spacy()
     assert obj.model == "en_core_web_md"
     get_mydict["language"] = "de"
+    obj._set_model_spacy()
+    assert obj.model == "de_core_news_md"
 
 
-def test_set_model_stanza():
-    pass
+def test_set_model_stanza(get_mydict):
+    get_mydict["model"] = "mymodel"
+    get_mydict["processing_option"] = "manual"
+    get_mydict["tool"] = "stanza"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.model == "mymodel"
+    get_mydict.pop("model", None)
+    obj._set_model_stanza()
+    assert obj.model is None
 
 
 def test_set_processors(get_mydict):
+    get_mydict["processing_option"] = "manual"
+    get_mydict["tool"] = "stanza"
+    get_mydict["processing_type"] = "tokenize, pos, lemma"
     obj = pe.SetConfig(get_mydict)
+    assert obj.tool == ["stanza", "stanza", "stanza"]
+    assert obj.processors == ["tokenize", "pos", "lemma"]
+    assert get_mydict["processing_type"] == ["tokenize", "pos", "lemma"]
+
+
+def set_tool(get_mydict):
+    get_mydict["processing_option"] = "manual"
+    get_mydict["tool"] = "stanza"
+    get_mydict["processing_type"] = "tokenize, pos, lemma"
+    obj = pe.SetConfig(get_mydict)
+    assert get_mydict["tool"] == ["stanza", "stanza", "stanza"]

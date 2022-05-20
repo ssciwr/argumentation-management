@@ -42,7 +42,7 @@ class SetConfig:
             },
         }
         self.mydict = mydict
-        self.case = self.processing_option[self.mydict["processing_option"]]
+        self.case = self.processing_option[self.mydict.get("processing_option", "fast")]
         self.case()
         # validate that processors and tool have same length
         self._validate_processors()
@@ -192,7 +192,7 @@ class SetConfig:
         temp = ",".join(self.mydict["stanza_dict"]["processors"])
         self.mydict["stanza_dict"]["processors"] = temp
         # update processors in dict
-        self.mydict["processing_option"] = self.processors
+        self.mydict["processing_type"] = self.processors
         return self.mydict
 
     def set_tool(self) -> dict:
