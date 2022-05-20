@@ -209,27 +209,40 @@ class PipeText:
         # find out if text will be sentencized with SpaCy
         self.sentencize = False
         self.tool = self.mydict["tool"]
-        self.processors = self.mydict["processing_option"]
+        self.processors = self.mydict["processing_type"]
+        self._get_sentencize()
+        if self.sentencize:
+            self.sents = self._run_sentencize()
+        else:
+            self.data = be.prepare_run.get_text(mydict["input"])
+        # now either pipe the data through tool or sentences
+        # recommend to do one tool's annotation, then encode, decode and annotate again..?
+        # how to make sure tokens stay the same?
+
+    def _get_sentencize(self) -> bool:
         for proc, mytool in zip(self.processors, self.tool):
+            print(proc, mytool)
             if proc == "sentencize" and mytool == "spacy":
                 self.sentencize = True
         # find out if text will be analyzed with different tool
         if self.sentencize and all(mytool == "spacy" for mytool in self.tool):
             # if it is spacy only then we skip pre-sentencizing
             self.sentencize = False
+        return self.sentencize
+
+    def _run_sentencize(self):
         # get the text
-        data = be.prepare_run.get_text(mydict["input"])
-        # now call the options one by one
-        if self.sentencize:
-            # call spacy sentencize function
-            sents = msp.sentencize_spacy(mydict["spacy_dict"]["model"], data)
-            print(sents)
+        self.data = be.prepare_run.get_text(mydict["input"])
+        # call spacy sentencize function
+        self.sents = msp.sentencize_spacy(mydict["spacy_dict"]["model"], self.data)
+        return self.sents
 
 
 if __name__ == "__main__":
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     mydict["processing_option"] = "accurate"
     mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
+    be.prepare_run.validate_input_dict(mydict)
     SetConfig(mydict)
     PipeText(mydict)
     # now we still need to add the order of steps - processors was ordered list
