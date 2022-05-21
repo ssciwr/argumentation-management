@@ -46,6 +46,7 @@ class prepare_run:
     def validate_input_dict(dict_in: dict) -> None:
         with open(
             "{}.json".format("input_schema"),
+            # "{}.json".format("./src/annotator/input_schema"),
             "r",
         ) as f:
             myschema = json.load(f)

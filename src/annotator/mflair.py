@@ -33,7 +33,8 @@ class flair_pipe(Flair):
 
         # first, check for language
         if self.lang == "de":
-
+            # set model for spacy senter
+            self.model = "de_core_news_md"
             # then check for type of input, is it a str or a list of strings
             if type(self.job) == str:
 
@@ -53,6 +54,8 @@ class flair_pipe(Flair):
 
         # same stuff for english
         elif self.lang == "en":
+            # set model for spacy senter
+            self.model = "en_core_web_md"
 
             if type(self.job) == str:
                 if self.job == "ner":
@@ -72,7 +75,7 @@ class flair_pipe(Flair):
         Args:
                 data[str]: Input data string containing the text to be sentencized."""
 
-        self.sents = msp.sentencize_spacy(self.lang, data)
+        self.sents = msp.sentencize_spacy(self.model, data)
         return self
 
     def apply_to(self) -> Flair:
