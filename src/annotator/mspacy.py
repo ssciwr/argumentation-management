@@ -142,59 +142,6 @@ class spacy_pipe(MySpacy):
                 sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
         return sents
 
-    def pass_results(
-        self,
-        mydict: dict or None = None,
-        style: str = "STR",
-        ret: bool = False,
-        start: int = 0,
-        add: bool = False,
-        ptags: list or None = None,
-    ) -> list or None:
-
-        """Function to build list with results from the doc object
-        and write it to a .vrt file / encode to cwb directly.
-
-        -> can only be called after pipeline was applied.
-
-        Args:
-            mydict[dict]: Dict containing the information to encode the .vrt for cwb.
-            ret[bool]: Wheter to return output as list (True) or write to .vrt file (False, Default)
-            start[int]: Starting index for token indexing in passed data, useful if data is chunk of larger corpus.
-            add[bool]: Indicates if a new corpus should be started or if tags should be added to existing corpus.
-        """
-
-        out_obj = out_object_spacy(self.doc, self.jobs, start=start)
-        out = out_obj.fetch_output(style)
-        ptags = ptags or out_obj.ptags
-        stags = out_obj.stags
-        # write to file -> This overwrites any existing file of given name;
-        # as all of this should be handled internally and the files are only
-        # temporary, this should not be a problem. right?
-        if mydict is not None:
-            outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-        if ret is False and style == "STR" and mydict is not None and add is False:
-            be.out_object.write_vrt(outfile, out)
-            # encode
-            be.encode_corpus.encode_vrt(mydict, ptags, stags)
-
-        elif ret is False and style == "STR" and mydict is not None and add is True:
-            be.out_object.write_vrt(outfile, out)
-            be.encode_corpus.add_tags_to_corpus(mydict, ptags, stags)
-
-        elif ret is False and style == "DICT" and mydict is not None:
-            be.out_object.write_xml(
-                mydict["output"].replace("/", "_"), mydict["output"], out
-            )
-
-        elif ret is True:
-            return out
-
-        else:
-            raise RuntimeError(
-                "If ret is not set to True, a dict containing the encoding parameters is needed!"
-            )
-
 
 # inherit the output class from base and add spacy-specific methods
 class out_object_spacy(be.out_object):
@@ -236,9 +183,9 @@ class out_object_spacy(be.out_object):
         if self.doc.has_annotation("SENT_START"):
             # apply sentence and sublevel annotation
             if style == "STR":
-                out = self.assemble_output_sent(self.doc, self.jobs, start=self.start)
+                out = self.assemble_output_sent()
             elif style == "DICT":
-                out = self.assemble_output_xml(self.doc, self.jobs, start=self.start)
+                out = self.assemble_output_xml()
 
         # if not sentencized just iterate doc and extract the results
         elif not self.doc.has_annotation("SENT_START"):

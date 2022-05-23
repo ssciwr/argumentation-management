@@ -146,11 +146,6 @@ def test_apply_to(load_object, get_text):
     assert str(test_obj.doc) == get_text
 
 
-def test_pass_results(init, load_object, get_text):
-    mydict = init[2]
-    load_object.apply_to(get_text).pass_results(style="STR", mydict=mydict)
-
-
 def test_output_sent(pipe_sent):
     """Check if output is as expected, use current output as example result.
     Additionally use doc build through spacy directly and compare output."""

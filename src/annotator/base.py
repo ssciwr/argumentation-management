@@ -90,9 +90,11 @@ class prepare_run:
             tokenized,
         )
         if senctencized:
-            encode_corpus.encode_vrt(mydict, ptags=None, stags=["s"])
+            encode_obj = encode_corpus(mydict)
+            encode_obj.encode_vrt(ptags=None, stags=["s"])
         else:
-            encode_corpus.encode_vrt(mydict, ptags=None, stags=None)
+            encode_obj = encode_corpus(mydict)
+            encode_obj.encode_vrt(ptags=None, stags=None)
 
 
 # the below in a chunker class
@@ -206,36 +208,32 @@ class out_object:
         f = open(name, "w")
         return f
 
-    @classmethod
-    def assemble_output_sent(cls, doc, jobs: list, start: int = 0) -> list:
+    def assemble_output_sent(self) -> list:
         """Template function to assemble output for tool at sentence level."""
 
-        obj = cls(doc, jobs, start)
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        # print(obj.attrnames)
-        if "sentence" not in obj.attrnames:
+        # print(cls.attrnames)
+        if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
-        obj.tstart = 0
-        for sent in getattr(obj.doc, obj.attrnames["sentence"]):
+        self.tstart = 0
+        for sent in getattr(self.doc, self.attrnames["sentence"]):
             out.append("<s>\n")
-            out = obj.iterate(out, sent, "STR")
+            out = self.iterate(out, sent, "STR")
             out.append("</s>\n")
         return out
 
-    @classmethod
-    def assemble_output_xml(cls, doc, jobs, start):
-        obj = cls(doc, jobs, start)
+    def assemble_output_xml(self):
         out = []
-        if "sentence" not in obj.attrnames:
+        if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
-        obj.tstart = 0
-        for sent in getattr(obj.doc, obj.attrnames["sentence"]):
+        self.tstart = 0
+        for sent in getattr(self.doc, self.attrnames["sentence"]):
             out.append([])
-            obj.iterate(out[-1], sent, "DICT")
+            self.iterate(out[-1], sent, "DICT")
         return out
 
     @staticmethod
@@ -616,29 +614,26 @@ class encode_corpus:
         # path = "/" + path
         return path
 
-    @classmethod
-    def encode_vrt(cls, mydict, ptags, stags):
+    def encode_vrt(self, ptags, stags):
         """Encode a new corpus into CWB from an existing vrt file."""
-
-        obj = cls(mydict)
 
         line = " "
         # find out which options are to be encoded
-        line = obj._get_s_attributes(line, stags)
-        line = obj._get_p_attributes(line, ptags)
-        purged = obj.setup()
+        line = self._get_s_attributes(line, stags)
+        line = self._get_p_attributes(line, ptags)
+        purged = self.setup()
         if purged:
             # call the os with the encode command
             print("Encoding the corpus...")
             print("Options are:")
             command = (
                 "cwb-encode -d "
-                + obj.encodedir
+                + self.encodedir
                 + " -xsBC9 -c utf8 -f "
-                + obj.outname
+                + self.outname
                 + ".vrt -R "
-                + obj.regdir
-                + obj.corpusname
+                + self.regdir
+                + self.corpusname
                 + line
             )
             print(command)
@@ -646,7 +641,7 @@ class encode_corpus:
             print("Updating the registry entry...")
             print("Options are:")
             # call the os with the registry update command
-            command = "cwb-makeall -r " + obj.regdir + " -V " + obj.corpusname
+            command = "cwb-makeall -r " + self.regdir + " -V " + self.corpusname
             print(command)
             os.system(command)
         elif not purged:
@@ -664,8 +659,6 @@ class encode_corpus:
                 stags[list]: List containing the stags present in the corpus.
                             Only checked for the <s>...</s> structural attribute."""
 
-        obj = cls(mydict)
-
         # edit the vrt file to remove the words, this could maybe be done
         # before the vrt is even written in the first place if we know
         # that we want to add to an existing corpus
@@ -674,7 +667,7 @@ class encode_corpus:
         #########################################################
 
         new = ""
-        with open(obj.outname + ".vrt", "r") as vrt:
+        with open(cls.outname + ".vrt", "r") as vrt:
             lines = vrt.readlines()
             for line in lines:
                 if not line.startswith("<"):
@@ -682,13 +675,13 @@ class encode_corpus:
                 else:
                     new += line
 
-        with open(obj.outname + ".vrt", "w") as vrt:
+        with open(cls.outname + ".vrt", "w") as vrt:
             vrt.write(new)
 
         ##########################################################
 
         # check which attributes are already present in the corpus
-        with open(obj.regdir + obj.corpusname, "r+") as registry:
+        with open(cls.regdir + cls.corpusname, "r+") as registry:
             attributes = []
             structures = []
             for line in registry:
@@ -701,8 +694,8 @@ class encode_corpus:
             # already present we throw an error as the annotation does already exist
             for i, ptag in enumerate(ptags):
                 if ptag in attributes:
-                    print("Renaming {} to {}".format(ptag, ptag + "_" + obj.tool))
-                    ptags[i] = ptag + "_" + obj.tool
+                    print("Renaming {} to {}".format(ptag, ptag + "_" + cls.tool))
+                    ptags[i] = ptag + "_" + cls.tool
                     if ptags[i] in attributes:
                         raise RuntimeError(
                             "Ptag {} does already exist for this tool.".format(ptag)
@@ -717,13 +710,13 @@ class encode_corpus:
             line = " "
             for ptag in ptags:
                 line += "-P {} ".format(ptag)
-            line = obj._get_s_attributes(line, stags)
+            line = cls._get_s_attributes(line, stags)
             # the "-p -" removes the inbuilt "word" attribute from the encoding process
             command = (
                 "cwb-encode -d"
-                + obj.encodedir
+                + cls.encodedir
                 + " -xsBC9 -c utf8 -f "
-                + obj.outname
+                + cls.outname
                 + ".vrt -p - "
                 + line
             )

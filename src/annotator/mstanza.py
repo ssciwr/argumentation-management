@@ -52,18 +52,22 @@ class MyStanza:
                 add[bool]: Indicates if a new corpus should be started or if tags should be added to existing corpus."""
 
         jobs = self.config["processors"].split(",")
-        out = out_object_stanza.assemble_output_sent(self.doc, jobs, start=0)
-        obj = out_object_stanza(self.doc, jobs, start=0)
-        ptags = ptags or obj.get_ptags()
-        stags = obj.get_stags()
+        out_obj = out_object_stanza(self.doc, jobs, start=0)
+        print(out_obj.attrnames)
+        out = out_obj.assemble_output_sent()
+
+        ptags = ptags or out_obj.get_ptags()
+        stags = out_obj.get_stags()
         # write out to .vrt
         outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
 
         out_object_stanza.write_vrt(outfile, out)
         if not add:
-            be.encode_corpus.encode_vrt(mydict, ptags, stags)
+            encode_obj = be.encode_corpus(mydict)
+            encode_obj.encode_vrt(ptags, stags)
         elif add:
-            be.encode_corpus.add_tags_to_corpus(mydict, ptags, stags)
+            encode_obj = be.encode_corpus(mydict)
+            encode_obj.add_tags_to_corpus(mydict, ptags, stags)
 
 
 # this should not be needed anymore

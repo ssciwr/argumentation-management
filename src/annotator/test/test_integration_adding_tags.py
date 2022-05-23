@@ -29,6 +29,7 @@ def test_integration_adding_tags(load_data):
     out = pipe.apply_to(data)
 
     out.pass_results(mydict, "STR")
+
     cwd = os.getcwd()
     os.system("cd {} && touch test && cd {}".format(reg.name, cwd))
     mydict["tool"] = "spacy"

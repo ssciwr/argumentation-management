@@ -95,11 +95,13 @@ class treetagger_pipe:
 
             if not add:
                 out_object_treetagger.write_vrt(outfile, out)
-                be.encode_corpus.encode_vrt(mydict, ptags, stags)
+                encode_obj = be.encode_corpus(mydict)
+                encode_obj.encode_vrt(ptags, stags)
 
             elif add:
                 be.out_object.write_vrt(outfile, out)
-                be.encode_corpus.add_tags_to_corpus(mydict, ptags, stags)
+                encode_obj = be.encode_corpus(mydict)
+                encode_obj.encode_vrt(ptags, stags)
 
         elif style == "DICT":
             be.out_object.write_xml(

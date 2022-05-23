@@ -106,7 +106,8 @@ def test_out_object_stanza_tok(get_sample, get_out_sample):
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out = ma.out_object_stanza.assemble_output_sent(docobj.doc, procstring, start=0)
+    out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
+    out = out_obj.assemble_output_sent()
     test_out = get_out_sample
     # compare as string not as list
     # reading in as list will add further \n
@@ -122,7 +123,8 @@ def test_out_object_stanza_tok_pos(get_sample, get_out_sample):
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out = ma.out_object_stanza.assemble_output_sent(docobj.doc, procstring, start=0)
+    out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
+    out = out_obj.assemble_output_sent()
     test_out = get_out_sample
     # compare as string not as list
     # reading in as list will add further \n
@@ -138,7 +140,8 @@ def test_out_object_stanza_tok_pos_lemma(get_sample, get_out_sample):
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out = ma.out_object_stanza.assemble_output_sent(docobj.doc, procstring, start=0)
+    out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
+    out = out_obj.assemble_output_sent()
     test_out = get_out_sample
     # compare as string not as list
     # reading in as list will add further \n
@@ -153,7 +156,8 @@ def test_out_object_stanza_vrt(get_sample):
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out = ma.out_object_stanza.assemble_output_sent(docobj.doc, procstring, start=0)
+    out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
+    out = out_obj.assemble_output_sent()
     file_out = open(outfile + "_test.vrt", "r")
     # call vrt writing
     ma.out_object_stanza.write_vrt(outfile, out)
