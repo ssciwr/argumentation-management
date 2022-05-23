@@ -112,6 +112,36 @@ class spacy_pipe(MySpacy):
         self.doc = self.nlp(data)
         return self
 
+    # sentencizer only
+    @staticmethod
+    def sentencize_spacy(model: str, data: str) -> list:
+        """Function to sentencize given text data.
+
+        Args:
+                data[str]: The text string to be split into sentences.
+
+        Returns:
+                List[List[str, int]]: List containing lists which contain the sentences as strings
+                as well as the number of tokens previous to the sentence to easily keep
+                track of the correct token index for a given sentence in the list.
+        """
+        nlp = sp.load(model)
+        nlp.add_pipe("sentencizer")
+        doc = nlp(data)
+        assert doc.has_annotation("SENT_START")
+
+        sents = []
+
+        for i, sent in enumerate(doc.sents):
+            if i == 0:
+                # need to take the len of the split str as otherwise grouping of multiple tokens by
+                # spacy can be a problem. This now assumes that tokens are always separated by a
+                # whitespace, which seems reasonable to me -> Any examples to the contrary?
+                sents.append([sent.text, len(sent.text.split())])
+            elif i > 0:
+                sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
+        return sents
+
     def pass_results(
         self,
         mydict: dict or None = None,
@@ -166,35 +196,6 @@ class spacy_pipe(MySpacy):
             )
 
 
-def sentencize_spacy(model: str, data: str) -> list:
-    """Function to sentencize given text data.
-
-    Args:
-            data[str]: The text string to be split into sentences.
-
-    Returns:
-            List[List[str, int]]: List containing lists which contain the sentences as strings
-            as well as the number of tokens previous to the sentence to easily keep
-            track of the correct token index for a given sentence in the list.
-    """
-    nlp = sp.load(model)
-    nlp.add_pipe("sentencizer")
-    doc = nlp(data)
-    assert doc.has_annotation("SENT_START")
-
-    sents = []
-
-    for i, sent in enumerate(doc.sents):
-        if i == 0:
-            # need to take the len of the split str as otherwise grouping of multiple tokens by
-            # spacy can be a problem. This now assumes that tokens are always separated by a
-            # whitespace, which seems reasonable to me -> Any examples to the contrary?
-            sents.append([sent.text, len(sent.text.split())])
-        elif i > 0:
-            sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
-    return sents
-
-
 # inherit the output class from base and add spacy-specific methods
 class out_object_spacy(be.out_object):
     """Out object for spacy annotation, adds spacy-specific methods to the
@@ -243,23 +244,3 @@ class out_object_spacy(be.out_object):
         elif not self.doc.has_annotation("SENT_START"):
             out = self.iterate(out, self.doc, style)
         return out
-
-
-if __name__ == "__main__":
-    mydict = be.prepare_run.load_input_dict("./src/annotator/input")
-    mydict["processing_option"] = "accurate"
-    mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
-    pe.SetConfig(mydict)
-    be.prepare_run.validate_input_dict(mydict)
-    # now we still need to add the order of steps - processors was ordered list
-    # need to access that and tools to call tools one by one
-    spacy_dict = mydict["spacy_dict"]
-    # load the pipeline from the config
-    pipe = spacy_pipe(spacy_dict)
-    data = be.prepare_run.get_text("./src/annotator/test/test_files/example_de.txt")
-    # apply pipeline to data
-    annotated = pipe.apply_to(data)
-    # get the dict for encoding
-    # encoding_dict = be.prepare_run.get_encoding(mydict)
-    # Write vrt and encode
-    annotated.pass_results(mydict)
