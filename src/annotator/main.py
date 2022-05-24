@@ -38,16 +38,16 @@ if __name__ == "__main__":
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     add = False
     # if ret is False and style == "STR" and mydict is not None and add is False:
-    if not add:
-        out_obj.write_vrt(outfile, out)
-        # encode
-        encode_obj = be.encode_corpus(mydict)
-        encode_obj.encode_vrt(ptags, stags)
+    # if not add:
+    out_obj.write_vrt(outfile, out)
+    # encode
+    encode_obj = be.encode_corpus(mydict)
+    encode_obj.encode_vrt(ptags, stags)
     # elif ret is False and style == "STR" and mydict is not None and add is True:
-    else:
-        out_obj.write_vrt(outfile, out)
-        encode_obj = be.encode_corpus(mydict)
-        encode_obj.encode_vrt(ptags, stags)
+    # else:
+    #   out_obj.write_vrt(outfile, out)
+    #   encode_obj = be.encode_corpus(mydict)
+    #   encode_obj.encode_vrt(ptags, stags)
     # elif ret is False and style == "DICT" and mydict is not None:
     # be.out_object.write_xml(
     # mydict["output"].replace("/", "_"), mydict["output"], out

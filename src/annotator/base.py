@@ -710,7 +710,7 @@ class encode_corpus:
             line = " "
             for ptag in ptags:
                 line += "-P {} ".format(ptag)
-            line = cls._get_s_attributes(line, stags)
+            line = cls._get_s_attributes(cls, line, stags)
             # the "-p -" removes the inbuilt "word" attribute from the encoding process
             command = (
                 "cwb-encode -d"
