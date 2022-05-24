@@ -9,3 +9,5 @@ coverage:
     patch:
       default:
         target: 80
+  ignore:
+    - "./src/annotator/main.py"
