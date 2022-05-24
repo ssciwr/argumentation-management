@@ -144,7 +144,7 @@ class spacy_pipe(MySpacy):
 
 
 # inherit the output class from base and add spacy-specific methods
-class out_object_spacy(be.OutObject):
+class OutSpacy(be.OutObject):
     """Out object for spacy annotation, adds spacy-specific methods to the
     vrt/xml writing."""
 

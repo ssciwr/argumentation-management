@@ -36,7 +36,7 @@ def test_integration_mspacy(load_data):
     # encoding_dict = be.prepare_run.get_encoding(mydict)
     # Write vrt and encode
     start = 0
-    out_obj = msp.out_object_spacy(annotated.doc, annotated.jobs, start=start)
+    out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)
     style = "STR"
     out = out_obj.fetch_output(style)
     ptags = out_obj.ptags

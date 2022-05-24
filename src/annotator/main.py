@@ -28,7 +28,7 @@ if __name__ == "__main__":
     annotated = pipe.apply_to(data)
     # we should not need start ..?
     start = 0
-    out_obj = msp.out_object_spacy(annotated.doc, annotated.jobs, start=start)
+    out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)
     # for xml or vrt, let's stick with vrt for now - TODO
     style = "STR"
     out = out_obj.fetch_output(style)
