@@ -14,7 +14,7 @@ def load_data():
 def test_integration_mspacy(load_data):
 
     # create temporary directories for the corpora
-    out = TemporaryDirectory()
+    # out = TemporaryDirectory()
     # read in input.json
     mydict = be.prepare_run.load_input_dict("./input")
     mydict["language"] = "en"
@@ -45,7 +45,7 @@ def test_integration_mspacy(load_data):
     # as all of this should be handled internally and the files are only
     # temporary, this should not be a problem. right?
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-    add = False
+    # add = False
     # if ret is False and style == "STR" and mydict is not None and add is False:
     # if not add:
     out_obj.write_vrt(outfile, out)
