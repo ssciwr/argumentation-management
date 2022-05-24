@@ -5,8 +5,9 @@ import os
 import to_xml as txml
 
 
-# the below functions in a class with attributes
 class prepare_run:
+    """Class that contains all general pre-processing methods."""
+
     def __init__(self) -> None:
         pass
 
@@ -85,7 +86,7 @@ class prepare_run:
 
         tokenized, senctencized = tokenizer(text, **arguments)
         # this all needs to be more streamlined not to repeat code
-        out_object.write_vrt(
+        OutObject.write_vrt(
             mydict["advanced_options"]["output_dir"] + "/" + mydict["corpus_name"],
             tokenized,
         )
@@ -97,7 +98,7 @@ class prepare_run:
             encode_obj.encode_vrt(ptags=None, stags=None)
 
 
-# the below in a chunker class
+# the below to be removed - TODO
 # I thought this would belong here rather than mspacy.
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
@@ -183,11 +184,11 @@ def find_last_idx(chunk: list) -> int:
 NOT_DEF = " "
 
 
-# the base out_object class
+# the base OutObject class
 # this class is inherited in the different modules
 # selected methods are overwritten/added depending on the requirements
 # the mapping dict to make the conversion clear and not to duplicate code
-class out_object:
+class OutObject:
     """The base output object and namespace. Write the vrt file."""
 
     def __init__(self, doc, jobs: list, start: int):
@@ -261,7 +262,7 @@ class out_object:
         """Function to easily collect the current ptags in a list.
 
         !!!
-        Does the same case selection as out_object.collect_results, so the order
+        Does the same case selection as OutObject.collect_results, so the order
         of .vrt and this list should always be identical. If you change one
         MAKE SURE to also change the other.
         !!!
@@ -323,28 +324,28 @@ class out_object:
 
         if self.attrnames["proc_pos"] in self.jobs:
 
-            line["POS"] = out_object.grab_tag(word, self.attrnames["pos"])
+            line["POS"] = OutObject.grab_tag(word, self.attrnames["pos"])
 
         if self.attrnames["proc_lemma"] in self.jobs:
-            line["LEMMA"] = out_object.grab_lemma(word, self.attrnames["lemma"])
+            line["LEMMA"] = OutObject.grab_lemma(word, self.attrnames["lemma"])
 
         if "ner" in self.jobs:
-            line["NER"] = out_object.grab_ent(token)
+            line["NER"] = OutObject.grab_ent(token)
 
         if "entity_ruler" in self.jobs:
-            line["RULER"] = out_object.grab_ent(token)
+            line["RULER"] = OutObject.grab_ent(token)
 
         if "entity_linker" in self.jobs:
-            line["LINKER"] = out_object.grab_linker(token)
+            line["LINKER"] = OutObject.grab_linker(token)
 
         if "morphologizer" in self.jobs:
-            line["MORPH"] = out_object.grab_morph(token)
+            line["MORPH"] = OutObject.grab_morph(token)
 
         if "parser" in self.jobs:
-            line["PARSER"] = out_object.grab_dep(token)
+            line["PARSER"] = OutObject.grab_dep(token)
 
         if "attribute_ruler" in self.jobs:
-            line["ATTR"] = out_object.grab_att(token)
+            line["ATTR"] = OutObject.grab_att(token)
         # add what else we need
 
         if style == "STR":
@@ -461,7 +462,7 @@ class out_object:
         for line in out:
             string += line
 
-        string = out_object.purge(string)
+        string = OutObject.purge(string)
 
         with open("{}.vrt".format(outname), "w") as file:
             file.write(string)
@@ -512,7 +513,7 @@ class encode_corpus:
         print("Found outdir {}".format(self.encodedir))
 
         # get attribute names
-        self.attrnames = out_object.get_names()
+        self.attrnames = OutObject.get_names()
         # self.attrnames = self.attrnames[self.tool + "_names"]
 
     def _get_s_attributes(self, line: str, stags: list) -> str:

@@ -87,7 +87,7 @@ def ner(doc) -> dict:
 
 
 # inherit the output class from base and add stanza-specific methods
-class out_object_stanza(be.out_object):
+class out_object_stanza(be.OutObject):
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 

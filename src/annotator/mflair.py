@@ -107,7 +107,7 @@ class flair_pipe(Flair):
             return out
 
         elif not ret:
-            be.out_object.write_vrt(self.outname, out)
+            be.OutObject.write_vrt(self.outname, out)
             # be.encode_corpus.encode_vrt("test", self.outname, self.job, "flair")
 
     def get_multiple(self, chunks: list, ret=False) -> list or None:
@@ -152,7 +152,7 @@ class flair_pipe(Flair):
             flat_out = []
             for chunk in out:
                 flat_out.append(chunk)
-            be.out_object.write_vrt(self.outname, out)
+            be.OutObject.write_vrt(self.outname, out)
             # be.encode_corpus.encode_vrt("test_chunks", self.outname, self.job, "flair")
 
     # I guess we will need these more or less for every module separately as the
@@ -175,8 +175,8 @@ class flair_pipe(Flair):
     #    return self.named_entities
 
 
-class out_object_flair(be.out_object):
-    """Postprocessing class for Flair. Inherits base out_object."""
+class out_object_flair(be.OutObject):
+    """Postprocessing class for Flair. Inherits base OutObject."""
 
     def __init__(self, doc, jobs, start) -> None:
         super().__init__(doc, jobs, start)

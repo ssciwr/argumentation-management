@@ -32,7 +32,7 @@ def tokenize(text: str, lang: str) -> str and bool:
         out += token + "\n"
 
     # replace problematic patterns
-    out = be.out_object.purge(out)
+    out = be.OutObject.purge(out)
     # text is not sentencized
     sentencized = False
 
@@ -99,19 +99,19 @@ class treetagger_pipe:
                 encode_obj.encode_vrt(ptags, stags)
 
             elif add:
-                be.out_object.write_vrt(outfile, out)
+                be.OutObject.write_vrt(outfile, out)
                 encode_obj = be.encode_corpus(mydict)
                 encode_obj.encode_vrt(ptags, stags)
 
         elif style == "DICT":
-            be.out_object.write_xml(
+            be.OutObject.write_xml(
                 mydict["advanced_options"]["output_dir"],
                 mydict["corpus_name"],
                 self.doc,
             )
 
 
-class out_object_treetagger(be.out_object):
+class out_object_treetagger(be.OutObject):
     """Class to define how information will be extracted from the doc object
     resulting from the treetagger pipeline."""
 
