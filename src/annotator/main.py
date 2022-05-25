@@ -13,6 +13,8 @@ def call_spacy(mydict, data):
     # we should not need start ..?
     start = 0
     out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)
+    # should return sentences as well in case of senter
+    # TODO: set up the processing options corretly- senter, parser
     return out_obj
 
 
@@ -46,7 +48,6 @@ if __name__ == "__main__":
         print(mytool)
         # Now call specific routines
         out_obj = switch_tool[mytool](mydict, data)
-    exit()
 
     # the below for generating the output
     # for xml or vrt, let's stick with vrt for now - TODO
