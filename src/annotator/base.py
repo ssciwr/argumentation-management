@@ -221,9 +221,7 @@ class OutObject:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         self.tstart = 0
-        print("Finding sentence?")
         for sent in getattr(self.doc, self.attrnames["sentence"]):
-            print("Finding sentence - yes")
 
             out.append("<s>\n")
             out = self.iterate(out, sent, "STR")

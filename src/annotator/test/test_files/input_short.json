@@ -1,7 +1,7 @@
 {
     "model": "en_core_web_md",
     "lang": "en",
-    "processors": ["tok2vec", "tagger", "senter", "attribute_ruler", "lemmatizer", "ner"],
+    "processors": ["tok2vec", "tagger", "senter", "parser", "attribute_ruler", "lemmatizer", "ner"],
     "set_device": false,
     "config": {
         "nlp.batch_size": 256

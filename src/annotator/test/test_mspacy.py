@@ -23,6 +23,7 @@ def load_object(init):
         "tok2vec",
         "tagger",
         "senter",
+        "parser",
         "attribute_ruler",
         "lemmatizer",
         "ner",
@@ -44,9 +45,7 @@ def pipe_sent(init, load_object, get_text):
     same pipeline through spacy directly."""
 
     test_obj = load_object
-    print(test_obj.jobs, "jobs")
     out = test_obj.apply_to(get_text)
-    print(out.doc.has_annotation("SENT_START"), "sent???")
     mydict = init[1]
     # as this pipe config should just load all of a model, results
     # should be equivalent to using:
@@ -72,7 +71,6 @@ def chunked_data():
     return data
 
 
-@pytest.mark.skip
 def test_pipe(pipe_sent):
     _, check_doc, test_doc = pipe_sent
 
@@ -156,33 +154,28 @@ def test_output_sent(pipe_sent):
 
     check = [
         "<s>\n",
-        "This\tDT\tthis\t \tnsubj\tPRON\n",
-        "is\tVBZ\tbe\t \tROOT\tAUX\n",
-        "an\tDT\tan\t \tdet\tDET\n",
-        "example\tNN\texample\t \tcompound\tNOUN\n",
-        "text\tNN\ttext\t \tattr\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
+        "This\tDT\tthis\t \tPRON\n",
+        "is\tVBZ\tbe\t \tAUX\n",
+        "an\tDT\tan\t \tDET\n",
+        "example\tNN\texample\t \tNOUN\n",
+        "text\tNN\ttext\t \tNOUN\n",
+        ".\t.\t.\t \tPUNCT\n",
         "</s>\n",
         "<s>\n",
-        "This\tDT\tthis\t \tnsubj\tPRON\n",
-        "is\tVBZ\tbe\t \tROOT\tAUX\n",
-        "a\tDT\ta\t \tdet\tDET\n",
-        "second\tJJ\tsecond\tORDINAL\tamod\tADJ\n",
-        "sentence\tNN\tsentence\t \tattr\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
+        "This\tDT\tthis\t \tPRON\n",
+        "is\tVBZ\tbe\t \tAUX\n",
+        "a\tDT\ta\t \tDET\n",
+        "second\tJJ\tsecond\tORDINAL\tADJ\n",
+        "sentence\tNN\tsentence\t \tNOUN\n",
+        ".\t.\t.\t \tPUNCT\n",
         "</s>\n",
     ]
     # this is quite specific, any way to generalize?
     test_obj, check_doc, _ = pipe_sent
-    print("**** - 1")
-    print(test_obj.doc.has_annotation("SENT_START"))
-    print(test_obj.doc.has_annotation("TAG"))
     test_out = msp.OutSpacy(test_obj.doc, test_obj.jobs, start=0).fetch_output("STR")
-    print("**** - 2")
     check_out = msp.OutSpacy(check_doc, test_obj.jobs, start=0).fetch_output("STR")
-    print("chekc_doc")
-    print(check_doc.has_annotation("SENT_START"))
-    print(test_obj.doc.has_annotation("TAG"))
+    print("test_out")
+    print(test_out)
     print("check_out")
     print(check_out)
     print("check")
