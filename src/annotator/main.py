@@ -3,6 +3,25 @@ import pipe as pe
 import mspacy as msp
 
 
+def call_spacy(mydict, data):
+    # lets start with setting it up for spacy
+    spacy_dict = mydict["spacy_dict"]
+    # load the pipeline
+    pipe = msp.spacy_pipe(spacy_dict)
+    # apply pipeline to data
+    annotated = pipe.apply_to(data)
+    # we should not need start ..?
+    start = 0
+    out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)
+    return out_obj
+
+
+def call_stanza(mydict, data):
+    pass
+
+
+switch_tool = {"spacy": call_spacy, "stanza": call_stanza}
+
 if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
@@ -20,15 +39,16 @@ if __name__ == "__main__":
     pe.SetConfig(mydict)
     # now we still need to add the order of steps - processors was ordered list
     # need to access that and tools to call tools one by one
-    # lets start with setting it up for spacy
-    spacy_dict = mydict["spacy_dict"]
-    # load the pipeline
-    pipe = msp.spacy_pipe(spacy_dict)
-    # apply pipeline to data
-    annotated = pipe.apply_to(data)
-    # we should not need start ..?
-    start = 0
-    out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)
+    print(mydict["processing_option"], "option")
+    print(mydict["tool"], "tool")
+    print(set(mydict["tool"]), "tool")
+    for mytool in set(mydict["tool"]):
+        print(mytool)
+        # Now call specific routines
+        out_obj = switch_tool[mytool](mydict, data)
+    exit()
+
+    # the below for generating the output
     # for xml or vrt, let's stick with vrt for now - TODO
     style = "STR"
     out = out_obj.fetch_output(style)
