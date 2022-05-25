@@ -110,6 +110,7 @@ class spacy_pipe(MySpacy):
 
         # apply to data while disabling everything that wasnt requested
         self.doc = self.nlp(data)
+        print(self.jobs, "LLL")
         return self
 
     # sentencizer only
@@ -181,6 +182,7 @@ class OutSpacy(be.OutObject):
         out = []
         # check if spacy doc object is sentencized
         if self.doc.has_annotation("SENT_START"):
+            print("Found Sentences!")
             # apply sentence and sublevel annotation
             if style == "STR":
                 out = self.assemble_output_sent()

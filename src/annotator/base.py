@@ -221,7 +221,10 @@ class OutObject:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         self.tstart = 0
+        print("Finding sentence?")
         for sent in getattr(self.doc, self.attrnames["sentence"]):
+            print("Finding sentence - yes")
+
             out.append("<s>\n")
             out = self.iterate(out, sent, "STR")
             out.append("</s>\n")
@@ -245,6 +248,7 @@ class OutObject:
         # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
+    # not sure what this is for - TODO
     @staticmethod
     def switch_style(line: dict) -> str:
         """Switch style from DICT to STR"""
@@ -258,6 +262,7 @@ class OutObject:
                 output += "{}".format(value)
         return output
 
+    # remove repetition - TODO
     def get_ptags(self) -> list or None:
         """Function to easily collect the current ptags in a list.
 
@@ -276,14 +281,6 @@ class OutObject:
             ptags.append("lemma")
         if "ner" in self.jobs:
             ptags.append("NER")
-        if "entity_ruler" in self.jobs:
-            ptags.append("RULER")
-        if "entity_linker" in self.jobs:
-            ptags.append("LINKER")
-        if "morphologizer" in self.jobs:
-            ptags.append("MORPH")
-        if "parser" in self.jobs:
-            ptags.append("PARSER")
         if "attribute_ruler" in self.jobs:
             ptags.append("ATTR")
 
@@ -332,18 +329,6 @@ class OutObject:
         if "ner" in self.jobs:
             line["NER"] = OutObject.grab_ent(token)
 
-        if "entity_ruler" in self.jobs:
-            line["RULER"] = OutObject.grab_ent(token)
-
-        if "entity_linker" in self.jobs:
-            line["LINKER"] = OutObject.grab_linker(token)
-
-        if "morphologizer" in self.jobs:
-            line["MORPH"] = OutObject.grab_morph(token)
-
-        if "parser" in self.jobs:
-            line["PARSER"] = OutObject.grab_dep(token)
-
         if "attribute_ruler" in self.jobs:
             line["ATTR"] = OutObject.grab_att(token)
         # add what else we need
@@ -374,17 +359,6 @@ class OutObject:
         return tag
 
     @staticmethod
-    def grab_linker(token):
-
-        # attributes:
-        # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
-        if token.ent_type_ != "":
-            tag = token.ent_kb_id_
-        else:
-            tag = NOT_DEF
-        return tag
-
-    @staticmethod
     def grab_lemma(word, attrname):
 
         # attributes:
@@ -397,34 +371,12 @@ class OutObject:
         return tag
 
     @staticmethod
-    def grab_morph(token):
-
-        # attributes:
-        # Morphologizer -> Token.pos, Token.pos_, Token.morph
-        if token.pos_ != "":
-            tag = token.pos_ + "" + token.morph
-        elif token.pos_ == "":
-            tag = NOT_DEF + token.morph
-        return tag
-
-    @staticmethod
     def grab_tag(word, attrname):
 
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
             tag = getattr(word, attrname)
-        else:
-            tag = NOT_DEF
-        return tag
-
-    @staticmethod
-    def grab_dep(token):
-
-        # attributes:
-        # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
-        if token.dep_ != "":
-            tag = token.dep_
         else:
             tag = NOT_DEF
         return tag

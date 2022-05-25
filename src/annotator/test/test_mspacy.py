@@ -10,6 +10,7 @@ def init():
     """Load the input dicts"""
 
     mydict = be.prepare_run.load_input_dict("test/test_files/input")
+
     subdict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
     return mydict["spacy_dict"], subdict_test, mydict
 
@@ -20,9 +21,8 @@ def load_object(init):
 
     init[0]["processors"] = [
         "tok2vec",
-        "senter",
         "tagger",
-        "parser",
+        "senter",
         "attribute_ruler",
         "lemmatizer",
         "ner",
@@ -44,6 +44,9 @@ def pipe_sent(init, load_object, get_text):
     same pipeline through spacy directly."""
 
     test_obj = load_object
+    print(test_obj.jobs, "jobs")
+    out = test_obj.apply_to(get_text)
+    print(out.doc.has_annotation("SENT_START"), "sent???")
     mydict = init[1]
     # as this pipe config should just load all of a model, results
     # should be equivalent to using:
@@ -69,6 +72,7 @@ def chunked_data():
     return data
 
 
+@pytest.mark.skip
 def test_pipe(pipe_sent):
     _, check_doc, test_doc = pipe_sent
 
@@ -170,8 +174,20 @@ def test_output_sent(pipe_sent):
     ]
     # this is quite specific, any way to generalize?
     test_obj, check_doc, _ = pipe_sent
+    print("**** - 1")
+    print(test_obj.doc.has_annotation("SENT_START"))
+    print(test_obj.doc.has_annotation("TAG"))
     test_out = msp.OutSpacy(test_obj.doc, test_obj.jobs, start=0).fetch_output("STR")
+    print("**** - 2")
     check_out = msp.OutSpacy(check_doc, test_obj.jobs, start=0).fetch_output("STR")
+    print("chekc_doc")
+    print(check_doc.has_annotation("SENT_START"))
+    print(test_obj.doc.has_annotation("TAG"))
+    print("check_out")
+    print(check_out)
+    print("check")
+    print(check)
+
     assert test_out == check_out
     assert test_out == check
 
