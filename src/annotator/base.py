@@ -46,8 +46,8 @@ class prepare_run:
     @staticmethod
     def validate_input_dict(dict_in: dict) -> None:
         with open(
-            "{}.json".format("input_schema"),
-            # "{}.json".format("./src/annotator/input_schema"),
+            # "{}.json".format("input_schema"),
+            "{}.json".format("./src/annotator/input_schema"),
             "r",
         ) as f:
             myschema = json.load(f)
@@ -245,8 +245,8 @@ class OutObject:
     def get_names() -> dict:
         """Load attribute names for specific tools."""
 
-        mydict = prepare_run.load_input_dict("attribute_names")
-        # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
+        # mydict = prepare_run.load_input_dict("attribute_names")
+        mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
     # not sure what this is for - TODO

@@ -8,17 +8,18 @@ class MyStanza:
     """Stanza main processing class.
 
     Args:
-       config (dictionary): The full input dictionary.
+       subdict (dictionary): The stanza input dictionary.
        text (string): The raw text that is to be processed.
        text (list of strings): Several raw texts to be processed simultaneously.
        annotated (dictionary): The output dictionary with annotated tokens.
     """
 
-    def __init__(self, config: dict):
-        # get the stanza dict
-        self.config = config
-        # Initialize the pipeline using a configuration dict
-        self.nlp = sa.Pipeline(**self.config)
+    def __init__(self, subdict: dict):
+        # stanza dict
+        self.subdict = subdict
+        self.jobs = self.subdict["processors"].split(",")
+        # Initialize the pipeline
+        self.nlp = sa.Pipeline(**self.subdict)
 
     def apply_to(self, text: str) -> dict:
         """Funtion to apply pipeline to provided textual data.
@@ -29,48 +30,9 @@ class MyStanza:
         self.doc = self.nlp(text)  # Run the pipeline on the input text
         return self
 
-    def process_multiple_texts(self, textlist: list) -> dict:
-        """Function to process multiple texts.
-
-        Args:
-                textlist[list]: List containing the texts."""
-
-        # Wrap each document with a stanza.Document object
-        in_docs = [sa.Document([], text=d) for d in textlist]
-        self.mdocs = self.nlp(
-            in_docs
-        )  # Call the neural pipeline on this list of documents
-        return self.mdocs
-
-    def pass_results(
-        self, mydict: dict, add: bool = False, ptags: list or None = None
-    ) -> None:
-        """Funtion to write post-pipeline data to .vrt file and encode for CWB.
-
-        Args:
-                out_param[dict]: Parameters for output.
-                add[bool]: Indicates if a new corpus should be started or if tags should be added to existing corpus."""
-
-        jobs = self.config["processors"].split(",")
-        out_obj = out_object_stanza(self.doc, jobs, start=0)
-        print(out_obj.attrnames)
-        out = out_obj.assemble_output_sent()
-
-        ptags = ptags or out_obj.get_ptags()
-        stags = out_obj.get_stags()
-        # write out to .vrt
-        outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-
-        out_object_stanza.write_vrt(outfile, out)
-        if not add:
-            encode_obj = be.encode_corpus(mydict)
-            encode_obj.encode_vrt(ptags, stags)
-        elif add:
-            encode_obj = be.encode_corpus(mydict)
-            encode_obj.add_tags_to_corpus(mydict, ptags, stags)
+    # this should not be needed anymore
 
 
-# this should not be needed anymore
 def ner(doc) -> dict:
     """Function to extract NER tags from Doc Object."""
 
@@ -91,8 +53,8 @@ class out_object_stanza(be.OutObject):
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs: list, start: int = 0):
-        super().__init__(doc, jobs, start)
+    def __init__(self, doc, jobs: list, start: int = 0, islist=False):
+        super().__init__(doc, jobs, start, islist)
         self.attrnames = self.attrnames["stanza_names"]
         self.ptags = self.get_ptags()
         self.stags = self.get_stags()
@@ -122,3 +84,32 @@ class out_object_stanza(be.OutObject):
             out.append(line + "\n")
         self.tstart = tid
         return out
+
+    @property
+    def sentences(self) -> list:
+        """Function to return sentences as list.
+
+        Returns:
+                List[List[str, int]]: List containing lists which contain the sentences as strings
+                as well as the number of tokens previous to the sentence to easily keep
+                track of the correct token index for a given sentence in the list.
+        """
+
+        try:
+            assert hasattr(self, "doc")
+        except AttributeError:
+            print(
+                "Seems there is no Doc object, did you forget to call MyStanza.apply_to()?"
+            )
+            exit()
+
+        sents = []
+        for i, sent in enumerate(self.doc.sentences):
+            if i == 0:
+                # need to take the len of the split str as otherwise grouping of multiple tokens by
+                # spacy can be a problem. This now assumes that tokens are always separated by a
+                # whitespace, which seems reasonable to me -> Any examples to the contrary?
+                sents.append([sent.text, len(sent.text.split())])
+            elif i > 0:
+                sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
+        return sents

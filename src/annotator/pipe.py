@@ -20,7 +20,7 @@ class SetConfig:
             "manual": self._pipe_manual,
         }
         self.accurate_dict = {
-            "sentencize": "spacy",
+            "sentencize": "stanza",
             "tokenize": "stanza",
             "pos": "stanza",
             "lemma": "stanza",
@@ -35,6 +35,7 @@ class SetConfig:
                 "ner": "ner",
             },
             "stanza": {
+                "sentencize": "tokenize",
                 "tokenize": "tokenize",
                 "lemma": "lemma",
                 "pos": "pos",
@@ -113,7 +114,7 @@ class SetConfig:
 
     def _validate_processors(self):
         if len(self.processors) != len(self.tool):
-            raise ValueError("Selected tool does not match selected processors!")
+            raise ValueError("Selected tools do not match selected processors!")
 
     def _get_tools(self) -> None:
         self.tool = []
@@ -175,6 +176,10 @@ class SetConfig:
 
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""
+        # in some cases, there may be duplicates in the processor list
+        # remove the duplicates - TODO
+        # using set reorders the processors but we only now of duplicates
+        # after the ordering
         # first purge already existing processors in tooldict
         for mytool in set(self.tool):
             self.mydict[mytool + "_dict"]["processors"] = []
