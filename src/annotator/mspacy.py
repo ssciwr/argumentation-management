@@ -18,35 +18,20 @@ class MySpacy:
     """
 
     def __init__(self, subdict: dict):
+        # set the jobs for spacy
         self.jobs = subdict["processors"]
-        # we need to map the jobs to spacy notation
+        # set the model for spacy
         self.model = subdict["model"]
-
-        # if we ask for lemma and/or POS we force tok2vec to boost accuracy
-        # also add in attribute ruler as it is cheap
-        if (
-            "lemmatizer" in self.jobs
-            or "tagger" in self.jobs
-            or "lemmatizer"
-            and "tagger" in self.jobs
-        ):
-            if "tok2vec" not in self.jobs:
-                self.jobs = ["tok2vec"] + self.jobs
-            if "attribute_ruler" not in self.jobs:
-                self.jobs.append("attribute_ruler")
-
-        # use specific device settings if requested
-        # this also to be set in the pipeline decision
-        if subdict["set_device"]:
-            if subdict["set_device"] == "prefer_GPU":
-                sp.prefer_gpu()
-            elif subdict["set_device"] == "require_GPU":
-                sp.require_gpu()
-            elif subdict["set_device"] == "require_CPU":
-                sp.require_cpu()
-
+        # activate tok2vec to boost accuracy
+        self._set_tok2vec()
+        # activate GPU usage if preferred
+        self._set_device(subdict)
+        # set spacy parameters from spacy_dict["config"] dictionary
         self.config = subdict["config"]
+        # load the pipeline
+        self._load_pipe()
 
+    def _load_pipe(self):
         # use a specific pipeline if requested
         self.validated = []
         try:
@@ -94,6 +79,31 @@ class MySpacy:
                 "config": self.config,
             }
             self.nlp = sp.load(**self.cfg)
+
+    def _set_tok2vec(self):
+        # if we ask for lemma and/or POS we force tok2vec to boost accuracy
+        # also add in attribute ruler as it is cheap
+        if (
+            "lemmatizer" in self.jobs
+            or "tagger" in self.jobs
+            or "lemmatizer"
+            and "tagger" in self.jobs
+        ):
+            if "tok2vec" not in self.jobs:
+                self.jobs = ["tok2vec"] + self.jobs
+            if "attribute_ruler" not in self.jobs:
+                self.jobs.append("attribute_ruler")
+
+    def _set_device(self, subdict):
+        # use specific device settings if requested
+        # this also to be set in the pipeline decision
+        if subdict["set_device"]:
+            if subdict["set_device"] == "prefer_GPU":
+                sp.prefer_gpu()
+            elif subdict["set_device"] == "require_GPU":
+                sp.require_gpu()
+            elif subdict["set_device"] == "require_CPU":
+                sp.require_cpu()
 
     # call the build pipeline on the data
     def apply_to(self, data: str) -> Doc:
