@@ -28,7 +28,7 @@ def load_object(init):
         "lemmatizer",
         "ner",
     ]
-    test_obj = msp.spacy_pipe(init[0])
+    test_obj = msp.MySpacy(init[0])
     return test_obj
 
 
@@ -190,8 +190,8 @@ def test_sentencize():
     text_en = "This is a sentence. This is another sentence, or is it?"
     text_de = "Dies ist ein Satz. Dies ist ein zweiter Satz, oder nicht?"
 
-    data_en = msp.spacy_pipe.sentencize_spacy("en_core_web_md", text_en)
-    data_de = msp.spacy_pipe.sentencize_spacy("de_core_news_md", text_de)
+    data_en = msp.MySpacy.sentencize_spacy("en_core_web_md", text_en)
+    data_de = msp.MySpacy.sentencize_spacy("de_core_news_md", text_de)
 
     check_en = [["This is a sentence.", 4], ["This is another sentence, or is it?", 11]]
     check_de = [

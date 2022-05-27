@@ -75,7 +75,7 @@ class flair_pipe(Flair):
         Args:
                 data[str]: Input data string containing the text to be sentencized."""
 
-        self.sents = msp.spacy_pipe.sentencize_spacy(self.model, data)
+        self.sents = msp.MySpacy.sentencize_spacy(self.model, data)
         return self
 
     def apply_to(self) -> Flair:

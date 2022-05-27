@@ -28,7 +28,7 @@ class SetConfig:
         }
         self.map_processors = {
             "spacy": {
-                "sentencize": "senter",
+                "sentencize": "senter, parser",
                 "tokenize": "tok2vec",
                 "lemma": "lemmatizer",
                 "pos": "tagger",
@@ -176,13 +176,14 @@ class SetConfig:
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""
         # first purge already existing processors in tooldict
-        for mytool in self.tool:
+        for mytool in set(self.tool):
             self.mydict[mytool + "_dict"]["processors"] = []
         for proc, mytool in zip(self.processors, self.tool):
             # map to new name
             myname = self.map_processors[mytool][proc]
             print("found name {} for tool {} and proc {}".format(myname, mytool, proc))
-            self.mydict[mytool + "_dict"]["processors"].append(myname)
+            for i in myname.split(", "):
+                self.mydict[mytool + "_dict"]["processors"].append(i)
             # we don't need the language for spacy
             self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
             if self.model:

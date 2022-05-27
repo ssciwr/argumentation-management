@@ -7,14 +7,12 @@ def call_spacy(mydict, data):
     # lets start with setting it up for spacy
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline
-    pipe = msp.spacy_pipe(spacy_dict)
+    annotated = msp.MySpacy(spacy_dict)
     # apply pipeline to data
-    annotated = pipe.apply_to(data)
+    annotated.apply_to(data)
     # we should not need start ..?
     start = 0
     out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)
-    # should return sentences as well in case of senter
-    # TODO: set up the processing options corretly- senter, parser
     return out_obj
 
 
@@ -28,7 +26,7 @@ if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     # overwrite defaults for testing purposes
-    mydict["processing_option"] = "accurate"
+    mydict["processing_option"] = "fast"
     mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
     mydict["advanced_options"]["corpus_dir"] = "./src/annotator/test/corpora/"

@@ -47,15 +47,6 @@ class MySpacy:
 
         self.config = subdict["config"]
 
-
-# build the pipeline from config-dict
-class spacy_pipe(MySpacy):
-    """Assemble pipeline from config, apply pipeline to data and write results to .vrt file."""
-
-    # init with specified config, this may be changed later?
-    # -> Right now needs quite specific instuctions
-    def __init__(self, config: dict):
-        super().__init__(config)
         # use a specific pipeline if requested
         self.validated = []
         try:
@@ -174,7 +165,7 @@ class OutSpacy(be.OutObject):
             assert hasattr(self, "doc")
         except AttributeError:
             print(
-                "Seems there is no Doc object, did you forget to call spaCy_pipe.apply_to()?"
+                "Seems there is no Doc object, did you forget to call MySpacy.apply_to()?"
             )
             exit()
 
@@ -191,3 +182,33 @@ class OutSpacy(be.OutObject):
         elif not self.doc.has_annotation("SENT_START"):
             out = self.iterate(out, self.doc, style)
         return out
+
+    @property
+    def sentences(self) -> list:
+        """Function to return sentences as list.
+
+        Returns:
+                List[List[str, int]]: List containing lists which contain the sentences as strings
+                as well as the number of tokens previous to the sentence to easily keep
+                track of the correct token index for a given sentence in the list.
+        """
+
+        try:
+            assert hasattr(self, "doc")
+        except AttributeError:
+            print(
+                "Seems there is no Doc object, did you forget to call MySpacy.apply_to()?"
+            )
+            exit()
+        assert self.doc.has_annotation("SENT_START")
+
+        sents = []
+        for i, sent in enumerate(self.doc.sents):
+            if i == 0:
+                # need to take the len of the split str as otherwise grouping of multiple tokens by
+                # spacy can be a problem. This now assumes that tokens are always separated by a
+                # whitespace, which seems reasonable to me -> Any examples to the contrary?
+                sents.append([sent.text, len(sent.text.split())])
+            elif i > 0:
+                sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
+        return sents
