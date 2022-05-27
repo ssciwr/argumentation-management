@@ -1,26 +1,36 @@
 import base as be
 import pipe as pe
 import mspacy as msp
+import mstanza as msa
 
 
-def call_spacy(mydict, data):
-    # lets start with setting it up for spacy
+def call_spacy(mydict, data, islist=False):
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline
     annotated = msp.MySpacy(spacy_dict)
     # apply pipeline to data
-    annotated.apply_to(data)
+    if not islist:
+        annotated.apply_to(data)
+        doc = annotated.doc
+    else:
+        doc = []
+        for sentence in data:
+            annotated.apply_to(sentence)
+            doc.append(annotated.doc)
     # we should not need start ..?
     start = 0
-    out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)
+    out_obj = msp.OutSpacy(doc, annotated.jobs, start=start, islist=islist)
     return out_obj
 
 
-def call_stanza(mydict, data):
-    pass
+def call_stanza(mydict, data, islist=False):
+    stanza_dict = mydict["stanza_dict"]
+    # load the pipeline
+    annotated = msa.MyStanza(stanza_dict)
+    return annotated
 
 
-switch_tool = {"spacy": call_spacy, "stanza": call_stanza}
+call_tool = {"spacy": call_spacy, "stanza": call_stanza}
 
 if __name__ == "__main__":
     # load input dict
@@ -42,19 +52,30 @@ if __name__ == "__main__":
     print(mydict["processing_option"], "option")
     print(mydict["tool"], "tool")
     print(set(mydict["tool"]), "tool")
+    out_obj = []
+    data_islist = False
     for mytool in set(mydict["tool"]):
         print(mytool)
-        # Now call specific routines
-        out_obj = switch_tool[mytool](mydict, data)
+        print(type(data), "is data type")
+        # if sentences are data, then we need to go through list
+        # call specific routines
+        out_obj.append(call_tool[mytool](mydict, data), data_islist)
+        # the first tool will sentencize
+        # all subsequent ones will use sentencized input
+        # so the new data is sentences from first tool
+        # however, this is now a list
+        data = out_obj[0].sentences
+        data_islist = True
+    print(type(data), "is data type")
 
     # the below for generating the output
     # for xml or vrt, let's stick with vrt for now - TODO
     style = "STR"
-    out = out_obj.fetch_output(style)
+    out = out_obj[0].fetch_output(style)
     # find out if there are user-defined tags
     ptags = None
-    ptags = ptags or out_obj.ptags
-    stags = out_obj.stags
+    ptags = ptags or out_obj[0].ptags
+    stags = out_obj[0].stags
     # write to file -> This overwrites any existing file of given name;
     # as all of this should be handled internally and the files are only
     # temporary, this should not be a problem. right?
@@ -64,7 +85,7 @@ if __name__ == "__main__":
     # not sure why we need so many cases - TODO
     # if ret is False and style == "STR" and mydict is not None and add is False:
     # if not add:
-    out_obj.write_vrt(outfile, out)
+    out_obj[0].write_vrt(outfile, out)
     # encode
     encode_obj = be.encode_corpus(mydict)
     encode_obj.encode_vrt(ptags, stags)

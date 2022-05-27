@@ -191,10 +191,13 @@ NOT_DEF = " "
 class OutObject:
     """The base output object and namespace. Write the vrt file."""
 
-    def __init__(self, doc, jobs: list, start: int):
+    def __init__(self, doc, jobs: list, start: int, islist=False):
         self.doc = doc
         self.jobs = jobs
         self.start = start
+        # just one doc object for whole text or multiple objects per sentence
+        # (self.doc)
+        self.islist = islist
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
 
@@ -339,11 +342,6 @@ class OutObject:
 
             return line
 
-    # define all of these as functions
-    # these to be either internal or static methods
-    # we should have an option for vrt and one for xml writing -> ok
-
-    # making them static for now
     @staticmethod
     def grab_ent(token):
 
