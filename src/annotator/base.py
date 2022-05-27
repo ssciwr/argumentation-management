@@ -5,8 +5,9 @@ import os
 import to_xml as txml
 
 
-# the below functions in a class with attributes
 class prepare_run:
+    """Class that contains all general pre-processing methods."""
+
     def __init__(self) -> None:
         pass
 
@@ -46,6 +47,7 @@ class prepare_run:
     def validate_input_dict(dict_in: dict) -> None:
         with open(
             "{}.json".format("input_schema"),
+            # "{}.json".format("./src/annotator/input_schema"),
             "r",
         ) as f:
             myschema = json.load(f)
@@ -84,17 +86,19 @@ class prepare_run:
 
         tokenized, senctencized = tokenizer(text, **arguments)
         # this all needs to be more streamlined not to repeat code
-        out_object.write_vrt(
+        OutObject.write_vrt(
             mydict["advanced_options"]["output_dir"] + "/" + mydict["corpus_name"],
             tokenized,
         )
         if senctencized:
-            encode_corpus.encode_vrt(mydict, ptags=None, stags=["s"])
+            encode_obj = encode_corpus(mydict)
+            encode_obj.encode_vrt(ptags=None, stags=["s"])
         else:
-            encode_corpus.encode_vrt(mydict, ptags=None, stags=None)
+            encode_obj = encode_corpus(mydict)
+            encode_obj.encode_vrt(ptags=None, stags=None)
 
 
-# the below in a chunker class
+# the below to be removed - TODO
 # I thought this would belong here rather than mspacy.
 def chunk_sample_text(path: str) -> list:
     """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
@@ -180,17 +184,20 @@ def find_last_idx(chunk: list) -> int:
 NOT_DEF = " "
 
 
-# the base out_object class
+# the base OutObject class
 # this class is inherited in the different modules
 # selected methods are overwritten/added depending on the requirements
 # the mapping dict to make the conversion clear and not to duplicate code
-class out_object:
+class OutObject:
     """The base output object and namespace. Write the vrt file."""
 
-    def __init__(self, doc, jobs: list, start: int):
+    def __init__(self, doc, jobs: list, start: int, islist=False):
         self.doc = doc
         self.jobs = jobs
         self.start = start
+        # just one doc object for whole text or multiple objects per sentence
+        # (self.doc)
+        self.islist = islist
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
 
@@ -205,36 +212,33 @@ class out_object:
         f = open(name, "w")
         return f
 
-    @classmethod
-    def assemble_output_sent(cls, doc, jobs: list, start: int = 0) -> list:
+    def assemble_output_sent(self) -> list:
         """Template function to assemble output for tool at sentence level."""
 
-        obj = cls(doc, jobs, start)
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        # print(obj.attrnames)
-        if "sentence" not in obj.attrnames:
+        # print(cls.attrnames)
+        if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
-        obj.tstart = 0
-        for sent in getattr(obj.doc, obj.attrnames["sentence"]):
+        self.tstart = 0
+        for sent in getattr(self.doc, self.attrnames["sentence"]):
+
             out.append("<s>\n")
-            out = obj.iterate(out, sent, "STR")
+            out = self.iterate(out, sent, "STR")
             out.append("</s>\n")
         return out
 
-    @classmethod
-    def assemble_output_xml(cls, doc, jobs, start):
-        obj = cls(doc, jobs, start)
+    def assemble_output_xml(self):
         out = []
-        if "sentence" not in obj.attrnames:
+        if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
-        obj.tstart = 0
-        for sent in getattr(obj.doc, obj.attrnames["sentence"]):
+        self.tstart = 0
+        for sent in getattr(self.doc, self.attrnames["sentence"]):
             out.append([])
-            obj.iterate(out[-1], sent, "DICT")
+            self.iterate(out[-1], sent, "DICT")
         return out
 
     @staticmethod
@@ -245,6 +249,7 @@ class out_object:
         # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
+    # not sure what this is for - TODO
     @staticmethod
     def switch_style(line: dict) -> str:
         """Switch style from DICT to STR"""
@@ -258,11 +263,12 @@ class out_object:
                 output += "{}".format(value)
         return output
 
+    # remove repetition - TODO
     def get_ptags(self) -> list or None:
         """Function to easily collect the current ptags in a list.
 
         !!!
-        Does the same case selection as out_object.collect_results, so the order
+        Does the same case selection as OutObject.collect_results, so the order
         of .vrt and this list should always be identical. If you change one
         MAKE SURE to also change the other.
         !!!
@@ -276,14 +282,6 @@ class out_object:
             ptags.append("lemma")
         if "ner" in self.jobs:
             ptags.append("NER")
-        if "entity_ruler" in self.jobs:
-            ptags.append("RULER")
-        if "entity_linker" in self.jobs:
-            ptags.append("LINKER")
-        if "morphologizer" in self.jobs:
-            ptags.append("MORPH")
-        if "parser" in self.jobs:
-            ptags.append("PARSER")
         if "attribute_ruler" in self.jobs:
             ptags.append("ATTR")
 
@@ -324,28 +322,16 @@ class out_object:
 
         if self.attrnames["proc_pos"] in self.jobs:
 
-            line["POS"] = out_object.grab_tag(word, self.attrnames["pos"])
+            line["POS"] = OutObject.grab_tag(word, self.attrnames["pos"])
 
         if self.attrnames["proc_lemma"] in self.jobs:
-            line["LEMMA"] = out_object.grab_lemma(word, self.attrnames["lemma"])
+            line["LEMMA"] = OutObject.grab_lemma(word, self.attrnames["lemma"])
 
         if "ner" in self.jobs:
-            line["NER"] = out_object.grab_ent(token)
-
-        if "entity_ruler" in self.jobs:
-            line["RULER"] = out_object.grab_ent(token)
-
-        if "entity_linker" in self.jobs:
-            line["LINKER"] = out_object.grab_linker(token)
-
-        if "morphologizer" in self.jobs:
-            line["MORPH"] = out_object.grab_morph(token)
-
-        if "parser" in self.jobs:
-            line["PARSER"] = out_object.grab_dep(token)
+            line["NER"] = OutObject.grab_ent(token)
 
         if "attribute_ruler" in self.jobs:
-            line["ATTR"] = out_object.grab_att(token)
+            line["ATTR"] = OutObject.grab_att(token)
         # add what else we need
 
         if style == "STR":
@@ -356,11 +342,6 @@ class out_object:
 
             return line
 
-    # define all of these as functions
-    # these to be either internal or static methods
-    # we should have an option for vrt and one for xml writing -> ok
-
-    # making them static for now
     @staticmethod
     def grab_ent(token):
 
@@ -369,17 +350,6 @@ class out_object:
         # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
         if token.ent_type_ != "":
             tag = token.ent_type_
-        else:
-            tag = NOT_DEF
-        return tag
-
-    @staticmethod
-    def grab_linker(token):
-
-        # attributes:
-        # EntityLinker -> Token.ent_kb_id, Token.ent_kb_id_
-        if token.ent_type_ != "":
-            tag = token.ent_kb_id_
         else:
             tag = NOT_DEF
         return tag
@@ -397,34 +367,12 @@ class out_object:
         return tag
 
     @staticmethod
-    def grab_morph(token):
-
-        # attributes:
-        # Morphologizer -> Token.pos, Token.pos_, Token.morph
-        if token.pos_ != "":
-            tag = token.pos_ + "" + token.morph
-        elif token.pos_ == "":
-            tag = NOT_DEF + token.morph
-        return tag
-
-    @staticmethod
     def grab_tag(word, attrname):
 
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
             tag = getattr(word, attrname)
-        else:
-            tag = NOT_DEF
-        return tag
-
-    @staticmethod
-    def grab_dep(token):
-
-        # attributes:
-        # Parser -> Token.dep, Token.dep_, Token.head, Token.is_sent_start
-        if token.dep_ != "":
-            tag = token.dep_
         else:
             tag = NOT_DEF
         return tag
@@ -462,7 +410,7 @@ class out_object:
         for line in out:
             string += line
 
-        string = out_object.purge(string)
+        string = OutObject.purge(string)
 
         with open("{}.vrt".format(outname), "w") as file:
             file.write(string)
@@ -513,7 +461,7 @@ class encode_corpus:
         print("Found outdir {}".format(self.encodedir))
 
         # get attribute names
-        self.attrnames = out_object.get_names()
+        self.attrnames = OutObject.get_names()
         # self.attrnames = self.attrnames[self.tool + "_names"]
 
     def _get_s_attributes(self, line: str, stags: list) -> str:
@@ -615,29 +563,26 @@ class encode_corpus:
         # path = "/" + path
         return path
 
-    @classmethod
-    def encode_vrt(cls, mydict, ptags, stags):
+    def encode_vrt(self, ptags, stags):
         """Encode a new corpus into CWB from an existing vrt file."""
-
-        obj = cls(mydict)
 
         line = " "
         # find out which options are to be encoded
-        line = obj._get_s_attributes(line, stags)
-        line = obj._get_p_attributes(line, ptags)
-        purged = obj.setup()
+        line = self._get_s_attributes(line, stags)
+        line = self._get_p_attributes(line, ptags)
+        purged = self.setup()
         if purged:
             # call the os with the encode command
             print("Encoding the corpus...")
             print("Options are:")
             command = (
                 "cwb-encode -d "
-                + obj.encodedir
+                + self.encodedir
                 + " -xsBC9 -c utf8 -f "
-                + obj.outname
+                + self.outname
                 + ".vrt -R "
-                + obj.regdir
-                + obj.corpusname
+                + self.regdir
+                + self.corpusname
                 + line
             )
             print(command)
@@ -645,7 +590,7 @@ class encode_corpus:
             print("Updating the registry entry...")
             print("Options are:")
             # call the os with the registry update command
-            command = "cwb-makeall -r " + obj.regdir + " -V " + obj.corpusname
+            command = "cwb-makeall -r " + self.regdir + " -V " + self.corpusname
             print(command)
             os.system(command)
         elif not purged:
@@ -663,8 +608,6 @@ class encode_corpus:
                 stags[list]: List containing the stags present in the corpus.
                             Only checked for the <s>...</s> structural attribute."""
 
-        obj = cls(mydict)
-
         # edit the vrt file to remove the words, this could maybe be done
         # before the vrt is even written in the first place if we know
         # that we want to add to an existing corpus
@@ -673,7 +616,7 @@ class encode_corpus:
         #########################################################
 
         new = ""
-        with open(obj.outname + ".vrt", "r") as vrt:
+        with open(cls.outname + ".vrt", "r") as vrt:
             lines = vrt.readlines()
             for line in lines:
                 if not line.startswith("<"):
@@ -681,13 +624,13 @@ class encode_corpus:
                 else:
                     new += line
 
-        with open(obj.outname + ".vrt", "w") as vrt:
+        with open(cls.outname + ".vrt", "w") as vrt:
             vrt.write(new)
 
         ##########################################################
 
         # check which attributes are already present in the corpus
-        with open(obj.regdir + obj.corpusname, "r+") as registry:
+        with open(cls.regdir + cls.corpusname, "r+") as registry:
             attributes = []
             structures = []
             for line in registry:
@@ -700,8 +643,8 @@ class encode_corpus:
             # already present we throw an error as the annotation does already exist
             for i, ptag in enumerate(ptags):
                 if ptag in attributes:
-                    print("Renaming {} to {}".format(ptag, ptag + "_" + obj.tool))
-                    ptags[i] = ptag + "_" + obj.tool
+                    print("Renaming {} to {}".format(ptag, ptag + "_" + cls.tool))
+                    ptags[i] = ptag + "_" + cls.tool
                     if ptags[i] in attributes:
                         raise RuntimeError(
                             "Ptag {} does already exist for this tool.".format(ptag)
@@ -716,13 +659,13 @@ class encode_corpus:
             line = " "
             for ptag in ptags:
                 line += "-P {} ".format(ptag)
-            line = obj._get_s_attributes(line, stags)
+            line = cls._get_s_attributes(cls, line, stags)
             # the "-p -" removes the inbuilt "word" attribute from the encoding process
             command = (
                 "cwb-encode -d"
-                + obj.encodedir
+                + cls.encodedir
                 + " -xsBC9 -c utf8 -f "
-                + obj.outname
+                + cls.outname
                 + ".vrt -p - "
                 + line
             )

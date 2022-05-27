@@ -30,7 +30,7 @@ def tokenize(text: list or str, model: str, split_sentences=True) -> str and boo
             out += token.text + "\n"
         out += "</s>\n"
 
-    out = be.out_object.purge(out)
+    out = be.OutObject.purge(out)
     sentencized = True
 
     return out, sentencized

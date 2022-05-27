@@ -3,7 +3,6 @@
     "tool": "spacy",
     "corpus_name": "test-corpus",
     "language": "en",
-    "document_type": "text",
     "processing_option": "fast",
     "processing_type": "tokenize",
     "advanced_options": {

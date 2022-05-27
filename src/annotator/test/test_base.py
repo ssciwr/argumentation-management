@@ -97,7 +97,7 @@ def test_chunker():
     assert data == check
 
 
-# out_object to be tested in spacy/stanza
+# OutObject to be tested in spacy/stanza
 # test the encode_corpus class
 # everything except the actual cwb command
 # we do not want to install it in CI/CD
@@ -110,7 +110,7 @@ def test_purge():
     outputs = ["", ""]
 
     for input, output in zip(inputs, outputs):
-        assert be.out_object.purge(input) == output
+        assert be.OutObject.purge(input) == output
 
 
 def test_encode_vrt(get_obj):

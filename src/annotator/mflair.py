@@ -33,7 +33,8 @@ class flair_pipe(Flair):
 
         # first, check for language
         if self.lang == "de":
-
+            # set model for spacy senter
+            self.model = "de_core_news_md"
             # then check for type of input, is it a str or a list of strings
             if type(self.job) == str:
 
@@ -53,6 +54,8 @@ class flair_pipe(Flair):
 
         # same stuff for english
         elif self.lang == "en":
+            # set model for spacy senter
+            self.model = "en_core_web_md"
 
             if type(self.job) == str:
                 if self.job == "ner":
@@ -72,7 +75,7 @@ class flair_pipe(Flair):
         Args:
                 data[str]: Input data string containing the text to be sentencized."""
 
-        self.sents = msp.sentencize_spacy(self.lang, data)
+        self.sents = msp.MySpacy.sentencize_spacy(self.model, data)
         return self
 
     def apply_to(self) -> Flair:
@@ -104,7 +107,7 @@ class flair_pipe(Flair):
             return out
 
         elif not ret:
-            be.out_object.write_vrt(self.outname, out)
+            be.OutObject.write_vrt(self.outname, out)
             # be.encode_corpus.encode_vrt("test", self.outname, self.job, "flair")
 
     def get_multiple(self, chunks: list, ret=False) -> list or None:
@@ -149,7 +152,7 @@ class flair_pipe(Flair):
             flat_out = []
             for chunk in out:
                 flat_out.append(chunk)
-            be.out_object.write_vrt(self.outname, out)
+            be.OutObject.write_vrt(self.outname, out)
             # be.encode_corpus.encode_vrt("test_chunks", self.outname, self.job, "flair")
 
     # I guess we will need these more or less for every module separately as the
@@ -172,8 +175,8 @@ class flair_pipe(Flair):
     #    return self.named_entities
 
 
-class out_object_flair(be.out_object):
-    """Postprocessing class for Flair. Inherits base out_object."""
+class out_object_flair(be.OutObject):
+    """Postprocessing class for Flair. Inherits base OutObject."""
 
     def __init__(self, doc, jobs, start) -> None:
         super().__init__(doc, jobs, start)

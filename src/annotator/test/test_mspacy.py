@@ -10,6 +10,7 @@ def init():
     """Load the input dicts"""
 
     mydict = be.prepare_run.load_input_dict("test/test_files/input")
+
     subdict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
     return mydict["spacy_dict"], subdict_test, mydict
 
@@ -20,14 +21,14 @@ def load_object(init):
 
     init[0]["processors"] = [
         "tok2vec",
-        "senter",
         "tagger",
+        "senter",
         "parser",
         "attribute_ruler",
         "lemmatizer",
         "ner",
     ]
-    test_obj = msp.spacy_pipe(init[0])
+    test_obj = msp.MySpacy(init[0])
     return test_obj
 
 
@@ -44,6 +45,7 @@ def pipe_sent(init, load_object, get_text):
     same pipeline through spacy directly."""
 
     test_obj = load_object
+    out = test_obj.apply_to(get_text)
     mydict = init[1]
     # as this pipe config should just load all of a model, results
     # should be equivalent to using:
@@ -146,93 +148,41 @@ def test_apply_to(load_object, get_text):
     assert str(test_obj.doc) == get_text
 
 
-def test_pass_results(init, load_object, get_text):
-    mydict = init[2]
-    load_object.apply_to(get_text).pass_results(style="STR", mydict=mydict)
-
-
 def test_output_sent(pipe_sent):
     """Check if output is as expected, use current output as example result.
     Additionally use doc build through spacy directly and compare output."""
 
     check = [
         "<s>\n",
-        "This\tDT\tthis\t \tnsubj\tPRON\n",
-        "is\tVBZ\tbe\t \tROOT\tAUX\n",
-        "an\tDT\tan\t \tdet\tDET\n",
-        "example\tNN\texample\t \tcompound\tNOUN\n",
-        "text\tNN\ttext\t \tattr\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
+        "This\tDT\tthis\t \tPRON\n",
+        "is\tVBZ\tbe\t \tAUX\n",
+        "an\tDT\tan\t \tDET\n",
+        "example\tNN\texample\t \tNOUN\n",
+        "text\tNN\ttext\t \tNOUN\n",
+        ".\t.\t.\t \tPUNCT\n",
         "</s>\n",
         "<s>\n",
-        "This\tDT\tthis\t \tnsubj\tPRON\n",
-        "is\tVBZ\tbe\t \tROOT\tAUX\n",
-        "a\tDT\ta\t \tdet\tDET\n",
-        "second\tJJ\tsecond\tORDINAL\tamod\tADJ\n",
-        "sentence\tNN\tsentence\t \tattr\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
+        "This\tDT\tthis\t \tPRON\n",
+        "is\tVBZ\tbe\t \tAUX\n",
+        "a\tDT\ta\t \tDET\n",
+        "second\tJJ\tsecond\tORDINAL\tADJ\n",
+        "sentence\tNN\tsentence\t \tNOUN\n",
+        ".\t.\t.\t \tPUNCT\n",
         "</s>\n",
     ]
     # this is quite specific, any way to generalize?
     test_obj, check_doc, _ = pipe_sent
-    test_out = msp.out_object_spacy(test_obj.doc, test_obj.jobs, start=0).fetch_output(
-        "STR"
-    )
-    check_out = msp.out_object_spacy(check_doc, test_obj.jobs, start=0).fetch_output(
-        "STR"
-    )
+    test_out = msp.OutSpacy(test_obj.doc, test_obj.jobs, start=0).fetch_output("STR")
+    check_out = msp.OutSpacy(check_doc, test_obj.jobs, start=0).fetch_output("STR")
+    print("test_out")
+    print(test_out)
+    print("check_out")
+    print(check_out)
+    print("check")
+    print(check)
+
     assert test_out == check_out
     assert test_out == check
-
-
-def test_pipe_multiple(load_object, chunked_data):
-    """Check if the pipe_multiple function works correctly."""
-
-    test_obj = load_object
-
-    # lets just quickly emulate a file for our input, maybe change the chunker to also allow for direct string input down the line?
-    data = chunked_data
-    results_pipe = test_obj.pipe_multiple(data, ret=True)
-    results_alt = test_obj.get_multiple(data, ret=True)
-
-    # using spacy 3.2.1 and en_core_web_md 3.2.0
-    check_chunked = [
-        '<textid="1"> \n',
-        "<s>\n",
-        "This\tDT\tthis\t \tnsubj\tPRON\n",
-        "is\tVBZ\tbe\t \tROOT\tAUX\n",
-        "an\tDT\tan\t \tdet\tDET\n",
-        "example\tNN\texample\t \tcompound\tNOUN\n",
-        "text\tNN\ttext\t \tattr\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
-        "</s>\n",
-        "\n",
-        '<subtextid="1"> \n',
-        "<s>\n",
-        "It\tPRP\tit\t \tnsubj\tPRON\n",
-        "has\tVBZ\thave\t \tROOT\tVERB\n",
-        "some\tDT\tsome\t \tdet\tDET\n",
-        "subtext\tNN\tsubtext\t \tdobj\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
-        "</s>\n",
-        "</subtext> \n",
-        "\n",
-        "</text> \n",
-        '<textid="2"> \n',
-        "<s>\n",
-        "Here\tRB\there\t \tadvmod\tADV\n",
-        "is\tVBZ\tbe\t \tROOT\tAUX\n",
-        "some\tDT\tsome\t \tadvmod\tPRON\n",
-        "more\tJJR\tmore\t \tamod\tADJ\n",
-        "text\tNN\ttext\t \tnsubj\tNOUN\n",
-        ".\t.\t.\t \tpunct\tPUNCT\n",
-        "</s>\n",
-        "</text>\n",
-    ]
-
-    assert type(results_pipe) == list
-    assert check_chunked == results_pipe
-    assert check_chunked == results_alt
 
 
 def test_sentencize():
@@ -240,8 +190,8 @@ def test_sentencize():
     text_en = "This is a sentence. This is another sentence, or is it?"
     text_de = "Dies ist ein Satz. Dies ist ein zweiter Satz, oder nicht?"
 
-    data_en = msp.sentencize_spacy("en", text_en)
-    data_de = msp.sentencize_spacy("de", text_de)
+    data_en = msp.MySpacy.sentencize_spacy("en_core_web_md", text_en)
+    data_de = msp.MySpacy.sentencize_spacy("de_core_news_md", text_de)
 
     check_en = [["This is a sentence.", 4], ["This is another sentence, or is it?", 11]]
     check_de = [

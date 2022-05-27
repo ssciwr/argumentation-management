@@ -1,5 +1,6 @@
 from multiprocessing.sharedctypes import Value
 import base as be
+import mspacy as msp
 
 
 class SetConfig:
@@ -19,7 +20,7 @@ class SetConfig:
             "manual": self._pipe_manual,
         }
         self.accurate_dict = {
-            "sentencize": "stanza",
+            "sentencize": "spacy",
             "tokenize": "stanza",
             "pos": "stanza",
             "lemma": "stanza",
@@ -27,7 +28,7 @@ class SetConfig:
         }
         self.map_processors = {
             "spacy": {
-                "sentencize": "senter",
+                "sentencize": "senter, parser",
                 "tokenize": "tok2vec",
                 "lemma": "lemmatizer",
                 "pos": "tagger",
@@ -41,7 +42,7 @@ class SetConfig:
             },
         }
         self.mydict = mydict
-        self.case = self.processing_option[self.mydict["processing_option"]]
+        self.case = self.processing_option[self.mydict.get("processing_option", "fast")]
         self.case()
         # validate that processors and tool have same length
         self._validate_processors()
@@ -51,6 +52,7 @@ class SetConfig:
         if "stanza" in self.tool:
             self._set_model_stanza()
         self.set_processors()
+        self.set_tool()
 
     def _pipe_fast(self):
         """Fast pipeline for efficient processing. Uses SpaCy."""
@@ -128,21 +130,10 @@ class SetConfig:
             self.model = self.mydict["model"]
             print("Using selected model {}.".format(self.model))
         else:
-            # now we check selected language and text type to
+            # now we check selected language to
             # choose adequate model
             if self.mydict["language"] == "en":
-                if self.mydict["document_type"] == "text":
-                    # standard text
-                    print("Found standard text")
-                    self.model = "en_core_web_md"
-                elif self.mydict["document_type"] == "scientific":
-                    # scientific text, use the scispacy package for biomedical text
-                    print("Found scientific text")
-                    self.model = "en_core_sci_sm"
-                elif self.mydict["document_type"] == "historic":
-                    # historic, use model for old language
-                    print("Found historic text")
-                    self.model = "en_core_web_md"
+                self.model = "en_core_web_md"
             elif self.mydict["language"] == "de":
                 self.model = "de_core_news_md"
             elif self.mydict["language"] == "fr":
@@ -185,13 +176,14 @@ class SetConfig:
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""
         # first purge already existing processors in tooldict
-        for mytool in self.tool:
+        for mytool in set(self.tool):
             self.mydict[mytool + "_dict"]["processors"] = []
         for proc, mytool in zip(self.processors, self.tool):
             # map to new name
             myname = self.map_processors[mytool][proc]
             print("found name {} for tool {} and proc {}".format(myname, mytool, proc))
-            self.mydict[mytool + "_dict"]["processors"].append(myname)
+            for i in myname.split(", "):
+                self.mydict[mytool + "_dict"]["processors"].append(i)
             # we don't need the language for spacy
             self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
             if self.model:
@@ -200,13 +192,59 @@ class SetConfig:
         # (no spaces)
         temp = ",".join(self.mydict["stanza_dict"]["processors"])
         self.mydict["stanza_dict"]["processors"] = temp
+        # update processors in dict
+        self.mydict["processing_type"] = self.processors
         return self.mydict
+
+    def set_tool(self) -> dict:
+        # update tool in dict
+        self.mydict["tool"] = self.tool
+        return self.mydict
+
+
+class PipeText:
+    """Handle the processing of the textual data, interplay of tools."""
+
+    def __init__(self, mydict: dict) -> None:
+        self.mydict = mydict
+        # find out if text will be sentencized with SpaCy
+        self.sentencize = False
+        self.tool = self.mydict["tool"]
+        self.processors = self.mydict["processing_type"]
+        self._get_sentencize()
+        if self.sentencize:
+            self.sents = self._run_sentencize()
+        else:
+            self.data = be.prepare_run.get_text(mydict["input"])
+        # now either pipe the data through tool or sentences
+        # recommend to do one tool's annotation, then encode, decode and annotate again..?
+        # how to make sure tokens stay the same?
+
+    def _get_sentencize(self) -> bool:
+        for proc, mytool in zip(self.processors, self.tool):
+            print(proc, mytool)
+            if proc == "sentencize" and mytool == "spacy":
+                self.sentencize = True
+        # find out if text will be analyzed with different tool
+        if self.sentencize and all(mytool == "spacy" for mytool in self.tool):
+            # if it is spacy only then we skip pre-sentencizing
+            self.sentencize = False
+        return self.sentencize
+
+    def _run_sentencize(self):
+        # get the text
+        self.data = be.prepare_run.get_text(mydict["input"])
+        # call spacy sentencize function
+        self.sents = msp.sentencize_spacy(mydict["spacy_dict"]["model"], self.data)
+        return self.sents
 
 
 if __name__ == "__main__":
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     mydict["processing_option"] = "accurate"
-    mydict["processing_type"] = "pos  ,lemma, tokenize"
-    obj = SetConfig(mydict)
+    mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
+    be.prepare_run.validate_input_dict(mydict)
+    SetConfig(mydict)
+    PipeText(mydict)
     # now we still need to add the order of steps - processors was ordered list
     # need to access that and tools to call tools one by one

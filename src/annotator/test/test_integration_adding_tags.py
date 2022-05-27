@@ -29,14 +29,15 @@ def test_integration_adding_tags(load_data):
     out = pipe.apply_to(data)
 
     out.pass_results(mydict, "STR")
+
     cwd = os.getcwd()
     os.system("cd {} && touch test && cd {}".format(reg.name, cwd))
     mydict["tool"] = "spacy"
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config
-    pipe = msp.spacy_pipe(spacy_dict)
+    annotated = msp.MySpacy(spacy_dict)
     # apply pipeline to data
-    annotated = pipe.apply_to(data)
+    annotated.apply_to(data)
     # get the dict for encoding
     # encoding_dict = be.prepare_run.get_encoding(mydict)
     # Write vrt and encode
