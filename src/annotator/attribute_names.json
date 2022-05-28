@@ -15,7 +15,7 @@
         "proc_pos": "tagger",
         "sentence": "sents",
         "token": "token",
-        "pos": "tag_",
+        "pos": "pos_",
         "lemma": "lemma_",
         "ner": "ent_type_"
     },

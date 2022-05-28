@@ -67,19 +67,6 @@ class MySpacy:
                 raise ValueError(message)
             print(">>>")
 
-            # assemble list of excluded components from list of available components and
-            # validated list of existing components so not to load in the pipeline
-            self.exclude = [
-                component for component in components if component not in self.validated
-            ]
-
-            self.cfg = {
-                "name": self.model,
-                "exclude": self.exclude,
-                "config": self.config,
-            }
-            self.nlp = sp.load(**self.cfg)
-
     def _set_tok2vec(self):
         # if we ask for lemma and/or POS we force tok2vec to boost accuracy
         # also add in attribute ruler as it is cheap

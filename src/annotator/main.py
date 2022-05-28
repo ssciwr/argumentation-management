@@ -50,13 +50,16 @@ if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     # overwrite defaults for testing purposes
-    mydict["processing_option"] = "accurate"
-    # mydict["processing_option"] = "fast"
+    # mydict["processing_option"] = "accurate"
+    mydict["processing_option"] = "fast"
     mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
+    # mydict["language"] = "en"
+    mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
     mydict["advanced_options"]["corpus_dir"] = "./src/annotator/test/corpora/"
     mydict["advanced_options"]["registry_dir"] = "./src/annotator/test/registry/"
     # get the data to be processed
+    # data = be.prepare_run.get_text("./src/annotator/test/test_files/example_en.txt")
     data = be.prepare_run.get_text("./src/annotator/test/test_files/example_de.txt")
     # validate the input dict
     be.prepare_run.validate_input_dict(mydict)
