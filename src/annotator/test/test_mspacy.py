@@ -154,32 +154,26 @@ def test_output_sent(pipe_sent):
 
     check = [
         "<s>\n",
-        "This\tDT\tthis\t \tPRON\n",
-        "is\tVBZ\tbe\t \tAUX\n",
-        "an\tDT\tan\t \tDET\n",
-        "example\tNN\texample\t \tNOUN\n",
-        "text\tNN\ttext\t \tNOUN\n",
-        ".\t.\t.\t \tPUNCT\n",
+        "This\tPRON\tthis\t \n",
+        "is\tAUX\tbe\t \n",
+        "an\tDET\tan\t \n",
+        "example\tNOUN\texample\t \n",
+        "text\tNOUN\ttext\t \n",
+        ".\tPUNCT\t.\t \n",
         "</s>\n",
         "<s>\n",
-        "This\tDT\tthis\t \tPRON\n",
-        "is\tVBZ\tbe\t \tAUX\n",
-        "a\tDT\ta\t \tDET\n",
-        "second\tJJ\tsecond\tORDINAL\tADJ\n",
-        "sentence\tNN\tsentence\t \tNOUN\n",
-        ".\t.\t.\t \tPUNCT\n",
+        "This\tPRON\tthis\t \n",
+        "is\tAUX\tbe\t \n",
+        "a\tDET\ta\t \n",
+        "second\tADJ\tsecond\tORDINAL\n",
+        "sentence\tNOUN\tsentence\t \n",
+        ".\tPUNCT\t.\t \n",
         "</s>\n",
     ]
     # this is quite specific, any way to generalize?
     test_obj, check_doc, _ = pipe_sent
     test_out = msp.OutSpacy(test_obj.doc, test_obj.jobs, start=0).fetch_output("STR")
     check_out = msp.OutSpacy(check_doc, test_obj.jobs, start=0).fetch_output("STR")
-    print("test_out")
-    print(test_out)
-    print("check_out")
-    print(check_out)
-    print("check")
-    print(check)
 
     assert test_out == check_out
     assert test_out == check
