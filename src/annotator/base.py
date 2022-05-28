@@ -219,7 +219,6 @@ class OutObject:
         # every sentence
         # if only sentence is provided, directly call the methods
         out = []
-        # print(cls.attrnames)
         if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
@@ -330,10 +329,6 @@ class OutObject:
         if "ner" in self.jobs:
             line["NER"] = OutObject.grab_ent(token)
 
-        if "attribute_ruler" in self.jobs:
-            line["ATTR"] = OutObject.grab_att(token)
-        # add what else we need
-
         if style == "STR":
 
             return self.switch_style(line)
@@ -373,16 +368,6 @@ class OutObject:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
             tag = getattr(word, attrname)
-        else:
-            tag = NOT_DEF
-        return tag
-
-    @staticmethod
-    def grab_att(token):
-
-        # attributes:
-        if token.pos_ != "":
-            tag = token.pos_
         else:
             tag = NOT_DEF
         return tag

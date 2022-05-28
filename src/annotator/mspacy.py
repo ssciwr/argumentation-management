@@ -32,8 +32,6 @@ class MySpacy:
         self._load_pipe()
 
     def _load_pipe(self):
-        # use a specific pipeline if requested
-        self.validated = []
         try:
             self.nlp = sp.load(self.model, config=self.config)
 
@@ -52,7 +50,6 @@ class MySpacy:
                 # if yes:
                 print("Loading component {} from {}.".format(component, self.model))
                 # add to list of validated components
-                self.validated.append(component)
 
             # if no, there is maybe a typo, display some info and try to link to spacy webpage of model
             # -> links may not work if they change their websites structure in the future
