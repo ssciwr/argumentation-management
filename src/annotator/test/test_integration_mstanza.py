@@ -13,9 +13,6 @@ def load_data():
 
 def test_integration_mstanza(load_data):
 
-    # create temporary directories for the corpora
-    out = TemporaryDirectory()
-
     # read in input.json
     mydict = be.prepare_run.load_input_dict("./input")
     mydict["input"] = "./test/test_files/example_de.txt"
@@ -47,11 +44,11 @@ def test_integration_mstanza(load_data):
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     out_obj.write_vrt(outfile, out)
-    add = False
-    if not add:
-        encode_obj = be.encode_corpus(mydict)
-        encode_obj.encode_vrt(ptags, stags)
-    elif add:
-        encode_obj = be.encode_corpus(mydict)
-        encode_obj.add_tags_to_corpus(mydict, ptags, stags)
+    # add = False
+    # if not add:
+    encode_obj = be.encode_corpus(mydict)
+    encode_obj.encode_vrt(ptags, stags)
+    # elif add:
+    # encode_obj = be.encode_corpus(mydict)
+    # encode_obj.add_tags_to_corpus(mydict, ptags, stags)
     # maybe here assert that written vrt is same as safe version

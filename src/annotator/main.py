@@ -38,9 +38,7 @@ def call_stanza(mydict, data, islist=False):
             doc.append(annotated.doc)
     # we should not need start ..?
     start = 0
-    out_obj = msa.out_object_stanza(
-        annotated.doc, annotated.jobs, start=start, islist=islist
-    )
+    out_obj = msa.out_object_stanza(doc, annotated.jobs, start=start, islist=islist)
     return out_obj
 
 
@@ -50,8 +48,10 @@ if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     # overwrite defaults for testing purposes
-    mydict["processing_option"] = "accurate"
+    # mydict["processing_option"] = "accurate"
     # mydict["processing_option"] = "fast"
+    # mydict["processing_option"] = "manual"
+    mydict["tool"] = "spacy, stanza, stanza, stanza"
     mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
     mydict["language"] = "en"
     # mydict["language"] = "de"
