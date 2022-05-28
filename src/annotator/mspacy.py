@@ -167,6 +167,7 @@ class OutSpacy(be.OutObject):
                 out.append(line)
         return out
 
+    # this to be removed as it duplicates functionality - TODO
     def fetch_output(self, style) -> list:
         """Function to assemble the output list for a run. Can work with or without sentence
         level annotation and will check if doc is sentencized on its own."""

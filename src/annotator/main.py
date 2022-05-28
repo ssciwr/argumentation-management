@@ -51,6 +51,7 @@ if __name__ == "__main__":
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     # overwrite defaults for testing purposes
     mydict["processing_option"] = "accurate"
+    # mydict["processing_option"] = "fast"
     mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
     mydict["advanced_options"]["corpus_dir"] = "./src/annotator/test/corpora/"
@@ -79,55 +80,31 @@ if __name__ == "__main__":
         # however, this is now a list
         data = out_obj[0].sentences
         data_islist = True
-    exit()
-    # # stanza
-    # out = out_obj.assemble_output_sent()
-    # ptags = ptags or out_obj.get_ptags()
-    # stags = out_obj.get_stags()
-    # # write out to .vrt
-    # outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-    # out_object_stanza.write_vrt(outfile, out)
+    # stanza
+    # the below for generating the output
+    # for xml or vrt, let's stick with vrt for now - TODO
+    # style = "STR"
+    out = out_obj[0].assemble_output_sent()
+    # spacy
+    # this replicates functionality, we need assemble_output_sent instead
+    # out = out_obj[0].fetch_output(style)
+    ptags = None
+    ptags = ptags or out_obj[0].get_ptags()
+    stags = out_obj[0].get_stags()
+    # write out to .vrt
+    outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
+    out_obj[0].write_vrt(outfile, out)
     # if not add:
-    #     encode_obj = be.encode_corpus(mydict)
-    #     encode_obj.encode_vrt(ptags, stags)
+    encode_obj = be.encode_corpus(mydict)
+    encode_obj.encode_vrt(ptags, stags)
     # elif add:
     #     encode_obj = be.encode_corpus(mydict)
     #     encode_obj.add_tags_to_corpus(mydict, ptags, stags)
 
-    # spacy
-    # the below for generating the output
-    # for xml or vrt, let's stick with vrt for now - TODO
-    style = "STR"
-    out = out_obj[0].fetch_output(style)
-    # find out if there are user-defined tags
-    ptags = None
-    ptags = ptags or out_obj[0].ptags
-    stags = out_obj[0].stags
-    # write to file -> This overwrites any existing file of given name;
-    # as all of this should be handled internally and the files are only
-    # temporary, this should not be a problem. right?
-    outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     # to use pretokenized data - TODO
-    # add = False
     # not sure why we need so many cases - TODO
     # if ret is False and style == "STR" and mydict is not None and add is False:
     # if not add:
-    out_obj[0].write_vrt(outfile, out)
-    # encode
-    encode_obj = be.encode_corpus(mydict)
-    encode_obj.encode_vrt(ptags, stags)
     # elif ret is False and style == "STR" and mydict is not None and add is True:
-    # else:
-    #   out_obj.write_vrt(outfile, out)
-    #   encode_obj = be.encode_corpus(mydict)
-    #   encode_obj.encode_vrt(ptags, stags)
-    # elif ret is False and style == "DICT" and mydict is not None:
-    # be.OutObject.write_xml(
-    # mydict["output"].replace("/", "_"), mydict["output"], out
-    # )
     # elif ret is True:
-    # return out
-    # else:
-    # raise RuntimeError(
     # "If ret is not set to True, a dict containing the encoding parameters is needed!"
-    # )
