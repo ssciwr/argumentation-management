@@ -9,10 +9,12 @@ def call_spacy(mydict, data, islist=False):
     # load the pipeline
     annotated = msp.MySpacy(spacy_dict)
     # apply pipeline to data
+    # data is not a list of sentences and will generate one doc object
     if not islist:
         annotated.apply_to(data)
         doc = annotated.doc
     else:
+    # data is a list of sentences and will generate a list of doc objects
         doc = []
         for sentence in data:
             annotated.apply_to(sentence)
@@ -88,9 +90,8 @@ if __name__ == "__main__":
     print(mydict["tool"], "tool")
     print(set(mydict["tool"]), "tool")
     out_obj = []
-    out = []
     data_islist = False
-    my_todo_list = ["{} {}".format(i,j) for i,j in zip(mydict["tool"], mydict["processing_type"])]
+    my_todo_list = [[i,j] for i,j in zip(mydict["tool"], mydict["processing_type"])]
     for mytool in set(mydict["tool"]):
         # here we do the object generation
         # we do not want to call same tools multiple times
@@ -105,19 +106,14 @@ if __name__ == "__main__":
         # so the new data is sentences from first tool
         # however, this is now a list
         data = out_obj[0].sentences
-    data_islist = False
-    # maybe here we set a different boolean to avoid confusion
-    for mytool, myjob in zip(mydict["tool"], mydict["processing_type"]):
+    # assemble sentences - this is independent of tool
+    out = []
+    out.append(out_obj[0].assemble_output_sent())
+
+    for mylist in my_todo_list[1::]:
+        print(mylist)
         # now we put together the output
-        # here we call each processor one by one
-        # duplication does not add much to compute time
-        # and it keeps everything modular
-        # the first tool will sentencize
-        if not data_islist:
-            out.append(my_out_obj.assemble_output_sent())
-            data_islist = True
-        else:
-            out.append(my_out_obj.assemble_output_tokens())
+        # out.append(my_out_obj.assemble_output_tokens())
 
     # stanza
     # the below for generating the output
