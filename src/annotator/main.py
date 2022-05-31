@@ -15,7 +15,7 @@ def call_spacy(mydict, data, islist=False):
     else:
         doc = []
         for sentence in data:
-            annotated.apply_to(sentence)
+            annotated.apply_to(sentence[0])
             doc.append(annotated.doc)
     # we should not need start ..?
     start = 0
@@ -25,6 +25,8 @@ def call_spacy(mydict, data, islist=False):
 
 def call_stanza(mydict, data, islist=False):
     stanza_dict = mydict["stanza_dict"]
+    if islist:
+        stanza_dict["tokenize_no_ssplit"] = True
     # load the pipeline
     annotated = msa.MyStanza(stanza_dict)
     # apply pipeline to data
@@ -44,15 +46,30 @@ def call_stanza(mydict, data, islist=False):
 
 call_tool = {"spacy": call_spacy, "stanza": call_stanza}
 
+
+def assemble_out_stream(out_obj: list, out=list) -> list:
+    # First the sentences
+    stags = out_obj[0].get_stags()
+    out_all = out[0]
+    # Then iterate through objects and their output
+    for i, my_obj in enumerate(out_obj):
+        ptags = None
+        ptags = ptags or out_obj[0].get_ptags()
+    return out_all
+
+
 if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     # overwrite defaults for testing purposes
     # mydict["processing_option"] = "accurate"
     # mydict["processing_option"] = "fast"
-    # mydict["processing_option"] = "manual"
-    mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
+    mydict["processing_option"] = "manual"
+    # add a safety check if there are more tools than processors - TODO
+    # mydict["tool"] = "spacy, stanza, stanza, stanza"
+    mydict["tool"] = "spacy, stanza"
+    # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
+    mydict["processing_type"] = "sentencize, tokenize"
     mydict["language"] = "en"
     # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
@@ -71,35 +88,39 @@ if __name__ == "__main__":
     print(mydict["tool"], "tool")
     print(set(mydict["tool"]), "tool")
     out_obj = []
+    out = []
     data_islist = False
     for mytool in set(mydict["tool"]):
         print(mytool)
         # if sentences are data, then we need to go through list
         # call specific routines
-        out_obj.append(call_tool[mytool](mydict, data, data_islist))
+        my_out_obj = call_tool[mytool](mydict, data, data_islist)
+        out_obj.append(my_out_obj)
         # the first tool will sentencize
         # all subsequent ones will use sentencized input
         # so the new data is sentences from first tool
         # however, this is now a list
         data = out_obj[0].sentences
         data_islist = True
+        out.append(my_out_obj.assemble_output_sent())
     # stanza
     # the below for generating the output
     # for xml or vrt, let's stick with vrt for now - TODO
     # style = "STR"
-    out = out_obj[0].assemble_output_sent()
+    # out = out_obj[0].assemble_output_sent()
     # spacy
     # this replicates functionality, we need assemble_output_sent instead
     # out = out_obj[0].fetch_output(style)
-    ptags = None
-    ptags = ptags or out_obj[0].get_ptags()
-    stags = out_obj[0].get_stags()
+
+    # Now stitch together the outputs
+    out_all = assemble_out_stream(out_obj, out)
+
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-    out_obj[0].write_vrt(outfile, out)
+    be.OutObject.write_vrt(outfile, out_all)
     # if not add:
-    encode_obj = be.encode_corpus(mydict)
-    encode_obj.encode_vrt(ptags, stags)
+    # encode_obj = be.encode_corpus(mydict)
+    # encode_obj.encode_vrt(ptags, stags)
     # elif add:
     #     encode_obj = be.encode_corpus(mydict)
     #     encode_obj.add_tags_to_corpus(mydict, ptags, stags)
