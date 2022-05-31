@@ -212,23 +212,37 @@ class OutObject:
         f = open(name, "w")
         return f
 
+    def iterate(self):
+        return self.out
+
     def assemble_output_sent(self) -> list:
         """Template function to assemble output for tool at sentence level."""
 
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         # if only sentence is provided, directly call the methods
-        out = []
+        self.out = []
         if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         self.tstart = 0
         for sent in getattr(self.doc, self.attrnames["sentence"]):
+            self.out.append("<s>\n")
+            # for token in sent:
+                # self.out.append(token.text + "\n")
+            # out = self.iterate(out, sent, "STR")
+            self.out.append(sent.text + "\n")
+            self.out.append("</s>\n")
+        return self.out
 
-            out.append("<s>\n")
-            out = self.iterate(out, sent, "STR")
-            out.append("</s>\n")
-        return out
+    def assemble_output_tokens(self) -> list:
+        """Template function to assemble output for tool at token level."""
+
+        # if only sentence is provided, directly call the methods
+        # if not self.out:
+            # self.out = []
+        self.out = self.iterate(self.out, self.doc)
+        return self.out
 
     def assemble_output_xml(self):
         out = []

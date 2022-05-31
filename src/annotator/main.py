@@ -15,7 +15,7 @@ def call_spacy(mydict, data, islist=False):
     else:
         doc = []
         for sentence in data:
-            annotated.apply_to(sentence[0])
+            annotated.apply_to(sentence)
             doc.append(annotated.doc)
     # we should not need start ..?
     start = 0
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
     # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "spacy, stanza"
+    mydict["tool"] = "spacy, spacy"
     # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
     mydict["processing_type"] = "sentencize, tokenize"
     mydict["language"] = "en"
@@ -90,7 +90,11 @@ if __name__ == "__main__":
     out_obj = []
     out = []
     data_islist = False
+    my_todo_list = ["{} {}".format(i,j) for i,j in zip(mydict["tool"], mydict["processing_type"])]
     for mytool in set(mydict["tool"]):
+        # here we do the object generation
+        # we do not want to call same tools multiple times
+        # as that would re-run the nlp pipelines
         print(mytool)
         # if sentences are data, then we need to go through list
         # call specific routines
@@ -101,8 +105,20 @@ if __name__ == "__main__":
         # so the new data is sentences from first tool
         # however, this is now a list
         data = out_obj[0].sentences
-        data_islist = True
-        out.append(my_out_obj.assemble_output_sent())
+    data_islist = False
+    # maybe here we set a different boolean to avoid confusion
+    for mytool, myjob in zip(mydict["tool"], mydict["processing_type"]):
+        # now we put together the output
+        # here we call each processor one by one
+        # duplication does not add much to compute time
+        # and it keeps everything modular
+        # the first tool will sentencize
+        if not data_islist:
+            out.append(my_out_obj.assemble_output_sent())
+            data_islist = True
+        else:
+            out.append(my_out_obj.assemble_output_tokens())
+
     # stanza
     # the below for generating the output
     # for xml or vrt, let's stick with vrt for now - TODO

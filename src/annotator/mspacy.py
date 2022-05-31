@@ -142,17 +142,17 @@ class OutSpacy(be.OutObject):
         self.ptags = self.get_ptags()
         self.stags = self.get_stags()
 
-    def iterate(self, out, sent, style):
+    def iterate(self, sent, style):
         for token in sent:
             # multi-word expressions not available in spacy?
             # Setting word=token for now
             tid = copy.copy(token.i)
             line = self.collect_results(token, tid, token, style)
             if style == "STR":
-                out.append(line + "\n")
+                self.out.append(line + "\n")
             elif style == "DICT":
-                out.append(line)
-        return out
+                self.out.append(line)
+        return self.out
 
     # this to be removed as it duplicates functionality - TODO
     def fetch_output(self, style) -> list:
