@@ -172,9 +172,15 @@ def test_output_sent(pipe_sent):
     ]
     # this is quite specific, any way to generalize?
     test_obj, check_doc, _ = pipe_sent
-    test_out = msp.OutSpacy(test_obj.doc, test_obj.jobs, start=0).fetch_output("STR")
-    check_out = msp.OutSpacy(check_doc, test_obj.jobs, start=0).fetch_output("STR")
-
+    test_out_obj = msp.OutSpacy(test_obj.doc, test_obj.jobs, start=0)
+    check_out_obj = msp.OutSpacy(check_doc, test_obj.jobs, start=0)
+    test_out = test_out_obj.assemble_output_sent()
+    check_out = check_out_obj.assemble_output_sent()
+    test_out = test_out_obj.assemble_output_tokens(test_out)
+    check_out = check_out_obj.assemble_output_tokens(check_out)
+    print("test_out:", test_out)
+    print("check_out:", check_out)
+    print("check:", check)
     assert test_out == check_out
     assert test_out == check
 
