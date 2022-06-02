@@ -38,7 +38,8 @@ def test_integration_mspacy(load_data):
     start = 0
     out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)
     style = "STR"
-    out = out_obj.fetch_output(style)
+    out = out_obj.assemble_output_sent()
+    out = out_obj.assemble_output_tokens(out)
     ptags = out_obj.ptags
     stags = out_obj.stags
     # write to file -> This overwrites any existing file of given name;

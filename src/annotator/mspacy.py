@@ -195,33 +195,6 @@ class OutSpacy(be.OutObject):
     def _compare_tokens(self, token1, token2):
         return token1 == token2
 
-    # this to be removed as it duplicates functionality - TODO
-    def fetch_output(self, style) -> list:
-        """Function to assemble the output list for a run. Can work with or without sentence
-        level annotation and will check if doc is sentencized on its own."""
-
-        try:
-            assert hasattr(self, "doc")
-        except AttributeError:
-            print(
-                "Seems there is no Doc object, did you forget to call MySpacy.apply_to()?"
-            )
-            exit()
-
-        out = []
-        # check if spacy doc object is sentencized
-        if self.doc.has_annotation("SENT_START"):
-            # apply sentence and sublevel annotation
-            if style == "STR":
-                out = self.assemble_output_sent()
-            elif style == "DICT":
-                out = self.assemble_output_xml()
-
-        # if not sentencized just iterate doc and extract the results
-        elif not self.doc.has_annotation("SENT_START"):
-            out = self.iterate(out, self.doc, style)
-        return out
-
     @property
     def sentences(self) -> list:
         """Function to return sentences as list.
