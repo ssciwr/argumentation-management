@@ -166,10 +166,19 @@ class OutSpacy(be.OutObject):
         token_list_out = self.out_shortlist(out)
         # now compare the tokens in out with the token objects from spacy
         for token_spacy, token_out in zip(token_list, token_list_out):
-            print("Checking for tokens {} {}".format(token_spacy.text, token_out))
-
-            # line = self.collect_results(token, 0, token, "STR")
-
+            print("Checking for tokens {} {}".format(token_spacy.text, token_out[0]))
+            # check that the text is the same
+            if token_spacy.text != token_out[0]:
+                print(
+                    "Found different token than in out! - {} and {}".format(
+                        token_spacy.text, token_out[0]
+                    )
+                )
+                print("Please check your inputs!")
+            else:
+                line = self.collect_results(token_spacy, 0, token_spacy, "STR")
+                # now replace the respective token with annotated token
+                out[token_out[1]] = line + "\n"
         return out
 
     def token_list(self, myobj: list) -> list:
@@ -177,8 +186,8 @@ class OutSpacy(be.OutObject):
 
     def out_shortlist(self, out: list) -> list:
         out = [
-            token.strip()
-            for token in out
+            (token.strip(), i)
+            for i, token in enumerate(out)
             if token.strip() != "<s>" and token.strip() != "</s>"
         ]
         return out

@@ -238,10 +238,6 @@ class OutObject:
     def assemble_output_tokens(self, out) -> list:
         """Template function to assemble output for tool at token level."""
 
-        for mytoken in out:
-            if mytoken != "<s>" or "</s>":
-                print("Checking for token {}".format(mytoken))
-
         return out
 
     def assemble_output_xml(self):

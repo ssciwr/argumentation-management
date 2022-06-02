@@ -120,12 +120,6 @@ if __name__ == "__main__":
                 out = my_out_obj.assemble_output_tokens(out)
             data_islist = False
     print(out)
-    exit()
-    for i, mylist in enumerate(my_todo_list[1::]):
-        print(mylist)
-        # now we put together the output
-        out = out_obj[i].assemble_output_tokens()
-
     # stanza
     # the below for generating the output
     # for xml or vrt, let's stick with vrt for now - TODO
@@ -136,14 +130,16 @@ if __name__ == "__main__":
     # out = out_obj[0].fetch_output(style)
 
     # Now stitch together the outputs
-    out_all = assemble_out_stream(out_obj, out)
+    # out_all = assemble_out_stream(out_obj, out)
 
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-    be.OutObject.write_vrt(outfile, out_all)
+    be.OutObject.write_vrt(outfile, out)
     # if not add:
-    # encode_obj = be.encode_corpus(mydict)
-    # encode_obj.encode_vrt(ptags, stags)
+    ptags = None
+    stags = None
+    encode_obj = be.encode_corpus(mydict)
+    encode_obj.encode_vrt(ptags, stags)
     # elif add:
     #     encode_obj = be.encode_corpus(mydict)
     #     encode_obj.add_tags_to_corpus(mydict, ptags, stags)
