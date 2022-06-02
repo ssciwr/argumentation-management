@@ -14,7 +14,7 @@ def call_spacy(mydict, data, islist=False):
         annotated.apply_to(data)
         doc = annotated.doc
     else:
-    # data is a list of sentences and will generate a list of doc objects
+        # data is a list of sentences and will generate a list of doc objects
         doc = []
         for sentence in data:
             annotated.apply_to(sentence)
@@ -69,9 +69,9 @@ if __name__ == "__main__":
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
     # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "spacy, spacy"
+    mydict["tool"] = "spacy, spacy, spacy"
     # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
-    mydict["processing_type"] = "sentencize, tokenize"
+    mydict["processing_type"] = "sentencize, tokenize, pos"
     mydict["language"] = "en"
     # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
@@ -86,13 +86,17 @@ if __name__ == "__main__":
     pe.SetConfig(mydict)
     # now we still need to add the order of steps - processors was ordered list
     # need to access that and tools to call tools one by one
-    print(mydict["processing_option"], "option")
-    print(mydict["tool"], "tool")
-    print(set(mydict["tool"]), "tool")
     out_obj = []
     data_islist = False
-    my_todo_list = [[i,j] for i,j in zip(mydict["tool"], mydict["processing_type"])]
-    for mytool in set(mydict["tool"]):
+    my_todo_list = [[i, j] for i, j in zip(mydict["tool"], mydict["processing_type"])]
+    # we need ordered "set"
+    tools = set()  # a temporary lookup set
+    ordered_tools = [
+        mytool
+        for mytool in mydict["tool"]
+        if mytool not in tools and tools.add(mytool) is None
+    ]
+    for mytool in ordered_tools:
         # here we do the object generation
         # we do not want to call same tools multiple times
         # as that would re-run the nlp pipelines
@@ -100,20 +104,27 @@ if __name__ == "__main__":
         # if sentences are data, then we need to go through list
         # call specific routines
         my_out_obj = call_tool[mytool](mydict, data, data_islist)
-        out_obj.append(my_out_obj)
-        # the first tool will sentencize
-        # all subsequent ones will use sentencized input
-        # so the new data is sentences from first tool
-        # however, this is now a list
-        data = out_obj[0].sentences
-    # assemble sentences - this is independent of tool
-    out = []
-    out.append(out_obj[0].assemble_output_sent())
-
-    for mylist in my_todo_list[1::]:
+        # out_obj.append(my_out_obj)
+        if not data_islist:
+            # the first tool will sentencize
+            # all subsequent ones will use sentencized input
+            # so the new data is sentences from first tool
+            # however, this is now a list
+            data = my_out_obj.sentences
+            # do the sentence-level processing
+            # assemble sentences and tokens - this is independent of tool
+            out = my_out_obj.assemble_output_sent()
+            # further annotation: done with same tool?
+            if mydict["tool"].count(mytool) > 2:
+                print("Further annotation with tool {} ...".format(mytool))
+                out = my_out_obj.assemble_output_tokens(out)
+            data_islist = False
+    print(out)
+    exit()
+    for i, mylist in enumerate(my_todo_list[1::]):
         print(mylist)
         # now we put together the output
-        # out.append(my_out_obj.assemble_output_tokens())
+        out = out_obj[i].assemble_output_tokens()
 
     # stanza
     # the below for generating the output

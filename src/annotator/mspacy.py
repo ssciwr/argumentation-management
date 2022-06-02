@@ -142,17 +142,49 @@ class OutSpacy(be.OutObject):
         self.ptags = self.get_ptags()
         self.stags = self.get_stags()
 
-    def iterate(self, sent, style):
+    def iterate(self, out, sent, style):
         for token in sent:
             # multi-word expressions not available in spacy?
             # Setting word=token for now
             tid = copy.copy(token.i)
-            line = self.collect_results(token, tid, token, style)
+            # line = self.collect_results(token, tid, token, style)
+            line = token.text
             if style == "STR":
-                self.out.append(line + "\n")
+                out.append(line + "\n")
             elif style == "DICT":
-                self.out.append(line)
-        return self.out
+                out.append(line)
+        return out
+
+    def assemble_output_tokens(self, out) -> list:
+        # find out if sentence-level is there
+        if self.doc.has_annotation("SENT_START"):
+            token_list = []
+            for sent in self.doc.sents:
+                token_list += self.token_list(sent)
+        else:
+            token_list = self.token_list(self.doc)
+        token_list_out = self.out_shortlist(out)
+        # now compare the tokens in out with the token objects from spacy
+        for token_spacy, token_out in zip(token_list, token_list_out):
+            print("Checking for tokens {} {}".format(token_spacy.text, token_out))
+
+            # line = self.collect_results(token, 0, token, "STR")
+
+        return out
+
+    def token_list(self, myobj: list) -> list:
+        return [token for token in myobj]
+
+    def out_shortlist(self, out: list) -> list:
+        out = [
+            token.strip()
+            for token in out
+            if token.strip() != "<s>" and token.strip() != "</s>"
+        ]
+        return out
+
+    def _compare_tokens(self, token1, token2):
+        return token1 == token2
 
     # this to be removed as it duplicates functionality - TODO
     def fetch_output(self, style) -> list:

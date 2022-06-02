@@ -212,8 +212,8 @@ class OutObject:
         f = open(name, "w")
         return f
 
-    def iterate(self):
-        return self.out
+    def iterate(self, out, sent, style):
+        pass
 
     def assemble_output_sent(self) -> list:
         """Template function to assemble output for tool at sentence level."""
@@ -221,28 +221,28 @@ class OutObject:
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         # if only sentence is provided, directly call the methods
-        self.out = []
         if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         self.tstart = 0
+        out = []
         for sent in getattr(self.doc, self.attrnames["sentence"]):
-            self.out.append("<s>\n")
+            out.append("<s>\n")
             # for token in sent:
-                # self.out.append(token.text + "\n")
-            # out = self.iterate(out, sent, "STR")
-            self.out.append(sent.text + "\n")
-            self.out.append("</s>\n")
-        return self.out
+            # self.out.append(token.text + "\n")
+            out = self.iterate(out, sent, "STR")
+            # self.out.append(sent.text + "\n")
+            out.append("</s>\n")
+        return out
 
-    def assemble_output_tokens(self) -> list:
+    def assemble_output_tokens(self, out) -> list:
         """Template function to assemble output for tool at token level."""
 
-        # if only sentence is provided, directly call the methods
-        # if not self.out:
-            # self.out = []
-        self.out = self.iterate(self.out, self.doc)
-        return self.out
+        for mytoken in out:
+            if mytoken != "<s>" or "</s>":
+                print("Checking for token {}".format(mytoken))
+
+        return out
 
     def assemble_output_xml(self):
         out = []
