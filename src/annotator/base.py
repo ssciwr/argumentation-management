@@ -213,6 +213,7 @@ class OutObject:
         return f
 
     def iterate(self, out, sent, style):
+        # this needs to be done module-specific for now and is set in each subclass
         pass
 
     def assemble_output_sent(self) -> list:
@@ -237,7 +238,7 @@ class OutObject:
 
     def assemble_output_tokens(self, out) -> list:
         """Template function to assemble output for tool at token level."""
-
+        # this needs to be done module-specific for now and is set in each subclass
         return out
 
     def assemble_output_xml(self):

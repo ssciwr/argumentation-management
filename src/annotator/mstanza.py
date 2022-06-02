@@ -87,6 +87,55 @@ class out_object_stanza(be.OutObject):
         self.tstart = tid
         return out
 
+    def assemble_output_tokens(self, out) -> list:
+        # for stanza we always have sentence level
+        # as stanza allows feeding of sentences manually
+        token_list = []
+        word_list = []
+        for sent in self.doc.sentences:
+            token_list += self.token_list(sent)
+            word_list += self.word_list(sent)
+        token_list_out = self.out_shortlist(out)
+        # now compare the tokens in out with the token objects from stanza
+        # here we need to check what to do with mwt - we may need word
+        # instead of token
+        for token_stanza, word_stanza, token_out in zip(
+            token_list, word_list, token_list_out
+        ):
+            print("Checking for tokens {} {}".format(token_stanza.text, token_out[0]))
+            print("Checking for words {} {}".format(word_stanza.text, token_out[0]))
+            # check that the text is the same
+            # here we may need to check for word..?
+            if token_stanza.text != token_out[0]:
+                print(
+                    "Found different token than in out! - {} and {}".format(
+                        token_stanza.text, token_out[0]
+                    )
+                )
+                print("Please check your inputs!")
+            else:
+                line = self.collect_results(token_stanza, 0, word_stanza, "STR")
+                # now replace the respective token with annotated token
+                out[token_out[1]] = line + "\n"
+        return out
+
+    def token_list(self, myobj: list) -> list:
+        return [token for token in myobj.tokens]
+
+    def word_list(self, myobj: list) -> list:
+        return [word for word in myobj.words]
+
+    def out_shortlist(self, out: list) -> list:
+        out = [
+            (token.strip(), i)
+            for i, token in enumerate(out)
+            if token.strip() != "<s>" and token.strip() != "</s>"
+        ]
+        return out
+
+    def _compare_tokens(self, token1, token2):
+        return token1 == token2
+
     @property
     def sentences(self) -> list:
         """Function to return sentences as list.

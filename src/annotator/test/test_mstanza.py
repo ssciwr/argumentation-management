@@ -125,6 +125,7 @@ def test_out_object_stanza_tok_pos(get_sample, get_out_sample):
     # now call the postprocessing
     out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
     out = out_obj.assemble_output_sent()
+    out = out_obj.assemble_output_tokens(out)
     test_out = get_out_sample
     # compare as string not as list
     # reading in as list will add further \n
@@ -142,6 +143,7 @@ def test_out_object_stanza_tok_pos_lemma(get_sample, get_out_sample):
     # now call the postprocessing
     out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
     out = out_obj.assemble_output_sent()
+    out = out_obj.assemble_output_tokens(out)
     test_out = get_out_sample
     # compare as string not as list
     # reading in as list will add further \n
@@ -158,6 +160,7 @@ def test_out_object_stanza_vrt(get_sample):
     # now call the postprocessing
     out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
     out = out_obj.assemble_output_sent()
+    out = out_obj.assemble_output_tokens(out)
     file_out = open(outfile + "_test.vrt", "r")
     # call vrt writing
     ma.out_object_stanza.write_vrt(outfile, out)

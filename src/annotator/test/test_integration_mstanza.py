@@ -39,6 +39,7 @@ def test_integration_mstanza(load_data):
         stanza_pipe.doc, stanza_pipe.jobs, start=start, islist=False
     )
     out = out_obj.assemble_output_sent()
+    out = out_obj.assemble_output_tokens(out)
     ptags = out_obj.get_ptags()
     stags = out_obj.get_stags()
     # write out to .vrt

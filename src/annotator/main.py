@@ -29,17 +29,14 @@ def call_stanza(mydict, data, islist=False):
     stanza_dict = mydict["stanza_dict"]
     if islist:
         stanza_dict["tokenize_no_ssplit"] = True
+        # set two continuous newlines so that sentences are not
+        # split but we still use efficient capabilities
+        data = [sent + "\n\n" for sent in data]
     # load the pipeline
     annotated = msa.MyStanza(stanza_dict)
     # apply pipeline to data
-    if not islist:
-        annotated.apply_to(data)
-        doc = annotated.doc
-    else:
-        doc = []
-        for sentence in data:
-            annotated.apply_to(sentence)
-            doc.append(annotated.doc)
+    annotated.apply_to(data)
+    doc = annotated.doc
     # we should not need start ..?
     start = 0
     out_obj = msa.out_object_stanza(doc, annotated.jobs, start=start, islist=islist)
@@ -71,7 +68,7 @@ if __name__ == "__main__":
     # mydict["tool"] = "spacy, stanza, stanza, stanza"
     mydict["tool"] = "stanza"
     # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
-    mydict["processing_type"] = "sentencize"
+    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
     # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
