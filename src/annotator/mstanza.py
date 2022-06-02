@@ -30,9 +30,8 @@ class MyStanza:
         self.doc = self.nlp(text)  # Run the pipeline on the input text
         return self
 
-    # this should not be needed anymore
 
-
+# to be integrated in collect results - TODO
 def ner(doc) -> dict:
     """Function to extract NER tags from Doc Object."""
 
@@ -65,7 +64,7 @@ class out_object_stanza(be.OutObject):
 
         Args:
                 out[list]: List containing the collected output.
-                sent[stanza sent-Object]: Object containing annotated sentence."""
+                sent[stanza sent-Object]: Object containing tokenized sentence."""
 
         for token, word in zip(getattr(sent, "tokens"), getattr(sent, "words")):
             if token.text != word.text:
@@ -79,9 +78,12 @@ class out_object_stanza(be.OutObject):
                 # "Multi-word expressions not available currently"
                 # )
             tid = token.id[0] + self.tstart
-            line = self.collect_results(token, tid, word, style)
-
-            out.append(line + "\n")
+            # line = self.collect_results(token, tid, word, style)
+            line = token.text
+            if style == "STR":
+                out.append(line + "\n")
+            elif style == "DICT":
+                out.append(line)
         self.tstart = tid
         return out
 

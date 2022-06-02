@@ -97,7 +97,7 @@ class MySpacy:
         self.doc = self.nlp(data)
         return self
 
-    # sentencizer only
+    # sentencizer only - this to be deleted as it duplicates functionality TODO
     @staticmethod
     def sentencize_spacy(model: str, data: str) -> list:
         """Function to sentencize given text data.
@@ -162,6 +162,7 @@ class OutSpacy(be.OutObject):
             for sent in self.doc.sents:
                 token_list += self.token_list(sent)
         else:
+            # this still needs to be tested with pre-sentencized data
             token_list = self.token_list(self.doc)
         token_list_out = self.out_shortlist(out)
         # now compare the tokens in out with the token objects from spacy
