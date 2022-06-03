@@ -66,9 +66,9 @@ if __name__ == "__main__":
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
     # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "stanza"
+    mydict["tool"] = "stanza, stanza, spacy"
     # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
-    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
+    mydict["processing_type"] = "sentencize, tokenize, pos"
     mydict["language"] = "en"
     # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
@@ -115,7 +115,12 @@ if __name__ == "__main__":
             if mydict["tool"].count(mytool) > 2:
                 print("Further annotation with tool {} ...".format(mytool))
                 out = my_out_obj.assemble_output_tokens(out)
-            data_islist = False
+            data_islist = True
+        elif data_islist:
+            # sentencized and tokenized data already processed
+            # now token-level annotation
+            out = my_out_obj.assemble_output_tokens(out)
+
     print(out)
     # stanza
     # the below for generating the output

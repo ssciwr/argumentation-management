@@ -156,14 +156,22 @@ class OutSpacy(be.OutObject):
         return out
 
     def assemble_output_tokens(self, out) -> list:
-        # find out if sentence-level is there
-        if self.doc.has_annotation("SENT_START"):
-            token_list = []
-            for sent in self.doc.sents:
-                token_list += self.token_list(sent)
+        # check for list of docs -> list of sentences
+        # had been passed that were annotated
+        token_list = []
+        # if we feed sentences, senter and parser processors need to be absent
+        # apparently nothing else
+        # see https://spacy.io/api/doc#sents
+        if type(self.doc) == list:
+            for doc in self.doc:
+                token_list += self.token_list(doc)
+        # else spacy was used also for sentencizing
+        # check if sentence-level is there
         else:
-            # this still needs to be tested with pre-sentencized data
-            token_list = self.token_list(self.doc)
+            if self.doc.has_annotation("SENT_START"):
+                for sent in self.doc.sents:
+                    token_list += self.token_list(sent)
+
         token_list_out = self.out_shortlist(out)
         # now compare the tokens in out with the token objects from spacy
         for token_spacy, token_out in zip(token_list, token_list_out):
@@ -217,5 +225,5 @@ class OutSpacy(be.OutObject):
 
         sents = []
         for sent in self.doc.sents:
-            sents.append([sent.text])
+            sents.append(sent.text)
         return sents

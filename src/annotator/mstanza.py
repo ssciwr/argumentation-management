@@ -155,12 +155,6 @@ class out_object_stanza(be.OutObject):
             exit()
 
         sents = []
-        for i, sent in enumerate(self.doc.sentences):
-            if i == 0:
-                # need to take the len of the split str as otherwise grouping of multiple tokens by
-                # spacy can be a problem. This now assumes that tokens are always separated by a
-                # whitespace, which seems reasonable to me -> Any examples to the contrary?
-                sents.append([sent.text, len(sent.text.split())])
-            elif i > 0:
-                sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
+        for sent in self.doc.sentences:
+            sents.append(sent.text)
         return sents
