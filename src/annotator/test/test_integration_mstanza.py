@@ -13,9 +13,6 @@ def load_data():
 
 def test_integration_mstanza(load_data):
 
-    # create temporary directories for the corpora
-    out = TemporaryDirectory()
-
     # read in input.json
     mydict = be.prepare_run.load_input_dict("./input")
     mydict["input"] = "./test/test_files/example_de.txt"
@@ -34,6 +31,25 @@ def test_integration_mstanza(load_data):
     data = be.prepare_run.get_text(mydict["input"])
     # initialize the pipeline with the dict
     stanza_pipe = ma.MyStanza(stanza_dict)
-    # apply pipeline to data and encode
-    stanza_pipe.apply_to(data).pass_results(mydict)
+    # apply pipeline to data
+    stanza_pipe.apply_to(data)
+    # we should not need start ..?
+    start = 0
+    out_obj = ma.out_object_stanza(
+        stanza_pipe.doc, stanza_pipe.jobs, start=start, islist=False
+    )
+    out = out_obj.assemble_output_sent()
+    out = out_obj.assemble_output_tokens(out)
+    ptags = out_obj.get_ptags()
+    stags = out_obj.get_stags()
+    # write out to .vrt
+    outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
+    out_obj.write_vrt(outfile, out)
+    # add = False
+    # if not add:
+    encode_obj = be.encode_corpus(mydict)
+    encode_obj.encode_vrt(ptags, stags)
+    # elif add:
+    # encode_obj = be.encode_corpus(mydict)
+    # encode_obj.add_tags_to_corpus(mydict, ptags, stags)
     # maybe here assert that written vrt is same as safe version

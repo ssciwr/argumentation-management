@@ -212,23 +212,33 @@ class OutObject:
         f = open(name, "w")
         return f
 
+    def iterate(self, out, sent, style):
+        # this needs to be done module-specific for now and is set in each subclass
+        pass
+
     def assemble_output_sent(self) -> list:
         """Template function to assemble output for tool at sentence level."""
 
         # if senter is called we insert sentence symbol <s> before and </s> after
         # every sentence
         # if only sentence is provided, directly call the methods
-        out = []
-        # print(cls.attrnames)
         if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
 
         self.tstart = 0
+        out = []
         for sent in getattr(self.doc, self.attrnames["sentence"]):
-
             out.append("<s>\n")
+            # for token in sent:
+            # self.out.append(token.text + "\n")
             out = self.iterate(out, sent, "STR")
+            # self.out.append(sent.text + "\n")
             out.append("</s>\n")
+        return out
+
+    def assemble_output_tokens(self, out) -> list:
+        """Template function to assemble output for tool at token level."""
+        # this needs to be done module-specific for now and is set in each subclass
         return out
 
     def assemble_output_xml(self):
@@ -330,10 +340,6 @@ class OutObject:
         if "ner" in self.jobs:
             line["NER"] = OutObject.grab_ent(token)
 
-        if "attribute_ruler" in self.jobs:
-            line["ATTR"] = OutObject.grab_att(token)
-        # add what else we need
-
         if style == "STR":
 
             return self.switch_style(line)
@@ -373,16 +379,6 @@ class OutObject:
         # Tagger -> Token.tag, Token.tag_
         if getattr(word, attrname) != "":
             tag = getattr(word, attrname)
-        else:
-            tag = NOT_DEF
-        return tag
-
-    @staticmethod
-    def grab_att(token):
-
-        # attributes:
-        if token.pos_ != "":
-            tag = token.pos_
         else:
             tag = NOT_DEF
         return tag

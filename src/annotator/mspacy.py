@@ -32,8 +32,6 @@ class MySpacy:
         self._load_pipe()
 
     def _load_pipe(self):
-        # use a specific pipeline if requested
-        self.validated = []
         try:
             self.nlp = sp.load(self.model, config=self.config)
 
@@ -52,7 +50,6 @@ class MySpacy:
                 # if yes:
                 print("Loading component {} from {}.".format(component, self.model))
                 # add to list of validated components
-                self.validated.append(component)
 
             # if no, there is maybe a typo, display some info and try to link to spacy webpage of model
             # -> links may not work if they change their websites structure in the future
@@ -66,19 +63,6 @@ class MySpacy:
                 )
                 raise ValueError(message)
             print(">>>")
-
-            # assemble list of excluded components from list of available components and
-            # validated list of existing components so not to load in the pipeline
-            self.exclude = [
-                component for component in components if component not in self.validated
-            ]
-
-            self.cfg = {
-                "name": self.model,
-                "exclude": self.exclude,
-                "config": self.config,
-            }
-            self.nlp = sp.load(**self.cfg)
 
     def _set_tok2vec(self):
         # if we ask for lemma and/or POS we force tok2vec to boost accuracy
@@ -113,7 +97,7 @@ class MySpacy:
         self.doc = self.nlp(data)
         return self
 
-    # sentencizer only
+    # sentencizer only - this to be deleted as it duplicates functionality TODO
     @staticmethod
     def sentencize_spacy(model: str, data: str) -> list:
         """Function to sentencize given text data.
@@ -132,7 +116,10 @@ class MySpacy:
         assert doc.has_annotation("SENT_START")
 
         sents = []
+        # for sent in doc.sents:
+        # sents.append([sent.text])
 
+        # not sure why the token number is counted here - TODO
         for i, sent in enumerate(doc.sents):
             if i == 0:
                 # need to take the len of the split str as otherwise grouping of multiple tokens by
@@ -149,8 +136,8 @@ class OutSpacy(be.OutObject):
     """Out object for spacy annotation, adds spacy-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs, start):
-        super().__init__(doc, jobs, start)
+    def __init__(self, doc, jobs, start, islist=False):
+        super().__init__(doc, jobs, start, islist)
         self.attrnames = self.attrnames["spacy_names"]
         self.ptags = self.get_ptags()
         self.stags = self.get_stags()
@@ -160,38 +147,62 @@ class OutSpacy(be.OutObject):
             # multi-word expressions not available in spacy?
             # Setting word=token for now
             tid = copy.copy(token.i)
-            line = self.collect_results(token, tid, token, style)
+            # line = self.collect_results(token, tid, token, style)
+            line = token.text
             if style == "STR":
                 out.append(line + "\n")
             elif style == "DICT":
                 out.append(line)
         return out
 
-    def fetch_output(self, style) -> list:
-        """Function to assemble the output list for a run. Can work with or without sentence
-        level annotation and will check if doc is sentencized on its own."""
+    def assemble_output_tokens(self, out) -> list:
+        # check for list of docs -> list of sentences
+        # had been passed that were annotated
+        token_list = []
+        # if we feed sentences, senter and parser processors need to be absent
+        # apparently nothing else
+        # see https://spacy.io/api/doc#sents
+        if type(self.doc) == list:
+            for doc in self.doc:
+                token_list += self.token_list(doc)
+        # else spacy was used also for sentencizing
+        # check if sentence-level is there
+        else:
+            if self.doc.has_annotation("SENT_START"):
+                for sent in self.doc.sents:
+                    token_list += self.token_list(sent)
 
-        try:
-            assert hasattr(self, "doc")
-        except AttributeError:
-            print(
-                "Seems there is no Doc object, did you forget to call MySpacy.apply_to()?"
-            )
-            exit()
-
-        out = []
-        # check if spacy doc object is sentencized
-        if self.doc.has_annotation("SENT_START"):
-            # apply sentence and sublevel annotation
-            if style == "STR":
-                out = self.assemble_output_sent()
-            elif style == "DICT":
-                out = self.assemble_output_xml()
-
-        # if not sentencized just iterate doc and extract the results
-        elif not self.doc.has_annotation("SENT_START"):
-            out = self.iterate(out, self.doc, style)
+        token_list_out = self.out_shortlist(out)
+        # now compare the tokens in out with the token objects from spacy
+        for token_spacy, token_out in zip(token_list, token_list_out):
+            # print("Checking for tokens {} {}".format(token_spacy.text, token_out[0]))
+            # check that the text is the same
+            if token_spacy.text != token_out[0]:
+                print(
+                    "Found different token than in out! - {} and {}".format(
+                        token_spacy.text, token_out[0]
+                    )
+                )
+                print("Please check your inputs!")
+            else:
+                line = self.collect_results(token_spacy, 0, token_spacy, "STR")
+                # now replace the respective token with annotated token
+                out[token_out[1]] = line + "\n"
         return out
+
+    def token_list(self, myobj: list) -> list:
+        return [token for token in myobj]
+
+    def out_shortlist(self, out: list) -> list:
+        out = [
+            (token.strip(), i)
+            for i, token in enumerate(out)
+            if token.strip() != "<s>" and token.strip() != "</s>"
+        ]
+        return out
+
+    def _compare_tokens(self, token1, token2):
+        return token1 == token2
 
     @property
     def sentences(self) -> list:
@@ -213,12 +224,6 @@ class OutSpacy(be.OutObject):
         assert self.doc.has_annotation("SENT_START")
 
         sents = []
-        for i, sent in enumerate(self.doc.sents):
-            if i == 0:
-                # need to take the len of the split str as otherwise grouping of multiple tokens by
-                # spacy can be a problem. This now assumes that tokens are always separated by a
-                # whitespace, which seems reasonable to me -> Any examples to the contrary?
-                sents.append([sent.text, len(sent.text.split())])
-            elif i > 0:
-                sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
+        for sent in self.doc.sents:
+            sents.append(sent.text)
         return sents
