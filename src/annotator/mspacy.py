@@ -175,7 +175,7 @@ class OutSpacy(be.OutObject):
         token_list_out = self.out_shortlist(out)
         # now compare the tokens in out with the token objects from spacy
         for token_spacy, token_out in zip(token_list, token_list_out):
-            print("Checking for tokens {} {}".format(token_spacy.text, token_out[0]))
+            # print("Checking for tokens {} {}".format(token_spacy.text, token_out[0]))
             # check that the text is the same
             if token_spacy.text != token_out[0]:
                 print(

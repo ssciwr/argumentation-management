@@ -29,6 +29,12 @@ def call_stanza(mydict, data, islist=False):
     stanza_dict = mydict["stanza_dict"]
     if islist:
         stanza_dict["tokenize_no_ssplit"] = True
+        # stanza needs tokenizer or tokenize_pretokenized=True
+        # we want to avoid the latter so set the tokenizer
+        # in some cases it could happen that tokenization differs from the tools
+        # but we will walk that path when we get there
+        stanza_dict["processors"] = "tokenize," + stanza_dict["processors"]
+        # https://stanfordnlp.github.io/stanza/tokenize.html#start-with-pretokenized-text
         # set two continuous newlines so that sentences are not
         # split but we still use efficient capabilities
         data = [sent + "\n\n" for sent in data]
@@ -66,9 +72,9 @@ if __name__ == "__main__":
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
     # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "stanza, stanza, spacy"
+    mydict["tool"] = "spacy, spacy, stanza, stanza"
     # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
-    mydict["processing_type"] = "sentencize, tokenize, pos"
+    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
     # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
@@ -129,7 +135,6 @@ if __name__ == "__main__":
             else:
                 ptags = ptags_temp
 
-    print(out)
     # stanza
     # the below for generating the output
     # for xml or vrt, let's stick with vrt for now - TODO
