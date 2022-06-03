@@ -85,6 +85,8 @@ if __name__ == "__main__":
     # need to access that and tools to call tools one by one
     out_obj = []
     data_islist = False
+    ptags = None
+    stags = None
     my_todo_list = [[i, j] for i, j in zip(mydict["tool"], mydict["processing_type"])]
     # we need ordered "set"
     tools = set()  # a temporary lookup set
@@ -116,10 +118,16 @@ if __name__ == "__main__":
                 print("Further annotation with tool {} ...".format(mytool))
                 out = my_out_obj.assemble_output_tokens(out)
             data_islist = True
+            stags = my_out_obj.get_stags
         elif data_islist:
             # sentencized and tokenized data already processed
             # now token-level annotation
             out = my_out_obj.assemble_output_tokens(out)
+            ptags_temp = my_out_obj.get_ptags()
+            if ptags is not None:
+                ptags += ptags_temp
+            else:
+                ptags = ptags_temp
 
     print(out)
     # stanza
@@ -138,6 +146,9 @@ if __name__ == "__main__":
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     be.OutObject.write_vrt(outfile, out)
     # if not add:
+
+    # we need to set the s and p attributes for all jobs
+    # so stags and ptags need to be accumulated
     ptags = None
     stags = None
     encode_obj = be.encode_corpus(mydict)
