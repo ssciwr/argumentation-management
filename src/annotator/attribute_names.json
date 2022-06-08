@@ -28,5 +28,12 @@
         "pos": "pos",
         "lemma": "lemma",
         "ner": ""
+    },
+    "somajo_names": {
+        "proc_sent": "sentencize",
+        "proc_pos": null,
+        "proc_lemma": null,
+        "sentence": "sent",
+        "token": "token"
     }
 }

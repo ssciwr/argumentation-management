@@ -2,6 +2,7 @@ import base as be
 import pipe as pe
 import mspacy as msp
 import mstanza as msa
+import msomajo as mso
 
 
 def call_spacy(mydict, data, islist=False):
@@ -49,7 +50,21 @@ def call_stanza(mydict, data, islist=False):
     return out_obj
 
 
-call_tool = {"spacy": call_spacy, "stanza": call_stanza}
+def call_somajo(mydict, data, islist=False):
+    somajo_dict = mydict["somajo_dict"]
+    # load the pipeline
+    # somajo does only sentence-split and tokenization
+    tokenized = mso.MySomajo(somajo_dict)
+    # apply pipeline to data
+    tokenized.apply_to(data)
+    # we should not need start ..?
+    start = 0
+    # for somajo we never have list data as this will be only used for sentencizing
+    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start, islist=False)
+    return out_obj
+
+
+call_tool = {"spacy": call_spacy, "stanza": call_stanza, "somajo": call_somajo}
 
 
 def assemble_out_stream(out_obj: list, out=list) -> list:
@@ -72,9 +87,9 @@ if __name__ == "__main__":
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
     # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "spacy, spacy, stanza, stanza"
+    mydict["tool"] = "somajo, somajo"
     # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
-    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
+    mydict["processing_type"] = "sentencize, tokenize"
     mydict["language"] = "en"
     # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"

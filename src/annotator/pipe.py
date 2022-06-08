@@ -41,6 +41,10 @@ class SetConfig:
                 "pos": "pos",
                 "mwt": "mwt",
             },
+            "somajo": {
+                "sentencize": "sentencize",
+                "tokenize": "tokenize",
+            },
         }
         self.mydict = mydict
         self.case = self.processing_option[self.mydict.get("processing_option", "fast")]
@@ -52,6 +56,8 @@ class SetConfig:
             self._set_model_spacy()
         if "stanza" in self.tool:
             self._set_model_stanza()
+        if "somajo" in self.tool:
+            self._set_model_somajo()
         self.set_processors()
         self.set_tool()
 
@@ -173,6 +179,20 @@ class SetConfig:
         else:
             # select based on language
             self.model = None
+
+    def _set_model_somajo(self):
+        """Update the model depending on language - somajo."""
+        print("Setting language options for SoMaJo.")
+        if self.mydict["language"] == "en":
+            self.model = "en_PTB"
+        elif self.mydict["language"] == "de":
+            self.model = "de_CMC"
+        else:
+            raise ValueError(
+                "Language {} not available for SoMaJo. Aborting ...".format(
+                    self.mydict["language"]
+                )
+            )
 
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""
