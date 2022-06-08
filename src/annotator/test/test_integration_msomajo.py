@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 def setup():
     mydict = be.prepare_run.load_input_dict("./input")
     mydict["input"] = "./test/test_files/example_en.txt"
-    mydict["advanced_options"]["output_dir"] = "./test/test_files/"
+    # mydict["advanced_options"]["output_dir"] = "./test/test_files/"
     be.prepare_run.validate_input_dict(mydict)
     text = be.prepare_run.get_text(mydict["input"])
 

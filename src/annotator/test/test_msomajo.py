@@ -1,5 +1,5 @@
 import pytest
-import msomajo as msm
+import msomajo as mso
 import base as be
 
 
@@ -27,14 +27,29 @@ def read_test_en():
     return data
 
 
-def test_tokenize(read_data_en, read_data_de, read_test_de, read_test_en):
+@pytest.fixture
+def load_dict():
+    mydict = be.prepare_run.load_input_dict("./test/test_files/input")
+    mydict["somajo_dict"]["model"] = "en_PTB"
+    mydict["somajo_dict"]["processors"] = "sentencize", "tokenize"
+    return mydict
 
-    text_de = read_data_de
-    data_de = read_test_de
 
-    assert msm.tokenize(text_de, "de_CMC")[0] == data_de
+def test_init(load_dict):
+    tokenized = mso.MySomajo(load_dict["somajo_dict"])
+    assert tokenized.jobs == ("sentencize", "tokenize")
+    assert tokenized.model == "en_PTB"
+    assert tokenized.sentencize
+    assert tokenized.camelcase
 
+
+def test_apply_to(read_data_en, read_data_de, load_dict):
     text_en = read_data_en
-    data_en = read_test_en
-
-    assert msm.tokenize(text_en, "en_PTB")[0] == data_en
+    tokenized = mso.MySomajo(load_dict["somajo_dict"])
+    tokenized.apply_to(text_en)
+    assert tokenized.doc[0][8].text == "software"
+    text_de = read_data_de
+    load_dict["somajo_dict"]["model"] = "de_CMC"
+    tokenized = mso.MySomajo(load_dict["somajo_dict"])
+    tokenized.apply_to(text_de)
+    assert tokenized.doc[2][5].text == "dass"
