@@ -169,8 +169,8 @@ if __name__ == "__main__":
 
     # we need to set the s and p attributes for all jobs
     # so stags and ptags need to be accumulated
-    ptags = None
-    stags = None
+    # ptags = None
+    # stags = None
     encode_obj = be.encode_corpus(mydict)
     encode_obj.encode_vrt(ptags, stags)
     # elif add:
