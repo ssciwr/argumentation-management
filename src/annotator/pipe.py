@@ -135,7 +135,7 @@ class SetConfig:
         # do not want to overwrite
         if "model" in self.mydict:
             self.mydict["spacy_dict"]["model"] = self.mydict["model"]
-            print("Using selected model {}.".format(self.model))
+            print("Using selected model {}.".format(self.mydict["model"]))
         else:
             # now we check selected language to
             # choose adequate model
@@ -178,7 +178,7 @@ class SetConfig:
             print("Using selected model {}.".format(self.mydict["model"]))
         else:
             # select based on language
-            self.model = None
+            self.mydict["stanza_dict"]["model"] = None
 
     def _set_model_somajo(self):
         """Update the model depending on language - somajo."""

@@ -78,13 +78,13 @@ def test_get_tools(get_mydict):
 def test_set_model_spacy(get_mydict):
     get_mydict["model"] = "mymodel"
     obj = pe.SetConfig(get_mydict)
-    assert obj.model == "mymodel"
+    assert get_mydict["spacy_dict"]["model"] == "mymodel"
     get_mydict.pop("model", None)
     obj._set_model_spacy()
-    assert obj.model == "en_core_web_md"
+    assert get_mydict["spacy_dict"]["model"] == "en_core_web_md"
     get_mydict["language"] = "de"
     obj._set_model_spacy()
-    assert obj.model == "de_core_news_md"
+    assert get_mydict["spacy_dict"]["model"] == "de_core_news_md"
 
 
 def test_set_model_stanza(get_mydict):
@@ -92,10 +92,10 @@ def test_set_model_stanza(get_mydict):
     get_mydict["processing_option"] = "manual"
     get_mydict["tool"] = "stanza"
     obj = pe.SetConfig(get_mydict)
-    assert obj.model == "mymodel"
+    assert get_mydict["stanza_dict"]["model"] == "mymodel"
     get_mydict.pop("model", None)
     obj._set_model_stanza()
-    assert obj.model is None
+    assert get_mydict["stanza_dict"]["model"] is None
 
 
 def test_set_processors(get_mydict):
