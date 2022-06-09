@@ -66,18 +66,6 @@ def call_somajo(mydict, data, islist=False):
 
 call_tool = {"spacy": call_spacy, "stanza": call_stanza, "somajo": call_somajo}
 
-
-def assemble_out_stream(out_obj: list, out=list) -> list:
-    # First the sentences
-    stags = out_obj[0].get_stags()
-    out_all = out[0]
-    # Then iterate through objects and their output
-    for i, my_obj in enumerate(out_obj):
-        ptags = None
-        ptags = ptags or out_obj[0].get_ptags()
-    return out_all
-
-
 if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
@@ -87,9 +75,9 @@ if __name__ == "__main__":
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
     # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "somajo, somajo"
+    mydict["tool"] = "somajo, somajo, stanza, stanza"
     # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
-    mydict["processing_type"] = "sentencize, tokenize"
+    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
     # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
@@ -139,7 +127,7 @@ if __name__ == "__main__":
                 print("Further annotation with tool {} ...".format(mytool))
                 out = my_out_obj.assemble_output_tokens(out)
             data_islist = True
-            stags = my_out_obj.get_stags
+            stags = my_out_obj.stags
         elif data_islist:
             # sentencized and tokenized data already processed
             # now token-level annotation
@@ -149,18 +137,6 @@ if __name__ == "__main__":
                 ptags += ptags_temp
             else:
                 ptags = ptags_temp
-
-    # stanza
-    # the below for generating the output
-    # for xml or vrt, let's stick with vrt for now - TODO
-    # style = "STR"
-    # out = out_obj[0].assemble_output_sent()
-    # spacy
-    # this replicates functionality, we need assemble_output_sent instead
-    # out = out_obj[0].fetch_output(style)
-
-    # Now stitch together the outputs
-    # out_all = assemble_out_stream(out_obj, out)
 
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
