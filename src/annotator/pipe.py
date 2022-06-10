@@ -41,6 +41,10 @@ class SetConfig:
                 "pos": "pos",
                 "mwt": "mwt",
             },
+            "somajo": {
+                "sentencize": "sentencize",
+                "tokenize": "tokenize",
+            },
         }
         self.mydict = mydict
         self.case = self.processing_option[self.mydict.get("processing_option", "fast")]
@@ -52,6 +56,8 @@ class SetConfig:
             self._set_model_spacy()
         if "stanza" in self.tool:
             self._set_model_stanza()
+        if "somajo" in self.tool:
+            self._set_model_somajo()
         self.set_processors()
         self.set_tool()
 
@@ -128,27 +134,27 @@ class SetConfig:
         # check if a model was set manually - in this case we
         # do not want to overwrite
         if "model" in self.mydict:
-            self.model = self.mydict["model"]
-            print("Using selected model {}.".format(self.model))
+            self.mydict["spacy_dict"]["model"] = self.mydict["model"]
+            print("Using selected model {}.".format(self.mydict["model"]))
         else:
             # now we check selected language to
             # choose adequate model
             if self.mydict["language"] == "en":
-                self.model = "en_core_web_md"
+                self.mydict["spacy_dict"]["model"] = "en_core_web_md"
             elif self.mydict["language"] == "de":
-                self.model = "de_core_news_md"
+                self.mydict["spacy_dict"]["model"] = "de_core_news_md"
             elif self.mydict["language"] == "fr":
-                self.model = "fr_core_news_md"
+                self.mydict["spacy_dict"]["model"] = "fr_core_news_md"
             elif self.mydict["language"] == "it":
-                self.model = "it_core_news_md"
+                self.mydict["spacy_dict"]["model"] = "it_core_news_md"
             elif self.mydict["language"] == "ja":
-                self.model = "ja_core_news_md"
+                self.mydict["spacy_dict"]["model"] = "ja_core_news_md"
             elif self.mydict["language"] == "pt":
-                self.model = "pt_core_news_md"
+                self.mydict["spacy_dict"]["model"] = "pt_core_news_md"
             elif self.mydict["language"] == "ru":
-                self.model = "ru_core_news_md"
+                self.mydict["spacy_dict"]["model"] = "ru_core_news_md"
             elif self.mydict["language"] == "es":
-                self.model = "es_core_news_md"
+                self.mydict["spacy_dict"]["model"] = "es_core_news_md"
             else:
                 # make sure to throw an exception if language is not found
                 raise ValueError(
@@ -168,11 +174,25 @@ class SetConfig:
         # see here for a selection of models:
         # https://stanfordnlp.github.io/stanza/available_models.html
         if "model" in self.mydict:
-            self.model = self.mydict["model"]
-            print("Using selected model {}.".format(self.model))
+            self.mydict["stanza_dict"]["model"] = self.mydict["model"]
+            print("Using selected model {}.".format(self.mydict["model"]))
         else:
             # select based on language
-            self.model = None
+            self.mydict["stanza_dict"]["model"] = None
+
+    def _set_model_somajo(self):
+        """Update the model depending on language - somajo."""
+        print("Setting language options for SoMaJo.")
+        if self.mydict["language"] == "en":
+            self.mydict["somajo_dict"]["model"] = "en_PTB"
+        elif self.mydict["language"] == "de":
+            self.mydict["somajo_dict"]["model"] = "de_CMC"
+        else:
+            raise ValueError(
+                "Language {} not available for SoMaJo. Aborting ...".format(
+                    self.mydict["language"]
+                )
+            )
 
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""
@@ -191,8 +211,8 @@ class SetConfig:
                 self.mydict[mytool + "_dict"]["processors"].append(i)
             # we don't need the language for spacy
             self.mydict[mytool + "_dict"]["lang"] = self.mydict["language"]
-            if self.model:
-                self.mydict[mytool + "_dict"]["model"] = self.model
+            # if self.model:
+            # self.mydict[mytool + "_dict"]["model"] = self.model
         # For stanza, processors must be comma-separated string
         # (no spaces)
         temp = ",".join(self.mydict["stanza_dict"]["processors"])

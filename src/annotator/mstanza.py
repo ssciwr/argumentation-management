@@ -48,7 +48,7 @@ def ner(doc) -> dict:
 
 
 # inherit the output class from base and add stanza-specific methods
-class out_object_stanza(be.OutObject):
+class out_object_stanza(be.OutObject):  # rename TODO
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 
@@ -102,21 +102,30 @@ class out_object_stanza(be.OutObject):
         for token_stanza, word_stanza, token_out in zip(
             token_list, word_list, token_list_out
         ):
-            print("Checking for tokens {} {}".format(token_stanza.text, token_out[0]))
-            print("Checking for words {} {}".format(word_stanza.text, token_out[0]))
+            mylen = len(token_stanza.text)
+            print(
+                "Checking for tokens {} {}".format(
+                    token_stanza.text, token_out[0][0:mylen]
+                )
+            )
+            print(
+                "Checking for words {} {}".format(
+                    word_stanza.text, token_out[0][0:mylen]
+                )
+            )
             # check that the text is the same
             # here we may need to check for word..?
-            if token_stanza.text != token_out[0]:
+            if token_stanza.text != token_out[0][0:mylen]:
                 print(
                     "Found different token than in out! - {} and {}".format(
-                        token_stanza.text, token_out[0]
+                        token_stanza.text, token_out[0][0:mylen]
                     )
                 )
                 print("Please check your inputs!")
             else:
                 line = self.collect_results(token_stanza, 0, word_stanza, "STR")
-                # now replace the respective token with annotated token
-                out[token_out[1]] = line + "\n"
+                # now add the annotation
+                out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
         return out
 
     def token_list(self, myobj: list) -> list:

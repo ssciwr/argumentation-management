@@ -2,6 +2,7 @@ import base as be
 import pipe as pe
 import mspacy as msp
 import mstanza as msa
+import msomajo as mso
 
 
 def call_spacy(mydict, data, islist=False):
@@ -49,40 +50,36 @@ def call_stanza(mydict, data, islist=False):
     return out_obj
 
 
-call_tool = {"spacy": call_spacy, "stanza": call_stanza}
+def call_somajo(mydict, data, islist=False):
+    somajo_dict = mydict["somajo_dict"]
+    # load the pipeline
+    # somajo does only sentence-split and tokenization
+    tokenized = mso.MySomajo(somajo_dict)
+    # apply pipeline to data
+    tokenized.apply_to(data)
+    # we should not need start ..?
+    start = 0
+    # for somajo we never have list data as this will be only used for sentencizing
+    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start, islist=False)
+    return out_obj
 
 
-def assemble_out_stream(out_obj: list, out=list) -> list:
-    # First the sentences
-    stags = out_obj[0].get_stags()
-    out_all = out[0]
-    # Then iterate through objects and their output
-    for i, my_obj in enumerate(out_obj):
-        ptags = None
-        ptags = ptags or out_obj[0].get_ptags()
-    return out_all
-
+call_tool = {"spacy": call_spacy, "stanza": call_stanza, "somajo": call_somajo}
 
 if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     # overwrite defaults for testing purposes
-    # mydict["processing_option"] = "accurate"
-    # mydict["processing_option"] = "fast"
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
-    # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "spacy, spacy, stanza, stanza"
-    # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
+    mydict["tool"] = "somajo, somajo, stanza, spacy"
     mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
-    # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
     mydict["advanced_options"]["corpus_dir"] = "./src/annotator/test/corpora/"
     mydict["advanced_options"]["registry_dir"] = "./src/annotator/test/registry/"
     # get the data to be processed
     data = be.prepare_run.get_text("./src/annotator/test/test_files/example_en.txt")
-    # data = be.prepare_run.get_text("./src/annotator/test/test_files/example_de.txt")
     # validate the input dict
     be.prepare_run.validate_input_dict(mydict)
     # activate the input dict
@@ -105,11 +102,8 @@ if __name__ == "__main__":
         # here we do the object generation
         # we do not want to call same tools multiple times
         # as that would re-run the nlp pipelines
-        print(mytool)
-        # if sentences are data, then we need to go through list
         # call specific routines
         my_out_obj = call_tool[mytool](mydict, data, data_islist)
-        # out_obj.append(my_out_obj)
         if not data_islist:
             # the first tool will sentencize
             # all subsequent ones will use sentencized input
@@ -124,28 +118,20 @@ if __name__ == "__main__":
                 print("Further annotation with tool {} ...".format(mytool))
                 out = my_out_obj.assemble_output_tokens(out)
             data_islist = True
-            stags = my_out_obj.get_stags
+            stags = my_out_obj.stags
         elif data_islist:
             # sentencized and tokenized data already processed
             # now token-level annotation
+            # we need to keep a copy of token-list only for multi-step annotation
+            # so that not of and of  ADP are being compared
+            # or only compare to substring from beginning of string
             out = my_out_obj.assemble_output_tokens(out)
+            print(out, mytool)
             ptags_temp = my_out_obj.get_ptags()
             if ptags is not None:
                 ptags += ptags_temp
             else:
                 ptags = ptags_temp
-
-    # stanza
-    # the below for generating the output
-    # for xml or vrt, let's stick with vrt for now - TODO
-    # style = "STR"
-    # out = out_obj[0].assemble_output_sent()
-    # spacy
-    # this replicates functionality, we need assemble_output_sent instead
-    # out = out_obj[0].fetch_output(style)
-
-    # Now stitch together the outputs
-    # out_all = assemble_out_stream(out_obj, out)
 
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
@@ -154,8 +140,8 @@ if __name__ == "__main__":
 
     # we need to set the s and p attributes for all jobs
     # so stags and ptags need to be accumulated
-    ptags = None
-    stags = None
+    # ptags = None
+    # stags = None
     encode_obj = be.encode_corpus(mydict)
     encode_obj.encode_vrt(ptags, stags)
     # elif add:

@@ -72,31 +72,6 @@ class prepare_run:
 
     #     return new_dict
 
-    @staticmethod
-    def pretokenize(text, mydict: dict, tokenizer: callable, arguments: dict):
-        """Wrapper for a tokenizer function that returns a string in vrt format and a boolean
-        indicating if the text is sentencized or not. The tokenized text is then encoded into
-        cwb.
-
-        [Args]:
-                text: Text to be tokenized in format required by tokenizer.
-                mydict[dict]: Dict containing information for cwb encoding.
-                tokenizer[callable]: Tokenizer function.
-                arguments[dict]: Arguments to be passed to the tokenizer, i.e. language, model etc."""
-
-        tokenized, senctencized = tokenizer(text, **arguments)
-        # this all needs to be more streamlined not to repeat code
-        OutObject.write_vrt(
-            mydict["advanced_options"]["output_dir"] + "/" + mydict["corpus_name"],
-            tokenized,
-        )
-        if senctencized:
-            encode_obj = encode_corpus(mydict)
-            encode_obj.encode_vrt(ptags=None, stags=["s"])
-        else:
-            encode_obj = encode_corpus(mydict)
-            encode_obj.encode_vrt(ptags=None, stags=None)
-
 
 # the below to be removed - TODO
 # I thought this would belong here rather than mspacy.
@@ -259,18 +234,22 @@ class OutObject:
         # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
-    # not sure what this is for - TODO
+    # refactor once STR is working - we actually do not need token text as key
+    # token texts are handled when assembling the sentences
     @staticmethod
     def switch_style(line: dict) -> str:
         """Switch style from DICT to STR"""
 
         output = ""
         for i, (key, value) in enumerate(line.items()):
-            # strip the id, and don't append \t for the "first" item
-            if key != "id" and i > 1:
-                output += "\t{}".format(value)
-            elif key != "id" and i == 1:
-                output += "{}".format(value)
+            # don't repeat the token, we already got it from sentencize/tokenize
+            # a temporary fix, later we will not add this to the dict in the first place
+            if key != "text":
+                # strip the id, and don't append \t for the "first" item
+                if key != "id" and i > 1:
+                    output += "\t{}".format(value)
+                elif key != "id" and i == 1:
+                    output += "{}".format(value)
         return output
 
     # remove repetition - TODO
