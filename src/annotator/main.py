@@ -75,7 +75,7 @@ if __name__ == "__main__":
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
     # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "somajo, somajo, stanza, stanza"
+    mydict["tool"] = "somajo, somajo, spacy, stanza"
     # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
     mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
@@ -131,7 +131,11 @@ if __name__ == "__main__":
         elif data_islist:
             # sentencized and tokenized data already processed
             # now token-level annotation
+            # we need to keep a copy of token-list only for multi-step annotation
+            # so that not of and of  ADP are being compared
+            # or only compare to substring from beginning of string
             out = my_out_obj.assemble_output_tokens(out)
+            print(out, mytool)
             ptags_temp = my_out_obj.get_ptags()
             if ptags is not None:
                 ptags += ptags_temp

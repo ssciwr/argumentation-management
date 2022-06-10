@@ -234,18 +234,22 @@ class OutObject:
         # mydict = prepare_run.load_input_dict("src/annotator/attribute_names")
         return mydict
 
-    # not sure what this is for - TODO
+    # refactor once STR is working - we actually do not need token text as key
+    # token texts are handled when assembling the sentences
     @staticmethod
     def switch_style(line: dict) -> str:
         """Switch style from DICT to STR"""
 
         output = ""
         for i, (key, value) in enumerate(line.items()):
-            # strip the id, and don't append \t for the "first" item
-            if key != "id" and i > 1:
-                output += "\t{}".format(value)
-            elif key != "id" and i == 1:
-                output += "{}".format(value)
+            # don't repeat the token, we already got it from sentencize/tokenize
+            # a temporary fix, later we will not add this to the dict in the first place
+            if key != "text":
+                # strip the id, and don't append \t for the "first" item
+                if key != "id" and i > 1:
+                    output += "\t{}".format(value)
+                elif key != "id" and i == 1:
+                    output += "{}".format(value)
         return output
 
     # remove repetition - TODO
