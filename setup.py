@@ -1,11 +1,9 @@
 from setuptools import setup, find_packages
 
-import os
-
-version_file = open(os.path.join("./annotator", "VERSION"))
+version_file = open("VERSION")
 version = version_file.read().strip()
 
-requires_file = open(os.path.join("./annotator", "requirements.txt"))
+requires_file = open("requirements.txt")
 requirements = [line.strip() for line in requires_file]
 
 setup(
