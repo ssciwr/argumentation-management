@@ -70,22 +70,16 @@ if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./src/annotator/input")
     # overwrite defaults for testing purposes
-    # mydict["processing_option"] = "accurate"
-    # mydict["processing_option"] = "fast"
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
-    # mydict["tool"] = "spacy, stanza, stanza, stanza"
-    mydict["tool"] = "somajo, somajo, spacy, stanza"
-    # mydict["processing_type"] = "sentencize, pos  ,lemma, tokenize"
+    mydict["tool"] = "somajo, somajo, stanza, spacy"
     mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
-    # mydict["language"] = "de"
     mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
     mydict["advanced_options"]["corpus_dir"] = "./src/annotator/test/corpora/"
     mydict["advanced_options"]["registry_dir"] = "./src/annotator/test/registry/"
     # get the data to be processed
     data = be.prepare_run.get_text("./src/annotator/test/test_files/example_en.txt")
-    # data = be.prepare_run.get_text("./src/annotator/test/test_files/example_de.txt")
     # validate the input dict
     be.prepare_run.validate_input_dict(mydict)
     # activate the input dict
@@ -108,11 +102,8 @@ if __name__ == "__main__":
         # here we do the object generation
         # we do not want to call same tools multiple times
         # as that would re-run the nlp pipelines
-        print(mytool)
-        # if sentences are data, then we need to go through list
         # call specific routines
         my_out_obj = call_tool[mytool](mydict, data, data_islist)
-        # out_obj.append(my_out_obj)
         if not data_islist:
             # the first tool will sentencize
             # all subsequent ones will use sentencized input

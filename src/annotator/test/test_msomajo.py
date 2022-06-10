@@ -196,7 +196,7 @@ def get_doc(read_data_en, load_dict):
     return tokenized.doc, tokenized.jobs
 
 
-def test_MySomajo_init(load_dict):
+def test_mysomajo_init(load_dict):
     tokenized = mso.MySomajo(load_dict["somajo_dict"])
     assert tokenized.jobs == ("sentencize", "tokenize")
     assert tokenized.model == "en_PTB"
@@ -214,7 +214,7 @@ def test_apply_to(read_data_en, read_data_de, load_dict):
     assert tokenized.doc[2][5].text == "dass"
 
 
-def test_OutSomajo_init(get_doc):
+def test_outsomajo_init(get_doc):
     out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0, islist=False)
     assert out_obj.attrnames["proc_sent"] == "sentencize"
     assert out_obj.attrnames["sentence"] == "sent"
