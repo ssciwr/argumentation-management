@@ -132,8 +132,8 @@ dmypy.json
 data/
 
 #other resources
-DW/
-src/annotator/test/models/
+src/
+annotator/test/models/
 
 docker/
 !docker/get_models.py

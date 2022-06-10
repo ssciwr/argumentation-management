@@ -44,21 +44,20 @@ jobs:
         cd $RET
     - name: Get the models 
       run: |
-        source src/annotator/test/setup_tests.sh
+        source annotator/test/setup_tests.sh
         python -m spacy download en_core_web_sm
         python -m spacy download en_core_web_md
         python -m spacy download de_core_news_md
     - name: Create test directories
       run: |
-        mkdir src/annotator/test/corpora
-        mkdir src/annotator/test/registry
-        mkdir src/annotator/test/out
+        mkdir annotator/test/corpora
+        mkdir annotator/test/registry
+        mkdir annotator/test/out
     - name: Run pytest
       run: |
-        cd src/annotator
         yes | python -m pytest -s --cov=. --cov-report=xml
     - name: Upload coverage
       uses: codecov/codecov-action@v1
       with:
         fail_ci_if_error: true
-        files: ./src/annotator/coverage.xml
+        files: coverage.xml
