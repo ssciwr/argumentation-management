@@ -1,8 +1,8 @@
-import base as be
-import pipe as pe
-import mspacy as msp
-import mstanza as msa
-import msomajo as mso
+import annotator.base as be
+import annotator.pipe as pe
+import annotator.mspacy as msp
+import annotator.mstanza as msa
+import annotator.msomajo as mso
 
 
 def call_spacy(mydict, data, islist=False):

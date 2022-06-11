@@ -1,6 +1,6 @@
 from multiprocessing.sharedctypes import Value
-import base as be
-import mspacy as msp
+import annotator.base as be
+import annotator.mspacy as msp
 
 
 class SetConfig:

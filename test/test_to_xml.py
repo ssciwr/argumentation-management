@@ -1,6 +1,6 @@
 import pytest
-import to_xml as txml
-import mstanza as ma
+from .context import to_xml as txml
+from .context import mstanza as ma
 
 
 @pytest.fixture()

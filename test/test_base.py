@@ -2,7 +2,7 @@ import pytest
 import unittest.mock
 import json
 import os
-import base as be
+from .context import base as be
 import tempfile
 
 
@@ -61,13 +61,13 @@ def test_get_cores():
     pass
 
 
-@pytest.mark.dictname("test/test_files/input")
-def test_load_input_dict(init_dict):
-    mydict = be.prepare_run.load_input_dict("input")
+@pytest.mark.dictname("./test/test_files/input")
+def test_load_input_dict(init_dict, get_path):
+    mydict = be.prepare_run.load_input_dict("./annotator/input")
     assert mydict == init_dict
 
 
-@pytest.mark.dictname("test/test_files/input2")
+@pytest.mark.dictname("./test/test_files/input2")
 def test_validate_input_dict(init_dict):
     be.prepare_run.validate_input_dict(init_dict)
 

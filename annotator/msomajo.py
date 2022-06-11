@@ -1,5 +1,5 @@
 from somajo import SoMaJo
-import base as be
+import annotator.base as be
 
 
 class MySomajo:

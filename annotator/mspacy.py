@@ -3,8 +3,8 @@ from spacy.tokens.doc import Doc
 from spacy.lang.en import English
 from spacy.lang.de import German
 import copy
-import base as be
-import pipe as pe
+import annotator.base as be
+import annotator.pipe as pe
 from tqdm import (
     tqdm,
 )  # for progress in pipe_multiple, might be interesting for large corpora down the line

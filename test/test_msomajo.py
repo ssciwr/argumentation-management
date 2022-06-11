@@ -1,6 +1,6 @@
 import pytest
-import msomajo as mso
-import base as be
+from .context import base as be
+from .context import msomajo as mso
 
 test_out_en = [
     "<s>\n",

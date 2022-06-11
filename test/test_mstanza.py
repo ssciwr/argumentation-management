@@ -1,7 +1,7 @@
 import os
 import pytest
-import mstanza as ma
-import base as be
+from .context import base as be
+from .context import mstanza as ma
 
 mydict_en = be.prepare_run.load_input_dict("./test/test_files/test_stanza_en")[
     "stanza_dict"

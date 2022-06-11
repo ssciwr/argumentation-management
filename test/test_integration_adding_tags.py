@@ -1,7 +1,7 @@
 import pytest
-import base as be
-import mtreetagger as mtt
-import mspacy as msp
+from .context import base as be
+from .context import mtreetagger as mtt
+from .context import mspacy as msp
 from tempfile import TemporaryDirectory
 import os
 
@@ -17,7 +17,7 @@ def test_integration_adding_tags(load_data):
     out = TemporaryDirectory()
     corp = TemporaryDirectory()
     reg = TemporaryDirectory()
-    mydict = be.prepare_run.load_input_dict("./input")
+    mydict = be.prepare_run.load_input_dict("./annotator/input")
     mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
     mydict["advanced_options"]["corpus_dir"] = "{}".format(corp.name)
     mydict["advanced_options"]["registry_dir"] = "{}".format(reg.name)

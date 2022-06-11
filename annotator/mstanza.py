@@ -1,7 +1,7 @@
 # the stanza class object for stanza nlp
 from collections import defaultdict
 import stanza as sa
-import base as be
+import annotator.base as be
 
 
 class MyStanza:
