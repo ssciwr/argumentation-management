@@ -1,5 +1,5 @@
 #!/bin/bash
-test_dir=./src/annotator/test
+test_dir=./test
 
 models_dir=$test_dir/models
 mkdir -p $models_dir

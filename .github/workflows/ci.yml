@@ -44,15 +44,15 @@ jobs:
         cd $RET
     - name: Get the models 
       run: |
-        source annotator/test/setup_tests.sh
+        source test/setup_tests.sh
         python -m spacy download en_core_web_sm
         python -m spacy download en_core_web_md
         python -m spacy download de_core_news_md
     - name: Create test directories
       run: |
-        mkdir annotator/test/corpora
-        mkdir annotator/test/registry
-        mkdir annotator/test/out
+        mkdir test/corpora
+        mkdir test/registry
+        mkdir test/out
     - name: Run pytest
       run: |
         yes | python -m pytest -s --cov=. --cov-report=xml
