@@ -130,28 +130,28 @@ def test_setup(monkeypatch, get_obj):
     tmp = tempfile.TemporaryDirectory()
     obj = get_obj
     obj.encodedir = tmp.name
-
-    monkeypatch.setattr("builtins.input", lambda _: "y")
+    my_attr = "builtins.input"
+    monkeypatch.setattr(my_attr, lambda _: "y")
 
     assert obj.setup() is True
 
     answers = iter(["n", "n"])
-    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+    monkeypatch.setattr(my_attr, lambda _: next(answers))
 
     assert obj.setup() is False
 
     answers = iter(["n", "y", "n", "{}".format(tmp.name), "test", "test", "y"])
-    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+    monkeypatch.setattr(my_attr, lambda _: next(answers))
 
     assert obj.setup() is True
 
     answers = iter(["n", "y", "y", "y"])
-    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+    monkeypatch.setattr(my_attr, lambda _: next(answers))
 
     assert obj.setup() is True
 
     answers = iter(["n", "y", "y", "n", "n"])
-    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+    monkeypatch.setattr(my_attr, lambda _: next(answers))
 
     assert obj.setup() is False
 

@@ -85,7 +85,7 @@ class treetagger_pipe:
 
             out = []
             # grab the tagged string
-            out = obj.iterate(out)
+            out = obj.iterate(out, None, "STR")
 
             # check for tags for encoding, for this tool it should be POS and Lemma
             ptags = obj.get_ptags()
@@ -120,7 +120,7 @@ class out_object_treetagger(be.OutObject):
         self.doc = doc
         self.attrnames = self.attrnames["treetagger_names"]
 
-    def iterate(self, out: list) -> list:
+    def iterate(self, out: list, sent, style) -> list:
         """Iterate the list of tagged tokens and extract the information for
         further processing."""
 

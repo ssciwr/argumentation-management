@@ -9,7 +9,6 @@ from tempfile import TemporaryDirectory
 def setup():
     mydict = be.prepare_run.load_input_dict("./annotator/input")
     mydict["input"] = "./test/test_files/example_en.txt"
-    # mydict["advanced_options"]["output_dir"] = "./test/test_files/"
     be.prepare_run.validate_input_dict(mydict)
     text = be.prepare_run.get_text(mydict["input"])
 
@@ -17,9 +16,7 @@ def setup():
 
 
 def test_integration_msomajo(setup):
-    # out = TemporaryDirectory()
     mydict, text = setup
-    # mydict["advanced_options"]["output_dir"] = ".{}/".format(out.name)
     mydict["somajo_dict"]["model"] = "en_PTB"
     mydict["somajo_dict"]["processors"] = "sentencize", "tokenize"
     tokenized = mso.MySomajo(mydict["somajo_dict"])

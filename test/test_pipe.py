@@ -112,7 +112,7 @@ def set_tool(get_mydict):
     get_mydict["processing_option"] = "manual"
     get_mydict["tool"] = "stanza"
     get_mydict["processing_type"] = procstring
-    obj = pe.SetConfig(get_mydict)
+    pe.SetConfig(get_mydict)
     assert get_mydict["tool"] == ["stanza", "stanza", "stanza"]
 
 

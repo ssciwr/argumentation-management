@@ -45,7 +45,6 @@ def pipe_sent(init, load_object, get_text):
     same pipeline through spacy directly."""
 
     test_obj = load_object
-    out = test_obj.apply_to(get_text)
     mydict = init[1]
     # as this pipe config should just load all of a model, results
     # should be equivalent to using:

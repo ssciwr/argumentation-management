@@ -9,6 +9,7 @@ class prepare_run:
     """Class that contains all general pre-processing methods."""
 
     def __init__(self) -> None:
+        """Since this is a namespace class, no initialization."""
         pass
 
     @staticmethod
