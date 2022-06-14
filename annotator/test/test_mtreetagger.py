@@ -1,7 +1,11 @@
 import re
 import pytest
-from .context import base as be
-from .context import mtreetagger as mtt
+
+# from .context import base as be
+import base as be
+
+# from .context import mtreetagger as mtt
+import mtreetagger as mtt
 
 
 @pytest.fixture

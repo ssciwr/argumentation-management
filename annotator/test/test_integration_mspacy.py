@@ -1,7 +1,13 @@
 import pytest
-from .context import base as be
-from .context import pipe as pe
-from .context import mspacy as msp
+
+# from .context import base as be
+import base as be
+
+# from .context import pipe as pe
+import pipe as pe
+
+# from .context import mspacy as msp
+import mspacy as msp
 from tempfile import TemporaryDirectory
 
 
@@ -16,7 +22,7 @@ def test_integration_mspacy(load_data):
     # create temporary directories for the corpora
     # out = TemporaryDirectory()
     # read in input.json
-    mydict = be.prepare_run.load_input_dict("./annotator/input")
+    mydict = be.prepare_run.load_input_dict("input")
     mydict["language"] = "en"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "fast"

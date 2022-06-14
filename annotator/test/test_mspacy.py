@@ -1,7 +1,11 @@
 import pytest
 import spacy as sp
-from .context import base as be
-from .context import mspacy as msp
+
+# from .context import base as be
+import base as be
+
+# from .context import mspacy as msp
+import mspacy as msp
 import tempfile
 
 

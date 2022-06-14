@@ -1,7 +1,13 @@
 import pytest
-from .context import base as be
-from .context import pipe as pe
-from .context import mstanza as ma
+
+# from .context import base as be
+import base as be
+
+# from .context import pipe as pe
+import pipe as pe
+
+# from .context import mstanza as ma
+import mstanza as ma
 from tempfile import TemporaryDirectory
 
 
@@ -14,7 +20,7 @@ def load_data():
 def test_integration_mstanza(load_data):
 
     # read in input.json
-    mydict = be.prepare_run.load_input_dict("./annotator/input")
+    mydict = be.prepare_run.load_input_dict("input")
     mydict["input"] = "./test/test_files/example_de.txt"
     mydict["tool"] = "stanza, stanza, stanza, stanza"
     mydict["language"] = "de"
