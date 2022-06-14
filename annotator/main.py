@@ -1,8 +1,8 @@
-import annotator.base as be
-import annotator.pipe as pe
-import annotator.mspacy as msp
-import annotator.mstanza as msa
-import annotator.msomajo as mso
+import base as be
+import pipe as pe
+import mspacy as msp
+import mstanza as msa
+import msomajo as mso
 
 
 def call_spacy(mydict, data, islist=False):
@@ -68,18 +68,18 @@ call_tool = {"spacy": call_spacy, "stanza": call_stanza, "somajo": call_somajo}
 
 if __name__ == "__main__":
     # load input dict
-    mydict = be.prepare_run.load_input_dict("./src/annotator/input")
+    mydict = be.prepare_run.load_input_dict("./annotator/input")
     # overwrite defaults for testing purposes
-    mydict["processing_option"] = "manual"
+    mydict["processing_option"] = "fast"
     # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "somajo, somajo, stanza, spacy"
+    mydict["tool"] = "spacy"
     mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
-    mydict["advanced_options"]["output_dir"] = "./src/annotator/test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "./src/annotator/test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "./src/annotator/test/registry/"
+    mydict["advanced_options"]["output_dir"] = "./test/out/"
+    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
+    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
     # get the data to be processed
-    data = be.prepare_run.get_text("./src/annotator/test/test_files/example_en.txt")
+    data = be.prepare_run.get_text("./test/test_files/example_en.txt")
     # validate the input dict
     be.prepare_run.validate_input_dict(mydict)
     # activate the input dict

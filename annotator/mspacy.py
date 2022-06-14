@@ -3,8 +3,8 @@ from spacy.tokens.doc import Doc
 from spacy.lang.en import English
 from spacy.lang.de import German
 import copy
-import annotator.base as be
-import annotator.pipe as pe
+import base as be
+import pipe as pe
 from tqdm import (
     tqdm,
 )  # for progress in pipe_multiple, might be interesting for large corpora down the line
@@ -191,7 +191,7 @@ class OutSpacy(be.OutObject):
                 out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
         return out
 
-    def token_list(self, myobj: list) -> list:
+    def token_list(self, myobj) -> list:
         return [token for token in myobj]
 
     def out_shortlist(self, out: list) -> list:

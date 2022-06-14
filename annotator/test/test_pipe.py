@@ -1,7 +1,11 @@
 from webbrowser import get
 import pytest
-from .context import base as be
-from .context import pipe as pe
+
+# from .context import base as be
+import base as be
+
+# from .context import pipe as pe
+import pipe as pe
 
 procstring = "tokenize, pos, lemma"
 

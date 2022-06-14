@@ -1,13 +1,19 @@
 import pytest
-from .context import base as be
-from .context import msomajo as mso
-from .context import mtreetagger as mtt
+
+# from .context import base as be
+import base as be
+
+# from .context import msomajo as mso
+import msomajo as mso
+
+# from .context import mtreetagger as mtt
+import mtreetagger as mtt
 from tempfile import TemporaryDirectory
 
 
 @pytest.fixture
 def setup():
-    mydict = be.prepare_run.load_input_dict("./annotator/input")
+    mydict = be.prepare_run.load_input_dict("input")
     mydict["input"] = "./test/test_files/example_en.txt"
     be.prepare_run.validate_input_dict(mydict)
     text = be.prepare_run.get_text(mydict["input"])

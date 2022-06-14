@@ -1,6 +1,10 @@
 import pytest
-from .context import base as be
-from .context import mflair as mf
+
+# from .context import base as be
+import base as be
+
+# from .context import mflair as mf
+import mflair as mf
 import tempfile
 
 
