@@ -44,7 +44,7 @@ jobs:
         cd $RET
     - name: Get the models 
       run: |
-        source annotate/test/setup_tests.sh
+        source annotator/test/setup_tests.sh
         python -m spacy download en_core_web_sm
         python -m spacy download en_core_web_md
         python -m spacy download de_core_news_md
