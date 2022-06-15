@@ -150,8 +150,8 @@ docker/
 test/out/
 
 # corpora and registry folder
-test/corpora/
-test/registry/
+annotator/test/corpora/
+annotator/test/registry/
 
 # xml
 # annotator/*.xml
