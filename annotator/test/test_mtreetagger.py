@@ -28,18 +28,6 @@ def test_en():
 
 
 @pytest.fixture
-def test_en_sentence():
-    sentence = [
-        ("This\tthis", 1),
-        ("is\tbe", 2),
-        ("a\ta", 3),
-        ("sentence\tsentence", 4),
-        (".\t.", 5),
-    ]
-    return sentence
-
-
-@pytest.fixture
 def test_dict_doc():
     dict_doc = [
         {"word": "This", "pos": "DT", "lemma": "this"},
@@ -120,24 +108,3 @@ def test_assemble_output_tokens(get_doc, test_en):
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
     out = out_obj.assemble_output_tokens(out)
     assert out == test_en
-
-
-def test_token_list(get_doc):
-    mylist = ["a", "n", "d"]
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
-    token_list = out_obj.token_list(mylist)
-    assert token_list == mylist
-
-
-def test_out_shortlist(get_doc, test_en, test_en_sentence):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
-    shortlist = out_obj.out_shortlist(test_en)
-    assert shortlist == test_en_sentence
-
-
-def test_compare_tokens(get_doc):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
-    mytoken1 = "English"
-    mytoken2 = "is"
-    assert out_obj._compare_tokens(mytoken1, mytoken1)
-    assert not out_obj._compare_tokens(mytoken1, mytoken2)
