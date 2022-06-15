@@ -1,114 +1,86 @@
 import treetaggerwrapper as ttw
 import base as be
+import pprint
 
 
-def tokenize(text: str, lang: str) -> str and bool:
-    """Function to tokenize text using treetaggerwrapper.TreeTagger.tag_text. Text is provided as string.
+class MyTreetagger:
+    """Treetagger main processing class.
 
-    [Args]:
-            text[str]: String of text to be tokenized.
-            lang[str]: Two-char language code, i.e. "en" for english or "de" for german."""
+    Args:
+       subdict (dictionary): The treetagger input dictionary.
+       text (string): The raw text that is to be processed, sentence level or below.
+       annotated (object): The output object with annotated tokens.
+    """
 
-    # load the tokenizer
-    tokenizer = ttw.TreeTagger(TAGLANG=lang)
-    # tokenize the text
-    tokenized = [
-        token
-        for token in tokenizer.tag_text(
-            text,
-            prepronly=True,
-            notagurl=True,
-            notagemail=True,
-            notagip=True,
-            notagdns=True,
+    def __init__(self, subdict: dict):
+        # treetagger dict
+        self.subdict = subdict
+        self.jobs = self.subdict["processors"]
+        # Initialize the pipeline
+        self.nlp = ttw.TreeTagger(
+            TAGLANG=self.subdict["lang"], TAGOPT=self.subdict["tagopt"]
         )
-        if token
-    ]
 
-    # convert to string in vrt format
-    out = ""
+        # self.nlp = sa.Pipeline(**self.subdict)
 
-    for token in tokenized:
-        out += token + "\n"
+    def apply_to(self, text: str) -> dict:
+        """Funtion to apply pipeline to provided textual data.
 
-    # replace problematic patterns
-    out = be.OutObject.purge(out)
-    # text is not sentencized
-    sentencized = False
+        Args:
+                text[str]: Textual Data as string."""
 
-    return out, sentencized
-
-
-class treetagger_pipe:
-    """Class to enable the usage of the treetagger for POS and Lemma tagging
-    and subsequent encoding of the results into CWB."""
-
-    def __init__(self, config: dict):
-        self.config = config
-        self.lang = self.config["lang"]
-
-        tagopt = self.config["tagopt"]
-
-        self.tagger = ttw.TreeTagger(TAGLANG=self.lang, TAGOPT=tagopt)
-
-    def apply_to(self, text: str) -> list:
-        """Apply pipeline to the textual data."""
-
-        tags = self.tagger.tag_text(
-            text, notagurl=True, notagemail=True, notagip=True, notagdns=True
-        )
-        # convert the output from namedtuples in a list into dictionaries in a list
-        self.doc = [item._asdict() for item in ttw.make_tags(tags)]
+        self.doc = self.nlp.tag_text(text)
+        self.doc = [item._asdict() for item in ttw.make_tags(self.doc)]
 
         return self
 
-    def pass_results(self, mydict: dict, style: str = "STR", add: bool = False) -> None:
-        """Pass the results to CWB through a vrt file or write xml file.
+    # tokenized = [
+    # token
+    # for token in tokenizer.tag_text(
+    # text,
+    # prepronly=True,
+    # notagurl=True,
+    # notagemail=True,
+    # notagip=True,
+    # notagdns=True,
+    # )
+    # if token
+    # ]
 
-        [Args]:
-                mydict[dict]: Dict containing the encoding information.
-                style[str]: Decides between CWB encoding "STR" or xml output "DICT"
-                            -> xml output does not work currently."""
+    # for token in tokenized:
+    # out += token + "\n"
 
-        # grab the processor info from the first dict in the doc-list. It is consistent for all
-        self.jobs = [key for key in self.doc[0].keys()]
+    # if style == "STR":
+    # obj = out_object_treetagger(self.doc, self.jobs)
 
-        # integrate the found processors into the config
-        processors = ""
-        for job in self.jobs:
-            processors += job
-        self.config["processors"] = processors
 
-        if style == "STR":
-
-            obj = out_object_treetagger(self.doc, self.jobs)
-
-            out = []
-            # grab the tagged string
-            out = obj.iterate(out, None, "STR")
-
-            # check for tags for encoding, for this tool it should be POS and Lemma
-            ptags = obj.get_ptags()
-            stags = obj.get_stags()
-
-            outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-
-            if not add:
-                out_object_treetagger.write_vrt(outfile, out)
-                encode_obj = be.encode_corpus(mydict)
-                encode_obj.encode_vrt(ptags, stags)
-
-            elif add:
-                be.OutObject.write_vrt(outfile, out)
-                encode_obj = be.encode_corpus(mydict)
-                encode_obj.encode_vrt(ptags, stags)
-
-        elif style == "DICT":
-            be.OutObject.write_xml(
-                mydict["advanced_options"]["output_dir"],
-                mydict["corpus_name"],
-                self.doc,
-            )
+#
+# out = []
+# grab the tagged string
+# out = obj.iterate(out, None, "STR")
+#
+# check for tags for encoding, for this tool it should be POS and Lemma
+# ptags = obj.get_ptags()
+# stags = obj.get_stags()
+#
+# outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
+#
+# if not add:
+# out_object_treetagger.write_vrt(outfile, out)
+# encode_obj = be.encode_corpus(mydict)
+# encode_obj.encode_vrt(ptags, stags)
+#
+# elif add:
+# be.OutObject.write_vrt(outfile, out)
+# encode_obj = be.encode_corpus(mydict)
+# encode_obj.encode_vrt(ptags, stags)
+#
+# elif style == "DICT":
+# be.OutObject.write_xml(
+# mydict["advanced_options"]["output_dir"],
+# mydict["corpus_name"],
+# self.doc,
+# )
 
 
 class out_object_treetagger(be.OutObject):
@@ -133,3 +105,15 @@ class out_object_treetagger(be.OutObject):
                     out[-1] += "\t" + item
             out[-1] += "\n"
         return out
+
+
+if __name__ == "__main__":
+    data = "This is a sentence."
+    mydict = be.prepare_run.load_input_dict("annotator/input")
+    mydict["tool"] = "treetagger"
+    treetagger_dict = mydict["treetagger_dict"]
+    treetagger_dict["lang"] = "en"
+    treetagger_dict["processors"] = "tokenize", "pos", "lemma"
+    annotated = MyTreetagger(treetagger_dict)
+    doc = annotated.apply_to(data)
+    print(doc)

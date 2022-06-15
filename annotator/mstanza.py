@@ -11,7 +11,7 @@ class MyStanza:
        subdict (dictionary): The stanza input dictionary.
        text (string): The raw text that is to be processed.
        text (list of strings): Several raw texts to be processed simultaneously.
-       annotated (dictionary): The output dictionary with annotated tokens.
+       annotated (object): The output object with annotated tokens.
     """
 
     def __init__(self, subdict: dict):
