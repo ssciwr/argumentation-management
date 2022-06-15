@@ -227,6 +227,20 @@ class OutObject:
             self.iterate(out[-1], sent, "DICT")
         return out
 
+    def token_list(self, myobj) -> list:
+        return [token for token in myobj]
+
+    def out_shortlist(self, out: list) -> list:
+        out = [
+            (token.strip(), i)
+            for i, token in enumerate(out)
+            if token.strip() != "<s>" and token.strip() != "</s>"
+        ]
+        return out
+
+    def _compare_tokens(self, token1, token2):
+        return token1 == token2
+
     @staticmethod
     def get_names() -> dict:
         """Load attribute names for specific tools."""

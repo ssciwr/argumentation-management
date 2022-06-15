@@ -191,20 +191,6 @@ class OutSpacy(be.OutObject):
                 out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
         return out
 
-    def token_list(self, myobj) -> list:
-        return [token for token in myobj]
-
-    def out_shortlist(self, out: list) -> list:
-        out = [
-            (token.strip(), i)
-            for i, token in enumerate(out)
-            if token.strip() != "<s>" and token.strip() != "</s>"
-        ]
-        return out
-
-    def _compare_tokens(self, token1, token2):
-        return token1 == token2
-
     @property
     def sentences(self) -> list:
         """Function to return sentences as list.
