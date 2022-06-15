@@ -103,14 +103,14 @@ def test_apply_to_de(get_sample, get_sample_stanza):
 
 @pytest.mark.lang("en")
 @pytest.mark.proc("tok")
-def test_out_object_stanza_tok(get_sample, get_out_sample):
+def test_OutStanza_tok(get_sample, get_out_sample):
     text = get_sample
     procstring = "tokenize"
     mydict_en["processors"] = procstring
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
+    out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
     out = out_obj.assemble_output_sent()
     test_out = get_out_sample
     # compare as string not as list
@@ -120,14 +120,14 @@ def test_out_object_stanza_tok(get_sample, get_out_sample):
 
 @pytest.mark.lang("en")
 @pytest.mark.proc("tok_pos")
-def test_out_object_stanza_tok_pos(get_sample, get_out_sample):
+def test_OutStanza_tok_pos(get_sample, get_out_sample):
     text = get_sample
     procstring = "tokenize,pos"
     mydict_en["processors"] = procstring
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
+    out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
     out = out_obj.assemble_output_sent()
     out = out_obj.assemble_output_tokens(out)
     test_out = get_out_sample
@@ -138,14 +138,14 @@ def test_out_object_stanza_tok_pos(get_sample, get_out_sample):
 
 @pytest.mark.lang("en")
 @pytest.mark.proc("tok_pos_lemma")
-def test_out_object_stanza_tok_pos_lemma(get_sample, get_out_sample):
+def test_outstanza_tok_pos_lemma(get_sample, get_out_sample):
     text = get_sample
     procstring = "tokenize,pos,lemma"
     mydict_en["processors"] = procstring
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
+    out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
     out = out_obj.assemble_output_sent()
     out = out_obj.assemble_output_tokens(out)
     test_out = get_out_sample
@@ -155,19 +155,19 @@ def test_out_object_stanza_tok_pos_lemma(get_sample, get_out_sample):
 
 
 @pytest.mark.lang("en")
-def test_out_object_stanza_vrt(get_sample):
+def test_outstanza_vrt(get_sample):
     text = get_sample
     procstring = "tokenize,pos,lemma"
     outfile = "./test/test_files/example_en"
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
-    out_obj = ma.out_object_stanza(docobj.doc, procstring, start=0)
+    out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
     out = out_obj.assemble_output_sent()
     out = out_obj.assemble_output_tokens(out)
     file_out = open(outfile + "_test.vrt", "r")
     # call vrt writing
-    ma.out_object_stanza.write_vrt(outfile, out)
+    ma.OutStanza.write_vrt(outfile, out)
     file = open(outfile + ".vrt", "r")
     print("wrote " + outfile + ".vrt")
     assert file.read() == file_out.read()

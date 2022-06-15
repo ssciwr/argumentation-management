@@ -46,7 +46,7 @@ def call_stanza(mydict, data, islist=False):
     doc = annotated.doc
     # we should not need start ..?
     start = 0
-    out_obj = msa.out_object_stanza(doc, annotated.jobs, start=start, islist=islist)
+    out_obj = msa.OutStanza(doc, annotated.jobs, start=start, islist=islist)
     return out_obj
 
 
