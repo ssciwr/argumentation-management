@@ -128,6 +128,9 @@ class OutStanza(be.OutObject):
                 out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
         return out
 
+    def token_list(self, myobj: list) -> list:
+        return [token for token in myobj.tokens]
+
     def word_list(self, myobj: list) -> list:
         return [word for word in myobj.words]
 
