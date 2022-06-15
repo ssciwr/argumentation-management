@@ -25,6 +25,9 @@ def test_integration_msomajo(setup):
     mydict, text = setup
     mydict["somajo_dict"]["model"] = "en_PTB"
     mydict["somajo_dict"]["processors"] = "sentencize", "tokenize"
+    mydict["advanced_options"]["output_dir"] = "./test/out/"
+    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
+    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
     tokenized = mso.MySomajo(mydict["somajo_dict"])
     tokenized.apply_to(text)
     # we should not need start ..?

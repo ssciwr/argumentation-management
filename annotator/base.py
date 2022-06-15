@@ -2,7 +2,7 @@
 import json
 import jsonschema
 import os
-import annotator.to_xml as txml
+import to_xml as txml
 
 
 class prepare_run:
@@ -231,8 +231,8 @@ class OutObject:
     def get_names() -> dict:
         """Load attribute names for specific tools."""
 
-        # mydict = prepare_run.load_input_dict("attribute_names")
-        mydict = prepare_run.load_input_dict("./annotator/attribute_names")
+        mydict = prepare_run.load_input_dict("attribute_names")
+        # mydict = prepare_run.load_input_dict("./annotator/attribute_names")
         return mydict
 
     # refactor once STR is working - we actually do not need token text as key
