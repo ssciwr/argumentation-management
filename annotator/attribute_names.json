@@ -23,17 +23,20 @@
         "proc_sent": "",
         "proc_lemma": "lemma",
         "proc_pos": "token",
-        "sentence": "",
+        "sentence": null,
         "token": "word",
         "pos": "pos",
         "lemma": "lemma",
-        "ner": ""
+        "ner": null
     },
     "somajo_names": {
         "proc_sent": "sentencize",
         "proc_pos": null,
         "proc_lemma": null,
         "sentence": "sent",
-        "token": "token"
+        "token": "token",
+        "pos": null,
+        "lemma": null,
+        "ner": null
     }
 }

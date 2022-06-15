@@ -6,10 +6,10 @@
     "processing_option": "fast",
     "processing_type": "tokenize",
     "advanced_options": {
-        "output_dir": "./test/out/",
+        "output_dir": "./annotator/test/out/",
         "output_format": "STR",
-        "corpus_dir": "./test/corpora/",
-        "registry_dir": "./test/registry/",
+        "corpus_dir": "./annotator/test/corpora/",
+        "registry_dir": "./annotator/test/registry/",
         "multiprocessing": false,
         "use_GPU": false
     },

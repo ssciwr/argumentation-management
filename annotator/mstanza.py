@@ -48,7 +48,7 @@ def ner(doc) -> dict:
 
 
 # inherit the output class from base and add stanza-specific methods
-class OutStanza(be.OutObject):  # rename TODO
+class OutStanza(be.OutObject):
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 
@@ -103,16 +103,16 @@ class OutStanza(be.OutObject):  # rename TODO
             token_list, word_list, token_list_out
         ):
             mylen = len(token_stanza.text)
-            print(
-                "Checking for tokens {} {}".format(
-                    token_stanza.text, token_out[0][0:mylen]
-                )
-            )
-            print(
-                "Checking for words {} {}".format(
-                    word_stanza.text, token_out[0][0:mylen]
-                )
-            )
+            # print(
+            # "Checking for tokens {} {}".format(
+            # token_stanza.text, token_out[0][0:mylen]
+            # )
+            # )
+            # print(
+            # "Checking for words {} {}".format(
+            # word_stanza.text, token_out[0][0:mylen]
+            # )
+            # )
             # check that the text is the same
             # here we may need to check for word..?
             if token_stanza.text != token_out[0][0:mylen]:
