@@ -1,5 +1,4 @@
 import stanza
-import spacy
 import time
 
 stanza.download("en")
