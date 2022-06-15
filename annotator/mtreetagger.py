@@ -1,6 +1,5 @@
 import treetaggerwrapper as ttw
 import base as be
-import pprint
 
 
 class MyTreetagger:
