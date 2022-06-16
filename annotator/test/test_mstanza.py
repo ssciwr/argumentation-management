@@ -103,7 +103,7 @@ def test_apply_to_de(get_sample, get_sample_stanza):
 
 @pytest.mark.lang("en")
 @pytest.mark.proc("tok")
-def test_OutStanza_tok(get_sample, get_out_sample):
+def test_outstanza_tok(get_sample, get_out_sample):
     text = get_sample
     procstring = "tokenize"
     mydict_en["processors"] = procstring
@@ -120,7 +120,7 @@ def test_OutStanza_tok(get_sample, get_out_sample):
 
 @pytest.mark.lang("en")
 @pytest.mark.proc("tok_pos")
-def test_OutStanza_tok_pos(get_sample, get_out_sample):
+def test_outstanza_tok_pos(get_sample, get_out_sample):
     text = get_sample
     procstring = "tokenize,pos"
     mydict_en["processors"] = procstring

@@ -43,7 +43,7 @@ def test_integration_adding_tags(load_data):
     cwd = os.getcwd()
     os.system("cd {} && touch test && cd {}".format(reg.name, cwd))
     mydict["tool"] = "spacy"
-    spacy_dict = mydict["spacy_dict"]
+    # spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config
     # annotated = msp.MySpacy(spacy_dict)
     # apply pipeline to data

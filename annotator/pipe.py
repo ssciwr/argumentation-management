@@ -220,8 +220,13 @@ class SetConfig:
             # check that tokenization is not selected for these languages
             ziplist = zip(self.processors, self.tool)
             if "treetagger" in ziplist[1]:
+                print(
+                    "Tokenization only possible for languages {}".format(
+                        languages_token_pos_lemma
+                    )
+                )
                 raise ValueError(
-                    "Tokenization not possible with treetagger for the selected language {}.".format(
+                    "Tokenization not available in treetagger for the selected language {}.".format(
                         self.mydict["language"]
                     )
                 )

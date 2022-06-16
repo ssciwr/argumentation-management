@@ -101,6 +101,7 @@ def test_outtreetagger_init(get_doc):
 
 def test_outtreetagger_iterate(get_doc):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    # to be completed TODO
 
 
 def test_assemble_output_tokens(get_doc, test_en):
