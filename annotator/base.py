@@ -47,8 +47,8 @@ class prepare_run:
     @staticmethod
     def validate_input_dict(dict_in: dict) -> None:
         with open(
-            # "{}.json".format("input_schema"),
-            "{}.json".format("./annotator/input_schema"),
+            "{}.json".format("input_schema"),
+            # "{}.json".format("./annotator/input_schema"),
             "r",
         ) as f:
             myschema = json.load(f)
@@ -245,8 +245,8 @@ class OutObject:
     def get_names() -> dict:
         """Load attribute names for specific tools."""
 
-        # mydict = prepare_run.load_input_dict("attribute_names")
-        mydict = prepare_run.load_input_dict("./annotator/attribute_names")
+        mydict = prepare_run.load_input_dict("attribute_names")
+        # mydict = prepare_run.load_input_dict("./annotator/attribute_names")
         return mydict
 
     # refactor once STR is working - we actually do not need token text as key

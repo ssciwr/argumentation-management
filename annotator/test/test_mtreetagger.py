@@ -17,11 +17,11 @@ def data_de():
 def test_en():
     data = [
         "<s>",
-        "This\tthis\n",
-        "is\tbe\n",
-        "a\ta\n",
-        "sentence\tsentence\n",
-        ".\t.\n",
+        "This\tDT\tthis\n",
+        "is\tVBZ\tbe\n",
+        "a\tDT\ta\n",
+        "sentence\tNN\tsentence\n",
+        ".\tSENT\t.\n",
         "</s>",
     ]
     return data
