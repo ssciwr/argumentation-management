@@ -22,7 +22,7 @@
     "treetagger_names": {
         "proc_sent": "",
         "proc_lemma": "lemma",
-        "proc_pos": "token",
+        "proc_pos": "pos",
         "sentence": "",
         "token": "word",
         "pos": "pos",

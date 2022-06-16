@@ -79,15 +79,20 @@ def call_treetagger(mydict, data, islist=True):
     return out_obj
 
 
-call_tool = {"spacy": call_spacy, "stanza": call_stanza, "somajo": call_somajo}
+call_tool = {
+    "spacy": call_spacy,
+    "stanza": call_stanza,
+    "somajo": call_somajo,
+    "treetagger": call_treetagger,
+}
 
 if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./annotator/input")
     # overwrite defaults for testing purposes
-    mydict["processing_option"] = "fast"
+    mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "spacy, treetagger, treetagger, treetagger"
+    mydict["tool"] = "somajo, somajo, treetagger, treetagger"
     mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
     mydict["advanced_options"]["output_dir"] = "./annotator/test/out/"

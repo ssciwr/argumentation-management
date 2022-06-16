@@ -178,7 +178,7 @@ class OutTreetagger(be.OutObject):
         return out
 
 
-if __name__ == "__main__":
+if __name__ == "_main__":
     data = "This is a sentence."
     mydict = be.prepare_run.load_input_dict("annotator/input")
     mydict["tool"] = "treetagger"
