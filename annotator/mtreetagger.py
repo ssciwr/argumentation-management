@@ -15,6 +15,9 @@ class MyTreetagger:
         # treetagger dict
         self.subdict = subdict
         self.jobs = self.subdict["processors"]
+        # set tagonly if already tokenized
+        if "tokenize" not in self.jobs:
+            self.subdict["tagonly"] = True
         # Initialize the pipeline
         self.nlp = ttw.TreeTagger(
             TAGLANG=self.subdict["lang"], TAGOPT=self.subdict["tagopt"]

@@ -118,7 +118,3 @@ def set_tool(get_mydict):
     get_mydict["processing_type"] = procstring
     pe.SetConfig(get_mydict)
     assert get_mydict["tool"] == ["stanza", "stanza", "stanza"]
-
-
-# def test_PipeText(get_mydict):
-# pass
