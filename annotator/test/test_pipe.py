@@ -102,6 +102,28 @@ def test_set_model_stanza(get_mydict):
     assert get_mydict["stanza_dict"]["model"] is None
 
 
+def test_set_model_somajo(get_mydict):
+    get_mydict["processing_option"] = "manual"
+    get_mydict["tool"] = "somajo, somajo"
+    get_mydict["processing_type"] = "sentencize, tokenize"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.mydict["somajo_dict"]["model"] == "en_PTB"
+    obj.mydict["language"] = "de"
+    obj._set_model_somajo()
+    assert obj.mydict["somajo_dict"]["model"] == "de_CMC"
+
+
+def test_set_model_treetagger(get_mydict):
+    get_mydict["processing_option"] = "manual"
+    get_mydict["tool"] = "treetagger, treetagger"
+    get_mydict["processing_type"] = "tokenize, pos"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.mydict["treetagger_dict"]["lang"] == "en"
+    obj.mydict["language"] = "de"
+    obj._set_model_treetagger()
+    assert obj.mydict["treetagger_dict"]["lang"] == "de"
+
+
 def test_set_processors(get_mydict):
     get_mydict["processing_option"] = "manual"
     get_mydict["tool"] = "stanza"
