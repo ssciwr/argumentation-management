@@ -14,7 +14,7 @@ import os
 
 @pytest.fixture()
 def load_data():
-    data = be.prepare_run.get_text("./test/test_files/example_en.txt")
+    data = "This is a sentence."
     return data
 
 
@@ -27,23 +27,27 @@ def test_integration_adding_tags(load_data):
     mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
     mydict["advanced_options"]["corpus_dir"] = "{}".format(corp.name)
     mydict["advanced_options"]["registry_dir"] = "{}".format(reg.name)
-
+    mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     data = load_data
     treetagger_dict = mydict["treetagger_dict"]
-    pipe = mtt.treetagger_pipe(treetagger_dict)
+    annotated = mtt.MyTreetagger(treetagger_dict)
 
-    out = pipe.apply_to(data)
-
-    out.pass_results(mydict, "STR")
+    annotated = annotated.apply_to(data)
+    start = 0
+    out_obj = mtt.OutTreetagger(
+        annotated.doc, annotated.jobs, start=start, islist=False
+    )
+    out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
+    out = out_obj.assemble_output_tokens(out)
 
     cwd = os.getcwd()
     os.system("cd {} && touch test && cd {}".format(reg.name, cwd))
     mydict["tool"] = "spacy"
-    spacy_dict = mydict["spacy_dict"]
+    # spacy_dict = mydict["spacy_dict"]
     # load the pipeline from the config
-    annotated = msp.MySpacy(spacy_dict)
+    # annotated = msp.MySpacy(spacy_dict)
     # apply pipeline to data
-    annotated.apply_to(data)
+    # annotated.apply_to(data)
     # get the dict for encoding
     # encoding_dict = be.prepare_run.get_encoding(mydict)
     # Write vrt and encode

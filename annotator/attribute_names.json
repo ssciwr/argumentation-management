@@ -22,7 +22,7 @@
     "treetagger_names": {
         "proc_sent": "",
         "proc_lemma": "lemma",
-        "proc_pos": "token",
+        "proc_pos": "pos",
         "sentence": "",
         "token": "word",
         "pos": "pos",
@@ -31,9 +31,12 @@
     },
     "somajo_names": {
         "proc_sent": "sentencize",
-        "proc_pos": null,
-        "proc_lemma": null,
+        "proc_pos": "",
+        "proc_lemma": "",
         "sentence": "sent",
-        "token": "token"
+        "token": "token",
+        "pos": "",
+        "lemma": "",
+        "ner": ""
     }
 }

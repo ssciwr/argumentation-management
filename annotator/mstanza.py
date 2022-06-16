@@ -11,7 +11,7 @@ class MyStanza:
        subdict (dictionary): The stanza input dictionary.
        text (string): The raw text that is to be processed.
        text (list of strings): Several raw texts to be processed simultaneously.
-       annotated (dictionary): The output dictionary with annotated tokens.
+       annotated (object): The output object with annotated tokens.
     """
 
     def __init__(self, subdict: dict):
@@ -48,7 +48,7 @@ def ner(doc) -> dict:
 
 
 # inherit the output class from base and add stanza-specific methods
-class out_object_stanza(be.OutObject):  # rename TODO
+class OutStanza(be.OutObject):
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 
@@ -103,16 +103,16 @@ class out_object_stanza(be.OutObject):  # rename TODO
             token_list, word_list, token_list_out
         ):
             mylen = len(token_stanza.text)
-            print(
-                "Checking for tokens {} {}".format(
-                    token_stanza.text, token_out[0][0:mylen]
-                )
-            )
-            print(
-                "Checking for words {} {}".format(
-                    word_stanza.text, token_out[0][0:mylen]
-                )
-            )
+            # print(
+            # "Checking for tokens {} {}".format(
+            # token_stanza.text, token_out[0][0:mylen]
+            # )
+            # )
+            # print(
+            # "Checking for words {} {}".format(
+            # word_stanza.text, token_out[0][0:mylen]
+            # )
+            # )
             # check that the text is the same
             # here we may need to check for word..?
             if token_stanza.text != token_out[0][0:mylen]:
@@ -133,17 +133,6 @@ class out_object_stanza(be.OutObject):  # rename TODO
 
     def word_list(self, myobj: list) -> list:
         return [word for word in myobj.words]
-
-    def out_shortlist(self, out: list) -> list:
-        out = [
-            (token.strip(), i)
-            for i, token in enumerate(out)
-            if token.strip() != "<s>" and token.strip() != "</s>"
-        ]
-        return out
-
-    def _compare_tokens(self, token1, token2):
-        return token1 == token2
 
     @property
     def sentences(self) -> list:

@@ -3,6 +3,7 @@ import pipe as pe
 import mspacy as msp
 import mstanza as msa
 import msomajo as mso
+import mtreetagger as mtt
 
 
 def call_spacy(mydict, data, islist=False):
@@ -46,7 +47,7 @@ def call_stanza(mydict, data, islist=False):
     doc = annotated.doc
     # we should not need start ..?
     start = 0
-    out_obj = msa.out_object_stanza(doc, annotated.jobs, start=start, islist=islist)
+    out_obj = msa.OutStanza(doc, annotated.jobs, start=start, islist=islist)
     return out_obj
 
 
@@ -60,26 +61,45 @@ def call_somajo(mydict, data, islist=False):
     # we should not need start ..?
     start = 0
     # for somajo we never have list data as this will be only used for sentencizing
-    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start, islist=False)
+    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start, islist)
     return out_obj
 
 
-call_tool = {"spacy": call_spacy, "stanza": call_stanza, "somajo": call_somajo}
+def call_treetagger(mydict, data, islist=True):
+    treetagger_dict = mydict["treetagger_dict"]
+    # load the pipeline
+    # treetagger does only tokenization for some languages and pos, lemma
+    tokenized = mtt.MyTreetagger(treetagger_dict)
+    # apply pipeline to data
+    tokenized.apply_to(data)
+    # we should not need start ..?
+    start = 0
+    # for treetagger we always have list data as data will already be sentencized
+    out_obj = mtt.OutTreetagger(tokenized.doc, tokenized.jobs, start, islist)
+    return out_obj
+
+
+call_tool = {
+    "spacy": call_spacy,
+    "stanza": call_stanza,
+    "somajo": call_somajo,
+    "treetagger": call_treetagger,
+}
 
 if __name__ == "__main__":
     # load input dict
     mydict = be.prepare_run.load_input_dict("./annotator/input")
     # overwrite defaults for testing purposes
-    mydict["processing_option"] = "fast"
+    mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "spacy"
+    mydict["tool"] = "somajo, somajo, stanza, treetagger"
     mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
-    mydict["advanced_options"]["output_dir"] = "./test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
+    mydict["advanced_options"]["output_dir"] = "./annotator/test/out/"
+    mydict["advanced_options"]["corpus_dir"] = "./annotator/test/corpora/"
+    mydict["advanced_options"]["registry_dir"] = "./annotator/test/registry/"
     # get the data to be processed
-    data = be.prepare_run.get_text("./test/test_files/example_en.txt")
+    data = be.prepare_run.get_text("./annotator/test/test_files/example_en.txt")
     # validate the input dict
     be.prepare_run.validate_input_dict(mydict)
     # activate the input dict
