@@ -1,15 +1,12 @@
 # from tracemalloc import start
 from flair.data import Sentence
-from flair.models import SequenceTagger
-from flair.models.sequence_tagger_model import MultiTagger
+from flair.models import SequenceTagger, MultiTagger
 from flair.data import Token
-from tqdm import tqdm
 import base as be
-import mspacy as msp
 
 
 class MyFlair:
-    """Flair main processing class.
+    """Flair main processing class. Flair only does POS and NER tagging.
 
     Args:
        subdict (dictionary): The treetagger input dictionary.
@@ -22,8 +19,11 @@ class MyFlair:
         self.subdict = subdict
         self.jobs = self.subdict["processors"]
         self.model = self.subdict["model"]
-        # Initialize the pipeline
-        self.nlp = SequenceTagger.load(self.model)
+        # Initialize the pipeline - only one type of annotation
+        if len(self.jobs) == 1:
+            self.nlp = SequenceTagger.load(self.model)
+        elif len(self.jobs) > 1:
+            self.nlp = MultiTagger.load(self.model)
 
     def apply_to(self, text: str) -> object:
         """Funtion to apply pipeline to provided textual data.
@@ -44,52 +44,13 @@ class OutFlair(be.OutObject):
 
     def __init__(self, doc, jobs: list, start: int = 0, islist=False) -> None:
         super().__init__(doc, jobs, start, islist)
-        self.attrnames = self.attrnames["treetagger_names"]
+        self.attrnames = self.attrnames["flair_names"]
         self.ptags = self.get_ptags()
         self.stags = None
         self.out = []
 
-    def start_output(self):
-        """Initialize the output list."""
-
-        self.out.append("!")
-
-        if type(self.job) == str:
-            self.out[0] += " " + self.job
-
-        elif type(self.job) == list:
-            for job in self.job:
-                self.out[0] += " " + job
-
-        self.out[0] += "\n"
-
-        return self
-
-    def iterate_tokens(self, out: list) -> list:
-        """Iterate through a sentence."""
-
-        for token in self.sentences:
-            self.assemble_output(token, out)
-
-        return out
-
-    def assemble_output(self, token: Token, out: list) -> list:
-        """Build output line from a token.
-
-        Args:
-                token[Token]: Annotated token.
-                out[list]: Assembled output."""
-
-        out.append("{}".format(token.text))
-        for job in self.job:
-            label = token.get_label(job).value
-            if label != "O":
-                out[-1] += " " + label
-            elif label == "O":
-                out[-1] += " - "
-
-        out[-1] += "\n"
-        return out
+    def assemble_output_tokens(self, out) -> list:
+        return
 
 
 if __name__ == "__main__":
@@ -98,19 +59,11 @@ if __name__ == "__main__":
     mydict["tool"] = "flair"
     flair_dict = mydict["flair_dict"]
     flair_dict["processors"] = "tokenize", "pos"
-    flair_dict["model"] = "pos"
+    flair_dict["model"] = ["pos", "ner"]
     annotated = MyFlair(flair_dict)
     annotated = annotated.apply_to(data)
     exit()
 
-    #  def get_out(self, ret=False, start=0) -> list or None:
-    # """Assemble output post-pipeline.
-    #
-    # Args:
-    # ret[bool]=False: Return output as list (True) or write to file (False).
-    # start[int]=0: Start index for data. (Maybe not needed?)."""
-    #
-    # out = out_object_flair(self.sentences, self.job, start=0).start_output().out
     # for sent in self.sentences:
     #
     # out.append("<s>\n")

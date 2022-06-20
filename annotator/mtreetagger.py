@@ -72,24 +72,6 @@ class OutTreetagger(be.OutObject):
         self.ptags = self.get_ptags()
         self.stags = None
 
-    # add new method for treetagger iteration over tokens
-    def iterate(self, out: list, sent, style) -> list:
-        """Function to iterate through sentence object and extract data to list.
-
-        Args:
-                out[list]: List containing the collected output.
-                sent[treetagger sent-Object]: Object containing tokenized sentence."""
-
-        for mydict in self.doc:
-            out.append("")
-            for i, (_, item) in enumerate(mydict.items()):
-                if i == 0:
-                    out[-1] += item
-                elif i > 0:
-                    out[-1] += "\t" + item
-            out[-1] += "\n"
-        return out
-
     def assemble_output_tokens(self, out) -> list:
         # check for list of docs -> list of sentences
         # had been passed that were annotated

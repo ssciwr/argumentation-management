@@ -38,5 +38,15 @@
         "pos": "",
         "lemma": "",
         "ner": ""
+    },
+    "flair_names": {
+        "proc_sent": "",
+        "proc_pos": "pos",
+        "proc_lemma": "",
+        "sentence": "sentence",
+        "token": "token",
+        "pos": "",
+        "lemma": "",
+        "ner": ""
     }
 }

@@ -121,31 +121,6 @@ def test_validate_input_dict(init_dict):
     be.prepare_run.validate_input_dict(init_dict)
 
 
-def test_chunker():
-    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
-
-    formated_text = text.replace(" ", "\n")
-
-    tmp = tempfile.NamedTemporaryFile()
-
-    tmp.write(formated_text.encode())
-    tmp.seek(0)
-    # print(tmp.read().decode())
-    data = be.chunk_sample_text("{}".format(tmp.name))
-    # print(data)
-    # don't need this anymore
-    tmp.close()
-
-    check = [
-        ['<textid="1"> ', "This is an example text. ", ""],
-        ['<subtextid="1"> ', "It has some subtext. ", "</subtext> "],
-        ["", "", "</text> "],
-        ['<textid="2"> ', "Here is some more text. ", "</text>"],
-    ]
-
-    assert data == check
-
-
 # OutObject to be tested in spacy/stanza
 # test the encode_corpus class
 # everything except the actual cwb command
