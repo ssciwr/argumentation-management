@@ -23,9 +23,7 @@ class MyTreetagger:
             TAGLANG=self.subdict["lang"], TAGOPT=self.subdict["tagopt"]
         )
 
-        # self.nlp = sa.Pipeline(**self.subdict)
-
-    def apply_to(self, text: str) -> dict:
+    def apply_to(self, text: str) -> object:
         """Funtion to apply pipeline to provided textual data.
 
         Args:
@@ -62,54 +60,6 @@ class TreetaggerDoc:
     @property
     def pos(self):
         return self.outdict["pos"]
-
-    # tokenized = [
-    # token
-    # for token in tokenizer.tag_text(
-    # text,
-    # prepronly=True,
-    # notagurl=True,
-    # notagemail=True,
-    # notagip=True,
-    # notagdns=True,
-    # )
-    # if token
-    # ]
-
-    # for token in tokenized:
-    # out += token + "\n"
-
-    # if style == "STR":
-    # obj = out_object_treetagger(self.doc, self.jobs)
-
-
-#
-# out = []
-# grab the tagged string
-# out = obj.iterate(out, None, "STR")
-#
-# check for tags for encoding, for this tool it should be POS and Lemma
-# ptags = obj.get_ptags()
-# stags = obj.get_stags()
-#
-# outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-#
-# if not add:
-# out_object_treetagger.write_vrt(outfile, out)
-# encode_obj = be.encode_corpus(mydict)
-# encode_obj.encode_vrt(ptags, stags)
-#
-# elif add:
-# be.OutObject.write_vrt(outfile, out)
-# encode_obj = be.encode_corpus(mydict)
-# encode_obj.encode_vrt(ptags, stags)
-#
-# elif style == "DICT":
-# be.OutObject.write_xml(
-# mydict["advanced_options"]["output_dir"],
-# mydict["corpus_name"],
-# self.doc,
-# )
 
 
 class OutTreetagger(be.OutObject):
