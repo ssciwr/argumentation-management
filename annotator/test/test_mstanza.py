@@ -209,3 +209,17 @@ def test_word_list(get_sample):
         out_word_list = file.read()
 
     assert str(word_list) == out_word_list
+
+
+@pytest.mark.lang("en")
+def test_sentences(get_sample):
+    text = get_sample
+    procstring = "tokenize,pos,lemma"
+    obj = ma.MyStanza(mydict_en)
+    docobj = obj.apply_to(text)
+    out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
+    sentences = out_obj.sentences
+    with open("./test/test_files/example_en_sentences.txt", "r") as file:
+        out_sentences = file.read()
+
+    assert str(sentences) == out_sentences
