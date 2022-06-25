@@ -83,27 +83,3 @@ class OutTreetagger(be.OutObject):
 
         out = self.iterate_tokens(out, token_list)
         return out
-
-
-if __name__ == "_main__":
-    data = "This is a sentence."
-    mydict = be.prepare_run.load_input_dict("annotator/input")
-    mydict["tool"] = "treetagger"
-    treetagger_dict = mydict["treetagger_dict"]
-    treetagger_dict["lang"] = "en"
-    treetagger_dict["processors"] = "tokenize", "pos", "lemma"
-    annotated = MyTreetagger(treetagger_dict)
-    annotated = annotated.apply_to(data)
-    start = 0
-    out_obj = OutTreetagger(annotated.doc, annotated.jobs, start=start, islist=False)
-    out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
-    out = out_obj.assemble_output_tokens(out)
-    ptags = out_obj.get_ptags()
-    stags = out_obj.get_stags()
-    # write out to .vrt
-    outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-    out_obj.write_vrt(outfile, out)
-    # add = False
-    # if not add:
-    encode_obj = be.encode_corpus(mydict)
-    encode_obj.encode_vrt(ptags, stags)
