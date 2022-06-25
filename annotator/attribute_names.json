@@ -45,8 +45,8 @@
         "proc_lemma": "",
         "sentence": "sentence",
         "token": "token",
-        "pos": "",
+        "pos": "pos",
         "lemma": "",
-        "ner": ""
+        "ner": "ner"
     }
 }

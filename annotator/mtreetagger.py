@@ -76,9 +76,6 @@ class OutTreetagger(be.OutObject):
         # check for list of docs -> list of sentences
         # had been passed that were annotated
         token_list = []
-        # if we feed sentences, senter and parser processors need to be absent
-        # apparently nothing else
-        # see https://spacy.io/api/doc#sents
         if type(self.doc) == list:
             token_list += self.token_list(self.doc)
         else:

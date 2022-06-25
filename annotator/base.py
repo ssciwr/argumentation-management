@@ -246,7 +246,7 @@ class OutObject:
 
         if self.attrnames["proc_pos"] in self.jobs:
 
-            line["POS"] = OutObject.grab_tag(word, self.attrnames["pos"])
+            line["POS"] = self.grab_tag(word)
 
         if self.attrnames["proc_lemma"] in self.jobs:
             line["LEMMA"] = OutObject.grab_lemma(word, self.attrnames["lemma"])
@@ -286,13 +286,12 @@ class OutObject:
             tag = NOT_DEF
         return tag
 
-    @staticmethod
-    def grab_tag(word, attrname):
+    def grab_tag(self, word):
 
         # attributes:
         # Tagger -> Token.tag, Token.tag_
-        if getattr(word, attrname) != "":
-            tag = getattr(word, attrname)
+        if getattr(word, self.attrnames["pos"]) != "":
+            tag = getattr(word, self.attrnames["pos"])
         else:
             tag = NOT_DEF
         return tag
@@ -321,7 +320,7 @@ class OutObject:
             string += line
 
         string = OutObject.purge(string)
-
+        print(os.getcwd())
         with open("{}.vrt".format(outname), "w") as file:
             file.write(string)
 
