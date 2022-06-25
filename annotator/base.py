@@ -147,6 +147,29 @@ class OutObject:
             self.iterate(out[-1], sent, "DICT")
         return out
 
+    def iterate_tokens(self, out, token_list):
+        token_list_out = self.out_shortlist(out)
+        # now compare the tokens in out with the tokens from the current tool
+        for token_tool, token_out in zip(token_list, token_list_out):
+            mylen = len(token_tool.text)
+            print("Checking for tokens {} {}".format(token_tool.text, token_out[0]))
+            # check that the text is the same
+            if token_tool.text != token_out[0][0:mylen]:
+                print(
+                    "Found different token than in out! - {} and {}".format(
+                        token_tool.text, token_out[0][0:mylen]
+                    )
+                )
+                print("Please check your inputs!")
+            else:
+                line = self.collect_results(token_tool, 0, token_tool, "STR")
+                # now replace the respective token with annotated token
+                out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
+                # note that this will not add a linebreak for <s> and <s\> -
+                # linebreaks are handled by sentencizer
+                # we expect that sentencizer runs TODO be able to feed only one sentence
+        return out
+
     def token_list(self, myobj) -> list:
         return [token for token in myobj]
 

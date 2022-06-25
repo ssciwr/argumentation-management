@@ -59,32 +59,7 @@ class OutFlair(be.OutObject):
             print(type(self.doc))
             token_list += self.token_list(self.doc)
 
-        token_list_out = self.out_shortlist(out)
-        # now compare the tokens in out with the token objects from treetagger
-        # here treetagger is a bit different since it is not a list of objects
-        # but a list of dict
-        for token_treetagger, token_out in zip(token_list, token_list_out):
-            mylen = len(token_treetagger.text)
-            print(
-                "Checking for tokens {} {}".format(token_treetagger.text, token_out[0])
-            )
-            # check that the text is the same
-            if token_treetagger.text != token_out[0][0:mylen]:
-                print(
-                    "Found different token than in out! - {} and {}".format(
-                        token_treetagger.text, token_out[0][0:mylen]
-                    )
-                )
-                print("Please check your inputs!")
-            else:
-                line = self.collect_results(
-                    token_treetagger, 0, token_treetagger, "STR"
-                )
-                # now replace the respective token with annotated token
-                out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
-                # note that this will not add a linebreak for <s> and <s\> -
-                # linebreaks are handled by sentencizer
-                # we expect that sentencizer runs TODO be able to feed only one sentence
+        out = self.iterate_tokens(out, token_list)
         return out
 
     def grab_tag(self, word):
