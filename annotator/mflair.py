@@ -34,7 +34,6 @@ class MyFlair:
         # Flair needs the input as sentence object
         self.doc = Sentence(text)
         self.nlp.predict(self.doc)
-        print(self.doc)
         return self
 
 
@@ -92,9 +91,6 @@ class OutFlair(be.OutObject):
 
         # attributes:
         # Tagger -> Token.tag, Token.tag_
-        test = word.get_label("pos")
-        test2 = word.get_label("pos").value
-        print(word.get_label("pos"))
         if word.get_label(self.attrnames["pos"]).value != "0":
             tag = word.get_label(self.attrnames["pos"]).value
         else:
