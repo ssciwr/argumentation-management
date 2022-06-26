@@ -112,8 +112,8 @@ if __name__ == "__main__":
     # overwrite defaults for testing purposes
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "somajo, somajo, flair"
-    mydict["processing_type"] = "sentencize, tokenize, pos"
+    mydict["tool"] = "somajo, somajo, flair, stanza"
+    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
     mydict["advanced_options"]["output_dir"] = "./annotator/test/out/"
     mydict["advanced_options"]["corpus_dir"] = "./annotator/test/corpora/"

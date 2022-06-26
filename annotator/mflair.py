@@ -91,31 +91,3 @@ class OutFlair(be.OutObject):
             for token in sentence:
                 st_list.append(token)
         return st_list
-
-
-if __name__ == "__main__":
-    data = "This is a sentence."
-    mydict = be.prepare_run.load_input_dict("annotator/input")
-    mydict["tool"] = "flair"
-    mydict["advanced_options"]["output_dir"] = "annotator/test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "annotator/test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "annotator/test/registry/"
-    flair_dict = mydict["flair_dict"]
-    flair_dict["processors"] = "tokenize", "pos"
-    flair_dict["model"] = ["pos", "ner"]
-    annotated = MyFlair(flair_dict)
-    annotated = annotated.apply_to(data)
-    start = 0
-    out_obj = OutFlair(annotated.doc, annotated.jobs, start=start, islist=False)
-    out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
-    out = out_obj.assemble_output_tokens(out)
-    print(out)
-    ptags = out_obj.get_ptags()
-    stags = out_obj.get_stags()
-    # write out to .vrt
-    outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-    out_obj.write_vrt(outfile, out)
-    # add = False
-    # if not add:
-    encode_obj = be.encode_corpus(mydict)
-    encode_obj.encode_vrt(ptags, stags)
