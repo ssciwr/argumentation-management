@@ -18,23 +18,12 @@ class MyFlair:
         # flair dict
         self.subdict = subdict
         self.jobs = self.subdict["processors"]
-        self.model = self.get_model()
+        self.model = self.subdict["model"]
         # Initialize the pipeline - only one type of annotation
         if len(self.jobs) == 1:
             self.nlp = SequenceTagger.load(self.model)
         elif len(self.jobs) > 1:
             self.nlp = MultiTagger.load(self.model)
-
-    def get_model(self):
-        if len(self.jobs) == 1:
-            self.model = self.jobs[0]
-        elif len(self.jobs) == 2:
-            self.model = self.jobs
-        else:
-            raise ValueError(
-                "Too many processors set for flair! Only pos and ner available."
-            )
-        return self.model
 
     def apply_to(self, text: str) -> object:
         """Funtion to apply pipeline to provided textual data.

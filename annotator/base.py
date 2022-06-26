@@ -152,7 +152,7 @@ class OutObject:
         # now compare the tokens in out with the tokens from the current tool
         for token_tool, token_out in zip(token_list, token_list_out):
             mylen = len(token_tool.text)
-            print("Checking for tokens {} {}".format(token_tool.text, token_out[0]))
+            # print("Checking for tokens {} {}".format(token_tool.text, token_out[0]))
             # check that the text is the same
             if token_tool.text != token_out[0][0:mylen]:
                 print(

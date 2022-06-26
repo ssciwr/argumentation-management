@@ -239,12 +239,27 @@ class SetConfig:
         """Update the model depending on selected processors - flair."""
         print("Language and processing options for flair are set at flair runtime.")
         print("This ensures correct tagger is loaded.")
-        # We need to account for both being present - maybe in this case model should be set in MyFlair class?
+        self.mydict["flair_dict"]["model"] = []
+        if self.mydict["language"] == "en":
+            pos_string = "pos"
+            ner_string = "ner"
+        elif self.mydict["language"] == "de":
+            pos_string = "de-pos"
+            ner_string = "de-ner"
+        else:
+            raise ValueError(
+                "Currently only en and de models for flair! You selected language {}".format(
+                    self.mydict["language"]
+                )
+            )
         for proc, mytool in zip(self.processors, self.tool):
             if mytool == "flair" and proc == "pos":
-                self.mydict["flair_dict"]["model"] = "pos"
+                self.mydict["flair_dict"]["model"].append(pos_string)
             elif mytool == "flair" and proc == "ner":
-                self.mydict["flair_dict"]["model"] = "ner"
+                self.mydict["flair_dict"]["model"].append(ner_string)
+        if len(self.model) == 1:
+            # flair does only need list for more than one processor
+            self.model = self.model[0]
 
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""

@@ -74,7 +74,7 @@ def test_assemble_output_tokens(get_doc, test_en):
     assert out == test_en
 
 
-def test_grep_tag(get_doc):
+def test_grab_tag(get_doc):
     out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0, islist=False)
     test_labels = []
     for token in get_doc[0]:
