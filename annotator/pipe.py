@@ -257,9 +257,9 @@ class SetConfig:
                 self.mydict["flair_dict"]["model"].append(pos_string)
             elif mytool == "flair" and proc == "ner":
                 self.mydict["flair_dict"]["model"].append(ner_string)
-        if len(self.model) == 1:
+        if len(self.mydict["flair_dict"]["model"]) == 1:
             # flair does only need list for more than one processor
-            self.model = self.model[0]
+            self.mydict["flair_dict"]["model"] = self.mydict["flair_dict"]["model"][0]
 
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""
