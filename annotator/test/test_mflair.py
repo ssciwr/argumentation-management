@@ -9,6 +9,11 @@ def data_en():
 
 
 @pytest.fixture
+def data_en_list():
+    return ["This is a sentence.", "This is another sentence."]
+
+
+@pytest.fixture
 def data_de():
     return "Dies ist ein Satz."
 
@@ -31,8 +36,8 @@ def test_en():
 def load_dict():
     mydict = be.prepare_run.load_input_dict("./test/test_files/input")
     mydict["flair_dict"]["lang"] = "en"
-    mydict["flair_dict"]["model"] = ["pos"]
-    mydict["flair_dict"]["processors"] = "tokenize", "pos"
+    mydict["flair_dict"]["model"] = "pos"
+    mydict["flair_dict"]["processors"] = ["tokenize", "pos"]
     return mydict["flair_dict"]
 
 
@@ -48,10 +53,12 @@ labels = ["DT", "VBZ", "DT", "NN", "."]
 
 def test_myflair_init(load_dict):
     annotated = mf.MyFlair(load_dict)
-    assert annotated.jobs == ("tokenize", "pos")
-    assert annotated.model == ["pos"]
-    temp = str(annotated.nlp)
-    assert "MultiTagger" in temp
+    assert annotated.jobs == ["tokenize", "pos"]
+    assert annotated.model == "pos"
+    assert "MultiTagger" in str(annotated.nlp)
+    load_dict["processors"] = "pos"
+    annotated = mf.MyFlair(load_dict)
+    assert "SequenceTagger" in str(annotated.nlp)
 
 
 def test_myflair_apply_to(get_doc):
@@ -82,3 +89,15 @@ def test_grab_tag(get_doc):
     for token in get_doc[0]:
         test_labels.append(out_obj.grab_tag(token))
     assert test_labels == labels
+
+
+def test_sentence_token_list(load_dict, data_en_list):
+    doc = []
+    annotated = mf.MyFlair(load_dict)
+    for sentence in data_en_list:
+        annotated.apply_to(sentence)
+        doc.append(annotated.doc)
+    out_obj = mf.OutFlair(doc, annotated.jobs, 0, islist=True)
+    out = out_obj.sentence_token_list(doc)
+    assert out[0].text == "This"
+    assert out[7].text == "another"

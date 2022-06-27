@@ -20,9 +20,9 @@ class MyFlair:
         self.jobs = self.subdict["processors"]
         self.model = self.subdict["model"]
         # Initialize the pipeline - only one type of annotation
-        if len(self.jobs) == 1:
+        if type(self.jobs) == str:
             self.nlp = SequenceTagger.load(self.model)
-        elif len(self.jobs) > 1:
+        elif type(self.jobs) == list:
             self.nlp = MultiTagger.load(self.model)
 
     def apply_to(self, text: str) -> object:
