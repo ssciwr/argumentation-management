@@ -49,6 +49,21 @@ def get_doc(load_dict, data_en):
 
 
 @pytest.fixture
+def test_token_en():
+    token_en = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
+    token_en_annotated = [
+        "<s>",
+        "This\tDT\tthis\n",
+        "is\tVBZ\tbe\n",
+        "a\tDT\ta\n",
+        "sentence\tNN\tsentence\n",
+        ".\tSENT\t.\n",
+        "</s>",
+    ]
+    return token_en, token_en_annotated
+
+
+@pytest.fixture
 def test_en():
     data = [
         "<s>",
@@ -126,6 +141,13 @@ def test_validate_input_dict(init_dict):
 # everything except the actual cwb command
 # we do not want to install it in CI/CD
 # to use dockerfile for workflow is left for later
+def test_iterate_tokens(get_doc, test_token_en):
+    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    token_list = out_obj.token_list(out_obj.doc)
+    out = out_obj.iterate_tokens(test_token_en[0], token_list)
+    assert out == test_token_en[1]
+
+
 def test_token_list(get_doc):
     mylist = ["a", "n", "d"]
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)

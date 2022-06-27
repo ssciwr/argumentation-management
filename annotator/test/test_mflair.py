@@ -50,6 +50,8 @@ def test_myflair_init(load_dict):
     annotated = mf.MyFlair(load_dict)
     assert annotated.jobs == ("tokenize", "pos")
     assert annotated.model == ["pos"]
+    temp = str(annotated.nlp)
+    assert "MultiTagger" in temp
 
 
 def test_myflair_apply_to(get_doc):
