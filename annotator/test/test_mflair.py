@@ -14,11 +14,6 @@ def data_en_list():
 
 
 @pytest.fixture
-def data_de():
-    return "Dies ist ein Satz."
-
-
-@pytest.fixture
 def test_en():
     data = [
         "<s>",

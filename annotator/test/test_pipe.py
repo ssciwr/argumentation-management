@@ -124,6 +124,23 @@ def test_set_model_treetagger(get_mydict):
     assert obj.mydict["treetagger_dict"]["lang"] == "de"
 
 
+def test_set_model_flair(get_mydict):
+    get_mydict["processing_option"] = "manual"
+    get_mydict["tool"] = "flair"
+    get_mydict["processing_type"] = "pos"
+    obj = pe.SetConfig(get_mydict)
+    assert obj.mydict["flair_dict"]["model"] == "pos"
+    get_mydict["processing_type"] = "pos, ner"
+    assert obj.mydict["flair_dict"]["model"] == ["pos", "ner"]
+    get_mydict["processing_type"] = "pos"
+    obj.mydict["language"] = "de"
+    obj._set_model_flair()
+    assert obj.mydict["flair_dict"]["model"] == "de-pos"
+    obj.mydict["language"] = "fr"
+    with pytest.raises(ValueError):
+        obj._set_model_flair()
+
+
 def test_set_processors(get_mydict):
     get_mydict["processing_option"] = "manual"
     get_mydict["tool"] = "stanza"
