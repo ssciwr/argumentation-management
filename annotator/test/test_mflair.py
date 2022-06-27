@@ -65,7 +65,7 @@ def test_myflair_apply_to(get_doc):
 
 def test_outflair_init(get_doc):
     out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0, islist=False)
-    assert out_obj.attrnames["proc_sent"] == ""
+    assert out_obj.attrnames["proc_sent"] == "na"
     assert out_obj.attrnames["proc_pos"] == "pos"
     assert not out_obj.stags
 

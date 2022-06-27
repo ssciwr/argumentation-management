@@ -93,6 +93,7 @@ def call_flair(mydict, data, islist=True):
         doc.append(annotated.doc)
     # we should not need start ..?
     start = 0
+    print(annotated.jobs)
     # for flair we always have list data as data will already be sentencized
     out_obj = mf.OutFlair(doc, annotated.jobs, start, islist)
     return out_obj

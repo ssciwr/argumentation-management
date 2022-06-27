@@ -68,10 +68,7 @@ class OutFlair(be.OutObject):
 
         # attributes:
         # Tagger -> Token.tag, Token.tag_
-        if word.get_label(self.attrnames["pos"]).value != "0":
-            tag = word.get_label(self.attrnames["pos"]).value
-        else:
-            tag = "NOT_DEF"
+        tag = word.get_label(self.attrnames["pos"]).value
         return tag
 
     def sentence_token_list(self, myobj):

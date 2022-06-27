@@ -17,7 +17,10 @@ class MyStanza:
     def __init__(self, subdict: dict):
         # stanza dict
         self.subdict = subdict
-        self.jobs = self.subdict["processors"].split(",")
+        if "," in self.subdict["processors"]:
+            self.jobs = self.subdict["processors"].split(",")
+        else:
+            self.jobs = self.subdict["processors"]
         # Initialize the pipeline
         self.nlp = sa.Pipeline(**self.subdict)
 

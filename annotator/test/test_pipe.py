@@ -1,10 +1,6 @@
 from webbrowser import get
 import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import pipe as pe
 import pipe as pe
 
 procstring = "tokenize, pos, lemma"
@@ -130,11 +126,14 @@ def test_set_model_flair(get_mydict):
     get_mydict["processing_type"] = "pos"
     obj = pe.SetConfig(get_mydict)
     assert obj.mydict["flair_dict"]["model"] == "pos"
+    get_mydict["tool"] = "flair, flair"
     get_mydict["processing_type"] = "pos, ner"
+    obj = pe.SetConfig(get_mydict)
     assert obj.mydict["flair_dict"]["model"] == ["pos", "ner"]
+    get_mydict["tool"] = "flair"
     get_mydict["processing_type"] = "pos"
     obj.mydict["language"] = "de"
-    obj._set_model_flair()
+    obj = pe.SetConfig(get_mydict)
     assert obj.mydict["flair_dict"]["model"] == "de-pos"
     obj.mydict["language"] = "fr"
     with pytest.raises(ValueError):
