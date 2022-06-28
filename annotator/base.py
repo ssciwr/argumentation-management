@@ -74,105 +74,25 @@ class prepare_run:
     #     return new_dict
 
 
-# the below to be removed - TODO
-# I thought this would belong here rather than mspacy.
-def chunk_sample_text(path: str) -> list:
-    """Function to chunk down a given vrt file into pieces sepparated by <> </> boundaries.
-    Assumes that there is one layer (no nested <> </> statements) of text elements to be separated."""
-
-    # list for data chunks
-    data = []
-    # index to refer to current chunk
-    i = 0
-    # index of seen xml elements
-    xml_seen = 0
-    with open(path, "r") as myfile:
-
-        # iterate .vrt
-        for line in myfile:
-            # if line starts with "<" and sml seen == 0 we have the first chunk
-            if line.startswith("<") and xml_seen == 0:
-                # we have now seen an xml element
-                xml_seen += 1
-                # add chunk to list-> chunk is list of three strings:
-                # chunk[0]: Opening "<>" statement
-                # chunk[1]: Text contained in chunk, every "\n" replaced with " "
-                # chunk[2]: Next "<>" statement
-                data.append(["", "", ""])
-                data[i][0] += line.replace("\n", " ")
-
-            elif line.startswith("<") and xml_seen > 0:
-                # we've seen another one
-                xml_seen += 1
-                # if we encounter a closing statement we end the current chunk
-                if line.startswith("</"):
-
-                    data[i][2] = line.replace("\n", " ")
-                    i += 1
-                    data.append(["", "", ""])
-
-                # else we encountered another opening xml element and are in a nested environment
-                # we also start a new chunk but leave the closing statement of the previous one empty
-                else:
-
-                    i += 1
-                    data.append(["", "", ""])
-                    data[i][0] = line.replace("\n", " ")
-
-            # if we are not on a line with an xml element we can just write the text to the
-            # text entry (idx 1) for the current chunk, "inter-chunk indexing" should be handled
-            # by the above case selection
-            else:
-                # append line to chunk[1], replacing "\n" with " "
-                data[i][1] += line.replace("\n", " ")
-
-    # if we appended empty chunks we remove them here
-    for chunk in data:
-        if all(elems == "" for elems in chunk):
-            data.remove(chunk)
-
-    return data
-
-
-def find_last_idx(chunk: list) -> int:
-    """Function to find last index in chunk to keep token index up to date for
-    next chunk after chunking the corpus.
-
-    [Args]:
-            chunk[list]: List containing the lines for the .vrt as strings."""
-
-    # get the index to last element
-    i = len(chunk) - 1
-    # iterate through entire chunk if neccessary, should never happen in practice
-    for j in range(len(chunk)):
-        # if string starts with "<" last elem isnt line string but some s-attribute
-        if chunk[i].split()[0].startswith("<"):
-            # set index to next element
-            i -= 1
-        else:
-            # if string doesnt start with "<" we can assume it contains the token index
-            # in the first column
-            # print(chunk[i].split()[0])
-            return int(chunk[i].split()[0])
-
-
 # set the string to be used for undefined tags
 NOT_DEF = " "
 
 
-# the base OutObject class
-# this class is inherited in the different modules
-# selected methods are overwritten/added depending on the requirements
-# the mapping dict to make the conversion clear and not to duplicate code
 class OutObject:
-    """The base output object and namespace. Write the vrt file."""
+    """The base output object and namespace.
+
+    This class is inherited in the different modules;
+    selected methods are overwritten/added depending on
+    the requirements of the modules.
+    The mapping dict "attribute_names" is used to make the
+    conversion clear and not to duplicate code.
+    Write the vrt/xml file."""
 
     def __init__(self, doc, jobs: list, start: int, islist=False):
         self.doc = doc
         self.jobs = jobs
         self.start = start
         # just one doc object for whole text or multiple objects per sentence
-        # (self.doc)
         self.islist = islist
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
@@ -225,6 +145,29 @@ class OutObject:
         for sent in getattr(self.doc, self.attrnames["sentence"]):
             out.append([])
             self.iterate(out[-1], sent, "DICT")
+        return out
+
+    def iterate_tokens(self, out, token_list):
+        token_list_out = self.out_shortlist(out)
+        # now compare the tokens in out with the tokens from the current tool
+        for token_tool, token_out in zip(token_list, token_list_out):
+            mylen = len(token_tool.text)
+            # print("Checking for tokens {} {}".format(token_tool.text, token_out[0]))
+            # check that the text is the same
+            if token_tool.text != token_out[0][0:mylen]:
+                print(
+                    "Found different token than in out! - {} and {}".format(
+                        token_tool.text, token_out[0][0:mylen]
+                    )
+                )
+                print("Please check your inputs!")
+            else:
+                line = self.collect_results(token_tool, 0, token_tool, "STR")
+                # now replace the respective token with annotated token
+                out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
+                # note that this will not add a linebreak for <s> and <s\> -
+                # linebreaks are handled by sentencizer
+                # we expect that sentencizer runs TODO be able to feed only one sentence
         return out
 
     def token_list(self, myobj) -> list:
@@ -326,7 +269,7 @@ class OutObject:
 
         if self.attrnames["proc_pos"] in self.jobs:
 
-            line["POS"] = OutObject.grab_tag(word, self.attrnames["pos"])
+            line["POS"] = self.grab_tag(word)
 
         if self.attrnames["proc_lemma"] in self.jobs:
             line["LEMMA"] = OutObject.grab_lemma(word, self.attrnames["lemma"])
@@ -366,13 +309,12 @@ class OutObject:
             tag = NOT_DEF
         return tag
 
-    @staticmethod
-    def grab_tag(word, attrname):
+    def grab_tag(self, word):
 
         # attributes:
         # Tagger -> Token.tag, Token.tag_
-        if getattr(word, attrname) != "":
-            tag = getattr(word, attrname)
+        if getattr(word, self.attrnames["pos"]) != "":
+            tag = getattr(word, self.attrnames["pos"])
         else:
             tag = NOT_DEF
         return tag
@@ -401,7 +343,7 @@ class OutObject:
             string += line
 
         string = OutObject.purge(string)
-
+        print(os.getcwd())
         with open("{}.vrt".format(outname), "w") as file:
             file.write(string)
 

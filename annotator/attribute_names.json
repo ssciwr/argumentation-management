@@ -27,16 +27,26 @@
         "token": "word",
         "pos": "pos",
         "lemma": "lemma",
-        "ner": ""
+        "ner": "na"
     },
     "somajo_names": {
         "proc_sent": "sentencize",
-        "proc_pos": "",
-        "proc_lemma": "",
+        "proc_pos": "na",
+        "proc_lemma": "na",
         "sentence": "sent",
         "token": "token",
-        "pos": "",
-        "lemma": "",
-        "ner": ""
+        "pos": "na",
+        "lemma": "na",
+        "ner": "na"
+    },
+    "flair_names": {
+        "proc_sent": "na",
+        "proc_pos": "pos",
+        "proc_lemma": "na",
+        "sentence": "sentence",
+        "token": "token",
+        "pos": "pos",
+        "lemma": "na",
+        "ner": "ner"
     }
 }

@@ -46,6 +46,7 @@ class SetConfig:
                 "tokenize": "tokenize",
             },
             "treetagger": {"tokenize": "tokenize", "pos": "pos", "lemma": "lemma"},
+            "flair": {"pos": "pos", "ner": "ner"},
         }
         self.mydict = mydict
         self.case = self.processing_option[self.mydict.get("processing_option", "fast")]
@@ -61,6 +62,8 @@ class SetConfig:
             self._set_model_somajo()
         if "treetagger" in self.tool:
             self._set_model_treetagger()
+        if "flair" in self.tool:
+            self._set_model_flair()
         self.set_processors()
         self.set_tool()
 
@@ -218,19 +221,45 @@ class SetConfig:
         ]
         if self.mydict["language"] in languages_pos_lemma:
             # check that tokenization is not selected for these languages
-            ziplist = zip(self.processors, self.tool)
-            if "treetagger" in ziplist[1]:
-                print(
-                    "Tokenization only possible for languages {}".format(
-                        languages_token_pos_lemma
+            for proc, mytool in zip(self.processors, self.tool):
+                if mytool == "treetagger" and proc == "tokenize":
+                    print(
+                        "Tokenization only possible for languages {}".format(
+                            languages_token_pos_lemma
+                        )
                     )
-                )
-                raise ValueError(
-                    "Tokenization not available in treetagger for the selected language {}.".format(
-                        self.mydict["language"]
+                    raise ValueError(
+                        "Tokenization not available in treetagger for the selected language {}.".format(
+                            self.mydict["language"]
+                        )
                     )
-                )
         self.mydict["treetagger_dict"]["lang"] = self.mydict["language"]
+
+    def _set_model_flair(self):
+        """Update the model depending on selected processors - flair."""
+        print("Language and processing options for flair are set at flair runtime.")
+        print("This ensures correct tagger is loaded.")
+        self.mydict["flair_dict"]["model"] = []
+        if self.mydict["language"] == "en":
+            pos_string = "pos"
+            ner_string = "ner"
+        elif self.mydict["language"] == "de":
+            pos_string = "de-pos"
+            ner_string = "de-ner"
+        else:
+            raise ValueError(
+                "Currently only en and de models for flair! You selected language {}".format(
+                    self.mydict["language"]
+                )
+            )
+        for proc, mytool in zip(self.processors, self.tool):
+            if mytool == "flair" and proc == "pos":
+                self.mydict["flair_dict"]["model"].append(pos_string)
+            elif mytool == "flair" and proc == "ner":
+                self.mydict["flair_dict"]["model"].append(ner_string)
+        if len(self.mydict["flair_dict"]["model"]) == 1:
+            # flair does only need list for more than one processor
+            self.mydict["flair_dict"]["model"] = self.mydict["flair_dict"]["model"][0]
 
     def set_processors(self) -> dict:
         """Update the processor and language settings in the tool sub-dict."""

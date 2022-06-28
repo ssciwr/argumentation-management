@@ -4,6 +4,7 @@ import mspacy as msp
 import mstanza as msa
 import msomajo as mso
 import mtreetagger as mtt
+import mflair as mf
 
 
 def call_spacy(mydict, data, islist=False):
@@ -69,13 +70,32 @@ def call_treetagger(mydict, data, islist=True):
     treetagger_dict = mydict["treetagger_dict"]
     # load the pipeline
     # treetagger does only tokenization for some languages and pos, lemma
-    tokenized = mtt.MyTreetagger(treetagger_dict)
+    annotated = mtt.MyTreetagger(treetagger_dict)
     # apply pipeline to data
-    tokenized.apply_to(data)
+    annotated.apply_to(data)
     # we should not need start ..?
     start = 0
     # for treetagger we always have list data as data will already be sentencized
-    out_obj = mtt.OutTreetagger(tokenized.doc, tokenized.jobs, start, islist)
+    out_obj = mtt.OutTreetagger(annotated.doc, annotated.jobs, start, islist)
+    return out_obj
+
+
+def call_flair(mydict, data, islist=True):
+    flair_dict = mydict["flair_dict"]
+    # load the pipeline
+    # flair does only pos and ner
+    annotated = mf.MyFlair(flair_dict)
+    # apply pipeline to data
+    # here we need to apply to each sentence one by one
+    doc = []
+    for sentence in data:
+        annotated.apply_to(sentence)
+        doc.append(annotated.doc)
+    # we should not need start ..?
+    start = 0
+    print(annotated.jobs)
+    # for flair we always have list data as data will already be sentencized
+    out_obj = mf.OutFlair(doc, annotated.jobs, start, islist)
     return out_obj
 
 
@@ -84,6 +104,7 @@ call_tool = {
     "stanza": call_stanza,
     "somajo": call_somajo,
     "treetagger": call_treetagger,
+    "flair": call_flair,
 }
 
 if __name__ == "__main__":
@@ -92,7 +113,7 @@ if __name__ == "__main__":
     # overwrite defaults for testing purposes
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "somajo, somajo, stanza, treetagger"
+    mydict["tool"] = "somajo, somajo, flair, stanza"
     mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["language"] = "en"
     mydict["advanced_options"]["output_dir"] = "./annotator/test/out/"

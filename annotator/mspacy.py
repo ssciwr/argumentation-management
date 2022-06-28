@@ -142,6 +142,7 @@ class OutSpacy(be.OutObject):
         self.ptags = self.get_ptags()
         self.stags = self.get_stags()
 
+    # this can probably go..? TODO
     def iterate(self, out, sent, style):
         for token in sent:
             # multi-word expressions not available in spacy?
@@ -171,24 +172,7 @@ class OutSpacy(be.OutObject):
             if self.doc.has_annotation("SENT_START"):
                 for sent in self.doc.sents:
                     token_list += self.token_list(sent)
-
-        token_list_out = self.out_shortlist(out)
-        # now compare the tokens in out with the token objects from spacy
-        for token_spacy, token_out in zip(token_list, token_list_out):
-            mylen = len(token_spacy.text)
-            # print("Checking for tokens {} {}".format(token_spacy.text, token_out[0]))
-            # check that the text is the same
-            if token_spacy.text != token_out[0][0:mylen]:
-                print(
-                    "Found different token than in out! - {} and {}".format(
-                        token_spacy.text, token_out[0][0:mylen]
-                    )
-                )
-                print("Please check your inputs!")
-            else:
-                line = self.collect_results(token_spacy, 0, token_spacy, "STR")
-                # now replace the respective token with annotated token
-                out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
+        out = self.iterate_tokens(out, token_list)
         return out
 
     @property

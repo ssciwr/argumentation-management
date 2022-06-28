@@ -63,9 +63,6 @@
         }
     },
     "flair_dict":{
-        "filename": "Test",
-        "lang": "en",
-        "job": ["ner", "pos"]
     },
     "treetagger_dict":{
         "lang": "en",

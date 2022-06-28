@@ -1,144 +1,98 @@
 import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import mflair as mf
 import mflair as mf
-import tempfile
-
-
-@pytest.fixture()
-def init():
-    return be.prepare_run.load_input_dict("test/test_files/input")
-
-
-@pytest.fixture()
-def load_object(init):
-    # init defined in test_mspacy
-    return mf.flair_pipe(init)
 
 
 @pytest.fixture
-def apply_to(load_object):
-    """Get object in post-pipe state."""
-
-    test_obj = load_object
-
-    post_pipe = test_obj.senter_spacy(text_en).apply_to()
-
-    return post_pipe
+def data_en():
+    return "This is a sentence."
 
 
-@pytest.fixture()
-def chunked_data():
-    """Get some chunked data."""
+@pytest.fixture
+def data_en_list():
+    return ["This is a sentence.", "This is another sentence."]
 
-    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
-    formated_text = text.replace(" ", "\n")
 
-    tmp = tempfile.NamedTemporaryFile()
-
-    tmp.write(formated_text.encode())
-    tmp.seek(0)
-
-    data = be.chunk_sample_text("{}".format(tmp.name))
-    # don't need this anymore
-    tmp.close()
-
+@pytest.fixture
+def test_en():
+    data = [
+        "<s>",
+        "This\tDT\n",
+        "is\tVBZ\n",
+        "a\tDT\n",
+        "sentence\tNN\n",
+        ".\t.\n",
+        "</s>",
+    ]
     return data
 
 
-def test_init(load_object, init):
-    """Check that the initial values are as expected."""
-
-    test_obj = load_object
-    check_dict = init
-
-    assert (
-        test_obj.outname
-        == check_dict["advanced_options"]["output_dir"] + check_dict["corpus_name"]
-    )
-    assert test_obj.input == check_dict["input"]
-    assert test_obj.lang == check_dict["language"]
-    assert test_obj.job == check_dict["flair_dict"]["job"]
+@pytest.fixture
+def load_dict():
+    mydict = be.prepare_run.load_input_dict("./test/test_files/input")
+    mydict["flair_dict"]["lang"] = "en"
+    mydict["flair_dict"]["model"] = "pos"
+    mydict["flair_dict"]["processors"] = ["tokenize", "pos"]
+    return mydict["flair_dict"]
 
 
-text_en = "This is a sentence. This is another sentence, or is it?"
+@pytest.fixture
+def get_doc(load_dict, data_en):
+    annotated = mf.MyFlair(load_dict)
+    annotated.apply_to(data_en)
+    return annotated.doc, annotated.jobs
 
 
-def test_senter_spacy(load_object):
-    """Check that the sentencizer works."""
-
-    # using spacy 3.2.1
-    test_obj = load_object
-    data_en = test_obj.senter_spacy(text_en).sents
-
-    check_en = [["This is a sentence.", 4], ["This is another sentence, or is it?", 11]]
-    assert data_en == check_en
+labels = ["DT", "VBZ", "DT", "NN", "."]
 
 
-def test_output(apply_to):
-    """Check that the output is as expected."""
-
-    # using flair 0.9
-    check = """! ner pos
-    <s>
-    This -  DT
-    is -  VBZ
-    a -  DT
-    sentence -  NN
-    . -  .
-    </s>
-    <s>
-    This -  DT
-    is -  VBZ
-    another -  DT
-    sentence -  NN
-    , -  ,
-    or -  CC
-    is -  VBZ
-    it -  PRP
-    ? -  .
-    </s>"""
-    checklist = [string.strip() + "\n" for string in check.split("\n")]
-    data_pipe = apply_to.get_out(ret=True)
-
-    assert data_pipe == checklist
+def test_myflair_init(load_dict):
+    annotated = mf.MyFlair(load_dict)
+    assert annotated.jobs == ["tokenize", "pos"]
+    assert annotated.model == "pos"
+    assert "MultiTagger" in str(annotated.nlp)
+    load_dict["processors"] = "pos"
+    annotated = mf.MyFlair(load_dict)
+    assert "SequenceTagger" in str(annotated.nlp)
 
 
-def test_get_multiple(chunked_data, load_object):
-    """Check that chunked data is annotated and returned as expected."""
+def test_myflair_apply_to(get_doc):
+    assert get_doc[0][0].text == "This"
+    assert get_doc[0][0].get_label("pos").value == "DT"
+    assert get_doc[0][3].text == "sentence"
+    assert get_doc[0][3].get_label("pos").value == "NN"
 
-    test_obj = load_object
-    data = test_obj.get_multiple(chunked_data, ret=True)
 
-    # using spacy 3.2.1 and flair 0.9
-    check_chunked = [
-        "! ner pos\n",
-        '<textid="1"> \n',
-        "This -  DT\n",
-        "is -  VBZ\n",
-        "an -  DT\n",
-        "example -  NN\n",
-        "text -  NN\n",
-        ". -  .\n",
-        '<subtextid="1"> \n',
-        "It -  PRP\n",
-        "has -  VBZ\n",
-        "some -  DT\n",
-        "subtext -  NN\n",
-        ". -  .\n",
-        "</subtext> \n",
-        "</text> \n",
-        '<textid="2"> \n',
-        "Here -  RB\n",
-        "is -  VBZ\n",
-        "some -  DT\n",
-        "more -  JJR\n",
-        "text -  NN\n",
-        ". -  .\n",
-        "</text>\n",
-    ]
+def test_outflair_init(get_doc):
+    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0, islist=False)
+    assert out_obj.attrnames["proc_sent"] == "na"
+    assert out_obj.attrnames["proc_pos"] == "pos"
+    assert not out_obj.stags
 
-    assert data == check_chunked
+
+def test_assemble_output_tokens(get_doc, test_en):
+    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0, islist=False)
+    out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
+    out = out_obj.assemble_output_tokens(out)
+    print(out)
+    assert out == test_en
+
+
+def test_grab_tag(get_doc):
+    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0, islist=False)
+    test_labels = []
+    for token in get_doc[0]:
+        test_labels.append(out_obj.grab_tag(token))
+    assert test_labels == labels
+
+
+def test_sentence_token_list(load_dict, data_en_list):
+    doc = []
+    annotated = mf.MyFlair(load_dict)
+    for sentence in data_en_list:
+        annotated.apply_to(sentence)
+        doc.append(annotated.doc)
+    out_obj = mf.OutFlair(doc, annotated.jobs, 0, islist=True)
+    out = out_obj.sentence_token_list(doc)
+    assert out[0].text == "This"
+    assert out[7].text == "another"
