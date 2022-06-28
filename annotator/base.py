@@ -323,11 +323,11 @@ class OutObject:
 
 
 # encode the generated files
+# Right now we don't need this
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
     def __init__(self, mydict: dict) -> None:
-
         # self.corpusdir = "/home/jovyan/corpus"
         # corpusdir and regdir need to be set from input dict
         # plus we also need to set the corpus name from input dict
@@ -360,6 +360,7 @@ class encode_corpus:
                 line += "-P {} ".format(tag)
         return line
 
+    # this needs refactor TODO
     def setup(self) -> bool:
         """Funtion to check wheter a corpus directory exists. If existing directory is found,
         requires input of "y" to overwrite existing files. Maybe add argument to force overwrite later?.
@@ -478,6 +479,7 @@ class encode_corpus:
         elif not purged:
             return print(OSError("Error during setup, aborting..."))
 
+    # this needs refactor TODO
     @classmethod
     def add_tags_to_corpus(cls, mydict: dict, ptags: list, stags: list):
         """Function to add tags to an already existing corpus. Should be used with output based on
@@ -565,6 +567,7 @@ class encode_corpus:
                 registry.write("STRUCTURE {}\n".format(stag))
 
 
+# this needs refactor TODO
 class decode_corpus(encode_corpus):
     """Class to decode corpus from cwb. Inherits encode_corpus."""
 
@@ -639,44 +642,3 @@ class decode_corpus(encode_corpus):
             print(command)
             os.system(command)
             print("File {}.out written in {}.".format(self.corpusname, outpath))
-
-
-# en
-# metadata and tags
-# metadata at top of document
-# <corpus>
-# <document>
-#   <metadata>
-#       <author></author>
-#       <speaker_name>
-#       <speaker_party>
-#       <speaker_role>
-#       <lp>
-#       <session>
-#       <date>
-#       <year>
-#       <year_month>
-#       <speaker_next>
-#        ...
-#       <text>
-#   </metadata>
-# now the annotated text
-# <text id="" speaker_name="" ...>
-#  - main text with s-attributes and attributes
-# <sp> speech
-# <z> Zwischenrufe
-# <s id=""> sentence
-# <t id=""> token
-# <pt> <numb><t id=""> thirteen ..
-# <pt><prop><t id=""> Audi ..
-# <pt><comp> ..
-# <pt><emb><noun>
-#
-# p-attributes: token, lemma, POS
-#
-#
-#
-# s-attributes: sentences, NER
-#
-#
-#
