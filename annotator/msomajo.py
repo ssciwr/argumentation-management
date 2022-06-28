@@ -18,6 +18,7 @@ class MySomajo:
         self.camelcase = subdict["split_camel_case"]
 
     def apply_to(self, text: list or str):
+        """Apply pipeline to text."""
         # somajo takes list as input
         if type(text) == str:
             text = [text]

@@ -1,7 +1,6 @@
 # from tracemalloc import start
 from flair.data import Sentence
 from flair.models import SequenceTagger, MultiTagger
-from flair.data import Token
 import base as be
 
 
@@ -48,6 +47,7 @@ class OutFlair(be.OutObject):
         self.out = []
 
     def assemble_output_tokens(self, out) -> list:
+        """Combine tokens and annotations."""
         # check for list of docs -> list of sentences
         # had been passed that were annotated
         # each sentence (entry in the list) is a flair sentence object
@@ -64,13 +64,14 @@ class OutFlair(be.OutObject):
         return out
 
     def grab_tag(self, word):
-
+        """Get pos for token."""
         # attributes:
         # Tagger -> Token.tag, Token.tag_
         tag = word.get_label(self.attrnames["pos"]).value
         return tag
 
     def sentence_token_list(self, myobj):
+        """Flair-specific iteration through sentences and tokens simultaneously."""
         st_list = []
         for sentence in myobj:
             for token in sentence:

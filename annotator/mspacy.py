@@ -1,13 +1,5 @@
 import spacy as sp
-from spacy.tokens.doc import Doc
-from spacy.lang.en import English
-from spacy.lang.de import German
-import copy
 import base as be
-import pipe as pe
-from tqdm import (
-    tqdm,
-)  # for progress in pipe_multiple, might be interesting for large corpora down the line
 
 
 class MySpacy:
@@ -90,45 +82,12 @@ class MySpacy:
                 sp.require_cpu()
 
     # call the build pipeline on the data
-    def apply_to(self, data: str) -> Doc:
+    def apply_to(self, data: str):
         """Apply the objects pipeline to a given data string."""
 
         # apply to data while disabling everything that wasnt requested
         self.doc = self.nlp(data)
         return self
-
-    # sentencizer only - this to be deleted as it duplicates functionality TODO
-    @staticmethod
-    def sentencize_spacy(model: str, data: str) -> list:
-        """Function to sentencize given text data.
-
-        Args:
-                data[str]: The text string to be split into sentences.
-
-        Returns:
-                List[List[str, int]]: List containing lists which contain the sentences as strings
-                as well as the number of tokens previous to the sentence to easily keep
-                track of the correct token index for a given sentence in the list.
-        """
-        nlp = sp.load(model)
-        nlp.add_pipe("sentencizer")
-        doc = nlp(data)
-        assert doc.has_annotation("SENT_START")
-
-        sents = []
-        # for sent in doc.sents:
-        # sents.append([sent.text])
-
-        # not sure why the token number is counted here - TODO
-        for i, sent in enumerate(doc.sents):
-            if i == 0:
-                # need to take the len of the split str as otherwise grouping of multiple tokens by
-                # spacy can be a problem. This now assumes that tokens are always separated by a
-                # whitespace, which seems reasonable to me -> Any examples to the contrary?
-                sents.append([sent.text, len(sent.text.split())])
-            elif i > 0:
-                sents.append([sent.text, len(sent.text.split()) + sents[i - 1][1]])
-        return sents
 
 
 # inherit the output class from base and add spacy-specific methods
@@ -142,6 +101,7 @@ class OutSpacy(be.OutObject):
         self.stags = self.get_stags()
 
     def assemble_output_tokens(self, out) -> list:
+        """Assemlbe token and annotation data."""
         # check for list of docs -> list of sentences
         # had been passed that were annotated
         token_list = []

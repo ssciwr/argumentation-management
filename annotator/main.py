@@ -177,22 +177,6 @@ if __name__ == "__main__":
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     be.OutObject.write_vrt(outfile, out)
-    # if not add:
-
-    # we need to set the s and p attributes for all jobs
-    # so stags and ptags need to be accumulated
-    # ptags = None
-    # stags = None
-    encode_obj = be.encode_corpus(mydict)
-    encode_obj.encode_vrt(ptags, stags)
-    # elif add:
-    #     encode_obj = be.encode_corpus(mydict)
-    #     encode_obj.add_tags_to_corpus(mydict, ptags, stags)
-
-    # to use pretokenized data - TODO
-    # not sure why we need so many cases - TODO
-    # if ret is False and style == "STR" and mydict is not None and add is False:
-    # if not add:
-    # elif ret is False and style == "STR" and mydict is not None and add is True:
-    # elif ret is True:
-    # "If ret is not set to True, a dict containing the encoding parameters is needed!"
+    # we will skip the encoding for now and instead provide vrt/xml file for user to download
+    # encode_obj = be.encode_corpus(mydict)
+    # encode_obj.encode_vrt(ptags, stags)

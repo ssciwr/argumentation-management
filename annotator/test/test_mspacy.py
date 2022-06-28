@@ -186,21 +186,3 @@ def test_output_sent(pipe_sent):
     print("check:", check)
     assert test_out == check_out
     assert test_out == check
-
-
-def test_sentencize():
-
-    text_en = "This is a sentence. This is another sentence, or is it?"
-    text_de = "Dies ist ein Satz. Dies ist ein zweiter Satz, oder nicht?"
-
-    data_en = msp.MySpacy.sentencize_spacy("en_core_web_md", text_en)
-    data_de = msp.MySpacy.sentencize_spacy("de_core_news_md", text_de)
-
-    check_en = [["This is a sentence.", 4], ["This is another sentence, or is it?", 11]]
-    check_de = [
-        ["Dies ist ein Satz.", 4],
-        ["Dies ist ein zweiter Satz, oder nicht?", 11],
-    ]
-
-    assert data_en == check_en
-    assert data_de == check_de
