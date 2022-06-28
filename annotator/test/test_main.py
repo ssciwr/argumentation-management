@@ -50,11 +50,11 @@ def test_call_treetagger(load_dict, data_en):
     load_dict["treetagger_dict"]["processors"] = "pos"
     load_dict["treetagger_dict"]["lang"] = "en"
     out_obj = mn.call_treetagger(load_dict, data_en)
-    assert out_obj.ptags == ["pos"]
+    assert out_obj.ptags == []
 
 
 def test_call_flair(load_dict, data_en):
     load_dict["flair_dict"]["processors"] = "pos"
     load_dict["flair_dict"]["model"] = "pos"
     out_obj = mn.call_flair(load_dict, data_en)
-    assert out_obj.ptags == ["pos"]
+    assert out_obj.ptags == []

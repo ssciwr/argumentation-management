@@ -39,7 +39,6 @@ class OutSomajo(be.OutObject):
         super().__init__(doc, jobs, start, islist)
         self.attrnames = self.attrnames["somajo_names"]
         self.stags = self.get_stags()
-        self.ptags = self.get_ptags()
 
     def assemble_output_sent(self) -> list:
         """Sentence assembly for somajo."""

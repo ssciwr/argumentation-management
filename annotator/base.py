@@ -95,6 +95,10 @@ class OutObject:
         self.islist = islist
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
+        # ptags does the same case selection as OutObject.collect_results, so the order
+        # of .vrt and this list should always be identical. If you change one
+        # MAKE SURE to also change the other.
+        self.ptags = []
 
     @staticmethod
     def open_outfile(outname: str):
@@ -108,11 +112,8 @@ class OutObject:
         return f
 
     def iterate(self, out, sent, style):
+        """Iterate through the tokens in a sentence."""
         for token in sent:
-            # multi-word expressions not available in spacy?
-            # Setting word=token for now
-            # tid = copy.copy(token.i)
-            # line = self.collect_results(token, tid, token, style)
             line = token.text
             if style == "STR":
                 out.append(line + "\n")
@@ -151,7 +152,7 @@ class OutObject:
         return out
 
     def iterate_tokens(self, out, token_list):
-        """Function to assemble output for tool at token level."""
+        """Assemble output for tool at token level."""
         token_list_out = self.out_shortlist(out)
         # now compare the tokens in out with the tokens from the current tool
         for token_tool, token_out in zip(token_list, token_list_out):
@@ -175,9 +176,11 @@ class OutObject:
         return out
 
     def token_list(self, myobj) -> list:
+        """Convert tokens from object into list."""
         return [token for token in myobj]
 
     def out_shortlist(self, out: list) -> list:
+        """Remove the structural attributes before and after sentence to compare tokens."""
         out = [
             (token.strip(), i)
             for i, token in enumerate(out)
@@ -186,6 +189,7 @@ class OutObject:
         return out
 
     def _compare_tokens(self, token1, token2):
+        """Find out if tokens from previous and current tool are identical."""
         return token1 == token2
 
     @staticmethod
@@ -214,39 +218,12 @@ class OutObject:
                     output += "{}".format(value)
         return output
 
-    # remove repetition - TODO
-    def get_ptags(self) -> list or None:
-        """Function to easily collect the current ptags in a list.
-
-        !!!
-        Does the same case selection as OutObject.collect_results, so the order
-        of .vrt and this list should always be identical. If you change one
-        MAKE SURE to also change the other.
-        !!!
-        """
-
-        ptags = []
-
-        if self.attrnames["proc_pos"] in self.jobs:
-            ptags.append("pos")
-        if self.attrnames["proc_lemma"] in self.jobs:
-            ptags.append("lemma")
-        if "ner" in self.jobs:
-            ptags.append("NER")
-        if "attribute_ruler" in self.jobs:
-            ptags.append("ATTR")
-
-        if ptags != []:
-            return ptags
-        else:
-            return None
-
     def get_stags(self) -> list:
-
         stags = []
         if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
             stags.append("s")
-
+        if stags == []:
+            stags = None
         return stags
 
     def collect_results(self, token, tid: int, word, style: str = "STR") -> dict or str:
@@ -262,12 +239,15 @@ class OutObject:
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
+            self.ptags.append("pos")
             line["POS"] = self.grab_tag(word)
 
         if self.attrnames["proc_lemma"] in self.jobs:
+            self.ptags.append("lemma")
             line["LEMMA"] = self.grab_lemma(word, self.attrnames["lemma"])
 
         if "ner" in self.jobs:
+            self.ptags.append("NER")
             line["NER"] = self.grab_ent(token)
 
         if style == "STR":

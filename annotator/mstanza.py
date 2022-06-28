@@ -58,7 +58,6 @@ class OutStanza(be.OutObject):
     def __init__(self, doc, jobs: list, start: int = 0, islist=False):
         super().__init__(doc, jobs, start, islist)
         self.attrnames = self.attrnames["stanza_names"]
-        self.ptags = self.get_ptags()
         self.stags = self.get_stags()
 
     # add new method for stanza iteration over tokens/words/ents

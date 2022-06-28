@@ -27,7 +27,7 @@ def test_integration_mtreetagger():
     )
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
     out = out_obj.assemble_output_tokens(out)
-    ptags = out_obj.get_ptags()
+    ptags = out_obj.ptags
     stags = out_obj.get_stags()
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]

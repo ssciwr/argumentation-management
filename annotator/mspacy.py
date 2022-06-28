@@ -139,7 +139,6 @@ class OutSpacy(be.OutObject):
     def __init__(self, doc, jobs, start, islist=False):
         super().__init__(doc, jobs, start, islist)
         self.attrnames = self.attrnames["spacy_names"]
-        self.ptags = self.get_ptags()
         self.stags = self.get_stags()
 
     def assemble_output_tokens(self, out) -> list:

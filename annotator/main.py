@@ -168,7 +168,7 @@ if __name__ == "__main__":
             # or only compare to substring from beginning of string
             out = my_out_obj.assemble_output_tokens(out)
             print(out, mytool)
-            ptags_temp = my_out_obj.get_ptags()
+            ptags_temp = my_out_obj.ptags
             if ptags is not None:
                 ptags += ptags_temp
             else:

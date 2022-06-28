@@ -44,7 +44,7 @@ def test_integration_mstanza(load_data):
     out_obj = ma.OutStanza(stanza_pipe.doc, stanza_pipe.jobs, start=start, islist=False)
     out = out_obj.assemble_output_sent()
     out = out_obj.assemble_output_tokens(out)
-    ptags = out_obj.get_ptags()
+    ptags = out_obj.ptags
     stags = out_obj.get_stags()
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]

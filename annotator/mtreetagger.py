@@ -69,8 +69,7 @@ class OutTreetagger(be.OutObject):
     def __init__(self, doc, jobs: list, start: int = 0, islist=False) -> None:
         super().__init__(doc, jobs, start, islist)
         self.attrnames = self.attrnames["treetagger_names"]
-        self.ptags = self.get_ptags()
-        self.stags = None
+        self.stags = self.get_stags()
 
     def assemble_output_tokens(self, out) -> list:
         # check for list of docs -> list of sentences

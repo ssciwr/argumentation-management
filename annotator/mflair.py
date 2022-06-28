@@ -44,8 +44,7 @@ class OutFlair(be.OutObject):
     def __init__(self, doc, jobs: list, start: int = 0, islist=False) -> None:
         super().__init__(doc, jobs, start, islist)
         self.attrnames = self.attrnames["flair_names"]
-        self.ptags = self.get_ptags()
-        self.stags = None
+        self.stags = self.get_stags()
         self.out = []
 
     def assemble_output_tokens(self, out) -> list:
