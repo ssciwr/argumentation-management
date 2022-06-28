@@ -109,7 +109,7 @@ call_tool = {
 
 if __name__ == "__main__":
     # load input dict
-    mydict = be.prepare_run.load_input_dict("./annotator/input")
+    mydict = be.PrepareRun.load_input_dict("./annotator/input")
     # overwrite defaults for testing purposes
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
@@ -120,9 +120,9 @@ if __name__ == "__main__":
     mydict["advanced_options"]["corpus_dir"] = "./annotator/test/corpora/"
     mydict["advanced_options"]["registry_dir"] = "./annotator/test/registry/"
     # get the data to be processed
-    data = be.prepare_run.get_text("./annotator/test/test_files/example_en.txt")
+    data = be.PrepareRun.get_text("./annotator/test/test_files/example_en.txt")
     # validate the input dict
-    be.prepare_run.validate_input_dict(mydict)
+    be.PrepareRun.validate_input_dict(mydict)
     # activate the input dict
     pe.SetConfig(mydict)
     # now we still need to add the order of steps - processors was ordered list

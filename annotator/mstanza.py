@@ -62,6 +62,7 @@ class OutStanza(be.OutObject):
         self.stags = self.get_stags()
 
     # add new method for stanza iteration over tokens/words/ents
+    # TODO: set MWT correctly - iterate over tokens or words?
     def iterate(self, out: list, sent, style: str) -> list:
         """Function to iterate through sentence object and extract data to list.
 
@@ -81,7 +82,6 @@ class OutStanza(be.OutObject):
                 # "Multi-word expressions not available currently"
                 # )
             tid = token.id[0] + self.tstart
-            # line = self.collect_results(token, tid, word, style)
             line = token.text
             if style == "STR":
                 out.append(line + "\n")

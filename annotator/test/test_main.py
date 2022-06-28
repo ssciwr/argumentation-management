@@ -5,7 +5,7 @@ import base as be
 
 @pytest.fixture
 def load_dict():
-    mydict = be.prepare_run.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
     return mydict
 
 

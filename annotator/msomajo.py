@@ -56,15 +56,6 @@ class OutSomajo(be.OutObject):
             out.append("</s>\n")
         return out
 
-    def iterate(self, out, sent, style):
-        for token in sent:
-            line = token.text
-            if style == "STR":
-                out.append(line + "\n")
-            elif style == "DICT":
-                out.append(line)
-        return out
-
     @property
     def sentences(self) -> list:
         """Function to return sentences as list.

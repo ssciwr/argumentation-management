@@ -12,7 +12,7 @@ def test_integration_mtreetagger():
     out = TemporaryDirectory()
 
     data = "This is a sentence."
-    mydict = be.prepare_run.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("input")
     mydict["tool"] = "treetagger"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     mydict["input"] = "./test/test_files/example_en.txt"

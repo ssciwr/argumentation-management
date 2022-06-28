@@ -142,20 +142,6 @@ class OutSpacy(be.OutObject):
         self.ptags = self.get_ptags()
         self.stags = self.get_stags()
 
-    # this can probably go..? TODO
-    def iterate(self, out, sent, style):
-        for token in sent:
-            # multi-word expressions not available in spacy?
-            # Setting word=token for now
-            tid = copy.copy(token.i)
-            # line = self.collect_results(token, tid, token, style)
-            line = token.text
-            if style == "STR":
-                out.append(line + "\n")
-            elif style == "DICT":
-                out.append(line)
-        return out
-
     def assemble_output_tokens(self, out) -> list:
         # check for list of docs -> list of sentences
         # had been passed that were annotated

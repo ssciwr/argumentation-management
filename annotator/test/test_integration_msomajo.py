@@ -13,10 +13,10 @@ from tempfile import TemporaryDirectory
 
 @pytest.fixture
 def setup():
-    mydict = be.prepare_run.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("input")
     mydict["input"] = "./test/test_files/example_en.txt"
-    be.prepare_run.validate_input_dict(mydict)
-    text = be.prepare_run.get_text(mydict["input"])
+    be.PrepareRun.validate_input_dict(mydict)
+    text = be.PrepareRun.get_text(mydict["input"])
 
     return mydict, text
 

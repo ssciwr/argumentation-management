@@ -2,8 +2,6 @@ import pytest
 import unittest.mock
 import json
 import os
-
-# from .context import base as be
 import base as be
 import mtreetagger as mtt
 import tempfile
@@ -35,7 +33,7 @@ def data_en():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.prepare_run.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     return mydict["treetagger_dict"]
@@ -109,7 +107,6 @@ test_dict = {
 
 @pytest.fixture
 def get_obj():
-    # obj = be.encode_corpus(be.prepare_run.get_encoding(test_dict))
     obj = be.encode_corpus(test_dict)
     return obj
 
@@ -126,21 +123,16 @@ def test_get_cores():
 
 
 @pytest.mark.dictname("./test/test_files/input")
-def test_load_input_dict(init_dict, get_path):
-    mydict = be.prepare_run.load_input_dict("input")
+def test_load_input_dict(init_dict):
+    mydict = be.PrepareRun.load_input_dict("input")
     assert mydict == init_dict
 
 
 @pytest.mark.dictname("./test/test_files/input2")
 def test_validate_input_dict(init_dict):
-    be.prepare_run.validate_input_dict(init_dict)
+    be.PrepareRun.validate_input_dict(init_dict)
 
 
-# OutObject to be tested in spacy/stanza
-# test the encode_corpus class
-# everything except the actual cwb command
-# we do not want to install it in CI/CD
-# to use dockerfile for workflow is left for later
 def test_iterate_tokens(get_doc, test_token_en):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
     token_list = out_obj.token_list(out_obj.doc)
@@ -170,16 +162,13 @@ def test_compare_tokens(get_doc):
 
 
 def test_purge():
-
     inputs = [" ", "  "]
     outputs = ["", ""]
-
     for input, output in zip(inputs, outputs):
         assert be.OutObject.purge(input) == output
 
 
 def test_encode_vrt(get_obj):
-
     obj = get_obj
     line = " "
     line = obj._get_s_attributes(line, stags=["s"])
@@ -191,33 +180,23 @@ def test_encode_vrt(get_obj):
 
 
 def test_setup(monkeypatch, get_obj):
-
     tmp = tempfile.TemporaryDirectory()
     obj = get_obj
     obj.encodedir = tmp.name
     my_attr = "builtins.input"
     monkeypatch.setattr(my_attr, lambda _: "y")
-
     assert obj.setup() is True
-
     answers = iter(["n", "n"])
     monkeypatch.setattr(my_attr, lambda _: next(answers))
-
     assert obj.setup() is False
-
     answers = iter(["n", "y", "n", "{}".format(tmp.name), "test", "test", "y"])
     monkeypatch.setattr(my_attr, lambda _: next(answers))
-
     assert obj.setup() is True
-
     answers = iter(["n", "y", "y", "y"])
     monkeypatch.setattr(my_attr, lambda _: next(answers))
-
     assert obj.setup() is True
-
     answers = iter(["n", "y", "y", "n", "n"])
     monkeypatch.setattr(my_attr, lambda _: next(answers))
-
     assert obj.setup() is False
 
 

@@ -13,7 +13,7 @@ from tempfile import TemporaryDirectory
 
 @pytest.fixture()
 def load_data():
-    data = be.prepare_run.get_text("./test/test_files/example_de.txt")
+    data = be.PrepareRun.get_text("./test/test_files/example_de.txt")
     return data
 
 
@@ -22,14 +22,14 @@ def test_integration_mspacy(load_data):
     # create temporary directories for the corpora
     # out = TemporaryDirectory()
     # read in input.json
-    mydict = be.prepare_run.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("input")
     mydict["language"] = "en"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "fast"
     mydict["processing_type"] = "tokenize, pos, lemma"
     mydict["input"] = "./test/test_files/example_en.txt"
     mydict["advanced_options"]["output_dir"] = "./test/out/"
-    be.prepare_run.validate_input_dict(mydict)
+    be.PrepareRun.validate_input_dict(mydict)
     # load the pipe object for updating dict with settings
     obj = pe.SetConfig(mydict)
     spacy_dict = obj.mydict["spacy_dict"]
@@ -39,7 +39,7 @@ def test_integration_mspacy(load_data):
     # apply pipeline to data
     annotated.apply_to(data)
     # get the dict for encoding
-    # encoding_dict = be.prepare_run.get_encoding(mydict)
+    # encoding_dict = be.PrepareRun.get_encoding(mydict)
     # Write vrt and encode
     start = 0
     out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, start=start)

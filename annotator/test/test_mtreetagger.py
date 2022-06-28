@@ -48,7 +48,7 @@ def read_test_de():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.prepare_run.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     return mydict["treetagger_dict"]
@@ -94,7 +94,7 @@ def test_mytreetagger_make_object(load_dict, data_en, test_dict_doc):
 
 def test_outtreetagger_init(get_doc):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
-    assert out_obj.attrnames["proc_sent"] == ""
+    assert out_obj.attrnames["proc_sent"] == "na"
     assert out_obj.attrnames["proc_lemma"] == "lemma"
     assert not out_obj.stags
 

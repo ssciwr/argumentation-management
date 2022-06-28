@@ -13,9 +13,9 @@ import tempfile
 def init():
     """Load the input dicts"""
 
-    mydict = be.prepare_run.load_input_dict("test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("test/test_files/input")
 
-    subdict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
+    subdict_test = be.PrepareRun.load_input_dict("test/test_files/input_short")
     return mydict["spacy_dict"], subdict_test, mydict
 
 

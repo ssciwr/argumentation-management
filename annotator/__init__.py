@@ -1,9 +1,10 @@
 # __init__.py
-from .mflair import *
+from .main import *
 from .base import *
+from .pipe import *
 from .msomajo import *
 from .mspacy import *
 from .mstanza import *
 from .mtreetagger import *
-from .pipe import *
+from .mflair import *
 from .to_xml import *
