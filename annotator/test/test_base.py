@@ -4,6 +4,7 @@ import json
 import os
 import base as be
 import mtreetagger as mtt
+import mspacy as msp
 import tempfile
 
 
@@ -36,12 +37,12 @@ def load_dict():
     mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
-    return mydict["treetagger_dict"]
+    return mydict["treetagger_dict"], mydict["spacy_dict"]
 
 
 @pytest.fixture
 def get_doc(load_dict, data_en):
-    annotated = mtt.MyTreetagger(load_dict)
+    annotated = mtt.MyTreetagger(load_dict[0])
     annotated.apply_to(data_en)
     return annotated.doc, annotated.jobs
 
@@ -87,6 +88,12 @@ def test_en_sentence():
     return sentence
 
 
+@pytest.fixture
+def test_en_sentence2():
+    sentence = ["<s>\n", "This\n", "is\n", "a\n", "sentence\n", ".\n", "</s>\n"]
+    return sentence
+
+
 test_dict = {
     "input": "input.txt",
     "tool": ["stanza", "stanza", "stanza"],
@@ -117,11 +124,6 @@ def get_obj_dec():
     return obj
 
 
-@pytest.mark.skip
-def test_get_cores():
-    pass
-
-
 @pytest.mark.dictname("./test/test_files/input")
 def test_load_input_dict(init_dict):
     mydict = be.PrepareRun.load_input_dict("input")
@@ -131,6 +133,18 @@ def test_load_input_dict(init_dict):
 @pytest.mark.dictname("./test/test_files/input2")
 def test_validate_input_dict(init_dict):
     be.PrepareRun.validate_input_dict(init_dict)
+
+
+def test_iterate(load_dict, data_en, test_en_sentence2):
+    annotated = msp.MySpacy(load_dict[1])
+    annotated.apply_to(data_en)
+    out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, 0, islist=False)
+    out = []
+    for sent in annotated.doc.sents:
+        out.append("<s>\n")
+        out = out_obj.iterate(out, sent, "STR")
+        out.append("</s>\n")
+    assert out == test_en_sentence2
 
 
 def test_iterate_tokens(get_doc, test_token_en):

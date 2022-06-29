@@ -1,15 +1,10 @@
 import pytest
 import spacy as sp
-
-# from .context import base as be
 import base as be
-
-# from .context import mspacy as msp
 import mspacy as msp
-import tempfile
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def init():
     """Load the input dicts"""
 
@@ -19,7 +14,7 @@ def init():
     return mydict["spacy_dict"], subdict_test, mydict
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def load_object(init):
     """Initialize the test object"""
 
@@ -36,7 +31,7 @@ def load_object(init):
     return test_obj
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def get_text():
     """Get the sample text for testing."""
     text = """This is an example text. This is a second sentence."""
@@ -56,22 +51,6 @@ def pipe_sent(init, load_object, get_text):
     check_doc = nlp(get_text)
     test_doc = test_obj.apply_to(get_text).doc
     return test_obj.apply_to(get_text), check_doc, test_doc
-
-
-@pytest.fixture()
-def chunked_data():
-    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
-    formated_text = text.replace(" ", "\n")
-
-    tmp = tempfile.NamedTemporaryFile()
-
-    tmp.write(formated_text.encode())
-    tmp.seek(0)
-    # print(tmp.read().decode())
-    data = be.chunk_sample_text("{}".format(tmp.name))
-    tmp.close()
-
-    return data
 
 
 def test_pipe(pipe_sent):
@@ -173,7 +152,6 @@ def test_output_sent(pipe_sent):
         ".\tPUNCT\t.\t \n",
         "</s>\n",
     ]
-    # this is quite specific, any way to generalize?
     test_obj, check_doc, _ = pipe_sent
     test_out_obj = msp.OutSpacy(test_obj.doc, test_obj.jobs, start=0)
     check_out_obj = msp.OutSpacy(check_doc, test_obj.jobs, start=0)
@@ -181,8 +159,5 @@ def test_output_sent(pipe_sent):
     check_out = check_out_obj.assemble_output_sent()
     test_out = test_out_obj.assemble_output_tokens(test_out)
     check_out = check_out_obj.assemble_output_tokens(check_out)
-    print("test_out:", test_out)
-    print("check_out:", check_out)
-    print("check:", check)
     assert test_out == check_out
     assert test_out == check
