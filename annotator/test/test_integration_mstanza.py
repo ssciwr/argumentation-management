@@ -1,12 +1,6 @@
 import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import pipe as pe
 import pipe as pe
-
-# from .context import mstanza as ma
 import mstanza as ma
 from tempfile import TemporaryDirectory
 
@@ -18,7 +12,6 @@ def load_data():
 
 
 def test_integration_mstanza(load_data):
-
     # read in input.json
     mydict = be.PrepareRun.load_input_dict("input")
     mydict["input"] = "./test/test_files/example_de.txt"
@@ -39,7 +32,6 @@ def test_integration_mstanza(load_data):
     stanza_pipe = ma.MyStanza(stanza_dict)
     # apply pipeline to data
     stanza_pipe.apply_to(data)
-    # we should not need start ..?
     start = 0
     out_obj = ma.OutStanza(stanza_pipe.doc, stanza_pipe.jobs, start=start, islist=False)
     out = out_obj.assemble_output_sent()
@@ -49,11 +41,5 @@ def test_integration_mstanza(load_data):
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     out_obj.write_vrt(outfile, out)
-    # add = False
-    # if not add:
     encode_obj = be.encode_corpus(mydict)
     encode_obj.encode_vrt(ptags, stags)
-    # elif add:
-    # encode_obj = be.encode_corpus(mydict)
-    # encode_obj.add_tags_to_corpus(mydict, ptags, stags)
-    # maybe here assert that written vrt is same as safe version

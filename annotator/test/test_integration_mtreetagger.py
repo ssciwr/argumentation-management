@@ -1,16 +1,10 @@
-import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import mtreetagger as mtt
 import mtreetagger as mtt
 from tempfile import TemporaryDirectory
 
 
 def test_integration_mtreetagger():
     out = TemporaryDirectory()
-
     data = "This is a sentence."
     mydict = be.PrepareRun.load_input_dict("input")
     mydict["tool"] = "treetagger"

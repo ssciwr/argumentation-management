@@ -239,15 +239,18 @@ class OutObject:
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
-            self.ptags.append("pos")
+            if "pos" not in self.ptags:
+                self.ptags.append("pos")
             line["POS"] = self.grab_tag(word)
 
         if self.attrnames["proc_lemma"] in self.jobs:
-            self.ptags.append("lemma")
+            if "lemma" not in self.ptags:
+                self.ptags.append("lemma")
             line["LEMMA"] = self.grab_lemma(word, self.attrnames["lemma"])
 
         if "ner" in self.jobs:
-            self.ptags.append("NER")
+            if "ner" not in self.ptags:
+                self.ptags.append("NER")
             line["NER"] = self.grab_ent(token)
 
         if style == "STR":
