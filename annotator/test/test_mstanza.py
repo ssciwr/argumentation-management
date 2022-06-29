@@ -1,16 +1,12 @@
 import os
 import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import mstanza as ma
 import mstanza as ma
 
-mydict_en = be.prepare_run.load_input_dict("./test/test_files/test_stanza_en")[
+mydict_en = be.PrepareRun.load_input_dict("./test/test_files/test_stanza_en")[
     "stanza_dict"
 ]
-mydict_de = be.prepare_run.load_input_dict("./test/test_files/test_stanza_de")[
+mydict_de = be.PrepareRun.load_input_dict("./test/test_files/test_stanza_de")[
     "stanza_dict"
 ]
 

@@ -109,7 +109,7 @@ call_tool = {
 
 if __name__ == "__main__":
     # load input dict
-    mydict = be.prepare_run.load_input_dict("./annotator/input")
+    mydict = be.PrepareRun.load_input_dict("./annotator/input")
     # overwrite defaults for testing purposes
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
@@ -120,9 +120,9 @@ if __name__ == "__main__":
     mydict["advanced_options"]["corpus_dir"] = "./annotator/test/corpora/"
     mydict["advanced_options"]["registry_dir"] = "./annotator/test/registry/"
     # get the data to be processed
-    data = be.prepare_run.get_text("./annotator/test/test_files/example_en.txt")
+    data = be.PrepareRun.get_text("./annotator/test/test_files/example_en.txt")
     # validate the input dict
-    be.prepare_run.validate_input_dict(mydict)
+    be.PrepareRun.validate_input_dict(mydict)
     # activate the input dict
     pe.SetConfig(mydict)
     # now we still need to add the order of steps - processors was ordered list
@@ -168,7 +168,7 @@ if __name__ == "__main__":
             # or only compare to substring from beginning of string
             out = my_out_obj.assemble_output_tokens(out)
             print(out, mytool)
-            ptags_temp = my_out_obj.get_ptags()
+            ptags_temp = my_out_obj.ptags
             if ptags is not None:
                 ptags += ptags_temp
             else:
@@ -177,22 +177,6 @@ if __name__ == "__main__":
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     be.OutObject.write_vrt(outfile, out)
-    # if not add:
-
-    # we need to set the s and p attributes for all jobs
-    # so stags and ptags need to be accumulated
-    # ptags = None
-    # stags = None
-    encode_obj = be.encode_corpus(mydict)
-    encode_obj.encode_vrt(ptags, stags)
-    # elif add:
-    #     encode_obj = be.encode_corpus(mydict)
-    #     encode_obj.add_tags_to_corpus(mydict, ptags, stags)
-
-    # to use pretokenized data - TODO
-    # not sure why we need so many cases - TODO
-    # if ret is False and style == "STR" and mydict is not None and add is False:
-    # if not add:
-    # elif ret is False and style == "STR" and mydict is not None and add is True:
-    # elif ret is True:
-    # "If ret is not set to True, a dict containing the encoding parameters is needed!"
+    # we will skip the encoding for now and instead provide vrt/xml file for user to download
+    # encode_obj = be.encode_corpus(mydict)
+    # encode_obj.encode_vrt(ptags, stags)

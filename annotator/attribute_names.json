@@ -20,10 +20,10 @@
         "ner": "ent_type_"
     },
     "treetagger_names": {
-        "proc_sent": "",
+        "proc_sent": "na",
         "proc_lemma": "lemma",
         "proc_pos": "pos",
-        "sentence": "",
+        "sentence": "na",
         "token": "word",
         "pos": "pos",
         "lemma": "lemma",

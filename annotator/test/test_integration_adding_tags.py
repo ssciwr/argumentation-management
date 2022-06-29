@@ -23,7 +23,7 @@ def test_integration_adding_tags(load_data):
     out = TemporaryDirectory()
     corp = TemporaryDirectory()
     reg = TemporaryDirectory()
-    mydict = be.prepare_run.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("input")
     mydict["advanced_options"]["output_dir"] = "{}".format(out.name)
     mydict["advanced_options"]["corpus_dir"] = "{}".format(corp.name)
     mydict["advanced_options"]["registry_dir"] = "{}".format(reg.name)
@@ -49,7 +49,7 @@ def test_integration_adding_tags(load_data):
     # apply pipeline to data
     # annotated.apply_to(data)
     # get the dict for encoding
-    # encoding_dict = be.prepare_run.get_encoding(mydict)
+    # encoding_dict = be.PrepareRun.get_encoding(mydict)
     # Write vrt and encode
     # this is not working - first purges old corpus and then tries to add to it
     # of course then the dir + vrt is missing

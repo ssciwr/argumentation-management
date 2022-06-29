@@ -18,6 +18,7 @@ class MySomajo:
         self.camelcase = subdict["split_camel_case"]
 
     def apply_to(self, text: list or str):
+        """Apply pipeline to text."""
         # somajo takes list as input
         if type(text) == str:
             text = [text]
@@ -39,7 +40,6 @@ class OutSomajo(be.OutObject):
         super().__init__(doc, jobs, start, islist)
         self.attrnames = self.attrnames["somajo_names"]
         self.stags = self.get_stags()
-        self.ptags = self.get_ptags()
 
     def assemble_output_sent(self) -> list:
         """Sentence assembly for somajo."""
@@ -54,15 +54,6 @@ class OutSomajo(be.OutObject):
             out.append("<s>\n")
             out = self.iterate(out, sent, "STR")
             out.append("</s>\n")
-        return out
-
-    def iterate(self, out, sent, style):
-        for token in sent:
-            line = token.text
-            if style == "STR":
-                out.append(line + "\n")
-            elif style == "DICT":
-                out.append(line)
         return out
 
     @property

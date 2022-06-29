@@ -1,18 +1,12 @@
-import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import mtreetagger as mtt
 import mtreetagger as mtt
 from tempfile import TemporaryDirectory
 
 
 def test_integration_mtreetagger():
     out = TemporaryDirectory()
-
     data = "This is a sentence."
-    mydict = be.prepare_run.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("input")
     mydict["tool"] = "treetagger"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     mydict["input"] = "./test/test_files/example_en.txt"
@@ -27,7 +21,7 @@ def test_integration_mtreetagger():
     )
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
     out = out_obj.assemble_output_tokens(out)
-    ptags = out_obj.get_ptags()
+    ptags = out_obj.ptags
     stags = out_obj.get_stags()
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]

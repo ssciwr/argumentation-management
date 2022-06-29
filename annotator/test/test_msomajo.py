@@ -1,9 +1,5 @@
 import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import msomajo as mso
 import msomajo as mso
 
 test_out_en = [
@@ -163,12 +159,12 @@ test_out_en_sentences = [
 
 @pytest.fixture
 def read_data_en():
-    return be.prepare_run.get_text("test/test_files/example_en.txt")
+    return be.PrepareRun.get_text("test/test_files/example_en.txt")
 
 
 @pytest.fixture
 def read_data_de():
-    return be.prepare_run.get_text("test/test_files/example_de.txt")
+    return be.PrepareRun.get_text("test/test_files/example_de.txt")
 
 
 @pytest.fixture
@@ -187,7 +183,7 @@ def read_test_en():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.prepare_run.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
     mydict["somajo_dict"]["model"] = "en_PTB"
     mydict["somajo_dict"]["processors"] = "sentencize", "tokenize"
     return mydict

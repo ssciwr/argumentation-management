@@ -1,25 +1,20 @@
 import pytest
 import spacy as sp
-
-# from .context import base as be
 import base as be
-
-# from .context import mspacy as msp
 import mspacy as msp
-import tempfile
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def init():
     """Load the input dicts"""
 
-    mydict = be.prepare_run.load_input_dict("test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("test/test_files/input")
 
-    subdict_test = be.prepare_run.load_input_dict("test/test_files/input_short")
+    subdict_test = be.PrepareRun.load_input_dict("test/test_files/input_short")
     return mydict["spacy_dict"], subdict_test, mydict
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def load_object(init):
     """Initialize the test object"""
 
@@ -36,7 +31,7 @@ def load_object(init):
     return test_obj
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def get_text():
     """Get the sample text for testing."""
     text = """This is an example text. This is a second sentence."""
@@ -56,22 +51,6 @@ def pipe_sent(init, load_object, get_text):
     check_doc = nlp(get_text)
     test_doc = test_obj.apply_to(get_text).doc
     return test_obj.apply_to(get_text), check_doc, test_doc
-
-
-@pytest.fixture()
-def chunked_data():
-    text = '<textid="1"> This is an example text. <subtextid="1"> It has some subtext. </subtext> </text> <textid="2"> Here is some more text. </text>'
-    formated_text = text.replace(" ", "\n")
-
-    tmp = tempfile.NamedTemporaryFile()
-
-    tmp.write(formated_text.encode())
-    tmp.seek(0)
-    # print(tmp.read().decode())
-    data = be.chunk_sample_text("{}".format(tmp.name))
-    tmp.close()
-
-    return data
 
 
 def test_pipe(pipe_sent):
@@ -173,7 +152,6 @@ def test_output_sent(pipe_sent):
         ".\tPUNCT\t.\t \n",
         "</s>\n",
     ]
-    # this is quite specific, any way to generalize?
     test_obj, check_doc, _ = pipe_sent
     test_out_obj = msp.OutSpacy(test_obj.doc, test_obj.jobs, start=0)
     check_out_obj = msp.OutSpacy(check_doc, test_obj.jobs, start=0)
@@ -181,26 +159,5 @@ def test_output_sent(pipe_sent):
     check_out = check_out_obj.assemble_output_sent()
     test_out = test_out_obj.assemble_output_tokens(test_out)
     check_out = check_out_obj.assemble_output_tokens(check_out)
-    print("test_out:", test_out)
-    print("check_out:", check_out)
-    print("check:", check)
     assert test_out == check_out
     assert test_out == check
-
-
-def test_sentencize():
-
-    text_en = "This is a sentence. This is another sentence, or is it?"
-    text_de = "Dies ist ein Satz. Dies ist ein zweiter Satz, oder nicht?"
-
-    data_en = msp.MySpacy.sentencize_spacy("en_core_web_md", text_en)
-    data_de = msp.MySpacy.sentencize_spacy("de_core_news_md", text_de)
-
-    check_en = [["This is a sentence.", 4], ["This is another sentence, or is it?", 11]]
-    check_de = [
-        ["Dies ist ein Satz.", 4],
-        ["Dies ist ein zweiter Satz, oder nicht?", 11],
-    ]
-
-    assert data_en == check_en
-    assert data_de == check_de

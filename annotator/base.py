@@ -5,7 +5,7 @@ import os
 import to_xml as txml
 
 
-class prepare_run:
+class PrepareRun:
     """Class that contains all general pre-processing methods."""
 
     def __init__(self) -> None:
@@ -15,8 +15,7 @@ class prepare_run:
     @staticmethod
     def get_cores() -> int:
         """Find out how many CPU-cores are available for current process."""
-
-        # will need to update this to using multiprocess
+        # may need to update this to using multiprocess
         # as this method is not available on all os's
         return len(os.sched_getaffinity(0))
 
@@ -34,7 +33,7 @@ class prepare_run:
     # load the dictionary
     @staticmethod
     def load_input_dict(name: str) -> dict:
-        """Function to load input dictionary from .json.
+        """Function to load a dictionary from .json.
 
         Args:
                 name[str]: Name of .json file (without file extension)."""
@@ -96,6 +95,10 @@ class OutObject:
         self.islist = islist
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
+        # ptags does the same case selection as OutObject.collect_results, so the order
+        # of .vrt and this list should always be identical. If you change one
+        # MAKE SURE to also change the other.
+        self.ptags = []
 
     @staticmethod
     def open_outfile(outname: str):
@@ -109,26 +112,27 @@ class OutObject:
         return f
 
     def iterate(self, out, sent, style):
-        # this needs to be done module-specific for now and is set in each subclass
-        pass
+        """Iterate through the tokens in a sentence."""
+        for token in sent:
+            line = token.text
+            if style == "STR":
+                out.append(line + "\n")
+            elif style == "DICT":
+                out.append(line)
+        return out
 
     def assemble_output_sent(self) -> list:
         """Template function to assemble output for tool at sentence level."""
 
-        # if senter is called we insert sentence symbol <s> before and </s> after
-        # every sentence
-        # if only sentence is provided, directly call the methods
+        # insert sentence symbol <s> before and </s> after every sentence
         if "sentence" not in self.attrnames:
             raise KeyError("Error: Sentence-Key not in obj.attrnames.")
-
+        # leaving start in as may be needed for xml writing
         self.tstart = 0
         out = []
         for sent in getattr(self.doc, self.attrnames["sentence"]):
             out.append("<s>\n")
-            # for token in sent:
-            # self.out.append(token.text + "\n")
             out = self.iterate(out, sent, "STR")
-            # self.out.append(sent.text + "\n")
             out.append("</s>\n")
         return out
 
@@ -148,6 +152,7 @@ class OutObject:
         return out
 
     def iterate_tokens(self, out, token_list):
+        """Assemble output for tool at token level."""
         token_list_out = self.out_shortlist(out)
         # now compare the tokens in out with the tokens from the current tool
         for token_tool, token_out in zip(token_list, token_list_out):
@@ -155,25 +160,27 @@ class OutObject:
             # print("Checking for tokens {} {}".format(token_tool.text, token_out[0]))
             # check that the text is the same
             if token_tool.text != token_out[0][0:mylen]:
-                print(
-                    "Found different token than in out! - {} and {}".format(
+                raise Exception(
+                    "Found different token than in out! - {} and {}. Please check your inputs!".format(
                         token_tool.text, token_out[0][0:mylen]
                     )
                 )
-                print("Please check your inputs!")
             else:
                 line = self.collect_results(token_tool, 0, token_tool, "STR")
                 # now replace the respective token with annotated token
                 out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
                 # note that this will not add a linebreak for <s> and <s\> -
                 # linebreaks are handled by sentencizer
-                # we expect that sentencizer runs TODO be able to feed only one sentence
+                # we expect that sentencizer runs
+                # TODO be able to feed only one sentence
         return out
 
     def token_list(self, myobj) -> list:
+        """Convert tokens from object into list."""
         return [token for token in myobj]
 
     def out_shortlist(self, out: list) -> list:
+        """Remove the structural attributes before and after sentence to compare tokens."""
         out = [
             (token.strip(), i)
             for i, token in enumerate(out)
@@ -182,14 +189,15 @@ class OutObject:
         return out
 
     def _compare_tokens(self, token1, token2):
+        """Find out if tokens from previous and current tool are identical."""
         return token1 == token2
 
     @staticmethod
     def get_names() -> dict:
         """Load attribute names for specific tools."""
 
-        mydict = prepare_run.load_input_dict("attribute_names")
-        # mydict = prepare_run.load_input_dict("./annotator/attribute_names")
+        mydict = PrepareRun.load_input_dict("attribute_names")
+        # mydict = PrepareRun.load_input_dict("./annotator/attribute_names")
         return mydict
 
     # refactor once STR is working - we actually do not need token text as key
@@ -210,39 +218,12 @@ class OutObject:
                     output += "{}".format(value)
         return output
 
-    # remove repetition - TODO
-    def get_ptags(self) -> list or None:
-        """Function to easily collect the current ptags in a list.
-
-        !!!
-        Does the same case selection as OutObject.collect_results, so the order
-        of .vrt and this list should always be identical. If you change one
-        MAKE SURE to also change the other.
-        !!!
-        """
-
-        ptags = []
-
-        if self.attrnames["proc_pos"] in self.jobs:
-            ptags.append("pos")
-        if self.attrnames["proc_lemma"] in self.jobs:
-            ptags.append("lemma")
-        if "ner" in self.jobs:
-            ptags.append("NER")
-        if "attribute_ruler" in self.jobs:
-            ptags.append("ATTR")
-
-        if ptags != []:
-            return ptags
-        else:
-            return None
-
     def get_stags(self) -> list:
-
         stags = []
         if any(attr in self.attrnames["proc_sent"] for attr in self.jobs):
             stags.append("s")
-
+        if stags == []:
+            stags = None
         return stags
 
     def collect_results(self, token, tid: int, word, style: str = "STR") -> dict or str:
@@ -253,68 +234,53 @@ class OutObject:
                 style[str]. Return line as string (STR) for .vrt or dict (DICT) for .xml."""
 
         # always get token id and token text
-        # line = str(tid + start) + " " + token.text
         line = {"id": str(tid), "text": token.text}
-        # grab the data for the run components, I've only included the human readable
-        # part of output right now as I don't know what else we need
-        ########
-        # we need to unify the names for the different job types
-        # ie spacy - lemmatizer, stanza - lemma
-        # spacy - tagger, stanza - pos
-        # spacy - ner, stanza - ner
-        # have to find out how ner is encoded in cwb first
-        #########
-        # put in correct order - first pos, then lemma
+        # put in correct order - first pos, then lemma, then ner
         # order matters for encoding
 
         if self.attrnames["proc_pos"] in self.jobs:
-
+            if "pos" not in self.ptags:
+                self.ptags.append("pos")
             line["POS"] = self.grab_tag(word)
 
         if self.attrnames["proc_lemma"] in self.jobs:
-            line["LEMMA"] = OutObject.grab_lemma(word, self.attrnames["lemma"])
+            if "lemma" not in self.ptags:
+                self.ptags.append("lemma")
+            line["LEMMA"] = self.grab_lemma(word, self.attrnames["lemma"])
 
         if "ner" in self.jobs:
-            line["NER"] = OutObject.grab_ent(token)
+            if "ner" not in self.ptags:
+                self.ptags.append("NER")
+            line["NER"] = self.grab_ent(token)
 
         if style == "STR":
-
             return self.switch_style(line)
 
         elif style == "DICT":
-
             return line
 
-    @staticmethod
-    def grab_ent(token):
-
-        # attributes:
-        # EntityRecognizer -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type
-        # EntityRuler -> Token_iob, Token.ent_iob_, Token.ent_type, Token.ent_type_
-        if token.ent_type_ != "":
-            tag = token.ent_type_
+    def grab_tag(self, word):
+        """Get the pos."""
+        if getattr(word, self.attrnames["pos"]) != "":
+            tag = getattr(word, self.attrnames["pos"])
         else:
             tag = NOT_DEF
         return tag
 
-    @staticmethod
-    def grab_lemma(word, attrname):
-
-        # attributes:
-        # spacy
-        # Lemmatizer -> Token.lemma, Token.lemma_
+    def grab_lemma(self, word, attrname):
+        """Get the lemma."""
         if word.lemma != "":
             tag = getattr(word, attrname)
         else:
             tag = NOT_DEF
         return tag
 
-    def grab_tag(self, word):
-
-        # attributes:
-        # Tagger -> Token.tag, Token.tag_
-        if getattr(word, self.attrnames["pos"]) != "":
-            tag = getattr(word, self.attrnames["pos"])
+    # if this is to be used: needs to be checked for
+    # correct attribute names for all tools
+    def grab_ent(self, token):
+        """Get the named entity properties."""
+        if token.ent_type_ != "":
+            tag = token.ent_type_
         else:
             tag = NOT_DEF
         return tag
@@ -327,7 +293,6 @@ class OutObject:
         # expand these with more if neccessary, correct mapping is important!
 
         out_string = out_string.replace(" ", "")
-
         return out_string
 
     @staticmethod
@@ -337,45 +302,35 @@ class OutObject:
         [Args]:
             out[list]: List containing the lines for the .vrt file as strings.
         """
-
         string = ""
         for line in out:
             string += line
-
         string = OutObject.purge(string)
         print(os.getcwd())
         with open("{}.vrt".format(outname), "w") as file:
             file.write(string)
-
         print("+++ Finished writing {}.vrt +++".format(outname))
 
     @staticmethod
     def write_xml(docid: str, outname: str, out: list) -> None:
         """This function may not work for all tools and should not be used at the moment."""
-
         raw_xml = txml.start_xml(docid)
-
         sents = [txml.list_to_xml("Sent", i, elem) for i, elem in enumerate(out, 1)]
-
         for sent in sents:
             raw_xml.append(sent)
-
         string_xml = txml.to_string(raw_xml)
-
         xml = txml.beautify(string_xml)
-
         with open("{}_.xml".format(outname), "w") as file:
             file.write(xml)
-
         print("+++ Finished writing {}.xml +++".format(outname))
 
 
 # encode the generated files
+# Right now we don't need this
 class encode_corpus:
     """Encode the vrt/xml files for cwb."""
 
     def __init__(self, mydict: dict) -> None:
-
         # self.corpusdir = "/home/jovyan/corpus"
         # corpusdir and regdir need to be set from input dict
         # plus we also need to set the corpus name from input dict
@@ -391,10 +346,8 @@ class encode_corpus:
         print("With outname {}".format(self.outname))
         self.encodedir = self.corpusdir
         print("Found outdir {}".format(self.encodedir))
-
         # get attribute names
         self.attrnames = OutObject.get_names()
-        # self.attrnames = self.attrnames[self.tool + "_names"]
 
     def _get_s_attributes(self, line: str, stags: list) -> str:
         if stags is not None:
@@ -410,6 +363,7 @@ class encode_corpus:
                 line += "-P {} ".format(tag)
         return line
 
+    # this needs refactor TODO
     def setup(self) -> bool:
         """Funtion to check wheter a corpus directory exists. If existing directory is found,
         requires input of "y" to overwrite existing files. Maybe add argument to force overwrite later?.
@@ -528,6 +482,7 @@ class encode_corpus:
         elif not purged:
             return print(OSError("Error during setup, aborting..."))
 
+    # this needs refactor TODO
     @classmethod
     def add_tags_to_corpus(cls, mydict: dict, ptags: list, stags: list):
         """Function to add tags to an already existing corpus. Should be used with output based on
@@ -615,6 +570,7 @@ class encode_corpus:
                 registry.write("STRUCTURE {}\n".format(stag))
 
 
+# this needs refactor TODO
 class decode_corpus(encode_corpus):
     """Class to decode corpus from cwb. Inherits encode_corpus."""
 
@@ -689,44 +645,3 @@ class decode_corpus(encode_corpus):
             print(command)
             os.system(command)
             print("File {}.out written in {}.".format(self.corpusname, outpath))
-
-
-# en
-# metadata and tags
-# metadata at top of document
-# <corpus>
-# <document>
-#   <metadata>
-#       <author></author>
-#       <speaker_name>
-#       <speaker_party>
-#       <speaker_role>
-#       <lp>
-#       <session>
-#       <date>
-#       <year>
-#       <year_month>
-#       <speaker_next>
-#        ...
-#       <text>
-#   </metadata>
-# now the annotated text
-# <text id="" speaker_name="" ...>
-#  - main text with s-attributes and attributes
-# <sp> speech
-# <z> Zwischenrufe
-# <s id=""> sentence
-# <t id=""> token
-# <pt> <numb><t id=""> thirteen ..
-# <pt><prop><t id=""> Audi ..
-# <pt><comp> ..
-# <pt><emb><noun>
-#
-# p-attributes: token, lemma, POS
-#
-#
-#
-# s-attributes: sentences, NER
-#
-#
-#
