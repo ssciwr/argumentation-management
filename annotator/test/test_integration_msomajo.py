@@ -1,14 +1,6 @@
 import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import msomajo as mso
 import msomajo as mso
-
-# from .context import mtreetagger as mtt
-import mtreetagger as mtt
-from tempfile import TemporaryDirectory
 
 
 @pytest.fixture
@@ -41,11 +33,3 @@ def test_integration_msomajo(setup):
     be.OutObject.write_vrt(outfile, out)
     encode_obj = be.encode_corpus(mydict)
     encode_obj.encode_vrt(ptags, stags)
-
-
-def test_integration_mtreetagger(setup):
-
-    out = TemporaryDirectory()
-
-    mydict, text = setup
-    mydict["advanced_options"]["output_dir"] = "{}".format(out.name)

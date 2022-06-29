@@ -1,9 +1,5 @@
 import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import msomajo as mso
 import msomajo as mso
 
 test_out_en = [

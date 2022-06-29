@@ -1,10 +1,6 @@
 import os
 import pytest
-
-# from .context import base as be
 import base as be
-
-# from .context import mstanza as ma
 import mstanza as ma
 
 mydict_en = be.PrepareRun.load_input_dict("./test/test_files/test_stanza_en")[

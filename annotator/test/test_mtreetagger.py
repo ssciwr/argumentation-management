@@ -9,11 +9,6 @@ def data_en():
 
 
 @pytest.fixture
-def data_de():
-    return "Dies ist ein Satz."
-
-
-@pytest.fixture
 def test_en():
     data = [
         "<s>",
@@ -37,13 +32,6 @@ def test_dict_doc():
         {"word": ".", "pos": "SENT", "lemma": "."},
     ]
     return dict_doc
-
-
-@pytest.fixture
-def read_test_de():
-    with open("test/test_files/example_de_treetagger.vrt", "r") as f:
-        data = f.read()
-    return data
 
 
 @pytest.fixture
