@@ -87,10 +87,11 @@ class OutObject:
     conversion clear and not to duplicate code.
     Write the vrt/xml file."""
 
-    def __init__(self, doc, jobs: list, start: int):
+    def __init__(self, doc, jobs: list, start: int, style="STR"):
         self.doc = doc
         self.jobs = jobs
         self.start = start
+        self.style = style
         # just one doc object for whole text or multiple objects per sentence
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
@@ -110,13 +111,13 @@ class OutObject:
         f = open(name, "w")
         return f
 
-    def iterate(self, out, sent, style):
+    def iterate(self, out, sent):
         """Iterate through the tokens in a sentence."""
         for token in sent:
             line = token.text
-            if style == "STR":
+            if self.style == "STR":
                 out.append(line + "\n")
-            elif style == "DICT":
+            elif self.style == "DICT":
                 out.append(line)
         return out
 
@@ -131,7 +132,7 @@ class OutObject:
         out = []
         for sent in getattr(self.doc, self.attrnames["sentence"]):
             out.append("<s>\n")
-            out = self.iterate(out, sent, "STR")
+            out = self.iterate(out, sent)
             out.append("</s>\n")
         return out
 
@@ -147,7 +148,7 @@ class OutObject:
         self.tstart = 0
         for sent in getattr(self.doc, self.attrnames["sentence"]):
             out.append([])
-            self.iterate(out[-1], sent, "DICT")
+            self.iterate(out[-1], sent)
         return out
 
     def iterate_tokens(self, out, token_list):
@@ -165,7 +166,7 @@ class OutObject:
                     )
                 )
             else:
-                line = self.collect_results(token_tool, 0, token_tool, "STR")
+                line = self.collect_results(token_tool, 0, token_tool)
                 # now replace the respective token with annotated token
                 out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
                 # note that this will not add a linebreak for <s> and <s\> -
@@ -225,7 +226,7 @@ class OutObject:
             stags = None
         return stags
 
-    def collect_results(self, token, tid: int, word, style: str = "STR") -> dict or str:
+    def collect_results(self, token, tid: int, word) -> dict or str:
 
         """Function to collect requested tags for tokens after applying pipeline to data.
 
@@ -252,10 +253,10 @@ class OutObject:
                 self.ptags.append("NER")
             line["NER"] = self.grab_ent(token)
 
-        if style == "STR":
+        if self.style == "STR":
             return self.switch_style(line)
 
-        elif style == "DICT":
+        elif self.style == "DICT":
             return line
 
     def grab_tag(self, word):

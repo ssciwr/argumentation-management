@@ -232,7 +232,7 @@ def test_iterate(get_doc):
     out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0)
     out = []
     sent = get_doc[0][0]
-    out_obj.iterate(out, sent, "STR")
+    out_obj.iterate(out, sent)
     assert out == test_out_en_sentence
 
 

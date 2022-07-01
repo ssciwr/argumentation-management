@@ -66,8 +66,8 @@ class OutTreetagger(be.OutObject):
     """Out object for treetagger annotation, adds treetagger-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs: list, start: int = 0) -> None:
-        super().__init__(doc, jobs, start)
+    def __init__(self, doc, jobs: list, start: int = 0, style: str = "STR") -> None:
+        super().__init__(doc, jobs, start, style)
         self.attrnames = self.attrnames["treetagger_names"]
         self.stags = self.get_stags()
 

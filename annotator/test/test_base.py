@@ -142,7 +142,7 @@ def test_iterate(load_dict, data_en, test_en_sentence2):
     out = []
     for sent in annotated.doc.sents:
         out.append("<s>\n")
-        out = out_obj.iterate(out, sent, "STR")
+        out = out_obj.iterate(out, sent)
         out.append("</s>\n")
     assert out == test_en_sentence2
 

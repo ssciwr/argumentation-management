@@ -36,8 +36,8 @@ class MySomajo:
 
 
 class OutSomajo(be.OutObject):
-    def __init__(self, doc, jobs, start):
-        super().__init__(doc, jobs, start)
+    def __init__(self, doc, jobs, start, style: str = "STR"):
+        super().__init__(doc, jobs, start, style)
         self.attrnames = self.attrnames["somajo_names"]
         self.stags = self.get_stags()
 
@@ -52,7 +52,7 @@ class OutSomajo(be.OutObject):
         out = []
         for sent in self.doc:
             out.append("<s>\n")
-            out = self.iterate(out, sent, "STR")
+            out = self.iterate(out, sent)
             out.append("</s>\n")
         return out
 
