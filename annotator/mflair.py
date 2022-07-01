@@ -40,8 +40,8 @@ class OutFlair(be.OutObject):
     """Out object for flair annotation, adds flair-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs: list, start: int = 0, islist=False) -> None:
-        super().__init__(doc, jobs, start, islist)
+    def __init__(self, doc, jobs: list, start: int = 0) -> None:
+        super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["flair_names"]
         self.stags = self.get_stags()
         self.out = []

@@ -138,7 +138,7 @@ def test_validate_input_dict(init_dict):
 def test_iterate(load_dict, data_en, test_en_sentence2):
     annotated = msp.MySpacy(load_dict[1])
     annotated.apply_to(data_en)
-    out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, 0, islist=False)
+    out_obj = msp.OutSpacy(annotated.doc, annotated.jobs, 0)
     out = []
     for sent in annotated.doc.sents:
         out.append("<s>\n")
@@ -148,7 +148,7 @@ def test_iterate(load_dict, data_en, test_en_sentence2):
 
 
 def test_iterate_tokens(get_doc, test_token_en):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     token_list = out_obj.token_list(out_obj.doc)
     out = out_obj.iterate_tokens(test_token_en[0], token_list)
     assert out == test_token_en[1]
@@ -156,19 +156,19 @@ def test_iterate_tokens(get_doc, test_token_en):
 
 def test_token_list(get_doc):
     mylist = ["a", "n", "d"]
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     token_list = out_obj.token_list(mylist)
     assert token_list == mylist
 
 
 def test_out_shortlist(get_doc, test_en, test_en_sentence):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     shortlist = out_obj.out_shortlist(test_en)
     assert shortlist == test_en_sentence
 
 
 def test_compare_tokens(get_doc):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     mytoken1 = "English"
     mytoken2 = "is"
     assert out_obj._compare_tokens(mytoken1, mytoken1)

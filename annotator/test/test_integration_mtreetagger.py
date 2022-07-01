@@ -16,9 +16,7 @@ def test_integration_mtreetagger():
     annotated = mtt.MyTreetagger(treetagger_dict)
     annotated = annotated.apply_to(data)
     start = 0
-    out_obj = mtt.OutTreetagger(
-        annotated.doc, annotated.jobs, start=start, islist=False
-    )
+    out_obj = mtt.OutTreetagger(annotated.doc, annotated.jobs, start=start)
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
     out = out_obj.assemble_output_tokens(out)
     ptags = out_obj.ptags

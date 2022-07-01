@@ -36,8 +36,8 @@ class MySomajo:
 
 
 class OutSomajo(be.OutObject):
-    def __init__(self, doc, jobs, start, islist=False):
-        super().__init__(doc, jobs, start, islist)
+    def __init__(self, doc, jobs, start):
+        super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["somajo_names"]
         self.stags = self.get_stags()
 

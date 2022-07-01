@@ -95,8 +95,8 @@ class OutSpacy(be.OutObject):
     """Out object for spacy annotation, adds spacy-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs, start, islist=False):
-        super().__init__(doc, jobs, start, islist)
+    def __init__(self, doc, jobs, start):
+        super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["spacy_names"]
         self.stags = self.get_stags()
 

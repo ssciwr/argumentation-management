@@ -87,12 +87,11 @@ class OutObject:
     conversion clear and not to duplicate code.
     Write the vrt/xml file."""
 
-    def __init__(self, doc, jobs: list, start: int, islist=False):
+    def __init__(self, doc, jobs: list, start: int):
         self.doc = doc
         self.jobs = jobs
         self.start = start
         # just one doc object for whole text or multiple objects per sentence
-        self.islist = islist
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
         # ptags does the same case selection as OutObject.collect_results, so the order

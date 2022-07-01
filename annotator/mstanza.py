@@ -55,8 +55,8 @@ class OutStanza(be.OutObject):
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs: list, start: int = 0, islist=False):
-        super().__init__(doc, jobs, start, islist)
+    def __init__(self, doc, jobs: list, start: int = 0):
+        super().__init__(doc, jobs, start)
         self.attrnames = self.attrnames["stanza_names"]
         self.stags = self.get_stags()
 

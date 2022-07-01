@@ -24,7 +24,7 @@ def call_spacy(mydict, data, islist=False):
             doc.append(annotated.doc)
     # we should not need start ..?
     start = 0
-    out_obj = msp.OutSpacy(doc, annotated.jobs, start=start, islist=islist)
+    out_obj = msp.OutSpacy(doc, annotated.jobs, start=start)
     return out_obj
 
 
@@ -48,7 +48,7 @@ def call_stanza(mydict, data, islist=False):
     doc = annotated.doc
     # we should not need start ..?
     start = 0
-    out_obj = msa.OutStanza(doc, annotated.jobs, start=start, islist=islist)
+    out_obj = msa.OutStanza(doc, annotated.jobs, start=start)
     return out_obj
 
 
@@ -62,7 +62,7 @@ def call_somajo(mydict, data, islist=False):
     # we should not need start ..?
     start = 0
     # for somajo we never have list data as this will be only used for sentencizing
-    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start, islist)
+    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start)
     return out_obj
 
 
@@ -76,7 +76,7 @@ def call_treetagger(mydict, data, islist=True):
     # we should not need start ..?
     start = 0
     # for treetagger we always have list data as data will already be sentencized
-    out_obj = mtt.OutTreetagger(annotated.doc, annotated.jobs, start, islist)
+    out_obj = mtt.OutTreetagger(annotated.doc, annotated.jobs, start)
     return out_obj
 
 
@@ -95,7 +95,7 @@ def call_flair(mydict, data, islist=True):
     start = 0
     print(annotated.jobs)
     # for flair we always have list data as data will already be sentencized
-    out_obj = mf.OutFlair(doc, annotated.jobs, start, islist)
+    out_obj = mf.OutFlair(doc, annotated.jobs, start)
     return out_obj
 
 
