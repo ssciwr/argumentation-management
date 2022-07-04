@@ -2,7 +2,6 @@
 import json
 import jsonschema
 import os
-import to_xml as txml
 
 
 class PrepareRun:

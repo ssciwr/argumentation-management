@@ -7,4 +7,3 @@ from .mspacy import *
 from .mstanza import *
 from .mtreetagger import *
 from .mflair import *
-from .to_xml import *
