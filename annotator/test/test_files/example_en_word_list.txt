@@ -1,0 +1,992 @@
+[{
+  "id": 1,
+  "text": "The",
+  "lemma": "the",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Def|PronType=Art",
+  "start_char": 0,
+  "end_char": 3
+}, {
+  "id": 2,
+  "text": "Scientific",
+  "lemma": "Scientific",
+  "upos": "ADJ",
+  "xpos": "NNP",
+  "feats": "Degree=Pos",
+  "start_char": 4,
+  "end_char": 14
+}, {
+  "id": 3,
+  "text": "Software",
+  "lemma": "Software",
+  "upos": "PROPN",
+  "xpos": "NNP",
+  "feats": "Number=Sing",
+  "start_char": 15,
+  "end_char": 23
+}, {
+  "id": 4,
+  "text": "Center",
+  "lemma": "Center",
+  "upos": "PROPN",
+  "xpos": "NNP",
+  "feats": "Number=Sing",
+  "start_char": 24,
+  "end_char": 30
+}, {
+  "id": 5,
+  "text": "strives",
+  "lemma": "strive",
+  "upos": "VERB",
+  "xpos": "VBZ",
+  "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+  "start_char": 31,
+  "end_char": 38
+}, {
+  "id": 6,
+  "text": "to",
+  "lemma": "to",
+  "upos": "PART",
+  "xpos": "TO",
+  "start_char": 39,
+  "end_char": 41
+}, {
+  "id": 7,
+  "text": "improve",
+  "lemma": "improve",
+  "upos": "VERB",
+  "xpos": "VB",
+  "feats": "VerbForm=Inf",
+  "start_char": 42,
+  "end_char": 49
+}, {
+  "id": 8,
+  "text": "scientific",
+  "lemma": "scientific",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 50,
+  "end_char": 60
+}, {
+  "id": 9,
+  "text": "software",
+  "lemma": "software",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 61,
+  "end_char": 69
+}, {
+  "id": 10,
+  "text": "development",
+  "lemma": "development",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 70,
+  "end_char": 81
+}, {
+  "id": 11,
+  "text": "to",
+  "lemma": "to",
+  "upos": "PART",
+  "xpos": "TO",
+  "start_char": 82,
+  "end_char": 84
+}, {
+  "id": 12,
+  "text": "ensure",
+  "lemma": "ensure",
+  "upos": "VERB",
+  "xpos": "VB",
+  "feats": "VerbForm=Inf",
+  "start_char": 85,
+  "end_char": 91
+}, {
+  "id": 13,
+  "text": "reproducible",
+  "lemma": "reproducible",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 92,
+  "end_char": 104
+}, {
+  "id": 14,
+  "text": "science",
+  "lemma": "science",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 105,
+  "end_char": 112
+}, {
+  "id": 15,
+  "text": "and",
+  "lemma": "and",
+  "upos": "CCONJ",
+  "xpos": "CC",
+  "start_char": 113,
+  "end_char": 116
+}, {
+  "id": 16,
+  "text": "software",
+  "lemma": "software",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 117,
+  "end_char": 125
+}, {
+  "id": 17,
+  "text": "sustainability",
+  "lemma": "sustainability",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 126,
+  "end_char": 140
+}, {
+  "id": 18,
+  "text": ".",
+  "lemma": ".",
+  "upos": "PUNCT",
+  "xpos": ".",
+  "start_char": 140,
+  "end_char": 141
+}, {
+  "id": 1,
+  "text": "The",
+  "lemma": "the",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Def|PronType=Art",
+  "start_char": 142,
+  "end_char": 145
+}, {
+  "id": 2,
+  "text": "SSC",
+  "lemma": "SSC",
+  "upos": "PROPN",
+  "xpos": "NNP",
+  "feats": "Number=Sing",
+  "start_char": 146,
+  "end_char": 149
+}, {
+  "id": 3,
+  "text": "also",
+  "lemma": "also",
+  "upos": "ADV",
+  "xpos": "RB",
+  "start_char": 150,
+  "end_char": 154
+}, {
+  "id": 4,
+  "text": "acts",
+  "lemma": "act",
+  "upos": "VERB",
+  "xpos": "VBZ",
+  "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+  "start_char": 155,
+  "end_char": 159
+}, {
+  "id": 5,
+  "text": "as",
+  "lemma": "as",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 160,
+  "end_char": 162
+}, {
+  "id": 6,
+  "text": "a",
+  "lemma": "a",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Ind|PronType=Art",
+  "start_char": 163,
+  "end_char": 164
+}, {
+  "id": 7,
+  "text": "link",
+  "lemma": "link",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 165,
+  "end_char": 169
+}, {
+  "id": 8,
+  "text": "between",
+  "lemma": "between",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 170,
+  "end_char": 177
+}, {
+  "id": 9,
+  "text": "the",
+  "lemma": "the",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Def|PronType=Art",
+  "start_char": 178,
+  "end_char": 181
+}, {
+  "id": 10,
+  "text": "different",
+  "lemma": "different",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 182,
+  "end_char": 191
+}, {
+  "id": 11,
+  "text": "scientific",
+  "lemma": "scientific",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 192,
+  "end_char": 202
+}, {
+  "id": 12,
+  "text": "disciplines",
+  "lemma": "discipline",
+  "upos": "NOUN",
+  "xpos": "NNS",
+  "feats": "Number=Plur",
+  "start_char": 203,
+  "end_char": 214
+}, {
+  "id": 13,
+  "text": ",",
+  "lemma": ",",
+  "upos": "PUNCT",
+  "xpos": ",",
+  "start_char": 214,
+  "end_char": 215
+}, {
+  "id": 14,
+  "text": "enabling",
+  "lemma": "enable",
+  "upos": "VERB",
+  "xpos": "VBG",
+  "feats": "VerbForm=Ger",
+  "start_char": 216,
+  "end_char": 224
+}, {
+  "id": 15,
+  "text": "collaboration",
+  "lemma": "collaboration",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 225,
+  "end_char": 238
+}, {
+  "id": 16,
+  "text": "and",
+  "lemma": "and",
+  "upos": "CCONJ",
+  "xpos": "CC",
+  "start_char": 239,
+  "end_char": 242
+}, {
+  "id": 17,
+  "text": "interdisciplinary",
+  "lemma": "interdisciplinary",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 243,
+  "end_char": 260
+}, {
+  "id": 18,
+  "text": "research",
+  "lemma": "research",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 261,
+  "end_char": 269
+}, {
+  "id": 19,
+  "text": ".",
+  "lemma": ".",
+  "upos": "PUNCT",
+  "xpos": ".",
+  "start_char": 269,
+  "end_char": 270
+}, {
+  "id": 1,
+  "text": "The",
+  "lemma": "the",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Def|PronType=Art",
+  "start_char": 270,
+  "end_char": 273
+}, {
+  "id": 2,
+  "text": "current",
+  "lemma": "current",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 274,
+  "end_char": 281
+}, {
+  "id": 3,
+  "text": "role",
+  "lemma": "role",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 282,
+  "end_char": 286
+}, {
+  "id": 4,
+  "text": "of",
+  "lemma": "of",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 287,
+  "end_char": 289
+}, {
+  "id": 5,
+  "text": "software",
+  "lemma": "software",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 290,
+  "end_char": 298
+}, {
+  "id": 6,
+  "text": "in",
+  "lemma": "in",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 299,
+  "end_char": 301
+}, {
+  "id": 7,
+  "text": "research",
+  "lemma": "research",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 302,
+  "end_char": 310
+}, {
+  "id": 8,
+  "text": "communities",
+  "lemma": "community",
+  "upos": "NOUN",
+  "xpos": "NNS",
+  "feats": "Number=Plur",
+  "start_char": 311,
+  "end_char": 322
+}, {
+  "id": 9,
+  "text": "Software",
+  "lemma": "Software",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 323,
+  "end_char": 331
+}, {
+  "id": 10,
+  "text": "development",
+  "lemma": "development",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 332,
+  "end_char": 343
+}, {
+  "id": 11,
+  "text": "is",
+  "lemma": "be",
+  "upos": "AUX",
+  "xpos": "VBZ",
+  "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+  "start_char": 344,
+  "end_char": 346
+}, {
+  "id": 12,
+  "text": "an",
+  "lemma": "a",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Ind|PronType=Art",
+  "start_char": 347,
+  "end_char": 349
+}, {
+  "id": 13,
+  "text": "increasingly",
+  "lemma": "increasingly",
+  "upos": "ADV",
+  "xpos": "RB",
+  "start_char": 350,
+  "end_char": 362
+}, {
+  "id": 14,
+  "text": "vital",
+  "lemma": "vital",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 363,
+  "end_char": 368
+}, {
+  "id": 15,
+  "text": "part",
+  "lemma": "part",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 369,
+  "end_char": 373
+}, {
+  "id": 16,
+  "text": "of",
+  "lemma": "of",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 374,
+  "end_char": 376
+}, {
+  "id": 17,
+  "text": "research",
+  "lemma": "research",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 377,
+  "end_char": 385
+}, {
+  "id": 18,
+  "text": ",",
+  "lemma": ",",
+  "upos": "PUNCT",
+  "xpos": ",",
+  "start_char": 385,
+  "end_char": 386
+}, {
+  "id": 19,
+  "text": "but",
+  "lemma": "but",
+  "upos": "CCONJ",
+  "xpos": "CC",
+  "start_char": 387,
+  "end_char": 390
+}, {
+  "id": 20,
+  "text": "if",
+  "lemma": "if",
+  "upos": "SCONJ",
+  "xpos": "IN",
+  "start_char": 391,
+  "end_char": 393
+}, {
+  "id": 21,
+  "text": "not",
+  "lemma": "not",
+  "upos": "PART",
+  "xpos": "RB",
+  "start_char": 394,
+  "end_char": 397
+}, {
+  "id": 22,
+  "text": "done",
+  "lemma": "do",
+  "upos": "VERB",
+  "xpos": "VBN",
+  "feats": "Tense=Past|VerbForm=Part",
+  "start_char": 398,
+  "end_char": 402
+}, {
+  "id": 23,
+  "text": "sustainably",
+  "lemma": "sustainably",
+  "upos": "ADV",
+  "xpos": "RB",
+  "start_char": 403,
+  "end_char": 414
+}, {
+  "id": 24,
+  "text": "the",
+  "lemma": "the",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Def|PronType=Art",
+  "start_char": 415,
+  "end_char": 418
+}, {
+  "id": 25,
+  "text": "result",
+  "lemma": "result",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 419,
+  "end_char": 425
+}, {
+  "id": 26,
+  "text": "is",
+  "lemma": "be",
+  "upos": "AUX",
+  "xpos": "VBZ",
+  "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+  "start_char": 426,
+  "end_char": 428
+}, {
+  "id": 27,
+  "text": "often",
+  "lemma": "often",
+  "upos": "ADV",
+  "xpos": "RB",
+  "start_char": 429,
+  "end_char": 434
+}, {
+  "id": 28,
+  "text": "unmaintainable",
+  "lemma": "unmaintainable",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 435,
+  "end_char": 449
+}, {
+  "id": 29,
+  "text": "software",
+  "lemma": "software",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 450,
+  "end_char": 458
+}, {
+  "id": 30,
+  "text": "and",
+  "lemma": "and",
+  "upos": "CCONJ",
+  "xpos": "CC",
+  "start_char": 459,
+  "end_char": 462
+}, {
+  "id": 31,
+  "text": "irreproducible",
+  "lemma": "irreproducible",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 463,
+  "end_char": 477
+}, {
+  "id": 32,
+  "text": "science",
+  "lemma": "science",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 478,
+  "end_char": 485
+}, {
+  "id": 33,
+  "text": ".",
+  "lemma": ".",
+  "upos": "PUNCT",
+  "xpos": ".",
+  "start_char": 485,
+  "end_char": 486
+}, {
+  "id": 1,
+  "text": "This",
+  "lemma": "this",
+  "upos": "PRON",
+  "xpos": "DT",
+  "feats": "Number=Sing|PronType=Dem",
+  "start_char": 487,
+  "end_char": 491
+}, {
+  "id": 2,
+  "text": "is",
+  "lemma": "be",
+  "upos": "AUX",
+  "xpos": "VBZ",
+  "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+  "start_char": 492,
+  "end_char": 494
+}, {
+  "id": 3,
+  "text": "due",
+  "lemma": "due",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 495,
+  "end_char": 498
+}, {
+  "id": 4,
+  "text": "to",
+  "lemma": "to",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 499,
+  "end_char": 501
+}, {
+  "id": 5,
+  "text": "a",
+  "lemma": "a",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Ind|PronType=Art",
+  "start_char": 502,
+  "end_char": 503
+}, {
+  "id": 6,
+  "text": "lack",
+  "lemma": "lack",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 504,
+  "end_char": 508
+}, {
+  "id": 7,
+  "text": "of",
+  "lemma": "of",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 509,
+  "end_char": 511
+}, {
+  "id": 8,
+  "text": "software",
+  "lemma": "software",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 512,
+  "end_char": 520
+}, {
+  "id": 9,
+  "text": "engineering",
+  "lemma": "engineering",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 521,
+  "end_char": 532
+}, {
+  "id": 10,
+  "text": "training",
+  "lemma": "training",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 533,
+  "end_char": 541
+}, {
+  "id": 11,
+  "text": "for",
+  "lemma": "for",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 542,
+  "end_char": 545
+}, {
+  "id": 12,
+  "text": "scientists",
+  "lemma": "scientist",
+  "upos": "NOUN",
+  "xpos": "NNS",
+  "feats": "Number=Plur",
+  "start_char": 546,
+  "end_char": 556
+}, {
+  "id": 13,
+  "text": ",",
+  "lemma": ",",
+  "upos": "PUNCT",
+  "xpos": ",",
+  "start_char": 556,
+  "end_char": 557
+}, {
+  "id": 14,
+  "text": "limited",
+  "lemma": "limit",
+  "upos": "VERB",
+  "xpos": "VBN",
+  "feats": "Tense=Past|VerbForm=Part",
+  "start_char": 558,
+  "end_char": 565
+}, {
+  "id": 15,
+  "text": "funding",
+  "lemma": "funding",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 566,
+  "end_char": 573
+}, {
+  "id": 16,
+  "text": "for",
+  "lemma": "for",
+  "upos": "SCONJ",
+  "xpos": "IN",
+  "start_char": 574,
+  "end_char": 577
+}, {
+  "id": 17,
+  "text": "maintaining",
+  "lemma": "maintain",
+  "upos": "VERB",
+  "xpos": "VBG",
+  "feats": "VerbForm=Ger",
+  "start_char": 578,
+  "end_char": 589
+}, {
+  "id": 18,
+  "text": "existing",
+  "lemma": "exist",
+  "upos": "VERB",
+  "xpos": "VBG",
+  "feats": "VerbForm=Ger",
+  "start_char": 590,
+  "end_char": 598
+}, {
+  "id": 19,
+  "text": "software",
+  "lemma": "software",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 599,
+  "end_char": 607
+}, {
+  "id": 20,
+  "text": "and",
+  "lemma": "and",
+  "upos": "CCONJ",
+  "xpos": "CC",
+  "start_char": 608,
+  "end_char": 611
+}, {
+  "id": 21,
+  "text": "few",
+  "lemma": "few",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 612,
+  "end_char": 615
+}, {
+  "id": 22,
+  "text": "permanent",
+  "lemma": "permanent",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 616,
+  "end_char": 625
+}, {
+  "id": 23,
+  "text": "software",
+  "lemma": "software",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 626,
+  "end_char": 634
+}, {
+  "id": 24,
+  "text": "developer",
+  "lemma": "developer",
+  "upos": "NOUN",
+  "xpos": "NN",
+  "feats": "Number=Sing",
+  "start_char": 635,
+  "end_char": 644
+}, {
+  "id": 25,
+  "text": "positions",
+  "lemma": "position",
+  "upos": "NOUN",
+  "xpos": "NNS",
+  "feats": "Number=Plur",
+  "start_char": 645,
+  "end_char": 654
+}, {
+  "id": 26,
+  "text": ".",
+  "lemma": ".",
+  "upos": "PUNCT",
+  "xpos": ".",
+  "start_char": 654,
+  "end_char": 655
+}, {
+  "id": 1,
+  "text": "The",
+  "lemma": "the",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Def|PronType=Art",
+  "start_char": 655,
+  "end_char": 658
+}, {
+  "id": 2,
+  "text": "SSC",
+  "lemma": "SSC",
+  "upos": "PROPN",
+  "xpos": "NNP",
+  "feats": "Number=Sing",
+  "start_char": 659,
+  "end_char": 662
+}, {
+  "id": 3,
+  "text": "addresses",
+  "lemma": "address",
+  "upos": "VERB",
+  "xpos": "VBZ",
+  "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+  "start_char": 663,
+  "end_char": 672
+}, {
+  "id": 4,
+  "text": "the",
+  "lemma": "the",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Def|PronType=Art",
+  "start_char": 673,
+  "end_char": 676
+}, {
+  "id": 5,
+  "text": "current",
+  "lemma": "current",
+  "upos": "ADJ",
+  "xpos": "JJ",
+  "feats": "Degree=Pos",
+  "start_char": 677,
+  "end_char": 684
+}, {
+  "id": 6,
+  "text": "shortcomings",
+  "lemma": "shortcomings",
+  "upos": "NOUN",
+  "xpos": "NNS",
+  "feats": "Number=Plur",
+  "start_char": 685,
+  "end_char": 697
+}, {
+  "id": 7,
+  "text": "by",
+  "lemma": "by",
+  "upos": "SCONJ",
+  "xpos": "IN",
+  "start_char": 698,
+  "end_char": 700
+}, {
+  "id": 8,
+  "text": "implementing",
+  "lemma": "implement",
+  "upos": "VERB",
+  "xpos": "VBG",
+  "feats": "VerbForm=Ger",
+  "start_char": 701,
+  "end_char": 713
+}, {
+  "id": 9,
+  "text": "the",
+  "lemma": "the",
+  "upos": "DET",
+  "xpos": "DT",
+  "feats": "Definite=Def|PronType=Art",
+  "start_char": 714,
+  "end_char": 717
+}, {
+  "id": 10,
+  "text": "three",
+  "lemma": "three",
+  "upos": "NUM",
+  "xpos": "CD",
+  "feats": "NumType=Card",
+  "start_char": 718,
+  "end_char": 723
+}, {
+  "id": 11,
+  "text": "pillars",
+  "lemma": "pillar",
+  "upos": "NOUN",
+  "xpos": "NNS",
+  "feats": "Number=Plur",
+  "start_char": 724,
+  "end_char": 731
+}, {
+  "id": 12,
+  "text": "of",
+  "lemma": "of",
+  "upos": "ADP",
+  "xpos": "IN",
+  "start_char": 732,
+  "end_char": 734
+}, {
+  "id": 13,
+  "text": "Development",
+  "lemma": "Development",
+  "upos": "PROPN",
+  "xpos": "NNP",
+  "feats": "Number=Sing",
+  "start_char": 735,
+  "end_char": 746
+}, {
+  "id": 14,
+  "text": ",",
+  "lemma": ",",
+  "upos": "PUNCT",
+  "xpos": ",",
+  "start_char": 746,
+  "end_char": 747
+}, {
+  "id": 15,
+  "text": "Teaching",
+  "lemma": "Teaching",
+  "upos": "PROPN",
+  "xpos": "NNP",
+  "feats": "Number=Sing",
+  "start_char": 748,
+  "end_char": 756
+}, {
+  "id": 16,
+  "text": "and",
+  "lemma": "and",
+  "upos": "CCONJ",
+  "xpos": "CC",
+  "start_char": 757,
+  "end_char": 760
+}, {
+  "id": 17,
+  "text": "Outreach",
+  "lemma": "Outreach",
+  "upos": "PROPN",
+  "xpos": "NNP",
+  "feats": "Number=Sing",
+  "start_char": 761,
+  "end_char": 769
+}, {
+  "id": 18,
+  "text": ".",
+  "lemma": ".",
+  "upos": "PUNCT",
+  "xpos": ".",
+  "start_char": 769,
+  "end_char": 770
+}]

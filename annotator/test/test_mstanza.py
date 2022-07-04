@@ -171,3 +171,51 @@ def test_outstanza_vrt(get_sample):
         os.remove(outfile + ".vrt")
     else:
         print("{} was not created during testing.".format(outfile + ".vrt"))
+
+
+@pytest.mark.lang("en")
+def test_token_list(get_sample):
+    text = get_sample
+    procstring = "tokenize,pos,lemma"
+    obj = ma.MyStanza(mydict_en)
+    docobj = obj.apply_to(text)
+    out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
+    token_list = []
+    for sent in docobj.doc.sentences:
+        token_list += out_obj.token_list(sent)
+
+    with open("./test/test_files/example_en_token_list.txt", "r") as file:
+        out_token_list = file.read()
+
+    assert str(token_list) == out_token_list
+
+
+@pytest.mark.lang("en")
+def test_word_list(get_sample):
+    text = get_sample
+    procstring = "tokenize,pos,lemma"
+    obj = ma.MyStanza(mydict_en)
+    docobj = obj.apply_to(text)
+    out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
+    word_list = []
+    for sent in docobj.doc.sentences:
+        word_list += out_obj.word_list(sent)
+
+    with open("./test/test_files/example_en_word_list.txt", "r") as file:
+        out_word_list = file.read()
+
+    assert str(word_list) == out_word_list
+
+
+@pytest.mark.lang("en")
+def test_sentences(get_sample):
+    text = get_sample
+    procstring = "tokenize,pos,lemma"
+    obj = ma.MyStanza(mydict_en)
+    docobj = obj.apply_to(text)
+    out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
+    sentences = out_obj.sentences
+    with open("./test/test_files/example_en_sentences.txt", "r") as file:
+        out_sentences = file.read()
+
+    assert str(sentences) == out_sentences
