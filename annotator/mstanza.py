@@ -82,10 +82,7 @@ class OutStanza(be.OutObject):
                 # )
             tid = token.id[0] + self.tstart
             line = token.text
-            if self.style == "STR":
-                out.append(line + "\n")
-            elif self.style == "DICT":
-                out.append(line)
+            out.append(line + "\n")
         self.tstart = tid
         return out
 

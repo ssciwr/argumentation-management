@@ -113,13 +113,14 @@ if __name__ == "__main__":
     # overwrite defaults for testing purposes
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "somajo, somajo, flair, stanza"
-    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
+    mydict["tool"] = "somajo, somajo, stanza"
+    mydict["processing_type"] = "sentencize, tokenize, pos"
     mydict["language"] = "en"
     mydict["advanced_options"]["output_dir"] = "./annotator/test/out/"
     mydict["advanced_options"]["corpus_dir"] = "./annotator/test/corpora/"
     mydict["advanced_options"]["registry_dir"] = "./annotator/test/registry/"
     # output style - vrt = STR or xml = DICT
+    mydict["advanced_options"]["output_format"] = "DICT"
     style = mydict["advanced_options"]["output_format"]
     # get the data to be processed
     data = be.PrepareRun.get_text("./annotator/test/test_files/example_en.txt")
@@ -169,16 +170,19 @@ if __name__ == "__main__":
             # so that not of and of  ADP are being compared
             # or only compare to substring from beginning of string
             out = my_out_obj.assemble_output_tokens(out)
-            print(out, mytool)
             ptags_temp = my_out_obj.ptags
             if ptags is not None:
                 ptags += ptags_temp
             else:
                 ptags = ptags_temp
 
-    # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-    be.OutObject.write_vrt(outfile, out)
+    if style == "STR":
+        # write out to .vrt
+        be.OutObject.write_vrt(outfile, out)
+    elif style == "DICT":
+        # write out to .xml
+        be.OutObject.write_xml(mydict["corpus_name"], outfile, out)
     # we will skip the encoding for now and instead provide vrt/xml file for user to download
-    # encode_obj = be.encode_corpus(mydict)
-    # encode_obj.encode_vrt(ptags, stags)
+    encode_obj = be.encode_corpus(mydict)
+    encode_obj.encode_vrt(ptags, stags)
