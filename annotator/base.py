@@ -137,16 +137,6 @@ class OutObject:
         # this needs to be done module-specific for now and is set in each subclass
         return out
 
-    def assemble_output_xml(self):
-        out = []
-        if "sentence" not in self.attrnames:
-            raise KeyError("Error: Sentence-Key not in obj.attrnames.")
-        self.tstart = 0
-        for sent in getattr(self.doc, self.attrnames["sentence"]):
-            out.append([])
-            self.iterate(out[-1], sent)
-        return out
-
     def iterate_tokens(self, out, token_list):
         """Assemble output for tool at token level."""
         token_list_out = self.out_shortlist(out)

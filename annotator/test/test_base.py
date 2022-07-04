@@ -175,6 +175,25 @@ def test_compare_tokens(get_doc):
     assert not out_obj._compare_tokens(mytoken1, mytoken2)
 
 
+def test_write_vrt():
+    mystring = "abcdefgh"
+    myfile = "test/out/test"
+    be.OutObject.write_vrt("test/out/test", mystring)
+    test_string = be.PrepareRun.get_text(myfile + ".vrt")
+    assert test_string == mystring
+
+
+def test_write_xml():
+    mystring = "abcdefgh"
+    myfile = "test/out/test"
+    be.OutObject.write_xml("test", myfile, mystring)
+    mystring2 = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?><corpus name="test"><text>"""
+    mystring2 += mystring
+    mystring2 += """</text></corpus>"""
+    test_string = be.PrepareRun.get_text(myfile + ".xml")
+    assert test_string == mystring2
+
+
 def test_purge():
     inputs = [" ", "  "]
     outputs = ["", ""]
