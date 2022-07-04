@@ -33,7 +33,7 @@ def test_integration_mstanza(load_data):
     # apply pipeline to data
     stanza_pipe.apply_to(data)
     start = 0
-    out_obj = ma.OutStanza(stanza_pipe.doc, stanza_pipe.jobs, start=start, islist=False)
+    out_obj = ma.OutStanza(stanza_pipe.doc, stanza_pipe.jobs, start=start)
     out = out_obj.assemble_output_sent()
     out = out_obj.assemble_output_tokens(out)
     ptags = out_obj.ptags

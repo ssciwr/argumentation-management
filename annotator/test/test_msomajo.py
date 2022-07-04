@@ -215,7 +215,7 @@ def test_apply_to(read_data_en, read_data_de, load_dict):
 
 
 def test_outsomajo_init(get_doc):
-    out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0)
     assert out_obj.attrnames["proc_sent"] == "sentencize"
     assert out_obj.attrnames["sentence"] == "sent"
     assert out_obj.stags == ["s"]
@@ -223,19 +223,19 @@ def test_outsomajo_init(get_doc):
 
 
 def test_assemble_output_sent(get_doc):
-    out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0)
     out = out_obj.assemble_output_sent()
     assert out == test_out_en
 
 
 def test_iterate(get_doc):
-    out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0)
     out = []
     sent = get_doc[0][0]
-    out_obj.iterate(out, sent, "STR")
+    out_obj.iterate(out, sent)
     assert out == test_out_en_sentence
 
 
 def test_sentences(get_doc):
-    out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mso.OutSomajo(get_doc[0], get_doc[1], 0)
     assert out_obj.sentences == test_out_en_sentences

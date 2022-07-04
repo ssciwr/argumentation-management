@@ -55,14 +55,14 @@ class OutStanza(be.OutObject):
     """Out object for stanza annotation, adds stanza-specific methods to the
     vrt/xml writing."""
 
-    def __init__(self, doc, jobs: list, start: int = 0, islist=False):
-        super().__init__(doc, jobs, start, islist)
+    def __init__(self, doc, jobs: list, start: int = 0, style: str = "STR"):
+        super().__init__(doc, jobs, start, style)
         self.attrnames = self.attrnames["stanza_names"]
         self.stags = self.get_stags()
 
     # add new method for stanza iteration over tokens/words/ents
     # TODO: set MWT correctly - iterate over tokens or words?
-    def iterate(self, out: list, sent, style: str) -> list:
+    def iterate(self, out: list, sent) -> list:
         """Function to iterate through sentence object and extract data to list.
 
         Args:
@@ -82,10 +82,7 @@ class OutStanza(be.OutObject):
                 # )
             tid = token.id[0] + self.tstart
             line = token.text
-            if style == "STR":
-                out.append(line + "\n")
-            elif style == "DICT":
-                out.append(line)
+            out.append(line + "\n")
         self.tstart = tid
         return out
 
@@ -125,7 +122,7 @@ class OutStanza(be.OutObject):
                 )
                 print("Please check your inputs!")
             else:
-                line = self.collect_results(token_stanza, 0, word_stanza, "STR")
+                line = self.collect_results(token_stanza, 0, word_stanza)
                 # now add the annotation
                 out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
         return out

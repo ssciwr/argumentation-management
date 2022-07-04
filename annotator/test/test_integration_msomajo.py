@@ -25,7 +25,7 @@ def test_integration_msomajo(setup):
     # we should not need start ..?
     start = 0
     # for somajo we never have list data as this will be only used for sentencizing
-    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start, islist=False)
+    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start)
     out = out_obj.assemble_output_sent()
     stags = out_obj.get_stags()
     ptags = None

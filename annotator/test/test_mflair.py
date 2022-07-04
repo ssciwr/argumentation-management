@@ -64,14 +64,14 @@ def test_myflair_apply_to(get_doc):
 
 
 def test_outflair_init(get_doc):
-    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0)
     assert out_obj.attrnames["proc_sent"] == "na"
     assert out_obj.attrnames["proc_pos"] == "pos"
     assert not out_obj.stags
 
 
 def test_assemble_output_tokens(get_doc, test_en):
-    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0)
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
     out = out_obj.assemble_output_tokens(out)
     print(out)
@@ -79,7 +79,7 @@ def test_assemble_output_tokens(get_doc, test_en):
 
 
 def test_grab_tag(get_doc):
-    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mf.OutFlair(get_doc[0], get_doc[1], 0)
     test_labels = []
     for token in get_doc[0]:
         test_labels.append(out_obj.grab_tag(token))
@@ -92,7 +92,7 @@ def test_sentence_token_list(load_dict, data_en_list):
     for sentence in data_en_list:
         annotated.apply_to(sentence)
         doc.append(annotated.doc)
-    out_obj = mf.OutFlair(doc, annotated.jobs, 0, islist=True)
+    out_obj = mf.OutFlair(doc, annotated.jobs, 0)
     out = out_obj.sentence_token_list(doc)
     assert out[0].text == "This"
     assert out[7].text == "another"

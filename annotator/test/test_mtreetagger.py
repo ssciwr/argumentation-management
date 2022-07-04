@@ -70,7 +70,7 @@ def test_mytreetagger_make_dict(load_dict, data_en, test_dict_doc):
     assert annotated.doc == test_dict_doc
 
 
-def test_mytreetagger_make_object(load_dict, data_en, test_dict_doc):
+def test_mytreetagger_make_object(load_dict, data_en):
     annotated = mtt.MyTreetagger(load_dict)
     annotated.doc = annotated.nlp.tag_text(data_en)
     annotated.doc = annotated._make_dict()
@@ -81,19 +81,19 @@ def test_mytreetagger_make_object(load_dict, data_en, test_dict_doc):
 
 
 def test_outtreetagger_init(get_doc):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     assert out_obj.attrnames["proc_sent"] == "na"
     assert out_obj.attrnames["proc_lemma"] == "lemma"
     assert not out_obj.stags
 
 
 def test_outtreetagger_iterate(get_doc):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     # to be completed TODO
 
 
 def test_assemble_output_tokens(get_doc, test_en):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0, islist=False)
+    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
     out = out_obj.assemble_output_tokens(out)
     assert out == test_en

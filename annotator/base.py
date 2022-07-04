@@ -2,7 +2,6 @@
 import json
 import jsonschema
 import os
-import to_xml as txml
 
 
 class PrepareRun:
@@ -87,12 +86,12 @@ class OutObject:
     conversion clear and not to duplicate code.
     Write the vrt/xml file."""
 
-    def __init__(self, doc, jobs: list, start: int, islist=False):
+    def __init__(self, doc, jobs: list, start: int, style="STR"):
         self.doc = doc
         self.jobs = jobs
         self.start = start
+        self.style = style
         # just one doc object for whole text or multiple objects per sentence
-        self.islist = islist
         # get the attribute names for the different tools
         self.attrnames = self.get_names()
         # ptags does the same case selection as OutObject.collect_results, so the order
@@ -111,14 +110,11 @@ class OutObject:
         f = open(name, "w")
         return f
 
-    def iterate(self, out, sent, style):
+    def iterate(self, out, sent):
         """Iterate through the tokens in a sentence."""
         for token in sent:
             line = token.text
-            if style == "STR":
-                out.append(line + "\n")
-            elif style == "DICT":
-                out.append(line)
+            out.append(line + "\n")
         return out
 
     def assemble_output_sent(self) -> list:
@@ -132,23 +128,13 @@ class OutObject:
         out = []
         for sent in getattr(self.doc, self.attrnames["sentence"]):
             out.append("<s>\n")
-            out = self.iterate(out, sent, "STR")
+            out = self.iterate(out, sent)
             out.append("</s>\n")
         return out
 
     def assemble_output_tokens(self, out) -> list:
         """Template function to assemble output for tool at token level."""
         # this needs to be done module-specific for now and is set in each subclass
-        return out
-
-    def assemble_output_xml(self):
-        out = []
-        if "sentence" not in self.attrnames:
-            raise KeyError("Error: Sentence-Key not in obj.attrnames.")
-        self.tstart = 0
-        for sent in getattr(self.doc, self.attrnames["sentence"]):
-            out.append([])
-            self.iterate(out[-1], sent, "DICT")
         return out
 
     def iterate_tokens(self, out, token_list):
@@ -166,7 +152,7 @@ class OutObject:
                     )
                 )
             else:
-                line = self.collect_results(token_tool, 0, token_tool, "STR")
+                line = self.collect_results(token_tool, 0, token_tool)
                 # now replace the respective token with annotated token
                 out[token_out[1]] = out[token_out[1]].replace("\n", "") + line + "\n"
                 # note that this will not add a linebreak for <s> and <s\> -
@@ -200,8 +186,8 @@ class OutObject:
         # mydict = PrepareRun.load_input_dict("./annotator/attribute_names")
         return mydict
 
-    # refactor once STR is working - we actually do not need token text as key
-    # token texts are handled when assembling the sentences
+    # This is currently not working properly
+    # as cwb requires a semi-vrt format also for the xml
     @staticmethod
     def switch_style(line: dict) -> str:
         """Switch style from DICT to STR"""
@@ -226,7 +212,7 @@ class OutObject:
             stags = None
         return stags
 
-    def collect_results(self, token, tid: int, word, style: str = "STR") -> dict or str:
+    def collect_results(self, token, tid: int, word) -> dict or str:
 
         """Function to collect requested tags for tokens after applying pipeline to data.
 
@@ -253,11 +239,7 @@ class OutObject:
                 self.ptags.append("NER")
             line["NER"] = self.grab_ent(token)
 
-        if style == "STR":
-            return self.switch_style(line)
-
-        elif style == "DICT":
-            return line
+        return self.switch_style(line)
 
     def grab_tag(self, word):
         """Get the pos."""
@@ -306,22 +288,22 @@ class OutObject:
         for line in out:
             string += line
         string = OutObject.purge(string)
-        print(os.getcwd())
         with open("{}.vrt".format(outname), "w") as file:
             file.write(string)
         print("+++ Finished writing {}.vrt +++".format(outname))
 
     @staticmethod
-    def write_xml(docid: str, outname: str, out: list) -> None:
-        """This function may not work for all tools and should not be used at the moment."""
-        raw_xml = txml.start_xml(docid)
-        sents = [txml.list_to_xml("Sent", i, elem) for i, elem in enumerate(out, 1)]
-        for sent in sents:
-            raw_xml.append(sent)
-        string_xml = txml.to_string(raw_xml)
-        xml = txml.beautify(string_xml)
-        with open("{}_.xml".format(outname), "w") as file:
-            file.write(xml)
+    def write_xml(corpus_name: str, outname: str, out: list) -> None:
+        """CWB requires a semi-vrt xml including tab spaces."""
+        string = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        string += '<corpus name="{}">\n'.format(corpus_name)
+        string += "<text>\n"
+        for line in out:
+            string += line
+        string += "</text>\n"
+        string += "</corpus>"
+        with open("{}.xml".format(outname), "w") as file:
+            file.write(string)
         print("+++ Finished writing {}.xml +++".format(outname))
 
 

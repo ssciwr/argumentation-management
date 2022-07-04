@@ -7,7 +7,7 @@ import mtreetagger as mtt
 import mflair as mf
 
 
-def call_spacy(mydict, data, islist=False):
+def call_spacy(mydict, data, islist=False, style="STR"):
     spacy_dict = mydict["spacy_dict"]
     # load the pipeline
     annotated = msp.MySpacy(spacy_dict)
@@ -24,11 +24,11 @@ def call_spacy(mydict, data, islist=False):
             doc.append(annotated.doc)
     # we should not need start ..?
     start = 0
-    out_obj = msp.OutSpacy(doc, annotated.jobs, start=start, islist=islist)
+    out_obj = msp.OutSpacy(doc, annotated.jobs, start=start, style=style)
     return out_obj
 
 
-def call_stanza(mydict, data, islist=False):
+def call_stanza(mydict, data, islist=False, style="STR"):
     stanza_dict = mydict["stanza_dict"]
     if islist:
         stanza_dict["tokenize_no_ssplit"] = True
@@ -48,11 +48,11 @@ def call_stanza(mydict, data, islist=False):
     doc = annotated.doc
     # we should not need start ..?
     start = 0
-    out_obj = msa.OutStanza(doc, annotated.jobs, start=start, islist=islist)
+    out_obj = msa.OutStanza(doc, annotated.jobs, start=start, style=style)
     return out_obj
 
 
-def call_somajo(mydict, data, islist=False):
+def call_somajo(mydict, data, islist=False, style="STR"):
     somajo_dict = mydict["somajo_dict"]
     # load the pipeline
     # somajo does only sentence-split and tokenization
@@ -62,11 +62,11 @@ def call_somajo(mydict, data, islist=False):
     # we should not need start ..?
     start = 0
     # for somajo we never have list data as this will be only used for sentencizing
-    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start, islist)
+    out_obj = mso.OutSomajo(tokenized.doc, tokenized.jobs, start=start, style=style)
     return out_obj
 
 
-def call_treetagger(mydict, data, islist=True):
+def call_treetagger(mydict, data, islist=True, style="STR"):
     treetagger_dict = mydict["treetagger_dict"]
     # load the pipeline
     # treetagger does only tokenization for some languages and pos, lemma
@@ -76,11 +76,11 @@ def call_treetagger(mydict, data, islist=True):
     # we should not need start ..?
     start = 0
     # for treetagger we always have list data as data will already be sentencized
-    out_obj = mtt.OutTreetagger(annotated.doc, annotated.jobs, start, islist)
+    out_obj = mtt.OutTreetagger(annotated.doc, annotated.jobs, start=start, style=style)
     return out_obj
 
 
-def call_flair(mydict, data, islist=True):
+def call_flair(mydict, data, islist=True, style="STR"):
     flair_dict = mydict["flair_dict"]
     # load the pipeline
     # flair does only pos and ner
@@ -95,7 +95,7 @@ def call_flair(mydict, data, islist=True):
     start = 0
     print(annotated.jobs)
     # for flair we always have list data as data will already be sentencized
-    out_obj = mf.OutFlair(doc, annotated.jobs, start, islist)
+    out_obj = mf.OutFlair(doc, annotated.jobs, start=start, style=style)
     return out_obj
 
 
@@ -113,12 +113,15 @@ if __name__ == "__main__":
     # overwrite defaults for testing purposes
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "somajo, somajo, flair, stanza"
-    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
+    mydict["tool"] = "somajo, somajo, stanza"
+    mydict["processing_type"] = "sentencize, tokenize, pos"
     mydict["language"] = "en"
     mydict["advanced_options"]["output_dir"] = "./annotator/test/out/"
     mydict["advanced_options"]["corpus_dir"] = "./annotator/test/corpora/"
     mydict["advanced_options"]["registry_dir"] = "./annotator/test/registry/"
+    # output style - vrt = STR or xml = DICT
+    mydict["advanced_options"]["output_format"] = "DICT"
+    style = mydict["advanced_options"]["output_format"]
     # get the data to be processed
     data = be.PrepareRun.get_text("./annotator/test/test_files/example_en.txt")
     # validate the input dict
@@ -144,7 +147,7 @@ if __name__ == "__main__":
         # we do not want to call same tools multiple times
         # as that would re-run the nlp pipelines
         # call specific routines
-        my_out_obj = call_tool[mytool](mydict, data, data_islist)
+        my_out_obj = call_tool[mytool](mydict, data, data_islist, style)
         if not data_islist:
             # the first tool will sentencize
             # all subsequent ones will use sentencized input
@@ -167,16 +170,19 @@ if __name__ == "__main__":
             # so that not of and of  ADP are being compared
             # or only compare to substring from beginning of string
             out = my_out_obj.assemble_output_tokens(out)
-            print(out, mytool)
             ptags_temp = my_out_obj.ptags
             if ptags is not None:
                 ptags += ptags_temp
             else:
                 ptags = ptags_temp
 
-    # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
-    be.OutObject.write_vrt(outfile, out)
+    if style == "STR":
+        # write out to .vrt
+        be.OutObject.write_vrt(outfile, out)
+    elif style == "DICT":
+        # write out to .xml
+        be.OutObject.write_xml(mydict["corpus_name"], outfile, out)
     # we will skip the encoding for now and instead provide vrt/xml file for user to download
-    # encode_obj = be.encode_corpus(mydict)
-    # encode_obj.encode_vrt(ptags, stags)
+    encode_obj = be.encode_corpus(mydict)
+    encode_obj.encode_vrt(ptags, stags)
