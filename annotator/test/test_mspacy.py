@@ -8,9 +8,9 @@ import mspacy as msp
 def init():
     """Load the input dicts"""
 
-    mydict = be.PrepareRun.load_input_dict("test/data/input")
+    mydict = be.PrepareRun.load_input_dict("test/data/input.json")
 
-    subdict_test = be.PrepareRun.load_input_dict("test/data/input_short")
+    subdict_test = be.PrepareRun.load_input_dict("test/data/input_short.json")
     return mydict["spacy_dict"], subdict_test, mydict
 
 

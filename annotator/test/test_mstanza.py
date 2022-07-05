@@ -3,8 +3,12 @@ import pytest
 import base as be
 import mstanza as ma
 
-mydict_en = be.PrepareRun.load_input_dict("./test/data/test_stanza_en")["stanza_dict"]
-mydict_de = be.PrepareRun.load_input_dict("./test/data/test_stanza_de")["stanza_dict"]
+mydict_en = be.PrepareRun.load_input_dict("./test/data/test_stanza_en.json")[
+    "stanza_dict"
+]
+mydict_de = be.PrepareRun.load_input_dict("./test/data/test_stanza_de.json")[
+    "stanza_dict"
+]
 
 mydict_en = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
 mydict_de = {"lang": "de", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}

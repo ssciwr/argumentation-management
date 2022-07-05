@@ -22,7 +22,7 @@ def init_dict(request):
         print("Missing a marker for reading the input dictionary.")
     else:
         name = marker.args[0]
-    with open("{}.json".format(name)) as f:
+    with open("{}".format(name)) as f:
         mydict = json.load(f)
     return mydict
 
@@ -34,9 +34,10 @@ def data_en():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/data/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
+    print(mydict)
     return mydict["treetagger_dict"], mydict["spacy_dict"]
 
 
@@ -124,13 +125,13 @@ def get_obj_dec():
     return obj
 
 
-@pytest.mark.dictname("./test/data/input")
+@pytest.mark.dictname("./test/data/input.json")
 def test_load_input_dict(init_dict):
-    mydict = be.PrepareRun.load_input_dict("./data/input")
+    mydict = be.PrepareRun.load_input_dict("./data/input.json")
     assert mydict == init_dict
 
 
-@pytest.mark.dictname("./test/data/input2")
+@pytest.mark.dictname("./test/data/input2.json")
 def test_validate_input_dict(init_dict):
     be.PrepareRun.validate_input_dict(init_dict)
 

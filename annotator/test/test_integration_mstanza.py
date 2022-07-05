@@ -13,7 +13,7 @@ def load_data():
 
 def test_integration_mstanza(load_data):
     # read in input.json
-    mydict = be.PrepareRun.load_input_dict("data/input")
+    mydict = be.PrepareRun.load_input_dict("data/input.json")
     mydict["input"] = "test/data/example_de.txt"
     mydict["tool"] = "stanza, stanza, stanza, stanza"
     mydict["language"] = "de"

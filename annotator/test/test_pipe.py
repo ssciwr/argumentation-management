@@ -1,4 +1,3 @@
-from webbrowser import get
 import pytest
 import base as be
 import pipe as pe
@@ -8,7 +7,7 @@ procstring = "tokenize, pos, lemma"
 
 @pytest.fixture()
 def get_mydict():
-    mydict = be.PrepareRun.load_input_dict("./test/data/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     return mydict
 
 

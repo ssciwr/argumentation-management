@@ -109,7 +109,7 @@ call_tool = {
 
 if __name__ == "__main__":
     # load input dict
-    mydict = be.PrepareRun.load_input_dict("data/input")
+    mydict = be.PrepareRun.load_input_dict("data/input.json")
     # overwrite defaults for testing purposes
     mydict["processing_option"] = "manual"
     # add a safety check if there are more tools than processors - TODO

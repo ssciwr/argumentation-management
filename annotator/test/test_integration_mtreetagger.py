@@ -4,7 +4,7 @@ import mtreetagger as mtt
 
 def test_integration_mtreetagger():
     data = "This is a sentence."
-    mydict = be.PrepareRun.load_input_dict("data/input")
+    mydict = be.PrepareRun.load_input_dict("data/input.json")
     mydict["tool"] = "treetagger"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     mydict["input"] = "./test/data/example_en.txt"

@@ -2,6 +2,9 @@
 import json
 import jsonschema
 import os
+import importlib_resources
+
+pkg = importlib_resources.files("annotator")
 
 
 class PrepareRun:
@@ -37,18 +40,15 @@ class PrepareRun:
         Args:
                 name[str]: Name of .json file (without file extension)."""
 
-        with open("{}.json".format(name)) as f:
+        with open("{}".format(name)) as f:
             mydict = json.load(f)
         return mydict
 
     # load the dictionary schema and validate against
     @staticmethod
     def validate_input_dict(dict_in: dict) -> None:
-        with open(
-            "{}.json".format("./data/input_schema"),
-            # "{}.json".format("./annotator/input_schema"),
-            "r",
-        ) as f:
+        file = pkg / "data" / "input_schema.json"
+        with file.open() as f:
             myschema = json.load(f)
         jsonschema.validate(instance=dict_in, schema=myschema)
 
@@ -181,9 +181,8 @@ class OutObject:
     @staticmethod
     def get_names() -> dict:
         """Load attribute names for specific tools."""
-
-        mydict = PrepareRun.load_input_dict("./data/attribute_names")
-        # mydict = PrepareRun.load_input_dict("./annotator/attribute_names")
+        file = pkg / "data" / "attribute_names.json"
+        mydict = PrepareRun.load_input_dict(file)
         return mydict
 
     # This is currently not working properly

@@ -36,7 +36,7 @@ def test_dict_doc():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/data/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     return mydict["treetagger_dict"]

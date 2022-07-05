@@ -11,7 +11,7 @@ def load_data():
 
 
 def test_integration_mspacy(load_data):
-    mydict = be.PrepareRun.load_input_dict("data/input")
+    mydict = be.PrepareRun.load_input_dict("data/input.json")
     mydict["language"] = "en"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "fast"

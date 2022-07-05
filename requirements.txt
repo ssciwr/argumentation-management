@@ -1,8 +1,7 @@
 spacy
 stanza
 flair
-numpy
 somajo
 treetaggerwrapper
 jsonschema
-click
+importlib_resources

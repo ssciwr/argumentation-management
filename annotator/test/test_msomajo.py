@@ -183,7 +183,7 @@ def read_test_en():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/data/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     mydict["somajo_dict"]["model"] = "en_PTB"
     mydict["somajo_dict"]["processors"] = "sentencize", "tokenize"
     return mydict
