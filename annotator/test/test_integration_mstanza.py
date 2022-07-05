@@ -7,14 +7,14 @@ from tempfile import TemporaryDirectory
 
 @pytest.fixture()
 def load_data():
-    data = be.PrepareRun.get_text("./test/test_files/example_de.txt")
+    data = be.PrepareRun.get_text("./test/data/example_de.txt")
     return data
 
 
 def test_integration_mstanza(load_data):
     # read in input.json
     mydict = be.PrepareRun.load_input_dict("input")
-    mydict["input"] = "./test/test_files/example_de.txt"
+    mydict["input"] = "./test/data/example_de.txt"
     mydict["tool"] = "stanza, stanza, stanza, stanza"
     mydict["language"] = "de"
     mydict["document_type"] = "text"

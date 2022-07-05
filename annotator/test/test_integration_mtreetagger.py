@@ -7,7 +7,7 @@ def test_integration_mtreetagger():
     mydict = be.PrepareRun.load_input_dict("input")
     mydict["tool"] = "treetagger"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
-    mydict["input"] = "./test/test_files/example_en.txt"
+    mydict["input"] = "./test/data/example_en.txt"
     mydict["advanced_options"]["output_dir"] = "./test/out/"
 
     treetagger_dict = mydict["treetagger_dict"]

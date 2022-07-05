@@ -34,7 +34,7 @@ def data_en():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     return mydict["treetagger_dict"], mydict["spacy_dict"]
@@ -124,13 +124,13 @@ def get_obj_dec():
     return obj
 
 
-@pytest.mark.dictname("./test/test_files/input")
+@pytest.mark.dictname("./test/data/input")
 def test_load_input_dict(init_dict):
     mydict = be.PrepareRun.load_input_dict("input")
     assert mydict == init_dict
 
 
-@pytest.mark.dictname("./test/test_files/input2")
+@pytest.mark.dictname("./test/data/input2")
 def test_validate_input_dict(init_dict):
     be.PrepareRun.validate_input_dict(init_dict)
 

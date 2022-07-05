@@ -3,12 +3,8 @@ import pytest
 import base as be
 import mstanza as ma
 
-mydict_en = be.PrepareRun.load_input_dict("./test/test_files/test_stanza_en")[
-    "stanza_dict"
-]
-mydict_de = be.PrepareRun.load_input_dict("./test/test_files/test_stanza_de")[
-    "stanza_dict"
-]
+mydict_en = be.PrepareRun.load_input_dict("./test/data/test_stanza_en")["stanza_dict"]
+mydict_de = be.PrepareRun.load_input_dict("./test/data/test_stanza_de")["stanza_dict"]
 
 mydict_en = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
 mydict_de = {"lang": "de", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
@@ -17,13 +13,13 @@ mydict_de = {"lang": "de", "dir": "./test/models/", "processors": "tokenize,pos,
 @pytest.fixture()
 def set_file_dict():
     text_dict = {
-        "en": "./test/test_files/example_en.txt",
-        "de": "./test/test_files/example_de.txt",
-        "test_en": "./test/test_files/example_en_stanza.txt",
-        "test_de": "./test/test_files/example_de_stanza.txt",
-        "tok": "./test/test_files/example_en_stanza_tok.txt",
-        "tok_pos": "./test/test_files/example_en_stanza_tok_pos.txt",
-        "tok_pos_lemma": "./test/test_files/example_en_stanza_tok_pos_lemma.txt",
+        "en": "./test/data/example_en.txt",
+        "de": "./test/data/example_de.txt",
+        "test_en": "./test/data/example_en_stanza.txt",
+        "test_de": "./test/data/example_de_stanza.txt",
+        "tok": "./test/data/example_en_stanza_tok.txt",
+        "tok_pos": "./test/data/example_en_stanza_tok_pos.txt",
+        "tok_pos_lemma": "./test/data/example_en_stanza_tok_pos_lemma.txt",
     }
     return text_dict
 
@@ -154,7 +150,7 @@ def test_outstanza_tok_pos_lemma(get_sample, get_out_sample):
 def test_outstanza_vrt(get_sample):
     text = get_sample
     procstring = "tokenize,pos,lemma"
-    outfile = "./test/test_files/example_en"
+    outfile = "./test/data/example_en"
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
@@ -184,7 +180,7 @@ def test_token_list(get_sample):
     for sent in docobj.doc.sentences:
         token_list += out_obj.token_list(sent)
 
-    with open("./test/test_files/example_en_token_list.txt", "r") as file:
+    with open("./test/data/example_en_token_list.txt", "r") as file:
         out_token_list = file.read()
 
     assert str(token_list) == out_token_list
@@ -201,7 +197,7 @@ def test_word_list(get_sample):
     for sent in docobj.doc.sentences:
         word_list += out_obj.word_list(sent)
 
-    with open("./test/test_files/example_en_word_list.txt", "r") as file:
+    with open("./test/data/example_en_word_list.txt", "r") as file:
         out_word_list = file.read()
 
     assert str(word_list) == out_word_list
@@ -215,7 +211,7 @@ def test_sentences(get_sample):
     docobj = obj.apply_to(text)
     out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
     sentences = out_obj.sentences
-    with open("./test/test_files/example_en_sentences.txt", "r") as file:
+    with open("./test/data/example_en_sentences.txt", "r") as file:
         out_sentences = file.read()
 
     assert str(sentences) == out_sentences
