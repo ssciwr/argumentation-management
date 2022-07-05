@@ -179,7 +179,7 @@ def test_compare_tokens(get_doc):
 def test_write_vrt():
     mystring = "abcdefgh"
     myfile = "test/out/test"
-    be.OutObject.write_vrt(myfile, mystring)
+    be.OutObject.write_vrt(myfile, [mystring])
     test_string = be.PrepareRun.get_text(myfile + ".vrt")
     assert test_string == mystring
 
@@ -187,7 +187,7 @@ def test_write_vrt():
 def test_write_xml():
     mystring = "abcdefgh"
     myfile = "test/out/test"
-    be.OutObject.write_xml("test", myfile, mystring)
+    be.OutObject.write_xml("test", myfile, [mystring])
     mystring2 = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?><corpus name="test"><text>"""
     mystring2 += mystring
     mystring2 += """</text></corpus>"""
