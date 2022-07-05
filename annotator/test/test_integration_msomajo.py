@@ -1,6 +1,6 @@
 import pytest
-import base as be
-import msomajo as mso
+import annotator.base as be
+import annotator.msomajo as mso
 
 
 @pytest.fixture

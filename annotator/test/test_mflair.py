@@ -1,6 +1,6 @@
 import pytest
-import base as be
-import mflair as mf
+import annotator.base as be
+import annotator.mflair as mf
 
 
 @pytest.fixture

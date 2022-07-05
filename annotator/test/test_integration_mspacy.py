@@ -1,7 +1,7 @@
 import pytest
-import base as be
-import pipe as pe
-import mspacy as msp
+import annotator.base as be
+import annotator.pipe as pe
+import annotator.mspacy as msp
 
 
 @pytest.fixture()

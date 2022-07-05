@@ -2,9 +2,9 @@ import pytest
 import unittest.mock
 import json
 import os
-import base as be
-import mtreetagger as mtt
-import mspacy as msp
+import annotator.base as be
+import annotator.mtreetagger as mtt
+import annotator.mspacy as msp
 import tempfile
 
 

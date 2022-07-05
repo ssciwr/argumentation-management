@@ -1,6 +1,6 @@
 import pytest
-import base as be
-import pipe as pe
+import annotator.base as be
+import annotator.pipe as pe
 
 procstring = "tokenize, pos, lemma"
 

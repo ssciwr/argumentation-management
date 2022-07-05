@@ -1,6 +1,6 @@
 import pytest
-import main as mn
-import base as be
+import annotator.main as mn
+import annotator.base as be
 
 
 @pytest.fixture
