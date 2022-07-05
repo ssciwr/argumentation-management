@@ -6,12 +6,12 @@ import mspacy as msp
 
 @pytest.fixture()
 def load_data():
-    data = be.PrepareRun.get_text("./test/data/example_de.txt")
+    data = be.PrepareRun.get_text("test/data/example_de.txt")
     return data
 
 
 def test_integration_mspacy(load_data):
-    mydict = be.PrepareRun.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("data/input")
     mydict["language"] = "en"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "fast"

@@ -5,7 +5,7 @@ import msomajo as mso
 
 @pytest.fixture
 def setup():
-    mydict = be.PrepareRun.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("data/input")
     mydict["input"] = "./test/data/example_en.txt"
     be.PrepareRun.validate_input_dict(mydict)
     text = be.PrepareRun.get_text(mydict["input"])

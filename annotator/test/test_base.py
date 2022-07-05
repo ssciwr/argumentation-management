@@ -126,7 +126,7 @@ def get_obj_dec():
 
 @pytest.mark.dictname("./test/data/input")
 def test_load_input_dict(init_dict):
-    mydict = be.PrepareRun.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("./data/input")
     assert mydict == init_dict
 
 
