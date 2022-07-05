@@ -1,5 +1,5 @@
 import treetaggerwrapper as ttw
-import base as be
+import annotator.base as be
 
 
 class MyTreetagger:

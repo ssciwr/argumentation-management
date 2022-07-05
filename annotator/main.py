@@ -1,10 +1,10 @@
-import base as be
-import pipe as pe
-import mspacy as msp
-import mstanza as msa
-import msomajo as mso
-import mtreetagger as mtt
-import mflair as mf
+import annotator.base as be
+import annotator.pipe as pe
+import annotator.mspacy as msp
+import annotator.mstanza as msa
+import annotator.msomajo as mso
+import annotator.mtreetagger as mtt
+import annotator.mflair as mf
 
 
 def call_spacy(mydict, data, islist=False, style="STR"):

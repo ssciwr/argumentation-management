@@ -1,6 +1,3 @@
-from multiprocessing.sharedctypes import Value
-
-
 class SetConfig:
     """Sets the options in the config dictionaries for each tool.
 

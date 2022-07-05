@@ -1,5 +1,5 @@
 import spacy as sp
-import base as be
+import annotator.base as be
 
 
 class MySpacy:

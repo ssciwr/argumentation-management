@@ -1,7 +1,7 @@
 # from tracemalloc import start
 from flair.data import Sentence
 from flair.models import SequenceTagger, MultiTagger
-import base as be
+import annotator.base as be
 
 
 class MyFlair:
