@@ -1,7 +1,7 @@
 import pytest
-import annotator.base as be
-import annotator.pipe as pe
-import annotator.mstanza as ma
+import nlpannotator.base as be
+import nlpannotator.pipe as pe
+import nlpannotator.mstanza as ma
 from tempfile import TemporaryDirectory
 
 

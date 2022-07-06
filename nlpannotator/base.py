@@ -4,7 +4,7 @@ import jsonschema
 import os
 import importlib_resources
 
-pkg = importlib_resources.files("annotator")
+pkg = importlib_resources.files("nlpannotator")
 
 
 class PrepareRun:

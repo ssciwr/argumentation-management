@@ -1,5 +1,5 @@
-import annotator.base as be
-import annotator.mtreetagger as mtt
+import nlpannotator.base as be
+import nlpannotator.mtreetagger as mtt
 
 
 def test_integration_mtreetagger():

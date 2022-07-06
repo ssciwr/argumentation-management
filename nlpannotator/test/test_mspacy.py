@@ -1,7 +1,7 @@
 import pytest
 import spacy as sp
-import annotator.base as be
-import annotator.mspacy as msp
+import nlpannotator.base as be
+import nlpannotator.mspacy as msp
 
 
 @pytest.fixture()

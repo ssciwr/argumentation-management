@@ -1,6 +1,6 @@
 import pytest
-import annotator.base as be
-import annotator.mtreetagger as mtt
+import nlpannotator.base as be
+import nlpannotator.mtreetagger as mtt
 
 
 @pytest.fixture

@@ -1,7 +1,7 @@
 import os
 import pytest
-import annotator.base as be
-import annotator.mstanza as ma
+import nlpannotator.base as be
+import nlpannotator.mstanza as ma
 
 mydict_en = be.PrepareRun.load_input_dict("./test/data/test_stanza_en.json")[
     "stanza_dict"

@@ -1,10 +1,10 @@
-import annotator.base as be
-import annotator.pipe as pe
-import annotator.mspacy as msp
-import annotator.mstanza as msa
-import annotator.msomajo as mso
-import annotator.mtreetagger as mtt
-import annotator.mflair as mf
+import nlpannotator.base as be
+import nlpannotator.pipe as pe
+import nlpannotator.mspacy as msp
+import nlpannotator.mstanza as msa
+import nlpannotator.msomajo as mso
+import nlpannotator.mtreetagger as mtt
+import nlpannotator.mflair as mf
 
 
 def call_spacy(mydict, data, islist=False, style="STR"):

@@ -2,9 +2,9 @@ import pytest
 import unittest.mock
 import json
 import os
-import annotator.base as be
-import annotator.mtreetagger as mtt
-import annotator.mspacy as msp
+import nlpannotator.base as be
+import nlpannotator.mtreetagger as mtt
+import nlpannotator.mspacy as msp
 import tempfile
 
 

@@ -1,6 +1,6 @@
 import pytest
-import annotator.base as be
-import annotator.mflair as mf
+import nlpannotator.base as be
+import nlpannotator.mflair as mf
 
 
 @pytest.fixture

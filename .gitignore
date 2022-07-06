@@ -132,7 +132,7 @@ dmypy.json
 data/
 
 #other resources
-annotator/test/models/
+nlpannotator/test/models/
 
 docker/
 !docker/get_models.py
@@ -147,12 +147,12 @@ docker/
 # ./*.vrt
 
 # out folder
-annotator/test/out/
-annotator/test/test_files/test-corpus.vrt
+nlpannotator/test/out/
+nlpannotator/test/test_files/test-corpus.vrt
 
 # corpora and registry folder
-annotator/test/corpora/
-annotator/test/registry/
+nlpannotator/test/corpora/
+nlpannotator/test/registry/
 
 # xml
 # annotator/*.xml

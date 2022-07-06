@@ -1,6 +1,6 @@
 import pytest
-import annotator.base as be
-import annotator.pipe as pe
+import nlpannotator.base as be
+import nlpannotator.pipe as pe
 
 procstring = "tokenize, pos, lemma"
 

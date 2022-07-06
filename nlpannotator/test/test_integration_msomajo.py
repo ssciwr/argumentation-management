@@ -1,6 +1,6 @@
 import pytest
-import annotator.base as be
-import annotator.msomajo as mso
+import nlpannotator.base as be
+import nlpannotator.msomajo as mso
 
 
 @pytest.fixture
