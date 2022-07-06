@@ -107,7 +107,8 @@ call_tool = {
     "flair": call_flair,
 }
 
-if __name__ == "__main__":
+
+def main():
     # load input dict
     mydict = be.PrepareRun.load_input_dict("data/input.json")
     # overwrite defaults for testing purposes
@@ -186,3 +187,7 @@ if __name__ == "__main__":
     # we will skip the encoding for now and instead provide vrt/xml file for user to download
     encode_obj = be.encode_corpus(mydict)
     encode_obj.encode_vrt(ptags, stags)
+
+
+if __name__ == "__main__":
+    main()
