@@ -108,7 +108,7 @@ call_tool = {
 }
 
 
-def main():
+def run():
     # load input dict
     mydict = be.PrepareRun.load_input_dict("data/input.json")
     # overwrite defaults for testing purposes
@@ -117,32 +117,26 @@ def main():
     mydict["tool"] = "somajo, somajo, stanza"
     mydict["processing_type"] = "sentencize, tokenize, pos"
     mydict["language"] = "en"
-    mydict["advanced_options"]["output_dir"] = "./annotator/test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "./annotator/test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "./annotator/test/registry/"
+    mydict["advanced_options"]["output_dir"] = "./nlpannotator/test/out/"
+    mydict["advanced_options"]["corpus_dir"] = "./nlpannotator/test/corpora/"
+    mydict["advanced_options"]["registry_dir"] = "./nlpannotator/test/registry/"
     # output style - vrt = STR or xml = DICT
     mydict["advanced_options"]["output_format"] = "DICT"
     style = mydict["advanced_options"]["output_format"]
     # get the data to be processed
-    data = be.PrepareRun.get_text("./annotator/test/test_files/example_en.txt")
+    data = be.PrepareRun.get_text("./nlpannotator/test/data/example_en.txt")
     # validate the input dict
     be.PrepareRun.validate_input_dict(mydict)
     # activate the input dict
     pe.SetConfig(mydict)
     # now we still need to add the order of steps - processors was ordered list
     # need to access that and tools to call tools one by one
-    out_obj = []
     data_islist = False
     ptags = None
     stags = None
-    my_todo_list = [[i, j] for i, j in zip(mydict["tool"], mydict["processing_type"])]
     # we need ordered "set"
     tools = set()  # a temporary lookup set
-    ordered_tools = [
-        mytool
-        for mytool in mydict["tool"]
-        if mytool not in tools and tools.add(mytool) is None
-    ]
+    ordered_tools = [mytool for mytool in mydict["tool"] if mytool not in tools]
     for mytool in ordered_tools:
         # here we do the object generation
         # we do not want to call same tools multiple times
@@ -190,4 +184,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()

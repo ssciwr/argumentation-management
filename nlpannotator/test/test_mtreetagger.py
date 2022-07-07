@@ -87,11 +87,6 @@ def test_outtreetagger_init(get_doc):
     assert not out_obj.stags
 
 
-def test_outtreetagger_iterate(get_doc):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
-    # to be completed TODO
-
-
 def test_assemble_output_tokens(get_doc, test_en):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
