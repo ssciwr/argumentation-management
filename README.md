@@ -1,9 +1,11 @@
 # Corpus and argumentation
 
+![Version](https://img.shields.io/pypi/v/nlpannotator)
 ![License: MIT](https://img.shields.io/github/license/ssciwr/argumentation-management)
-![GitHub Workflow Status](https://github.com/ssciwr/argumentation-management/actions/workflows/ci.yml/badge.svg)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ssciwr/argumentation-management/CI)
 ![codecov](https://img.shields.io/codecov/c/github/ssciwr/argumentation-management)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ssciwr_argumentation-management&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ssciwr_argumentation-management)
+![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ssciwr_argumentation-management&metric=alert_status)
+![Language](https://img.shields.io/github/languages/top/ssciwr/argumentation-management)
 
 *This is a project for an embedded workflow to analyse argumentation structures in different languages and across different input media and is currently under development.*
 
