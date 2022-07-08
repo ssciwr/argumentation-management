@@ -15,8 +15,8 @@ class SetConfig:
             "manual": self._pipe_manual,
         }
         self.accurate_dict = {
-            "sentencize": "stanza",
-            "tokenize": "stanza",
+            "sentencize": "somajo",
+            "tokenize": "somajo",
             "pos": "stanza",
             "lemma": "stanza",
             "ner": "stanza",

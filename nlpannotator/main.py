@@ -108,23 +108,11 @@ call_tool = {
 }
 
 
-def run():
+def run(path_json, path_txt):
     # load input dict
-    mydict = be.PrepareRun.load_input_dict("data/input.json")
-    # overwrite defaults for testing purposes
-    mydict["processing_option"] = "manual"
-    # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "somajo, somajo, stanza"
-    mydict["processing_type"] = "sentencize, tokenize, pos"
-    mydict["language"] = "en"
-    mydict["advanced_options"]["output_dir"] = "./nlpannotator/test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "./nlpannotator/test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "./nlpannotator/test/registry/"
-    # output style - vrt = STR or xml = DICT
-    mydict["advanced_options"]["output_format"] = "DICT"
-    style = mydict["advanced_options"]["output_format"]
+    mydict = be.PrepareRun.load_input_dict(path_json)
     # get the data to be processed
-    data = be.PrepareRun.get_text("./nlpannotator/test/data/example_en.txt")
+    data = be.PrepareRun.get_text(path_txt)
     # validate the input dict
     be.PrepareRun.validate_input_dict(mydict)
     # activate the input dict
@@ -134,9 +122,19 @@ def run():
     data_islist = False
     ptags = None
     stags = None
+    if mydict["advanced_options"]["output_format"] == "vrt":
+        style = "STR"
+    elif mydict["advanced_options"]["output_format"] == "xml":
+        style = "DICT"
+    else:
+        raise ValueError("Specified output format not recognized!")
     # we need ordered "set"
     tools = set()  # a temporary lookup set
-    ordered_tools = [mytool for mytool in mydict["tool"] if mytool not in tools]
+    ordered_tools = [
+        mytool
+        for mytool in mydict["tool"]
+        if mytool not in tools and tools.add(mytool) is None
+    ]
     for mytool in ordered_tools:
         # here we do the object generation
         # we do not want to call same tools multiple times
@@ -179,9 +177,11 @@ def run():
         # write out to .xml
         be.OutObject.write_xml(mydict["corpus_name"], outfile, out)
     # we will skip the encoding for now and instead provide vrt/xml file for user to download
-    encode_obj = be.encode_corpus(mydict)
-    encode_obj.encode_vrt(ptags, stags)
+    # encode_obj = be.encode_corpus(mydict)
+    # encode_obj.encode_vrt(ptags, stags)
 
 
 if __name__ == "__main__":
-    run()
+    path_json = "./nlpannotator/data/input.json"
+    path_txt = "./nlpannotator/test/data/example_en.txt"
+    run(path_json, path_txt)

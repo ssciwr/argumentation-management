@@ -4,12 +4,12 @@
     "corpus_name": "test-corpus",
     "language": "en",
     "processing_option": "fast",
-    "processing_type": "tokenize",
+    "processing_type": "sentencize, tokenize, pos, lemma",
     "advanced_options": {
-        "output_dir": "./test/out/",
-        "output_format": "STR",
-        "corpus_dir": "./test/corpora/",
-        "registry_dir": "./test/registry/",
+        "output_dir": "./nlpannotator/test/out/",
+        "output_format": "xml",
+        "corpus_dir": "./nlpannotator/test/corpora/",
+        "registry_dir": "./nlpannotator/test/registry/",
         "multiprocessing": false,
         "use_GPU": false
     },
