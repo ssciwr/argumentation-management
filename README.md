@@ -1,6 +1,6 @@
 # Corpus and argumentation
 
-[License: MIT](https://img.shields.io/github/license/ssciwr/argumentation-management)
+![License: MIT](https://img.shields.io/github/license/ssciwr/argumentation-management)
 ![GitHub Workflow Status](https://github.com/ssciwr/argumentation-management/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/ssciwr/argumentation-management/branch/main/graph/badge.svg?token=SSG8PQWZ18)](https://codecov.io/gh/ssciwr/argumentation-management)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ssciwr_argumentation-management&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ssciwr_argumentation-management)
