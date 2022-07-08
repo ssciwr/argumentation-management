@@ -1,22 +1,22 @@
 import pytest
-import base as be
-import pipe as pe
-import mspacy as msp
+import nlpannotator.base as be
+import nlpannotator.pipe as pe
+import nlpannotator.mspacy as msp
 
 
 @pytest.fixture()
 def load_data():
-    data = be.PrepareRun.get_text("./test/test_files/example_de.txt")
+    data = be.PrepareRun.get_text("test/data/example_de.txt")
     return data
 
 
 def test_integration_mspacy(load_data):
-    mydict = be.PrepareRun.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("data/input.json")
     mydict["language"] = "en"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "fast"
     mydict["processing_type"] = "tokenize, pos, lemma"
-    mydict["input"] = "./test/test_files/example_en.txt"
+    mydict["input"] = "./test/data/example_en.txt"
     mydict["advanced_options"]["output_dir"] = "./test/out/"
     be.PrepareRun.validate_input_dict(mydict)
     obj = pe.SetConfig(mydict)

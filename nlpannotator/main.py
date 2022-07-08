@@ -1,10 +1,10 @@
-import base as be
-import pipe as pe
-import mspacy as msp
-import mstanza as msa
-import msomajo as mso
-import mtreetagger as mtt
-import mflair as mf
+import nlpannotator.base as be
+import nlpannotator.pipe as pe
+import nlpannotator.mspacy as msp
+import nlpannotator.mstanza as msa
+import nlpannotator.msomajo as mso
+import nlpannotator.mtreetagger as mtt
+import nlpannotator.mflair as mf
 
 
 def call_spacy(mydict, data, islist=False, style="STR"):
@@ -107,34 +107,27 @@ call_tool = {
     "flair": call_flair,
 }
 
-if __name__ == "__main__":
+
+def run(path_json, path_txt):
     # load input dict
-    mydict = be.PrepareRun.load_input_dict("./annotator/input")
-    # overwrite defaults for testing purposes
-    mydict["processing_option"] = "manual"
-    # add a safety check if there are more tools than processors - TODO
-    mydict["tool"] = "somajo, somajo, stanza"
-    mydict["processing_type"] = "sentencize, tokenize, pos"
-    mydict["language"] = "en"
-    mydict["advanced_options"]["output_dir"] = "./annotator/test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "./annotator/test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "./annotator/test/registry/"
-    # output style - vrt = STR or xml = DICT
-    mydict["advanced_options"]["output_format"] = "DICT"
-    style = mydict["advanced_options"]["output_format"]
+    mydict = be.PrepareRun.load_input_dict(path_json)
     # get the data to be processed
-    data = be.PrepareRun.get_text("./annotator/test/test_files/example_en.txt")
+    data = be.PrepareRun.get_text(path_txt)
     # validate the input dict
     be.PrepareRun.validate_input_dict(mydict)
     # activate the input dict
     pe.SetConfig(mydict)
     # now we still need to add the order of steps - processors was ordered list
     # need to access that and tools to call tools one by one
-    out_obj = []
     data_islist = False
     ptags = None
     stags = None
-    my_todo_list = [[i, j] for i, j in zip(mydict["tool"], mydict["processing_type"])]
+    if mydict["advanced_options"]["output_format"] == "vrt":
+        style = "STR"
+    elif mydict["advanced_options"]["output_format"] == "xml":
+        style = "DICT"
+    else:
+        raise ValueError("Specified output format not recognized!")
     # we need ordered "set"
     tools = set()  # a temporary lookup set
     ordered_tools = [
@@ -184,5 +177,11 @@ if __name__ == "__main__":
         # write out to .xml
         be.OutObject.write_xml(mydict["corpus_name"], outfile, out)
     # we will skip the encoding for now and instead provide vrt/xml file for user to download
-    encode_obj = be.encode_corpus(mydict)
-    encode_obj.encode_vrt(ptags, stags)
+    # encode_obj = be.encode_corpus(mydict)
+    # encode_obj.encode_vrt(ptags, stags)
+
+
+if __name__ == "__main__":
+    path_json = "./nlpannotator/data/input.json"
+    path_txt = "./nlpannotator/test/data/example_en.txt"
+    run(path_json, path_txt)

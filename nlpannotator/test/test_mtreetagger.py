@@ -1,6 +1,6 @@
 import pytest
-import base as be
-import mtreetagger as mtt
+import nlpannotator.base as be
+import nlpannotator.mtreetagger as mtt
 
 
 @pytest.fixture
@@ -36,7 +36,7 @@ def test_dict_doc():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     return mydict["treetagger_dict"]
@@ -85,11 +85,6 @@ def test_outtreetagger_init(get_doc):
     assert out_obj.attrnames["proc_sent"] == "na"
     assert out_obj.attrnames["proc_lemma"] == "lemma"
     assert not out_obj.stags
-
-
-def test_outtreetagger_iterate(get_doc):
-    out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
-    # to be completed TODO
 
 
 def test_assemble_output_tokens(get_doc, test_en):

@@ -1,5 +1,5 @@
 from somajo import SoMaJo
-import base as be
+import nlpannotator.base as be
 
 
 class MySomajo:

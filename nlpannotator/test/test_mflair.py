@@ -1,6 +1,6 @@
 import pytest
-import base as be
-import mflair as mf
+import nlpannotator.base as be
+import nlpannotator.mflair as mf
 
 
 @pytest.fixture
@@ -29,7 +29,7 @@ def test_en():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     mydict["flair_dict"]["lang"] = "en"
     mydict["flair_dict"]["model"] = "pos"
     mydict["flair_dict"]["processors"] = ["tokenize", "pos"]

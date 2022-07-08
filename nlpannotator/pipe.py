@@ -1,6 +1,3 @@
-from multiprocessing.sharedctypes import Value
-
-
 class SetConfig:
     """Sets the options in the config dictionaries for each tool.
 
@@ -18,8 +15,8 @@ class SetConfig:
             "manual": self._pipe_manual,
         }
         self.accurate_dict = {
-            "sentencize": "stanza",
-            "tokenize": "stanza",
+            "sentencize": "somajo",
+            "tokenize": "somajo",
             "pos": "stanza",
             "lemma": "stanza",
             "ner": "stanza",

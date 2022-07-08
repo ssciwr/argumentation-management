@@ -1,12 +1,12 @@
 import pytest
-import base as be
-import msomajo as mso
+import nlpannotator.base as be
+import nlpannotator.msomajo as mso
 
 
 @pytest.fixture
 def setup():
-    mydict = be.PrepareRun.load_input_dict("input")
-    mydict["input"] = "./test/test_files/example_en.txt"
+    mydict = be.PrepareRun.load_input_dict("data/input.json")
+    mydict["input"] = "./test/data/example_en.txt"
     be.PrepareRun.validate_input_dict(mydict)
     text = be.PrepareRun.get_text(mydict["input"])
 

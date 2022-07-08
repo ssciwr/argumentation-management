@@ -2,9 +2,9 @@ import pytest
 import unittest.mock
 import json
 import os
-import base as be
-import mtreetagger as mtt
-import mspacy as msp
+import nlpannotator.base as be
+import nlpannotator.mtreetagger as mtt
+import nlpannotator.mspacy as msp
 import tempfile
 
 
@@ -22,7 +22,7 @@ def init_dict(request):
         print("Missing a marker for reading the input dictionary.")
     else:
         name = marker.args[0]
-    with open("{}.json".format(name)) as f:
+    with open("{}".format(name)) as f:
         mydict = json.load(f)
     return mydict
 
@@ -34,9 +34,10 @@ def data_en():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
+    print(mydict)
     return mydict["treetagger_dict"], mydict["spacy_dict"]
 
 
@@ -124,13 +125,13 @@ def get_obj_dec():
     return obj
 
 
-@pytest.mark.dictname("./test/test_files/input")
+@pytest.mark.dictname("./test/data/input.json")
 def test_load_input_dict(init_dict):
-    mydict = be.PrepareRun.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("./data/input.json")
     assert mydict == init_dict
 
 
-@pytest.mark.dictname("./test/test_files/input2")
+@pytest.mark.dictname("./test/data/input2.json")
 def test_validate_input_dict(init_dict):
     be.PrepareRun.validate_input_dict(init_dict)
 
@@ -178,7 +179,7 @@ def test_compare_tokens(get_doc):
 def test_write_vrt():
     mystring = "abcdefgh"
     myfile = "test/out/test"
-    be.OutObject.write_vrt(myfile, mystring)
+    be.OutObject.write_vrt(myfile, [mystring])
     test_string = be.PrepareRun.get_text(myfile + ".vrt")
     assert test_string == mystring
 
@@ -186,7 +187,7 @@ def test_write_vrt():
 def test_write_xml():
     mystring = "abcdefgh"
     myfile = "test/out/test"
-    be.OutObject.write_xml("test", myfile, mystring)
+    be.OutObject.write_xml("test", myfile, [mystring])
     mystring2 = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?><corpus name="test"><text>"""
     mystring2 += mystring
     mystring2 += """</text></corpus>"""

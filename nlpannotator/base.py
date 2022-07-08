@@ -2,6 +2,9 @@
 import json
 import jsonschema
 import os
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator")
 
 
 class PrepareRun:
@@ -37,39 +40,17 @@ class PrepareRun:
         Args:
                 name[str]: Name of .json file (without file extension)."""
 
-        with open("{}.json".format(name)) as f:
+        with open("{}".format(name)) as f:
             mydict = json.load(f)
         return mydict
 
     # load the dictionary schema and validate against
     @staticmethod
     def validate_input_dict(dict_in: dict) -> None:
-        with open(
-            "{}.json".format("input_schema"),
-            # "{}.json".format("./annotator/input_schema"),
-            "r",
-        ) as f:
+        file = pkg / "data" / "input_schema.json"
+        with file.open() as f:
             myschema = json.load(f)
         jsonschema.validate(instance=dict_in, schema=myschema)
-
-    # @staticmethod
-    # def get_encoding(dict_in: dict) -> dict:
-    #     """Function to fetch the parameters needed for encoding from the input.json."""
-
-    #     new_dict = {}
-
-    #     for key, value in dict_in.items():
-
-    #         if type(value) != dict or type(value) == dict and key == "advanced_options":
-    #             new_dict[key] = value
-    #         elif type(value) == dict and key == "advanced_options":
-    #             new_dict[key] = value
-
-    #     new_dict["processors"] = dict_in["{}_dict".format(dict_in["tool"])][
-    #     "processors"
-    #     ]
-
-    #     return new_dict
 
 
 # set the string to be used for undefined tags
@@ -146,7 +127,7 @@ class OutObject:
             # print("Checking for tokens {} {}".format(token_tool.text, token_out[0]))
             # check that the text is the same
             if token_tool.text != token_out[0][0:mylen]:
-                raise Exception(
+                raise RuntimeError(
                     "Found different token than in out! - {} and {}. Please check your inputs!".format(
                         token_tool.text, token_out[0][0:mylen]
                     )
@@ -181,9 +162,8 @@ class OutObject:
     @staticmethod
     def get_names() -> dict:
         """Load attribute names for specific tools."""
-
-        mydict = PrepareRun.load_input_dict("attribute_names")
-        # mydict = PrepareRun.load_input_dict("./annotator/attribute_names")
+        file = pkg / "data" / "attribute_names.json"
+        mydict = PrepareRun.load_input_dict(file)
         return mydict
 
     # This is currently not working properly

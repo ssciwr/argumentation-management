@@ -6,6 +6,11 @@
         "title": "Input file:",
         "type": "string"
     },
+    "tool": {
+      "default": "spacy",
+      "title": "Tool used for annotation:",
+      "type": "string"
+  },
     "corpus_name": {
       "default": "test",
       "title": "Name of corpus to be annotated:",
@@ -29,17 +34,6 @@
       "title": "Document language:",
       "type": "string"
     },
-    "document_type": {
-      "default": "text",
-      "enum": [
-        "text",
-        "modern",
-        "scientific",
-        "historic"
-      ],
-      "title": "Document type:",
-      "type": "string"
-    },
     "processing_option": {
       "default": "fast",
       "enum": [
@@ -59,22 +53,22 @@
   "advanced_options": {
     "properties": {
       "output_dir": {
-        "default": "out/output",
+        "default": "out/",
         "title": "Output directory:",
         "type": "string"
       },
       "output_format": {
-        "default": "STR",
+        "default": "vrt",
         "title": "Output file format:",
         "type": "string"
       },
       "corpus_dir": {
-        "default": "/home/jovyan/shared/corpora/",
+        "default": "corpora/",
         "title": "Name of corpora directory for cwb:",
         "type": "string"
       },
       "registry_dir": {
-        "default": "/home/jovyan/shared/registry/",
+        "default": "registry/",
         "title": "Name of registry directory for cwb:",
         "type": "string"
       },

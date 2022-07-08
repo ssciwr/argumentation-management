@@ -1,5 +1,5 @@
 import treetaggerwrapper as ttw
-import base as be
+import nlpannotator.base as be
 
 
 class MyTreetagger:

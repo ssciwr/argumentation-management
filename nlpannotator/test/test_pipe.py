@@ -1,14 +1,13 @@
-from webbrowser import get
 import pytest
-import base as be
-import pipe as pe
+import nlpannotator.base as be
+import nlpannotator.pipe as pe
 
 procstring = "tokenize, pos, lemma"
 
 
 @pytest.fixture()
 def get_mydict():
-    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     return mydict
 
 
@@ -24,10 +23,11 @@ def test_pipe_accurate(get_mydict):
     get_mydict["processing_option"] = "accurate"
     get_mydict["processing_type"] = " lemma, tokenize, pos  "
     obj = pe.SetConfig(get_mydict)
-    assert obj.tool == ["stanza", "stanza", "stanza"]
+    assert obj.tool == ["somajo", "stanza", "stanza"]
     assert obj.processors == ["tokenize", "pos", "lemma"]
     assert get_mydict["spacy_dict"]["processors"] == []
-    assert get_mydict["stanza_dict"]["processors"] == "tokenize,pos,lemma"
+    assert get_mydict["somajo_dict"]["processors"] == ["tokenize"]
+    assert get_mydict["stanza_dict"]["processors"] == "pos,lemma"
 
 
 def test_pipe_manual_multiple(get_mydict):
@@ -72,7 +72,7 @@ def test_get_tools(get_mydict):
     processors = obj._get_processors(get_mydict["processors"])
     obj._order_processors(processors)
     obj._get_tools()
-    assert obj.tool == ["stanza", "stanza", "stanza"]
+    assert obj.tool == ["somajo", "stanza", "stanza"]
 
 
 def test_set_model_spacy(get_mydict):

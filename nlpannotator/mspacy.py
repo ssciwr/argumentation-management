@@ -1,5 +1,5 @@
 import spacy as sp
-import base as be
+import nlpannotator.base as be
 
 
 class MySpacy:

@@ -1,11 +1,11 @@
 import pytest
-import main as mn
-import base as be
+import nlpannotator.main as mn
+import nlpannotator.base as be
 
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/test_files/input")
+    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
     return mydict
 
 

@@ -1,13 +1,13 @@
-import base as be
-import mtreetagger as mtt
+import nlpannotator.base as be
+import nlpannotator.mtreetagger as mtt
 
 
 def test_integration_mtreetagger():
     data = "This is a sentence."
-    mydict = be.PrepareRun.load_input_dict("input")
+    mydict = be.PrepareRun.load_input_dict("data/input.json")
     mydict["tool"] = "treetagger"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
-    mydict["input"] = "./test/test_files/example_en.txt"
+    mydict["input"] = "./test/data/example_en.txt"
     mydict["advanced_options"]["output_dir"] = "./test/out/"
 
     treetagger_dict = mydict["treetagger_dict"]
