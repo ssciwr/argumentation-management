@@ -5,9 +5,9 @@
     "language": "en",
     "processing_option": "fast",
     "processing_type": "sentencize, tokenize, pos, lemma",
+    "output_format": "xml",
     "advanced_options": {
         "output_dir": "./nlpannotator/test/out/",
-        "output_format": "xml",
         "corpus_dir": "./nlpannotator/test/corpora/",
         "registry_dir": "./nlpannotator/test/registry/",
         "multiprocessing": false,
