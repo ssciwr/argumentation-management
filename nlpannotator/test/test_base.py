@@ -213,27 +213,6 @@ def test_encode_vrt(get_obj):
     assert line == test_line
 
 
-def test_setup(monkeypatch, get_obj):
-    tmp = tempfile.TemporaryDirectory()
-    obj = get_obj
-    obj.encodedir = tmp.name
-    my_attr = "builtins.input"
-    monkeypatch.setattr(my_attr, lambda _: "y")
-    assert obj.setup() is True
-    answers = iter(["n", "n"])
-    monkeypatch.setattr(my_attr, lambda _: next(answers))
-    assert obj.setup() is False
-    answers = iter(["n", "y", "n", "{}".format(tmp.name), "test", "test", "y"])
-    monkeypatch.setattr(my_attr, lambda _: next(answers))
-    assert obj.setup() is True
-    answers = iter(["n", "y", "y", "y"])
-    monkeypatch.setattr(my_attr, lambda _: next(answers))
-    assert obj.setup() is True
-    answers = iter(["n", "y", "y", "n", "n"])
-    monkeypatch.setattr(my_attr, lambda _: next(answers))
-    assert obj.setup() is False
-
-
 @unittest.mock.patch("os.system")
 def test_decode(os_system, get_path, get_obj_dec):
 
