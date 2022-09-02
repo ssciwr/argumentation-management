@@ -9,7 +9,8 @@ def test_integration_mtreetagger():
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     mydict["input"] = "./test/data/example_en.txt"
     mydict["advanced_options"]["output_dir"] = "./test/out/"
-
+    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
+    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
     treetagger_dict = mydict["treetagger_dict"]
     annotated = mtt.MyTreetagger(treetagger_dict)
     annotated = annotated.apply_to(data)
@@ -18,9 +19,9 @@ def test_integration_mtreetagger():
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]
     out = out_obj.assemble_output_tokens(out)
     ptags = out_obj.ptags
-    stags = out_obj.get_stags()
+    stags = ["s"]
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     out_obj.write_vrt(outfile, out)
-    encode_obj = be.encode_corpus(mydict)
+    encode_obj = be.EncodeCorpus(mydict)
     encode_obj.encode_vrt(ptags, stags)

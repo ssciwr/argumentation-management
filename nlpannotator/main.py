@@ -122,9 +122,9 @@ def run(path_json, path_txt):
     data_islist = False
     ptags = None
     stags = None
-    if mydict["advanced_options"]["output_format"] == "vrt":
+    if mydict["output_format"] == "vrt":
         style = "STR"
-    elif mydict["advanced_options"]["output_format"] == "xml":
+    elif mydict["output_format"] == "xml":
         style = "DICT"
     else:
         raise ValueError("Specified output format not recognized!")
@@ -154,6 +154,11 @@ def run(path_json, path_txt):
             if mydict["tool"].count(mytool) > 2:
                 print("Further annotation with tool {} ...".format(mytool))
                 out = my_out_obj.assemble_output_tokens(out)
+                ptags_temp = my_out_obj.ptags
+                if ptags is not None:
+                    ptags += ptags_temp
+                else:
+                    ptags = ptags_temp
             data_islist = True
             stags = my_out_obj.stags
         elif data_islist:
@@ -168,7 +173,8 @@ def run(path_json, path_txt):
                 ptags += ptags_temp
             else:
                 ptags = ptags_temp
-
+    print(mydict["advanced_options"]["output_dir"])
+    print(mydict["corpus_name"])
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     if style == "STR":
         # write out to .vrt
@@ -177,8 +183,10 @@ def run(path_json, path_txt):
         # write out to .xml
         be.OutObject.write_xml(mydict["corpus_name"], outfile, out)
     # we will skip the encoding for now and instead provide vrt/xml file for user to download
-    # encode_obj = be.encode_corpus(mydict)
-    # encode_obj.encode_vrt(ptags, stags)
+    if mydict["encoding"] == "yes":
+        print("Encoding the corpus into cwb...")
+        encode_obj = be.EncodeCorpus(mydict)
+        encode_obj.encode_vrt(ptags, stags)
 
 
 if __name__ == "__main__":

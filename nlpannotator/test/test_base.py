@@ -114,14 +114,14 @@ test_dict = {
 
 
 @pytest.fixture
-def get_obj():
-    obj = be.encode_corpus(test_dict)
+def get_obj_enc():
+    obj = be.EncodeCorpus(test_dict)
     return obj
 
 
 @pytest.fixture
 def get_obj_dec():
-    obj = be.decode_corpus(test_dict)
+    obj = be.DecodeCorpus(test_dict)
     return obj
 
 
@@ -176,6 +176,19 @@ def test_compare_tokens(get_doc):
     assert not out_obj._compare_tokens(mytoken1, mytoken2)
 
 
+def test_get_names():
+    attrdict = be.OutObject.get_names()
+    assert attrdict["stanza_names"]["proc_sent"] == "tokenize"
+    assert attrdict["spacy_names"]["proc_lemma"] == "lemmatizer"
+
+
+def test_purge():
+    inputs = [" ", "  "]
+    outputs = ["", ""]
+    for input, output in zip(inputs, outputs):
+        assert be.OutObject.purge(input) == output
+
+
 def test_write_vrt():
     mystring = "abcdefgh"
     myfile = "test/out/test"
@@ -195,15 +208,54 @@ def test_write_xml():
     assert test_string == mystring2
 
 
-def test_purge():
-    inputs = [" ", "  "]
-    outputs = ["", ""]
-    for input, output in zip(inputs, outputs):
-        assert be.OutObject.purge(input) == output
+def test_fix_path():
+    path = "/home/jovyan/"
+    assert be.EncodeCorpus.fix_path(path) == path
+    path = "/home/jovyan"
+    assert be.EncodeCorpus.fix_path(path) == path + "/"
 
 
-def test_encode_vrt(get_obj):
-    obj = get_obj
+def test_encode_corpus(get_obj_enc):
+    assert get_obj_enc.tool == test_dict["tool"]
+    assert get_obj_enc.jobs == test_dict["processing_type"]
+    path = test_dict["advanced_options"]["corpus_dir"]
+    path = be.EncodeCorpus.fix_path(path)
+    assert get_obj_enc.corpusdir == path
+    assert get_obj_enc.encodedir == path
+    path = test_dict["advanced_options"]["registry_dir"]
+    path = be.EncodeCorpus.fix_path(path)
+    assert get_obj_enc.regdir == path
+    assert get_obj_enc.corpusname == test_dict["corpus_name"]
+    outname = test_dict["advanced_options"]["output_dir"] + test_dict["corpus_name"]
+    assert get_obj_enc.outname == outname
+
+
+def test_get_s_attributes(get_obj_enc):
+    stags = ["s"]
+    line = ""
+    line = get_obj_enc._get_s_attributes(line, stags)
+    assert line == "-S s "
+    line = "something "
+    line = get_obj_enc._get_s_attributes(line, stags)
+    assert line == "something -S s "
+
+
+def test_get_p_attributes(get_obj_enc):
+    ptags = ["lemma"]
+    line = ""
+    line = get_obj_enc._get_p_attributes(line, ptags)
+    assert line == "-P lemma "
+    line = "something "
+    line = get_obj_enc._get_p_attributes(line, ptags)
+    assert line == "something -P lemma "
+
+
+def test_setup(get_obj_enc):
+    assert get_obj_enc.setup()
+
+
+def test_encode_vrt(get_obj_enc):
+    obj = get_obj_enc
     line = " "
     line = obj._get_s_attributes(line, stags=["s"])
     test_line = " -S s "
@@ -211,27 +263,6 @@ def test_encode_vrt(get_obj):
     line = obj._get_p_attributes(line, ptags=["pos", "lemma"])
     test_line += "-P pos -P lemma "
     assert line == test_line
-
-
-def test_setup(monkeypatch, get_obj):
-    tmp = tempfile.TemporaryDirectory()
-    obj = get_obj
-    obj.encodedir = tmp.name
-    my_attr = "builtins.input"
-    monkeypatch.setattr(my_attr, lambda _: "y")
-    assert obj.setup() is True
-    answers = iter(["n", "n"])
-    monkeypatch.setattr(my_attr, lambda _: next(answers))
-    assert obj.setup() is False
-    answers = iter(["n", "y", "n", "{}".format(tmp.name), "test", "test", "y"])
-    monkeypatch.setattr(my_attr, lambda _: next(answers))
-    assert obj.setup() is True
-    answers = iter(["n", "y", "y", "y"])
-    monkeypatch.setattr(my_attr, lambda _: next(answers))
-    assert obj.setup() is True
-    answers = iter(["n", "y", "y", "n", "n"])
-    monkeypatch.setattr(my_attr, lambda _: next(answers))
-    assert obj.setup() is False
 
 
 @unittest.mock.patch("os.system")

@@ -289,7 +289,7 @@ class OutObject:
 
 # encode the generated files
 # Right now we don't need this
-class encode_corpus:
+class EncodeCorpus:
     """Encode the vrt/xml files for cwb."""
 
     def __init__(self, mydict: dict) -> None:
@@ -327,65 +327,24 @@ class encode_corpus:
 
     # this needs refactor TODO
     def setup(self) -> bool:
-        """Funtion to check wheter a corpus directory exists. If existing directory is found,
-        requires input of "y" to overwrite existing files. Maybe add argument to force overwrite later?.
-        If directory is not found, an empty directory is created."""
+        """Funtion to check wheter a corpus directory exists. If directory is not found, an empty directory is created."""
 
-        options = "[y/n]"
         # check if corpus directory exists
         print("+++ Checking for corpus +++")
         if os.path.isdir(self.encodedir):
-            # if yes, ask for overwrite
-            message = "Overwrite {} and {}?".format(
-                self.encodedir, self.regdir + self.corpusname
-            )
-            purge = self.query(message, options)
-            # only overwrite if "y" to prevent accidental overwrite of data
-            if purge == "y":
-                print("+++ Purging old corpus +++")
-                if os.path.isfile(self.regdir + self.corpusname):
-                    command = "rm {}".format(self.regdir + self.corpusname)
-                    print(command)
-                    os.system(command)
-                command = "rm -r {}".format(self.encodedir)
+            # if yes, overwrite
+            print("+++ Purging old corpus +++")
+            if os.path.isfile(self.regdir + self.corpusname):
+                command = "rm {}".format(self.regdir + self.corpusname)
                 print(command)
                 os.system(command)
-                print("+++ Purged old corpus! +++")
-                os.system("mkdir {}".format(self.encodedir))
-                return True
+            command = "rm -r {}".format(self.encodedir)
+            print(command)
+            os.system(command)
+            print("+++ Purged old corpus! +++")
+            os.system("mkdir {}".format(self.encodedir))
+            return True
             # if no permission is granted we ask what to do
-            else:
-                while True:
-                    cont = self.query("Continue encoding?", options)
-                    if cont == "y":
-                        keep = self.query("Keep old parameters?", options)
-                        if keep == "y":
-                            return self.setup()
-                        elif keep == "n":
-                            self.corpusdir = self.fix_path(
-                                self.query("Please provide corpus directory path: ", "")
-                            )
-                            print("Set new encode directory: {}".format(self.corpusdir))
-                            self.regdir = self.fix_path(
-                                self.query(
-                                    "Please provide registry directory path: ", ""
-                                )
-                            )
-                            print("Set new registry directory: {}".format(self.regdir))
-                            self.corpusname = self.query(
-                                "Please provide corpusname: ", ""
-                            )
-                            print("Set new corpusname: {}".format(self.corpusname))
-                            self.encodedir = self.corpusdir + self.corpusname
-                            return self.setup()
-                        else:
-                            pass
-                    elif cont == "n":
-                        return False
-                    else:
-                        cont = self.query(
-                            "Invalid input, please type 'y' or 'n'.", options
-                        )
 
         elif not os.path.isdir(self.encodedir):
             # if the directory doesn't exist we create one
@@ -417,6 +376,7 @@ class encode_corpus:
         line = " "
         # find out which options are to be encoded
         line = self._get_s_attributes(line, stags)
+        print(stags, ptags, "have been found")
         line = self._get_p_attributes(line, ptags)
         purged = self.setup()
         if purged:
@@ -533,8 +493,8 @@ class encode_corpus:
 
 
 # this needs refactor TODO
-class decode_corpus(encode_corpus):
-    """Class to decode corpus from cwb. Inherits encode_corpus."""
+class DecodeCorpus(EncodeCorpus):
+    """Class to decode corpus from cwb. Inherits EncodeCorpus."""
 
     def __init__(self, mydict) -> None:
         super().__init__(mydict)

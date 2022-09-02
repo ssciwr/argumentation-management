@@ -48,6 +48,15 @@
       "default": "tokenize",
       "title": "Annotation type:",
       "type": "string"
+    },
+    "encoding": {
+      "default": "no",
+      "enum": [
+        "yes",
+        "no"
+      ],
+      "title": "Encode produced text file into cwb",
+      "type": "string"
     }
   },
   "advanced_options": {

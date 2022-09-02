@@ -31,5 +31,5 @@ def test_integration_msomajo(setup):
     ptags = None
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     be.OutObject.write_vrt(outfile, out)
-    encode_obj = be.encode_corpus(mydict)
+    encode_obj = be.EncodeCorpus(mydict)
     encode_obj.encode_vrt(ptags, stags)

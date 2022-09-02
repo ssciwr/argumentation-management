@@ -19,8 +19,10 @@ def test_integration_mstanza(load_data):
     mydict["language"] = "de"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "manual"
-    mydict["processing_type"] = "tokenize,pos,mwt,lemma"
+    mydict["processing_type"] = "sentencize,tokenize,pos,lemma"
     mydict["advanced_options"]["output_dir"] = "./test/out/"
+    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
+    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
     # validate the input dict
     be.PrepareRun.validate_input_dict(mydict)
     # load the pipe object for updating dict with settings
@@ -41,5 +43,5 @@ def test_integration_mstanza(load_data):
     # write out to .vrt
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     out_obj.write_vrt(outfile, out)
-    encode_obj = be.encode_corpus(mydict)
+    encode_obj = be.EncodeCorpus(mydict)
     encode_obj.encode_vrt(ptags, stags)
