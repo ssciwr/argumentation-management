@@ -176,6 +176,12 @@ def test_compare_tokens(get_doc):
     assert not out_obj._compare_tokens(mytoken1, mytoken2)
 
 
+def test_get_names():
+    attrdict = be.OutObject.get_names()
+    assert attrdict["stanza_names"]["proc_sent"] == "tokenize"
+    assert attrdict["spacy_names"]["proc_lemma"] == "lemmatizer"
+
+
 def test_purge():
     inputs = [" ", "  "]
     outputs = ["", ""]
@@ -202,12 +208,50 @@ def test_write_xml():
     assert test_string == mystring2
 
 
+def test_fix_path():
+    path = "/home/jovyan/"
+    assert be.EncodeCorpus.fix_path(path) == path
+    path = "/home/jovyan"
+    assert be.EncodeCorpus.fix_path(path) == path + "/"
+
+
 def test_encode_corpus(get_obj_enc):
-    pass
+    assert get_obj_enc.tool == test_dict["tool"]
+    assert get_obj_enc.jobs == test_dict["processing_type"]
+    path = test_dict["advanced_options"]["corpus_dir"]
+    path = be.EncodeCorpus.fix_path(path)
+    assert get_obj_enc.corpusdir == path
+    assert get_obj_enc.encodedir == path
+    path = test_dict["advanced_options"]["registry_dir"]
+    path = be.EncodeCorpus.fix_path(path)
+    assert get_obj_enc.regdir == path
+    assert get_obj_enc.corpusname == test_dict["corpus_name"]
+    outname = test_dict["advanced_options"]["output_dir"] + test_dict["corpus_name"]
+    assert get_obj_enc.outname == outname
+
+
+def test_get_s_attributes(get_obj_enc):
+    stags = ["s"]
+    line = ""
+    line = get_obj_enc._get_s_attributes(line, stags)
+    assert line == "-S s "
+    line = "something "
+    line = get_obj_enc._get_s_attributes(line, stags)
+    assert line == "something -S s "
+
+
+def test_get_p_attributes(get_obj_enc):
+    ptags = ["lemma"]
+    line = ""
+    line = get_obj_enc._get_p_attributes(line, ptags)
+    assert line == "-P lemma "
+    line = "something "
+    line = get_obj_enc._get_p_attributes(line, ptags)
+    assert line == "something -P lemma "
 
 
 def test_setup(get_obj_enc):
-    pass
+    assert get_obj_enc.setup()
 
 
 def test_encode_vrt(get_obj_enc):
