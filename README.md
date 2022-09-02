@@ -23,8 +23,8 @@ Install the project and its dependencies from [PyPi](https://pypi.org/project/nl
 ```
 pip install nlpannotator
 ```
-The language models need to be installed separately.
+The language models need to be installed separately. You can make use of the convenience script [here](install_models.py) which installs all language models for all languages that have been implemented for spaCy and stanza.
 
 ## Usage
 
-Take a look at the [DemoNotebook]() or run it on [Binder]().
+Take a look at the [DemoNotebook](./docs/demo-notebook.ipynb) or run it on [Binder]().
