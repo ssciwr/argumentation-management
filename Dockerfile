@@ -61,7 +61,7 @@ USER jovyan
 RUN conda run -n base python -m pip install cwb-ccc
 
 # install spaCy
-RUN conda install -c conda-forge spacy \
+RUN conda install -c conda-forge spacy=3.4.0 \
     && conda install -c \
         conda-forge spacy-lookups-data \
     && python -m spacy download en_core_web_md \
@@ -85,8 +85,7 @@ RUN conda install -c \
 # install annotator from repository
 RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management \
     && cd argumentation_management \
-    && git checkout input-3 \
-    && cd src/ \
+    && git checkout doc-update \
     && conda run -n base python -m pip install . 
 
 # install m-giza
