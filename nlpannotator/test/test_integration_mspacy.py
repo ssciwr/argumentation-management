@@ -15,9 +15,11 @@ def test_integration_mspacy(load_data):
     mydict["language"] = "en"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "fast"
-    mydict["processing_type"] = "tokenize, pos, lemma"
+    mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
     mydict["input"] = "./test/data/example_en.txt"
     mydict["advanced_options"]["output_dir"] = "./test/out/"
+    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
+    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
     be.PrepareRun.validate_input_dict(mydict)
     obj = pe.SetConfig(mydict)
     spacy_dict = obj.mydict["spacy_dict"]
@@ -33,5 +35,5 @@ def test_integration_mspacy(load_data):
     stags = out_obj.stags
     outfile = mydict["advanced_options"]["output_dir"] + mydict["corpus_name"]
     out_obj.write_vrt(outfile, out)
-    encode_obj = be.encode_corpus(mydict)
+    encode_obj = be.EncodeCorpus(mydict)
     encode_obj.encode_vrt(ptags, stags)

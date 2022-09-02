@@ -114,14 +114,14 @@ test_dict = {
 
 
 @pytest.fixture
-def get_obj():
-    obj = be.encode_corpus(test_dict)
+def get_obj_enc():
+    obj = be.EncodeCorpus(test_dict)
     return obj
 
 
 @pytest.fixture
 def get_obj_dec():
-    obj = be.decode_corpus(test_dict)
+    obj = be.DecodeCorpus(test_dict)
     return obj
 
 
@@ -176,6 +176,13 @@ def test_compare_tokens(get_doc):
     assert not out_obj._compare_tokens(mytoken1, mytoken2)
 
 
+def test_purge():
+    inputs = [" ", "  "]
+    outputs = ["", ""]
+    for input, output in zip(inputs, outputs):
+        assert be.OutObject.purge(input) == output
+
+
 def test_write_vrt():
     mystring = "abcdefgh"
     myfile = "test/out/test"
@@ -195,15 +202,16 @@ def test_write_xml():
     assert test_string == mystring2
 
 
-def test_purge():
-    inputs = [" ", "  "]
-    outputs = ["", ""]
-    for input, output in zip(inputs, outputs):
-        assert be.OutObject.purge(input) == output
+def test_encode_corpus(get_obj_enc):
+    pass
 
 
-def test_encode_vrt(get_obj):
-    obj = get_obj
+def test_setup(get_obj_enc):
+    pass
+
+
+def test_encode_vrt(get_obj_enc):
+    obj = get_obj_enc
     line = " "
     line = obj._get_s_attributes(line, stags=["s"])
     test_line = " -S s "

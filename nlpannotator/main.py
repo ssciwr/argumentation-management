@@ -185,7 +185,7 @@ def run(path_json, path_txt):
     # we will skip the encoding for now and instead provide vrt/xml file for user to download
     if mydict["encoding"] == "yes":
         print("Encoding the corpus into cwb...")
-        encode_obj = be.encode_corpus(mydict)
+        encode_obj = be.EncodeCorpus(mydict)
         encode_obj.encode_vrt(ptags, stags)
 
 

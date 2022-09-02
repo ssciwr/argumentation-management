@@ -289,7 +289,7 @@ class OutObject:
 
 # encode the generated files
 # Right now we don't need this
-class encode_corpus:
+class EncodeCorpus:
     """Encode the vrt/xml files for cwb."""
 
     def __init__(self, mydict: dict) -> None:
@@ -493,8 +493,8 @@ class encode_corpus:
 
 
 # this needs refactor TODO
-class decode_corpus(encode_corpus):
-    """Class to decode corpus from cwb. Inherits encode_corpus."""
+class DecodeCorpus(EncodeCorpus):
+    """Class to decode corpus from cwb. Inherits EncodeCorpus."""
 
     def __init__(self, mydict) -> None:
         super().__init__(mydict)
