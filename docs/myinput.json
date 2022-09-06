@@ -1,0 +1,75 @@
+{
+    "input": "example_en.txt",
+    "tool": "spacy, spacy, spacy, spacy",
+    "corpus_name": "test",
+    "language": "en",
+    "processing_option": "manual",
+    "processing_type": "sentencize, tokenize, pos, lemma",
+    "output_format": "xml",
+    "encoding": "yes",
+    "advanced_options": {
+        "output_dir": "/home/inga/projects/corpus-workbench/argumentation-management/docs/",
+        "corpus_dir": "/home/inga/projects/corpus-workbench/argumentation-management/nlpannotator/test/corpora/",
+        "registry_dir": "/home/inga/projects/corpus-workbench/argumentation-management//nlpannotator/test/registry/",
+        "multiprocessing": false,
+        "use_GPU": false
+    },
+    "stanza_dict": {
+        "lang": "en",
+        "dir": "./test/models/",
+        "package": "default",
+        "processors": [],
+        "logging_level": "INFO",
+        "verbose": true,
+        "use_GPU": false,
+        "stanza_tokenize": {
+            "tokenize_batch_size": 32,
+            "tokenize_no_ssplit": false
+        },
+        "stanza_mwt": {
+            "mwt_batch_size": 50
+        },
+        "stanza_pos": {
+            "pos_batch_size": 5000
+        },
+        "stanza_lemma": {
+            "lemma_use_identity": false,
+            "lemma_batch_size": 50,
+            "lemma_ensemble_dict": true,
+            "lemma_dict_only": false,
+            "lemma_edit": true,
+            "lemma_beam_size": 1,
+            "lemma_max_dec_len": 50
+        },
+        "stanza_depparse": {
+            "depparse_batch_size": 5000,
+            "depparse_pretagged": false
+        },
+        "stanza_ner": {
+            "ner_batch_size": 32
+        },
+        "stanza_sentiment": {
+            "batch_size": null
+        },
+        "stanza_constituency": {}
+    },
+    "spacy_dict": {
+        "model": "en_core_web_md",
+        "lang": "en",
+        "processors": [],
+        "set_device": false,
+        "config": {
+            "nlp.batch_size": 256
+        }
+    },
+    "flair_dict": {},
+    "treetagger_dict": {
+        "lang": "en",
+        "_tagopt": "Additional options for the treetagger to use, default is -token -lemma -sgml -quiet to perform POS and Lemma tagging.",
+        "tagopt": "-token -lemma -sgml -quiet"
+    },
+    "somajo_dict": {
+        "split_camel_case": true,
+        "split_sentences": true
+    }
+}
