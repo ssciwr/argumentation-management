@@ -83,10 +83,12 @@ RUN conda install -c \
     && python get_models.py
 
 # install annotator from repository
-RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management \
-    && cd argumentation_management \
-    && git checkout doc-update \
-    && conda run -n base python -m pip install . 
+# RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management \
+#     && cd argumentation_management \
+#     && git checkout doc-update \
+#     && conda run -n base python -m pip install . 
+# install annotator from PyPi
+RUN conda run -n base python -m pip install nlpannotator
 
 # install m-giza
 RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \

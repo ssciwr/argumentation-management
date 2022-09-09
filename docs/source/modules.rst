@@ -1,7 +1,7 @@
-annotator package modules
-=========================
+nlpannotator package modules
+============================
 
 .. toctree::
    :maxdepth: 4
 
-   annotator
+   nlpannotator
