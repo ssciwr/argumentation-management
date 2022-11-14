@@ -6,6 +6,7 @@
 ![codecov](https://img.shields.io/codecov/c/github/ssciwr/argumentation-management)
 ![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ssciwr_argumentation-management&metric=alert_status)
 ![Language](https://img.shields.io/github/languages/top/ssciwr/argumentation-management)
+[![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/6698/badge)](https://bestpractices.coreinfrastructure.org/projects/6698)
 
 *This project just had its first version release and is still under development.*
 
@@ -95,6 +96,8 @@ Contributions are wellcome. Please fork the nlpannotator repo and open a Pull Re
 Make sure that your contributions are [clean](https://flake8.pycqa.org/en/latest/), [properly formatted](https://github.com/psf/black) and for any new modules [follow the general design principle](https://github.com/ssciwr/argumentation-management/blob/main/nlpannotator/mstanza.py).
 
 Take a look at the [source code documentation](file:///home/iulusoy/projects/argumentation-project/argumentation-management/docs/build/html/modules.html).
+
+The additions must have at least have 80% test coverage.
 
 ## Releases
 
