@@ -1,3 +1,6 @@
 pytest
 pytest-cov
 pre-commit
+sphinx
+recommonmark
+sphinx_rtd_theme
