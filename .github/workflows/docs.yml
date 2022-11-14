@@ -1,8 +1,9 @@
 name: Pages
 on:
   push:
-    branches:
-    - master
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
   
 jobs:
@@ -23,8 +24,7 @@ jobs:
       run: |
         cd docs
         make html
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
+    - name: Push changes to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs # The folder the action should deploy.
