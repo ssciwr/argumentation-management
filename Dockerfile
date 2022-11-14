@@ -48,7 +48,7 @@ RUN svn co http://svn.code.sf.net/p/cwb/code/cwb/trunk cwb \
 # RUN cd /Perl-CWB-3.0.7 \
 # install development version from svn repo
 # this unfortunately does not allow version pinning
-RUN svn co http://svn.code.sf.net/p/cwb/code/perl/trunk \
+RUN svn co http://svn.code.sf.net/p/cwb/code/perl/trunk cwb-perl \
     && cd cwb-perl/CWB \
     && perl Makefile.PL --config=/usr/local/bin/cwb-config \
     && make \
