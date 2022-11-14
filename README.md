@@ -44,9 +44,41 @@ All input options are provided in an input dictionary. Two pre-set toolchains ca
 | `output_format` | `xml` | `xml, vrt` | Format of the generated annotated text file |
 | `encoding` | `yes` | `yes, no` | Directly encode the annotated text file into [cwb](https://cwb.sourceforge.io/) |
 
+## Tools
+The available annotation tools are listed below, and can be set using the following keywords:
+- [spaCy](https://spacy.io/): `spacy`
+- [stanza](https://stanfordnlp.github.io/stanza/): `stanza`
+- [SoMaJo](https://github.com/tsproisl/SoMaJo): `somajo`
+- [Flair](https://github.com/flairNLP/flair): `flair`
+- [Treetagger](https://treetaggerwrapper.readthedocs.io/en/latest/): `treetagger`
+
+## Processors
+The available processors depend on the selected tool. This is a summary of the possible options:
+| Tool | Available processors |
+| ---- | -------------------- |
+| `spacy` | `sentencize, tokenize, pos, lemma` |
+| `stanza` | `sentencize, tokenize, pos, lemma` |
+| `somajo` | `sentencize, tokenize` |
+| `flair` | `pos` |
+| `treetagger` | `tokenize, pos, lemma` |
+Some of the processors depend on each other. For example, `pos` and `lemma` are only possible after `sentencize` and `tokenize`. `tokenize` depends on `sentencize`. 
 
 ## Languages
+The availabe languages depend on the selected tool. So far, the following languages have been added to the pipeline (there may be additional language models available for the respective tool, but they have not been added to this package - for stanza, the pipeline will still run and load the model on demand).
+| Tool | Available languages |
+| ---- | -------------------- |
+| `spacy` | `en, de, fr, it, ja, pt, ru, es` |
+| `stanza` | load on demand from [available stanza models](https://stanfordnlp.github.io/stanza/available_models.html) |
+| `somajo` | `en, de` |
+| `flair` | `en, de` |
+| `treetagger` | `en, de, fr, es` (both tokenization and pos/lemma) |
+| `treetagger` | `bg, nl, et, fi, gl, it, kr, la, mn, pl, ru, sk, sw` (only pos/lemma) |
 
+## Input/Output
+`nlpannotator` expects a raw text file as an input, together with an input dictionary that specifies the selected options. The input dictionary is also printed out when a run is initiated, so that the selected options are stored and can be looked up at a later time.
+Both of these can be provided through a [Jupyter](https://jupyter.org/) interface as in the [Demo Notebook](#Demo).
+
+The output that is generated is either of `vrt` format (for cwb) or `xml`. Both output formats can directly be encoded into cwb.
 
 ## Demo notebook
 
@@ -61,3 +93,9 @@ Please ask questions / submit bug reports using our [issue tracker](https://gith
 
 Contributions are wellcome. Please fork the nlpannotator repo and open a Pull Request for any changes to the code. These will be reviewed and merged by our team.
 Make sure that your contributions are [clean](https://flake8.pycqa.org/en/latest/), [properly formatted](https://github.com/psf/black) and for any new modules [follow the general design principle](https://github.com/ssciwr/argumentation-management/blob/main/nlpannotator/mstanza.py).
+
+Take a look at the [source code documentation](file:///home/iulusoy/projects/argumentation-project/argumentation-management/docs/build/html/modules.html).
+
+## Releases
+
+A summary of the releases and release notes are available [here](https://github.com/ssciwr/argumentation-management/releases).
