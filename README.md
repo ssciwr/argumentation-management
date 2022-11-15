@@ -6,6 +6,7 @@
 ![codecov](https://img.shields.io/codecov/c/github/ssciwr/argumentation-management)
 ![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ssciwr_argumentation-management&metric=alert_status)
 ![Language](https://img.shields.io/github/languages/top/ssciwr/argumentation-management)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/6698/badge)](https://bestpractices.coreinfrastructure.org/projects/6698)
 
 *This project just had its first version release and is still under development.*

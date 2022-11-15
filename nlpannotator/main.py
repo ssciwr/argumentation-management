@@ -108,7 +108,7 @@ call_tool = {
 }
 
 
-def run(path_json, path_txt):
+def run(path_json="myinput.json", path_txt="text.txt"):
     # load input dict
     mydict = be.PrepareRun.load_input_dict(path_json)
     # get the data to be processed
