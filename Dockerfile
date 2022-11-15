@@ -74,12 +74,12 @@ RUN conda install -c conda-forge spacy=3.4.0 \
         conda-forge spacy-lookups-data \
     && python -m spacy download en_core_web_md \
     && python -m spacy download de_core_news_md \
-    && python -m spacy download fr_core_news_md \
-    && python -m spacy download it_core_news_md \
-    && python -m spacy download ja_core_news_md \
-    && python -m spacy download pt_core_news_md \
-    && python -m spacy download ru_core_news_md \
-    && python -m spacy download es_core_news_md \
+    # && python -m spacy download fr_core_news_md \
+    # && python -m spacy download it_core_news_md \
+    # && python -m spacy download ja_core_news_md \
+    # && python -m spacy download pt_core_news_md \
+    # && python -m spacy download ru_core_news_md \
+    # && python -m spacy download es_core_news_md \
     && conda clean -a -q -y
 ENV SPACY_DIR = /home/jovyan/spacy
 
@@ -99,16 +99,16 @@ RUN conda install -c \
 RUN conda run -n base python -m pip install nlpannotator
 
 # install m-giza
-RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
-  && cd mgiza/mgizapp \
-  && cmake . \
-  && make \
-  && make install \
-  && cd ..
-ENV MGIZA_DIR=/home/jovyan/mgiza
+# RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
+#   && cd mgiza/mgizapp \
+#   && cmake . \
+#   && make \
+#   && make install \
+#   && cd ..
+# ENV MGIZA_DIR=/home/jovyan/mgiza
 
 # install hunalign
-RUN wget ftp://ftp.mokk.bme.hu/Hunglish/src/hunalign/latest/hunalign-1.1.tgz \
-  && tar zxvf hunalign-1.1.tgz \
-  && cd hunalign-1.1/src/hunalign \
-  && make
+# RUN wget ftp://ftp.mokk.bme.hu/Hunglish/src/hunalign/latest/hunalign-1.1.tgz \
+#   && tar zxvf hunalign-1.1.tgz \
+#   && cd hunalign-1.1/src/hunalign \
+#   && make
