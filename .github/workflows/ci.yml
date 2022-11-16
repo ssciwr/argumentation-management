@@ -28,17 +28,23 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
-        python -m pip install -r requirements-dev.txt
+        # python -m pip install -e .
+        # python -m pip install -r requirements-dev.txt
+    - name: Install treetagger
+      run: |
         mkdir treetagger
         cd treetagger
-        curl -sSL "$HOME_URL/tree-tagger-linux-3.2.4.tar.gz" --output tree-tagger-linux-3.2.4.tar.gz
+        if [runner.os == 'Linux']; then
+          wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz
+        elif [runner.os == 'Windows']; then
+          wget https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-windows-3.2.3.zip
+        # curl -sSL "$HOME_URL/tree-tagger-linux-3.2.4.tar.gz" --output tree-tagger-linux-3.2.4.tar.gz
         # curl -sSL "${HOME_URL}/tagger-scripts.tar.gz" --output tagger-scripts.tar.gz
         # curl -sSL "${HOME_URL}/install-tagger.sh" --output install-tagger.sh
         # curl -sSL "${HOME_URL}/german.par.gz" --output german.par.gz
         # curl -sSL "${HOME_URL}/english.par.gz" --output english.par.gz
         # sh install-tagger.sh
-        # cd $RET
+        cd ..
       env:
         HOME_URL: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data
     - name: Get the models 
