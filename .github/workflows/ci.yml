@@ -34,10 +34,11 @@ jobs:
       run: |
         mkdir treetagger
         cd treetagger
-        if (runner.os == 'Linux'); then
+        if [runner.os == 'Linux'); then
           wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz
-        elif (runner.os == 'Windows'); then
+        elif [runner.os == 'Windows']; then
           wget https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-windows-3.2.3.zip
+        fi
         # curl -sSL "$HOME_URL/tree-tagger-linux-3.2.4.tar.gz" --output tree-tagger-linux-3.2.4.tar.gz
         # curl -sSL "${HOME_URL}/tagger-scripts.tar.gz" --output tagger-scripts.tar.gz
         # curl -sSL "${HOME_URL}/install-tagger.sh" --output install-tagger.sh
@@ -45,8 +46,7 @@ jobs:
         # curl -sSL "${HOME_URL}/english.par.gz" --output english.par.gz
         # sh install-tagger.sh
         cd ..
-      env:
-        HOME_URL: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data
+      shell: bash
     - name: Get the models 
       run: |
         source nlpannotator/test/setup_tests.sh
