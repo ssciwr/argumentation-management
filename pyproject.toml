@@ -30,7 +30,7 @@ dependencies = [
 ]
 
 [tool.setuptools.package-data]
-# Include any *.jsno files found in the "data" subdirectory of "nlpannotator"
+# Include any *.json files found in the "data" subdirectory of "nlpannotator"
 "nlpannotator.data" = ["*.json"]
 
 [project.scripts]
