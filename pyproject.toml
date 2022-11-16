@@ -23,7 +23,7 @@ dependencies = [
     "spacy <3.5.0, >=3.4.0",
     "stanza",
     "flair",
-    "SoMaJo >=2.0",
+    "SoMaJo",
     "treetaggerwrapper",
     "jsonschema",
     "importlib-resources >=5.8",
