@@ -14,6 +14,9 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       matrix:
         os: [windows-2022]
@@ -31,6 +34,7 @@ jobs:
         # python -m pip install -e .
         # python -m pip install -r requirements-dev.txt
     - name: Install treetagger
+      shell: bash
       run: |
         mkdir treetagger
         cd treetagger
@@ -46,7 +50,6 @@ jobs:
         # curl -sSL "${HOME_URL}/english.par.gz" --output english.par.gz
         # sh install-tagger.sh
         cd ..
-      shell: bash
     - name: Get the models 
       run: |
         source nlpannotator/test/setup_tests.sh
