@@ -34,9 +34,9 @@ jobs:
       run: |
         mkdir treetagger
         cd treetagger
-        if ["$RUNNER_OS" == 'Linux']; then
+        if [ "$RUNNER_OS"="Linux" ]; then
           wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz
-        elif ["$RUNNER_OS" == 'Windows']; then
+        elif [ "$RUNNER_OS"="Windows" ]; then
           wget https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-windows-3.2.3.zip
         fi
         # curl -sSL "$HOME_URL/tree-tagger-linux-3.2.4.tar.gz" --output tree-tagger-linux-3.2.4.tar.gz
