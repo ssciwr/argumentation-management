@@ -56,6 +56,7 @@ jobs:
         curl -sSLO "$myurl"/english.par.gz
         sh install-tagger.sh
         export TAGDIR=$(pwd)
+        echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
         echo "Tagdir is $TAGDIR"
         cd ..
     - name: Get the models 
@@ -71,6 +72,7 @@ jobs:
     - name: Run pytest
       run: |
         cd nlpannotator
+        export TAGDIR="${{ env.TAGDIR }}"
         echo "Tagdir is $TAGDIR"
         python -m pytest -s --cov=. --cov-report=xml
     - name: Upload coverage
