@@ -36,25 +36,24 @@ jobs:
     - name: Install treetagger
       shell: bash
       env:
-        myurl: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/
+        myurl: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data
       run: |
         mkdir treetagger
         cd treetagger
         if [ "$RUNNER_OS" = "Linux" ]; then
             echo "Linux"
-            curl -sSLO http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz
+            curl -sSLO "$myurl"/tree-tagger-linux-3.2.4.tar.gz
         elif [ "$RUNNER_OS" = "Windows" ]; then
             echo "Windows"
-            curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-windows-3.2.3.zip
+            curl -sSLO "$myurl"/tree-tagger-windows-3.2.3.zip
         elif [ "$RUNNER_OS" = "macOS" ]; then
             echo "MacOS"
-            curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-MacOSX-Intel-3.2.3.zip
+            curl -sSLO "$myurl"/tree-tagger-MacOSX-Intel-3.2.3.zip
         fi
-        ls
         curl -sSLO "$myurl"/tagger-scripts.tar.gz
-        curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/install-tagger.sh
-        curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/german.par.gz
-        curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/english.par.gz
+        curl -sSLO "$myurl"/install-tagger.sh
+        curl -sSLO "$myurl"/german.par.gz
+        curl -sSLO "$myurl"/english.par.gz
         sh install-tagger.sh
         cd ..
     # - name: Get the models 
