@@ -33,25 +33,19 @@ jobs:
         python -m pip install --upgrade pip
         # python -m pip install -e .
         # python -m pip install -r requirements-dev.txt
-    - name: condition 1
-      if: runner.os == 'Windows'
-      run: echo "The operating system on the runner is $env:RUNNER_OS."
-    - name: condition 2
-      if: runner.os != 'Windows'
-      run: echo "The operating system on the runner is not Windows, it's $RUNNER_OS."
     - name: Install treetagger
       shell: bash
       run: |
         mkdir treetagger
         cd treetagger
         echo "$RUNNER_OS"
+        echo runner.os
         ps
-        if [ "$RUNNER_OS"="Linux" ]; then
+        if [ runner.os="Linux" ]; then
           echo "Linux"
-          wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz
-        elif [ "$RUNNER_OS"="Windows" ]; then\
+          curl http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz
+        elif [ runner.os="Windows" ]; then
           echo "windows"
-
           curl https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-windows-3.2.3.zip
         fi
         ls
