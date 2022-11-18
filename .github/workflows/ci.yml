@@ -39,12 +39,11 @@ jobs:
         mkdir treetagger
         cd treetagger
         echo "$RUNNER_OS"
-        echo runner.os
-        ps
-        if [ runner.os="Linux" ]; then
+        echo "$runner.os"
+        if [ "$RUNNER_OS"="Linux" ]; then
           echo "Linux"
           curl http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz
-        elif [ runner.os="Windows" ]; then
+        elif [ "$RUNNER_OS"="Windows" ]; then
           echo "windows"
           curl https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-windows-3.2.3.zip
         fi
@@ -56,20 +55,20 @@ jobs:
         # curl -sSL "${HOME_URL}/english.par.gz" --output english.par.gz
         # sh install-tagger.sh
         cd ..
-    - name: Get the models 
-      run: |
-        source nlpannotator/test/setup_tests.sh
-        python -m spacy download en_core_web_md
-        python -m spacy download de_core_news_md
-    - name: Create test directories
-      run: |
-        mkdir nlpannotator/test/corpora
-        mkdir nlpannotator/test/registry
-        mkdir nlpannotator/test/out
-    - name: Run pytest
-      run: |
-        cd nlpannotator
-        # python -m pytest -s --cov=. --cov-report=xml
+    # - name: Get the models 
+    #   run: |
+    #     source nlpannotator/test/setup_tests.sh
+    #     python -m spacy download en_core_web_md
+    #     python -m spacy download de_core_news_md
+    # - name: Create test directories
+    #   run: |
+    #     mkdir nlpannotator/test/corpora
+    #     mkdir nlpannotator/test/registry
+    #     mkdir nlpannotator/test/out
+    # - name: Run pytest
+    #   run: |
+    #     cd nlpannotator
+    #     # python -m pytest -s --cov=. --cov-report=xml
     # - name: Upload coverage
     #   uses: codecov/codecov-action@v1
     #   with:
