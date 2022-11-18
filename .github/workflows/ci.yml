@@ -35,6 +35,8 @@ jobs:
         # python -m pip install -r requirements-dev.txt
     - name: Install treetagger
       shell: bash
+      env:
+        myurl: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/
       run: |
         mkdir treetagger
         cd treetagger
@@ -49,7 +51,7 @@ jobs:
             curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-MacOSX-Intel-3.2.3.zip
         fi
         ls
-        curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tagger-scripts.tar.gz
+        curl -sSLO "$myurl"/tagger-scripts.tar.gz
         curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/install-tagger.sh
         curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/german.par.gz
         curl -sSLO https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/english.par.gz
