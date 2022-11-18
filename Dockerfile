@@ -68,7 +68,8 @@ RUN conda install -c conda-forge python=3.9.7 \
 USER jovyan
 RUN conda run -n base python -m pip install cwb-ccc
 
-# install spaCy
+# install spaCy - not necessary as included in nklpannotator dependencies
+# we rather need to install treetagger
 RUN conda install -c conda-forge spacy=3.4.0 \
     && conda install -c \
         conda-forge spacy-lookups-data \

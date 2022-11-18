@@ -19,7 +19,7 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [windows-2022]
+        os: [ubuntu-22.04, windows-2022, macos-11]
         python-version: [3.9]
     steps:
     - name: Checkout repository
