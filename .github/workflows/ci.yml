@@ -19,8 +19,10 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-11]
-        python-version: [3.8, 3.9]
+        # os: [ubuntu-22.04, windows-2022, macos-11]
+        os: [windows-2022]
+        python-version: [3.9]
+        # python-version: [3.8, 3.9]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -58,23 +60,27 @@ jobs:
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
         cd ..
-    - name: Get the models 
-      run: |
-        source nlpannotator/test/setup_tests.sh
-        python -m spacy download en_core_web_md
-        python -m spacy download de_core_news_md
-    - name: Create test directories
-      run: |
-        mkdir nlpannotator/test/corpora
-        mkdir nlpannotator/test/registry
-        mkdir nlpannotator/test/out
-    - name: Run pytest
-      run: |
-        cd nlpannotator
-        export TAGDIR="${{ env.TAGDIR }}"
-        python -m pytest -s --cov=. --cov-report=xml
-    - name: Upload coverage
-      uses: codecov/codecov-action@v1
-      with:
-        fail_ci_if_error: true
-        files: nlpannotator/coverage.xml
+        ls /
+        ls /cmd
+        ls /bin
+        echo "$PATH"
+    # - name: Get the models 
+      # run: |
+        # source nlpannotator/test/setup_tests.sh
+        # python -m spacy download en_core_web_md
+        # python -m spacy download de_core_news_md
+    # - name: Create test directories
+      # run: |
+        # mkdir nlpannotator/test/corpora
+        # mkdir nlpannotator/test/registry
+        # mkdir nlpannotator/test/out
+    # - name: Run pytest
+      # run: |
+        # cd nlpannotator
+        # export TAGDIR="${{ env.TAGDIR }}"
+        # python -m pytest -s --cov=. --cov-report=xml
+    # - name: Upload coverage
+      # uses: codecov/codecov-action@v1
+      # with:
+        # fail_ci_if_error: true
+        # files: nlpannotator/coverage.xml

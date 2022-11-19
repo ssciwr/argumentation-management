@@ -74,11 +74,11 @@ RUN conda run -n base python -m pip install nlpannotator
 # install treetagger
 RUN mkdir treetagger \
     && cd treetagger \
-    && curl -sSLO http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz \
-    && curl -sSLO http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tagger-scripts.tar.gz \
-    && curl -sSLO http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/install-tagger.sh \
-    && curl -sSLO http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/german.par.gz \
-    && curl -sSLO http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/english.par.gz \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tagger-scripts.tar.gz \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/install-tagger.sh \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/german.par.gz \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/english.par.gz \
     && sh install-tagger.sh \
     && cd ..
     
