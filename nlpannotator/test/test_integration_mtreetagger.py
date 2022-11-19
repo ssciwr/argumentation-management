@@ -1,7 +1,9 @@
 import nlpannotator.base as be
 import nlpannotator.mtreetagger as mtt
+import pytest
 
 
+@pytest.mark.treetagger
 def test_integration_mtreetagger():
     data = "This is a sentence."
     mydict = be.PrepareRun.load_input_dict("data/input.json")

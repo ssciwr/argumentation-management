@@ -49,11 +49,13 @@ def get_doc(load_dict, data_en):
     return annotated.doc, annotated.jobs
 
 
+@pytest.mark.treetagger
 def test_mytreetagger_init(load_dict):
     annotated = mtt.MyTreetagger(load_dict)
     assert annotated.jobs == ("tokenize", "pos", "lemma")
 
 
+@pytest.mark.treetagger
 def test_mytreetagger_apply_to(get_doc):
     assert get_doc[0][0].text == "This"
     assert get_doc[0][0].pos == "DT"
@@ -63,6 +65,7 @@ def test_mytreetagger_apply_to(get_doc):
     assert get_doc[0][3].lemma == "sentence"
 
 
+@pytest.mark.treetagger
 def test_mytreetagger_make_dict(load_dict, data_en, test_dict_doc):
     annotated = mtt.MyTreetagger(load_dict)
     annotated.doc = annotated.nlp.tag_text(data_en)
@@ -70,6 +73,7 @@ def test_mytreetagger_make_dict(load_dict, data_en, test_dict_doc):
     assert annotated.doc == test_dict_doc
 
 
+@pytest.mark.treetagger
 def test_mytreetagger_make_object(load_dict, data_en):
     annotated = mtt.MyTreetagger(load_dict)
     annotated.doc = annotated.nlp.tag_text(data_en)
@@ -80,6 +84,7 @@ def test_mytreetagger_make_object(load_dict, data_en):
     assert annotated.doc[1].lemma == "be"
 
 
+@pytest.mark.treetagger
 def test_outtreetagger_init(get_doc):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     assert out_obj.attrnames["proc_sent"] == "na"
@@ -87,6 +92,7 @@ def test_outtreetagger_init(get_doc):
     assert not out_obj.stags
 
 
+@pytest.mark.treetagger
 def test_assemble_output_tokens(get_doc, test_en):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     out = ["<s>", "This", "is", "a", "sentence", ".", "</s>"]

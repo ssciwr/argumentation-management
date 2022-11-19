@@ -109,6 +109,7 @@ def test_set_model_somajo(get_mydict):
     assert obj.mydict["somajo_dict"]["model"] == "de_CMC"
 
 
+@pytest.mark.treetagger
 def test_set_model_treetagger(get_mydict):
     get_mydict["processing_option"] = "manual"
     get_mydict["tool"] = "treetagger, treetagger"

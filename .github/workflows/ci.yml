@@ -74,7 +74,14 @@ jobs:
       run: |
         cd nlpannotator
         export TAGDIR="${{ env.TAGDIR }}"
-        python -m pytest -s --cov=. --cov-report=xml
+        # don't run treetagger on windows due to "invalid executable"
+        if [ "$RUNNER_OS" = "Windows" ]; then
+            echo "Windows"
+          python -m pytest -s -m "not treetagger" --cov=. --cov-report=xml
+            curl -sSLO "$myurl"/tree-tagger-windows-3.2.3.zip
+        else 
+          python -m pytest -s --cov=. --cov-report=xml
+        fi
     - name: Upload coverage
       uses: codecov/codecov-action@v1
       with:
