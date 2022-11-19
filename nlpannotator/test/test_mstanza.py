@@ -165,6 +165,7 @@ def test_outstanza_vrt(get_sample):
     # call vrt writing
     ma.OutStanza.write_vrt(outfile, out)
     file = open(outfile + ".vrt", "r")
+    file.close()
     print("wrote " + outfile + ".vrt")
     assert file.read() == file_out.read()
     if os.path.exists(outfile + ".vrt"):
