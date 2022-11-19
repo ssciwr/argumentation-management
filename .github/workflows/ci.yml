@@ -57,30 +57,26 @@ jobs:
         curl -sSLO "$myurl"/german.par.gz
         curl -sSLO "$myurl"/english.par.gz
         sh install-tagger.sh
-        export TAGDIR=$(pwd)
-        echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
-        cd ..
-        ls /
-        ls /cmd
-        ls /bin
-        echo "$PATH"
-    # - name: Get the models 
-      # run: |
-        # source nlpannotator/test/setup_tests.sh
-        # python -m spacy download en_core_web_md
-        # python -m spacy download de_core_news_md
-    # - name: Create test directories
-      # run: |
-        # mkdir nlpannotator/test/corpora
-        # mkdir nlpannotator/test/registry
-        # mkdir nlpannotator/test/out
-    # - name: Run pytest
-      # run: |
-        # cd nlpannotator
+        # export TAGDIR=$(pwd)
+        # echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
+        cp -r ./bin/ /cmd/.
+    - name: Get the models 
+      run: |
+        source nlpannotator/test/setup_tests.sh
+        python -m spacy download en_core_web_md
+        python -m spacy download de_core_news_md
+    - name: Create test directories
+      run: |
+        mkdir nlpannotator/test/corpora
+        mkdir nlpannotator/test/registry
+        mkdir nlpannotator/test/out
+    - name: Run pytest
+      run: |
+        cd nlpannotator
         # export TAGDIR="${{ env.TAGDIR }}"
-        # python -m pytest -s --cov=. --cov-report=xml
-    # - name: Upload coverage
-      # uses: codecov/codecov-action@v1
-      # with:
-        # fail_ci_if_error: true
-        # files: nlpannotator/coverage.xml
+        python -m pytest -s --cov=. --cov-report=xml
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
+        files: nlpannotator/coverage.xml
