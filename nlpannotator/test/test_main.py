@@ -46,6 +46,7 @@ def test_call_somajo(load_dict, data_en, test_en_somajo):
     assert out_obj.sentences == test_en_somajo
 
 
+@pytest.mark.treetagger
 def test_call_treetagger(load_dict, data_en):
     load_dict["treetagger_dict"]["processors"] = "pos"
     load_dict["treetagger_dict"]["lang"] = "en"

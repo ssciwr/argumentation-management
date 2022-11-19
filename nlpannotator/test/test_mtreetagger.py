@@ -3,11 +3,13 @@ import nlpannotator.base as be
 import nlpannotator.mtreetagger as mtt
 
 
+@pytest.mark.treetagger
 @pytest.fixture
 def data_en():
     return "This is a sentence."
 
 
+@pytest.mark.treetagger
 @pytest.fixture
 def test_en():
     data = [
@@ -22,6 +24,7 @@ def test_en():
     return data
 
 
+@pytest.mark.treetagger
 @pytest.fixture
 def test_dict_doc():
     dict_doc = [
@@ -34,6 +37,7 @@ def test_dict_doc():
     return dict_doc
 
 
+@pytest.mark.treetagger
 @pytest.fixture
 def load_dict():
     mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
@@ -42,6 +46,7 @@ def load_dict():
     return mydict["treetagger_dict"]
 
 
+@pytest.mark.treetagger
 @pytest.fixture
 def get_doc(load_dict, data_en):
     annotated = mtt.MyTreetagger(load_dict)

@@ -59,7 +59,6 @@ jobs:
         sh install-tagger.sh
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
-        cp -r ./bin/ /cmd/.
     - name: Get the models 
       run: |
         source nlpannotator/test/setup_tests.sh
@@ -74,7 +73,7 @@ jobs:
       run: |
         cd nlpannotator
         export TAGDIR="${{ env.TAGDIR }}"
-        # don't run treetagger on windows due to "invalid executable"
+        # don't run treetagger on windows due to "invalid binary"
         if [ "$RUNNER_OS" = "Windows" ]; then
             echo "Windows"
           python -m pytest -s -m "not treetagger" --cov=. --cov-report=xml
