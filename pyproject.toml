@@ -21,7 +21,7 @@ classifiers = [
 ]
 dependencies = [
     "spacy <3.5.0, >=3.4.0",
-    "stanza",
+    "stanza <=1.4.0",
     "flair",
     "SoMaJo",
     "treetaggerwrapper",
