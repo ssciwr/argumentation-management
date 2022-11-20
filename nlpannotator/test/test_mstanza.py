@@ -85,6 +85,7 @@ def test_apply_to_en(get_sample, get_sample_stanza):
     assert doc == test_doc
 
 
+@pytest.mark.treetagger
 @pytest.mark.lang("de")
 def test_apply_to_de(get_sample, get_sample_stanza):
     text = get_sample
