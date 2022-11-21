@@ -85,6 +85,7 @@ def test_apply_to_en(get_sample, get_sample_stanza):
     assert doc == test_doc
 
 
+@pytest.mark.treetagger
 @pytest.mark.lang("de")
 def test_apply_to_de(get_sample, get_sample_stanza):
     text = get_sample
@@ -167,6 +168,7 @@ def test_outstanza_vrt(get_sample):
     file = open(outfile + ".vrt", "r")
     print("wrote " + outfile + ".vrt")
     assert file.read() == file_out.read()
+    file.close()
     if os.path.exists(outfile + ".vrt"):
         os.remove(outfile + ".vrt")
     else:

@@ -21,16 +21,16 @@ classifiers = [
 ]
 dependencies = [
     "spacy <3.5.0, >=3.4.0",
-    "stanza",
+    "stanza <=1.4.0",
     "flair",
-    "SoMaJo >=2.0",
+    "SoMaJo",
     "treetaggerwrapper",
     "jsonschema",
     "importlib-resources >=5.8",
 ]
 
 [tool.setuptools.package-data]
-# Include any *.jsno files found in the "data" subdirectory of "nlpannotator"
+# Include any *.json files found in the "data" subdirectory of "nlpannotator"
 "nlpannotator.data" = ["*.json"]
 
 [project.scripts]

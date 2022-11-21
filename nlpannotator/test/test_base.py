@@ -41,6 +41,7 @@ def load_dict():
     return mydict["treetagger_dict"], mydict["spacy_dict"]
 
 
+@pytest.mark.treetagger
 @pytest.fixture
 def get_doc(load_dict, data_en):
     annotated = mtt.MyTreetagger(load_dict[0])
@@ -148,6 +149,7 @@ def test_iterate(load_dict, data_en, test_en_sentence2):
     assert out == test_en_sentence2
 
 
+@pytest.mark.treetagger
 def test_iterate_tokens(get_doc, test_token_en):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     token_list = out_obj.token_list(out_obj.doc)
@@ -155,6 +157,7 @@ def test_iterate_tokens(get_doc, test_token_en):
     assert out == test_token_en[1]
 
 
+@pytest.mark.treetagger
 def test_token_list(get_doc):
     mylist = ["a", "n", "d"]
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
@@ -162,12 +165,14 @@ def test_token_list(get_doc):
     assert token_list == mylist
 
 
+@pytest.mark.treetagger
 def test_out_shortlist(get_doc, test_en, test_en_sentence):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     shortlist = out_obj.out_shortlist(test_en)
     assert shortlist == test_en_sentence
 
 
+@pytest.mark.treetagger
 def test_compare_tokens(get_doc):
     out_obj = mtt.OutTreetagger(get_doc[0], get_doc[1], 0)
     mytoken1 = "English"

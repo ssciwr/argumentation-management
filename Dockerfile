@@ -68,10 +68,22 @@ RUN conda install -c conda-forge python=3.9.7 \
 USER jovyan
 RUN conda run -n base python -m pip install cwb-ccc
 
-# install spaCy
-RUN conda install -c conda-forge spacy=3.4.0 \
-    && conda install -c \
-        conda-forge spacy-lookups-data \
+# install annotator from PyPi
+RUN conda run -n base python -m pip install nlpannotator
+
+# install treetagger
+RUN mkdir treetagger \
+    && cd treetagger \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-linux-3.2.4.tar.gz \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tagger-scripts.tar.gz \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/install-tagger.sh \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/german.par.gz \
+    && wget http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/english.par.gz \
+    && sh install-tagger.sh \
+    && cd ..
+    
+# install spacy models
+RUN conda install -c conda-forge spacy-lookups-data \
     && python -m spacy download en_core_web_md \
     && python -m spacy download de_core_news_md \
     # && python -m spacy download fr_core_news_md \
@@ -83,20 +95,9 @@ RUN conda install -c conda-forge spacy=3.4.0 \
     && conda clean -a -q -y
 ENV SPACY_DIR = /home/jovyan/spacy
 
-# install stanza
+# install stanza models
 COPY docker/get_models.py /home/jovyan/.
-RUN conda install -c \
-        conda-forge stanza \
-    && conda clean -a -q -y \
-    && python get_models.py
-
-# install annotator from repository
-# RUN git clone https://github.com/ssciwr/argumentation-management/ argumentation_management \
-#     && cd argumentation_management \
-#     && git checkout doc-update \
-#     && conda run -n base python -m pip install . 
-# install annotator from PyPi
-RUN conda run -n base python -m pip install nlpannotator
+RUN python get_models.py
 
 # install m-giza
 # RUN git clone --depth 1 --branch RELEASE-3.0 https://github.com/moses-smt/mgiza.git \
