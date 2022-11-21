@@ -79,7 +79,7 @@ jobs:
             python -m pytest -s -m "not treetagger" --cov=. --cov-report=xml
         fi
     - name: Upload coverage
-      if: ${{ RUNNER_OS == "Linux" }}
+      if: ${{ "$RUNNER_OS" == "Linux" }}
       uses: codecov/codecov-action@v1
       with:
         fail_ci_if_error: true
