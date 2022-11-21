@@ -19,7 +19,7 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-10.15]
+        os: [ubuntu-22.04, windows-2022, macos-11]
         python-version: [3.8, 3.9]
     steps:
     - name: Checkout repository
@@ -72,11 +72,11 @@ jobs:
         cd nlpannotator
         export TAGDIR="${{ env.TAGDIR }}"
         # don't run treetagger on windows due to "invalid binary"
-        if [ "$RUNNER_OS" = "Windows" ]; then
-            echo "Windows"
-            python -m pytest -s -m "not treetagger" --cov=. --cov-report=xml
-        else 
+        if [ "$RUNNER_OS" = "Linux" ]; then
           python -m pytest -s --cov=. --cov-report=xml
+        else 
+            echo "Windows or MacOS"
+            python -m pytest -s -m "not treetagger" --cov=. --cov-report=xml
         fi
     - name: Upload coverage
       uses: codecov/codecov-action@v1
