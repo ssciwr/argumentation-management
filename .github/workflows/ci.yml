@@ -56,8 +56,8 @@ jobs:
         curl -sSLO "$myurl"/install-tagger.sh
         curl -sSLO "$myurl"/german.par.gz
         curl -sSLO "$myurl"/english.par.gz
-        cp -r ./bin ./cmd          
         sh install-tagger.sh
+        cp -r ./bin ./cmd          
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
     - name: Get the models 
