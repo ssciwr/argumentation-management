@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>base module &mdash; NLPAnnotator 1.0.2 documentation</title>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -29,11 +26,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> NLPAnnotator
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            NLPAnnotator
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -190,7 +191,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="modules.html">nlpannotator package modules</a></li>
       <li class="breadcrumb-item active">base module</li>
       <li class="wy-breadcrumbs-aside">
@@ -297,7 +298,7 @@ Write the vrt/xml file.</p>
 <span class="sig-name descname"><span class="pre">collect_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#base.OutObject.collect_results" title="Permalink to this definition"></a></dt>
 <dd><p>Function to collect requested tags for tokens after applying pipeline to data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>string</strong> (<em>style</em><em>[</em><em>str</em><em>]</em><em>. Return line as</em>) – </p>
 </dd>
 </dl>
@@ -349,7 +350,7 @@ Write the vrt/xml file.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">open_outfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.OutObject.open_outfile" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize output file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>outname</strong><strong>[</strong><strong>str</strong><strong>]</strong> – Name of file to be created in out directory.</p>
 </dd>
 </dl>
@@ -414,7 +415,7 @@ before encoding.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#base.PrepareRun.get_text" title="Permalink to this definition"></a></dt>
 <dd><p>Convenience function to read in data from specified path as string.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>path</strong><strong>[</strong><strong>str</strong><strong>]</strong> – Path to data.</p>
 </dd>
 </dl>
@@ -425,7 +426,7 @@ before encoding.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_input_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#base.PrepareRun.load_input_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Function to load a dictionary from .json.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>name</strong><strong>[</strong><strong>str</strong><strong>]</strong> – Name of .json file (without file extension).</p>
 </dd>
 </dl>
@@ -480,7 +481,7 @@ before encoding.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Flair main processing class. Flair only does POS and NER tagging.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subdict</strong> (<em>dictionary</em>) – The treetagger input dictionary.</p></li>
 <li><p><strong>text</strong> (<em>string</em>) – The raw text that is to be processed, sentence level or below.</p></li>
@@ -493,7 +494,7 @@ before encoding.</p>
 <span class="sig-name descname"><span class="pre">apply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#mflair.MyFlair.apply_to" title="Permalink to this definition"></a></dt>
 <dd><p>Funtion to apply pipeline to provided textual data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>text</strong><strong>[</strong><strong>str</strong><strong>]</strong> – Textual Data as string.</p>
 </dd>
 </dl>
@@ -565,12 +566,12 @@ split_sentences[bool]: Perform sentence splitting in addition to tokenization.</
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sentences</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#msomajo.OutSomajo.sentences" title="Permalink to this definition"></a></dt>
 <dd><p>Function to return sentences as list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List containing lists which contain the sentences as strings
 as well as the number of tokens previous to the sentence to easily keep
 track of the correct token index for a given sentence in the list.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[List[str, int]]</p>
 </dd>
 </dl>
@@ -587,7 +588,7 @@ track of the correct token index for a given sentence in the list.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for spaCy module.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>subdict</strong><strong>[</strong><strong>dict</strong><strong>]</strong> – Dict containing the setup for the spaCy run.</p>
 </dd>
 </dl>
@@ -616,12 +617,12 @@ vrt/xml writing.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sentences</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#mspacy.OutSpacy.sentences" title="Permalink to this definition"></a></dt>
 <dd><p>Function to return sentences as list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List containing lists which contain the sentences as strings
 as well as the number of tokens previous to the sentence to easily keep
 track of the correct token index for a given sentence in the list.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[List[str, int]]</p>
 </dd>
 </dl>
@@ -638,7 +639,7 @@ track of the correct token index for a given sentence in the list.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Stanza main processing class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subdict</strong> (<em>dictionary</em>) – The stanza input dictionary.</p></li>
 <li><p><strong>text</strong> (<em>list</em><em> of </em><em>strings</em>) – The raw text that is to be processed.</p></li>
@@ -652,7 +653,7 @@ track of the correct token index for a given sentence in the list.</p>
 <span class="sig-name descname"><span class="pre">apply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#mstanza.MyStanza.apply_to" title="Permalink to this definition"></a></dt>
 <dd><p>Funtion to apply pipeline to provided textual data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>text</strong><strong>[</strong><strong>str</strong><strong>]</strong> – Textual Data as string.</p>
 </dd>
 </dl>
@@ -677,7 +678,7 @@ vrt/xml writing.</p>
 <span class="sig-name descname"><span class="pre">iterate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#mstanza.OutStanza.iterate" title="Permalink to this definition"></a></dt>
 <dd><p>Function to iterate through sentence object and extract data to list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>out</strong><strong>[</strong><strong>list</strong><strong>]</strong> – List containing the collected output.</p></li>
 <li><p><strong>sent-Object</strong><strong>]</strong> (<em>sent</em><em>[</em><em>stanza</em>) – Object containing tokenized sentence.</p></li>
@@ -691,12 +692,12 @@ vrt/xml writing.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sentences</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#mstanza.OutStanza.sentences" title="Permalink to this definition"></a></dt>
 <dd><p>Function to return sentences as list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List containing lists which contain the sentences as strings
 as well as the number of tokens previous to the sentence to easily keep
 track of the correct token index for a given sentence in the list.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[List[str, int]]</p>
 </dd>
 </dl>
@@ -730,7 +731,7 @@ track of the correct token index for a given sentence in the list.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Treetagger main processing class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subdict</strong> (<em>dictionary</em>) – The treetagger input dictionary.</p></li>
 <li><p><strong>text</strong> (<em>string</em>) – The raw text that is to be processed, sentence level or below.</p></li>
@@ -743,7 +744,7 @@ track of the correct token index for a given sentence in the list.</p>
 <span class="sig-name descname"><span class="pre">apply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#mtreetagger.MyTreetagger.apply_to" title="Permalink to this definition"></a></dt>
 <dd><p>Funtion to apply pipeline to provided textual data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>text</strong><strong>[</strong><strong>str</strong><strong>]</strong> – Textual Data as string.</p>
 </dd>
 </dl>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Automated annotation of natural languages using selected toolchains &mdash; NLPAnnotator 1.0.2 documentation</title>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -29,11 +26,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> NLPAnnotator
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            NLPAnnotator
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -72,7 +73,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Automated annotation of natural languages using selected toolchains</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/readme_link.md.txt" rel="nofollow"> View page source</a>
@@ -87,7 +88,7 @@
 <h1>Automated annotation of natural languages using selected toolchains<a class="headerlink" href="#automated-annotation-of-natural-languages-using-selected-toolchains" title="Permalink to this heading"></a></h1>
 <p><img alt="Version" src="https://img.shields.io/pypi/v/nlpannotator" />
 <img alt="License: MIT" src="https://img.shields.io/github/license/ssciwr/argumentation-management" />
-<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/ssciwr/argumentation-management/CI" />
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/ssciwr/argumentation-management/ci.yml?branch=main" />
 <img alt="codecov" src="https://img.shields.io/codecov/c/github/ssciwr/argumentation-management" />
 <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=ssciwr_argumentation-management&amp;metric=alert_status" />
 <img alt="Language" src="https://img.shields.io/github/languages/top/ssciwr/argumentation-management" />
@@ -118,7 +119,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 <section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this heading"></a></h2>
 <p>All input options are provided in an input dictionary. Two pre-set toolchains can be used: <code class="docutils literal notranslate"><span class="pre">fast</span></code> using <a class="reference external" href="https://spacy.io/">spaCy</a> for all annotations; <code class="docutils literal notranslate"><span class="pre">accurate</span></code> using <a class="reference external" href="https://github.com/tsproisl/SoMaJo">SoMaJo</a> for sentencizing and tokenization, and <a class="reference external" href="https://stanfordnlp.github.io/stanza/">stanza</a> for POS and lemma; and <code class="docutils literal notranslate"><span class="pre">manual</span></code> where any combination of spaCy, stanza, SoMaJo, <a class="reference external" href="https://github.com/flairNLP/flair">Flair</a>, <a class="reference external" href="https://treetaggerwrapper.readthedocs.io/en/latest/">Treetagger</a> can be used, given the tool supports the selected annotation and language.</p>
-<table class="colwidths-auto docutils align-default">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Keyword</p></th>
 <th class="head"><p>Default setting</p></th>
@@ -139,7 +140,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">language</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">en</span></code></p></td>
-<td><p><span class="xref myst">see below</span></p></td>
+<td><p><a class="reference internal" href="#Languages"><span class="xref myst">see below</span></a></p></td>
 <td><p>Language of the text to annotate</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">processing_option</span></code></p></td>
@@ -149,12 +150,12 @@ These tools can be combined in any desired fashion, to target either maximum eff
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">processing_type</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">sentencize,</span> <span class="pre">tokenize,</span> <span class="pre">pos,</span> <span class="pre">lemma</span></code></p></td>
-<td><p><span class="xref myst">see below</span></p></td>
+<td><p><a class="reference internal" href="#Processors"><span class="xref myst">see below</span></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">tool</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">spacy,</span> <span class="pre">spacy,</span> <span class="pre">spacy,</span> <span class="pre">spacy</span></code></p></td>
-<td><p><span class="xref myst">see below</span></p></td>
+<td><p><a class="reference internal" href="#Tools"><span class="xref myst">see below</span></a></p></td>
 <td><p>Tool to use for each of the four annotation types</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">output_format</span></code></p></td>
@@ -184,7 +185,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 <section id="processors">
 <h2>Processors<a class="headerlink" href="#processors" title="Permalink to this heading"></a></h2>
 <p>The available processors depend on the selected tool. This is a summary of the possible options:</p>
-<table class="colwidths-auto docutils align-default">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Tool</p></th>
 <th class="head"><p>Available processors</p></th>
@@ -215,7 +216,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 <section id="languages">
 <h2>Languages<a class="headerlink" href="#languages" title="Permalink to this heading"></a></h2>
 <p>The availabe languages depend on the selected tool. So far, the following languages have been added to the pipeline (there may be additional language models available for the respective tool, but they have not been added to this package - for stanza, the pipeline will still run and load the model on demand).</p>
-<table class="colwidths-auto docutils align-default">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Tool</p></th>
 <th class="head"><p>Available languages</p></th>
@@ -246,12 +247,12 @@ These tools can be combined in any desired fashion, to target either maximum eff
 <section id="input-output">
 <h2>Input/Output<a class="headerlink" href="#input-output" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">nlpannotator</span></code> expects a raw text file as an input, together with an input dictionary that specifies the selected options. The input dictionary is also printed out when a run is initiated, so that the selected options are stored and can be looked up at a later time.
-Both of these can be provided through a <a class="reference external" href="https://jupyter.org/">Jupyter</a> interface as in the <span class="xref myst">Demo Notebook</span>.</p>
+Both of these can be provided through a <a class="reference external" href="https://jupyter.org/">Jupyter</a> interface as in the <a class="reference internal" href="#Demo"><span class="xref myst">Demo Notebook</span></a>.</p>
 <p>The output that is generated is either of <code class="docutils literal notranslate"><span class="pre">vrt</span></code> format (for cwb) or <code class="docutils literal notranslate"><span class="pre">xml</span></code>. Both output formats can directly be encoded into cwb.</p>
 </section>
 <section id="demo-notebook">
 <h2>Demo notebook<a class="headerlink" href="#demo-notebook" title="Permalink to this heading"></a></h2>
-<p>Take a look at the <span class="xref myst">DemoNotebook</span> or run it on <a class="reference external" href="https://mybinder.org/v2/gh/ssciwr/argumentation-management/HEAD?labpath=.%2Fdocs%2Fdemo-notebook.ipynb">Binder</a>.</p>
+<p>Take a look at the <a class="reference internal" href="#./docs/demo-notebook.ipynb"><span class="xref myst">DemoNotebook</span></a> or run it on <a class="reference external" href="https://mybinder.org/v2/gh/ssciwr/argumentation-management/HEAD?labpath=.%2Fdocs%2Fdemo-notebook.ipynb">Binder</a>.</p>
 </section>
 <section id="questions-and-bug-reports">
 <h2>Questions and bug reports<a class="headerlink" href="#questions-and-bug-reports" title="Permalink to this heading"></a></h2>
