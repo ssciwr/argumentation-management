@@ -58,7 +58,7 @@ jobs:
         curl -sSLO "$myurl"/english.par.gz
         sh install-tagger.sh
         ls
-        cp -r ./bin ./cmd
+        cp -r ./bin/* ./cmd/.
         ls bin
         ls cmd      
         export TAGDIR=$(pwd)
