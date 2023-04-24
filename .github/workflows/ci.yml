@@ -58,6 +58,7 @@ jobs:
         curl -sSLO "$myurl"/english.par.gz
         sh install-tagger.sh
         ls
+        pwd
         cp -r ./bin/* ./cmd/.
         ls bin
         ls cmd      
