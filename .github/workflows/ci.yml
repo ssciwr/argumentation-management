@@ -19,7 +19,8 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-11]
+        os: [ubuntu-22.04]
+        # os: [ubuntu-22.04, windows-2022, macos-11]
         python-version: [3.8, 3.9]
     steps:
     - name: Checkout repository
@@ -43,6 +44,7 @@ jobs:
         if [ "$RUNNER_OS" = "Linux" ]; then
             echo "Linux"
             curl -sSLO "$myurl"/tree-tagger-linux-3.2.4.tar.gz
+            tar -xzf tree-tagger-linux-3.2.4.tar.gz
         elif [ "$RUNNER_OS" = "Windows" ]; then
             echo "Windows"
             curl -sSLO "$myurl"/tree-tagger-windows-3.2.3.zip
