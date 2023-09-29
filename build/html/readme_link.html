@@ -11,9 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=1ed6394b"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -85,7 +87,7 @@
            <div itemprop="articleBody">
              
   <section id="automated-annotation-of-natural-languages-using-selected-toolchains">
-<h1>Automated annotation of natural languages using selected toolchains<a class="headerlink" href="#automated-annotation-of-natural-languages-using-selected-toolchains" title="Permalink to this heading"></a></h1>
+<h1>Automated annotation of natural languages using selected toolchains<a class="headerlink" href="#automated-annotation-of-natural-languages-using-selected-toolchains" title="Link to this heading"></a></h1>
 <p><img alt="Version" src="https://img.shields.io/pypi/v/nlpannotator" />
 <img alt="License: MIT" src="https://img.shields.io/github/license/ssciwr/argumentation-management" />
 <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/ssciwr/argumentation-management/ci.yml?branch=main" />
@@ -96,7 +98,7 @@
 <a class="reference external" href="https://bestpractices.coreinfrastructure.org/projects/6698"><img alt="OpenSSF Best Practices" src="https://bestpractices.coreinfrastructure.org/projects/6698/badge" /></a></p>
 <p><em>This project just had its first version release and is still under development.</em></p>
 <section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading"></a></h2>
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">nlpannotator</span></code> package serves as modular toolchain to combine different natural language processing (nlp) tools to annotate texts (sentencizing, tokenization, part-of-speech (POS) and lemma).</p>
 <p>Tools that can be combined are:</p>
 <ul class="simple">
@@ -109,7 +111,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 </ul>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
 <p>Install the project and its dependencies from <a class="reference external" href="https://pypi.org/project/nlpannotator/1.0.0/">PyPi</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">nlpannotator</span>
 </pre></div>
@@ -117,7 +119,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 <p>The language models need to be installed separately. You can make use of the convenience script <a class="reference external" href="https://github.com/ssciwr/argumentation-management/blob/main/install_latest_models.sh">here</a> which installs all language models for all languages that have been implemented for spaCy and stanza.</p>
 </section>
 <section id="options">
-<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading"></a></h2>
+<h2>Options<a class="headerlink" href="#options" title="Link to this heading"></a></h2>
 <p>All input options are provided in an input dictionary. Two pre-set toolchains can be used: <code class="docutils literal notranslate"><span class="pre">fast</span></code> using <a class="reference external" href="https://spacy.io/">spaCy</a> for all annotations; <code class="docutils literal notranslate"><span class="pre">accurate</span></code> using <a class="reference external" href="https://github.com/tsproisl/SoMaJo">SoMaJo</a> for sentencizing and tokenization, and <a class="reference external" href="https://stanfordnlp.github.io/stanza/">stanza</a> for POS and lemma; and <code class="docutils literal notranslate"><span class="pre">manual</span></code> where any combination of spaCy, stanza, SoMaJo, <a class="reference external" href="https://github.com/flairNLP/flair">Flair</a>, <a class="reference external" href="https://treetaggerwrapper.readthedocs.io/en/latest/">Treetagger</a> can be used, given the tool supports the selected annotation and language.</p>
 <table class="docutils align-default">
 <thead>
@@ -172,7 +174,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 </table>
 </section>
 <section id="tools">
-<h2>Tools<a class="headerlink" href="#tools" title="Permalink to this heading"></a></h2>
+<h2>Tools<a class="headerlink" href="#tools" title="Link to this heading"></a></h2>
 <p>The available annotation tools are listed below, and can be set using the following keywords:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spacy.io/">spaCy</a>: <code class="docutils literal notranslate"><span class="pre">spacy</span></code></p></li>
@@ -183,7 +185,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 </ul>
 </section>
 <section id="processors">
-<h2>Processors<a class="headerlink" href="#processors" title="Permalink to this heading"></a></h2>
+<h2>Processors<a class="headerlink" href="#processors" title="Link to this heading"></a></h2>
 <p>The available processors depend on the selected tool. This is a summary of the possible options:</p>
 <table class="docutils align-default">
 <thead>
@@ -214,7 +216,7 @@ These tools can be combined in any desired fashion, to target either maximum eff
 </table>
 </section>
 <section id="languages">
-<h2>Languages<a class="headerlink" href="#languages" title="Permalink to this heading"></a></h2>
+<h2>Languages<a class="headerlink" href="#languages" title="Link to this heading"></a></h2>
 <p>The availabe languages depend on the selected tool. So far, the following languages have been added to the pipeline (there may be additional language models available for the respective tool, but they have not been added to this package - for stanza, the pipeline will still run and load the model on demand).</p>
 <table class="docutils align-default">
 <thead>
@@ -245,28 +247,28 @@ These tools can be combined in any desired fashion, to target either maximum eff
 </table>
 </section>
 <section id="input-output">
-<h2>Input/Output<a class="headerlink" href="#input-output" title="Permalink to this heading"></a></h2>
+<h2>Input/Output<a class="headerlink" href="#input-output" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">nlpannotator</span></code> expects a raw text file as an input, together with an input dictionary that specifies the selected options. The input dictionary is also printed out when a run is initiated, so that the selected options are stored and can be looked up at a later time.
 Both of these can be provided through a <a class="reference external" href="https://jupyter.org/">Jupyter</a> interface as in the <a class="reference internal" href="#Demo"><span class="xref myst">Demo Notebook</span></a>.</p>
 <p>The output that is generated is either of <code class="docutils literal notranslate"><span class="pre">vrt</span></code> format (for cwb) or <code class="docutils literal notranslate"><span class="pre">xml</span></code>. Both output formats can directly be encoded into cwb.</p>
 </section>
 <section id="demo-notebook">
-<h2>Demo notebook<a class="headerlink" href="#demo-notebook" title="Permalink to this heading"></a></h2>
+<h2>Demo notebook<a class="headerlink" href="#demo-notebook" title="Link to this heading"></a></h2>
 <p>Take a look at the <a class="reference internal" href="#./docs/demo-notebook.ipynb"><span class="xref myst">DemoNotebook</span></a> or run it on <a class="reference external" href="https://mybinder.org/v2/gh/ssciwr/argumentation-management/HEAD?labpath=.%2Fdocs%2Fdemo-notebook.ipynb">Binder</a>.</p>
 </section>
 <section id="questions-and-bug-reports">
-<h2>Questions and bug reports<a class="headerlink" href="#questions-and-bug-reports" title="Permalink to this heading"></a></h2>
+<h2>Questions and bug reports<a class="headerlink" href="#questions-and-bug-reports" title="Link to this heading"></a></h2>
 <p>Please ask questions / submit bug reports using our <a class="reference external" href="https://github.com/ssciwr/argumentation-management/issues">issue tracker</a>.</p>
 </section>
 <section id="contribute">
-<h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this heading"></a></h2>
+<h2>Contribute<a class="headerlink" href="#contribute" title="Link to this heading"></a></h2>
 <p>Contributions are wellcome. Please fork the nlpannotator repo and open a Pull Request for any changes to the code. These will be reviewed and merged by our team.
 Make sure that your contributions are <a class="reference external" href="https://flake8.pycqa.org/en/latest/">clean</a>, <a class="reference external" href="https://github.com/psf/black">properly formatted</a> and for any new modules <a class="reference external" href="https://github.com/ssciwr/argumentation-management/blob/main/nlpannotator/mstanza.py">follow the general design principle</a>.</p>
 <p>Take a look at the [source code documentation](file:///home/iulusoy/projects/argumentation-project/argumentation-management/docs/build/html/modules.html).</p>
 <p>The additions must have at least have 80% test coverage.</p>
 </section>
 <section id="releases">
-<h2>Releases<a class="headerlink" href="#releases" title="Permalink to this heading"></a></h2>
+<h2>Releases<a class="headerlink" href="#releases" title="Link to this heading"></a></h2>
 <p>A summary of the releases and release notes are available <a class="reference external" href="https://github.com/ssciwr/argumentation-management/releases">here</a>.</p>
 </section>
 </section>

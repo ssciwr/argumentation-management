@@ -11,9 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=1ed6394b"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,12 +47,12 @@
 <li class="toctree-l1"><a class="reference internal" href="readme_link.html">Automated annotation of natural languages using selected toolchains</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">nlpannotator package modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="nlpannotator.html">base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#module-main">main module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#module-mflair">mflair module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#module-msomajo">msomajo module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#module-mspacy">mspacy module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#module-mstanza">mstanza module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#module-mtreetagger">mtreetagger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#main-module">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mflair-module">mflair module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#msomajo-module">msomajo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mspacy-module">mspacy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mstanza-module">mstanza module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mtreetagger-module">mtreetagger module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#module-pipe">pipe module</a></li>
 </ul>
 </li>
@@ -82,130 +84,16 @@
            <div itemprop="articleBody">
              
   <section id="nlpannotator-package-modules">
-<h1>nlpannotator package modules<a class="headerlink" href="#nlpannotator-package-modules" title="Permalink to this heading"></a></h1>
+<h1>nlpannotator package modules<a class="headerlink" href="#nlpannotator-package-modules" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html">base module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#base.DecodeCorpus"><code class="docutils literal notranslate"><span class="pre">DecodeCorpus</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.DecodeCorpus.decode_to_file"><code class="docutils literal notranslate"><span class="pre">DecodeCorpus.decode_to_file()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#base.EncodeCorpus"><code class="docutils literal notranslate"><span class="pre">EncodeCorpus</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.EncodeCorpus.add_tags_to_corpus"><code class="docutils literal notranslate"><span class="pre">EncodeCorpus.add_tags_to_corpus()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.EncodeCorpus.encode_vrt"><code class="docutils literal notranslate"><span class="pre">EncodeCorpus.encode_vrt()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.EncodeCorpus.fix_path"><code class="docutils literal notranslate"><span class="pre">EncodeCorpus.fix_path()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.EncodeCorpus.query"><code class="docutils literal notranslate"><span class="pre">EncodeCorpus.query()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.EncodeCorpus.setup"><code class="docutils literal notranslate"><span class="pre">EncodeCorpus.setup()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#base.OutObject"><code class="docutils literal notranslate"><span class="pre">OutObject</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.assemble_output_sent"><code class="docutils literal notranslate"><span class="pre">OutObject.assemble_output_sent()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.assemble_output_tokens"><code class="docutils literal notranslate"><span class="pre">OutObject.assemble_output_tokens()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.collect_results"><code class="docutils literal notranslate"><span class="pre">OutObject.collect_results()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.get_names"><code class="docutils literal notranslate"><span class="pre">OutObject.get_names()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.get_stags"><code class="docutils literal notranslate"><span class="pre">OutObject.get_stags()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.grab_ent"><code class="docutils literal notranslate"><span class="pre">OutObject.grab_ent()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.grab_lemma"><code class="docutils literal notranslate"><span class="pre">OutObject.grab_lemma()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.grab_tag"><code class="docutils literal notranslate"><span class="pre">OutObject.grab_tag()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.iterate"><code class="docutils literal notranslate"><span class="pre">OutObject.iterate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.iterate_tokens"><code class="docutils literal notranslate"><span class="pre">OutObject.iterate_tokens()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.open_outfile"><code class="docutils literal notranslate"><span class="pre">OutObject.open_outfile()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.out_shortlist"><code class="docutils literal notranslate"><span class="pre">OutObject.out_shortlist()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.purge"><code class="docutils literal notranslate"><span class="pre">OutObject.purge()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.switch_style"><code class="docutils literal notranslate"><span class="pre">OutObject.switch_style()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.token_list"><code class="docutils literal notranslate"><span class="pre">OutObject.token_list()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.write_vrt"><code class="docutils literal notranslate"><span class="pre">OutObject.write_vrt()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.OutObject.write_xml"><code class="docutils literal notranslate"><span class="pre">OutObject.write_xml()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#base.PrepareRun"><code class="docutils literal notranslate"><span class="pre">PrepareRun</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.PrepareRun.get_cores"><code class="docutils literal notranslate"><span class="pre">PrepareRun.get_cores()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.PrepareRun.get_text"><code class="docutils literal notranslate"><span class="pre">PrepareRun.get_text()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.PrepareRun.load_input_dict"><code class="docutils literal notranslate"><span class="pre">PrepareRun.load_input_dict()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#base.PrepareRun.validate_input_dict"><code class="docutils literal notranslate"><span class="pre">PrepareRun.validate_input_dict()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#module-main">main module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#main.call_flair"><code class="docutils literal notranslate"><span class="pre">call_flair()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#main.call_somajo"><code class="docutils literal notranslate"><span class="pre">call_somajo()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#main.call_spacy"><code class="docutils literal notranslate"><span class="pre">call_spacy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#main.call_stanza"><code class="docutils literal notranslate"><span class="pre">call_stanza()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#main.call_treetagger"><code class="docutils literal notranslate"><span class="pre">call_treetagger()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#module-mflair">mflair module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mflair.MyFlair"><code class="docutils literal notranslate"><span class="pre">MyFlair</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mflair.MyFlair.apply_to"><code class="docutils literal notranslate"><span class="pre">MyFlair.apply_to()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mflair.OutFlair"><code class="docutils literal notranslate"><span class="pre">OutFlair</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mflair.OutFlair.assemble_output_tokens"><code class="docutils literal notranslate"><span class="pre">OutFlair.assemble_output_tokens()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mflair.OutFlair.grab_tag"><code class="docutils literal notranslate"><span class="pre">OutFlair.grab_tag()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mflair.OutFlair.sentence_token_list"><code class="docutils literal notranslate"><span class="pre">OutFlair.sentence_token_list()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#module-msomajo">msomajo module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#msomajo.MySomajo"><code class="docutils literal notranslate"><span class="pre">MySomajo</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#msomajo.MySomajo.apply_to"><code class="docutils literal notranslate"><span class="pre">MySomajo.apply_to()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#msomajo.OutSomajo"><code class="docutils literal notranslate"><span class="pre">OutSomajo</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#msomajo.OutSomajo.assemble_output_sent"><code class="docutils literal notranslate"><span class="pre">OutSomajo.assemble_output_sent()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#msomajo.OutSomajo.sentences"><code class="docutils literal notranslate"><span class="pre">OutSomajo.sentences</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#module-mspacy">mspacy module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mspacy.MySpacy"><code class="docutils literal notranslate"><span class="pre">MySpacy</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mspacy.MySpacy.apply_to"><code class="docutils literal notranslate"><span class="pre">MySpacy.apply_to()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mspacy.OutSpacy"><code class="docutils literal notranslate"><span class="pre">OutSpacy</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mspacy.OutSpacy.assemble_output_tokens"><code class="docutils literal notranslate"><span class="pre">OutSpacy.assemble_output_tokens()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mspacy.OutSpacy.sentences"><code class="docutils literal notranslate"><span class="pre">OutSpacy.sentences</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#module-mstanza">mstanza module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mstanza.MyStanza"><code class="docutils literal notranslate"><span class="pre">MyStanza</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mstanza.MyStanza.apply_to"><code class="docutils literal notranslate"><span class="pre">MyStanza.apply_to()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mstanza.OutStanza"><code class="docutils literal notranslate"><span class="pre">OutStanza</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mstanza.OutStanza.assemble_output_tokens"><code class="docutils literal notranslate"><span class="pre">OutStanza.assemble_output_tokens()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mstanza.OutStanza.iterate"><code class="docutils literal notranslate"><span class="pre">OutStanza.iterate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mstanza.OutStanza.sentences"><code class="docutils literal notranslate"><span class="pre">OutStanza.sentences</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mstanza.OutStanza.token_list"><code class="docutils literal notranslate"><span class="pre">OutStanza.token_list()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mstanza.OutStanza.word_list"><code class="docutils literal notranslate"><span class="pre">OutStanza.word_list()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mstanza.ner"><code class="docutils literal notranslate"><span class="pre">ner()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#module-mtreetagger">mtreetagger module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mtreetagger.MyTreetagger"><code class="docutils literal notranslate"><span class="pre">MyTreetagger</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mtreetagger.MyTreetagger.apply_to"><code class="docutils literal notranslate"><span class="pre">MyTreetagger.apply_to()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mtreetagger.OutTreetagger"><code class="docutils literal notranslate"><span class="pre">OutTreetagger</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mtreetagger.OutTreetagger.assemble_output_tokens"><code class="docutils literal notranslate"><span class="pre">OutTreetagger.assemble_output_tokens()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#mtreetagger.TreetaggerDoc"><code class="docutils literal notranslate"><span class="pre">TreetaggerDoc</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mtreetagger.TreetaggerDoc.lemma"><code class="docutils literal notranslate"><span class="pre">TreetaggerDoc.lemma</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mtreetagger.TreetaggerDoc.pos"><code class="docutils literal notranslate"><span class="pre">TreetaggerDoc.pos</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#mtreetagger.TreetaggerDoc.text"><code class="docutils literal notranslate"><span class="pre">TreetaggerDoc.text</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html">base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#main-module">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#mflair-module">mflair module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#msomajo-module">msomajo module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#mspacy-module">mspacy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#mstanza-module">mstanza module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#mtreetagger-module">mtreetagger module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nlpannotator.html#module-pipe">pipe module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="nlpannotator.html#pipe.SetConfig"><code class="docutils literal notranslate"><span class="pre">SetConfig</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nlpannotator.html#pipe.SetConfig.set_processors"><code class="docutils literal notranslate"><span class="pre">SetConfig.set_processors()</span></code></a></li>
