@@ -120,7 +120,7 @@ def test_init():
         "config": {},
     }
     with pytest.raises(SystemExit):
-        test_obj = msp.MySpacy(subdict)
+        msp.MySpacy(subdict)
 
 
 def test_init_pipe(init, load_object):
