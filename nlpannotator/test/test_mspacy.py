@@ -119,7 +119,7 @@ def test_init():
         "set_device": "prefer_GPU",
         "config": {},
     }
-    with pytest.raises(ValueError):
+    with pytest.raises(SystemExit):
         test_obj = msp.MySpacy(subdict)
 
 

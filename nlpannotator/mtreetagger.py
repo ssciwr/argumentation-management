@@ -20,7 +20,7 @@ class MyTreetagger:
             self.subdict["tagonly"] = True
         # Initialize the pipeline
         self.nlp = ttw.TreeTagger(
-            TAGLANG=self.subdict["lang"], TAGOPT=self.subdict["tagopt"]
+            TAGLANG=self.subdict["lang"], TAGOPT=self.subdict["tagopt"],
         )
 
     def apply_to(self, text: str) -> object:

@@ -35,7 +35,7 @@ class MySpacy:
                 sp.cli.download(self.model)
                 self.nlp = sp.load(self.model, config=self.config)
             except SystemExit:
-                raise ValueError(
+                raise SystemExit(
                     "Could not download model {} - please check your model name!".format(
                         self.model
                     )

@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 DIRECTORY = ".treetagger"
-TT_URL = "http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/"
+TT_URL = "https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/"
 
 
 def install_windows():
@@ -15,14 +15,13 @@ def install_windows():
 
 
 def install_linux():
-    filename = "tree-tagger-linux-3.2.4.tar.gz"
+    filename = "tree-tagger-linux-3.2.5.tar.gz"
     return filename
 
 
 def install_macos():
-    filename = "tree-tagger-MacOSX-Intel-3.2.3.zip"
+    filename = "tree-tagger-MacOSX-Intel-3.2.3.tar.gz"
     return filename
-
 
 if __name__ == "__main__":
     platform = platform.system()
