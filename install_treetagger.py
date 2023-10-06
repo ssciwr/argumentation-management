@@ -23,6 +23,17 @@ def install_macos():
     filename = "tree-tagger-MacOSX-Intel-3.2.3.tar.gz"
     return filename
 
+
+def extract_binaries(filename: str) -> None:
+    print(filename)
+    if "windows" in filename:
+        os.system("unzip {}".format(filename))
+    elif "MacOSX" in filename or "linux" in filename:
+        os.system("tar -zxf {}".format(filename))
+    else:
+        raise ValueError("unknown file to extract: {}".format(filename))                                                
+
+
 if __name__ == "__main__":
     platform = platform.system()
     home = Path.home()
@@ -49,6 +60,11 @@ if __name__ == "__main__":
         open(home / DIRECTORY / file, "wb").write(r.content)
     # now go to treetagger dir and run install script
     os.chdir(home / DIRECTORY)
+    # first unpack the binaries - since install_tagger script randomly changes
+    # versions and also does not include windows binary anymore, we have to do it 
+    # here
+    os.system("ls")
+    extract_binaries(filename)
     os.system("sh install-tagger.sh")
     # append treetagger dir to bashrc?
     # here we would want to check if it is already there
