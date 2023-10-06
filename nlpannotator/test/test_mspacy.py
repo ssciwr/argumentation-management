@@ -111,6 +111,16 @@ def test_init():
         test_obj = msp.MySpacy(subdict)
         assert test_obj.model == model
         assert test_obj.jobs == procs
+    # check if model is valid
+    subdict = {
+        "model": "abcd",
+        "lang": "en",
+        "processors": ["lemmatizer", "tagger"],
+        "set_device": "prefer_GPU",
+        "config": {},
+    }
+    with pytest.raises(SystemExit):
+        msp.MySpacy(subdict)
 
 
 def test_init_pipe(init, load_object):

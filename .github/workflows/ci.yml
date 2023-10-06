@@ -19,8 +19,7 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-22.04]
-        # os: [ubuntu-22.04, windows-2022, macos-11]
+        os: [ubuntu-22.04, windows-2022, macos-11]
         python-version: [3.8, 3.9]
     steps:
     - name: Checkout repository
@@ -43,20 +42,22 @@ jobs:
         cd treetagger
         if [ "$RUNNER_OS" = "Linux" ]; then
             echo "Linux"
-            curl -sSLO "$myurl"/tree-tagger-linux-3.2.4.tar.gz
-            tar -xzf tree-tagger-linux-3.2.4.tar.gz
+            curl -sSLO "$myurl"/tree-tagger-linux-3.2.5.tar.gz
         elif [ "$RUNNER_OS" = "Windows" ]; then
             echo "Windows"
             curl -sSLO "$myurl"/tree-tagger-windows-3.2.3.zip
+            unzip tree-tagger-windows-3.2.3.zip
         elif [ "$RUNNER_OS" = "macOS" ]; then
             echo "MacOS"
-            curl -sSLO "$myurl"/tree-tagger-MacOSX-Intel-3.2.3.zip
+            curl -sSLO "$myurl"/tree-tagger-MacOSX-Intel-3.2.3.tar.gz
         fi
         curl -sSLO "$myurl"/tagger-scripts.tar.gz
         curl -sSLO "$myurl"/install-tagger.sh
         curl -sSLO "$myurl"/german.par.gz
         curl -sSLO "$myurl"/english.par.gz
         sh install-tagger.sh
+        ls bin
+        ls cmd      
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
     - name: Get the models 

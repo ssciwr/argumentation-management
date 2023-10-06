@@ -1,5 +1,6 @@
 import spacy as sp
 import nlpannotator.base as be
+import warnings
 
 
 class MySpacy:
@@ -28,9 +29,17 @@ class MySpacy:
             self.nlp = sp.load(self.model, config=self.config)
 
         except OSError:
-            raise OSError("Could not find {} in standard directory.".format(self.model))
-
-        print(">>>")
+            warnings.warn("Could not find {} in standard directory.".format(self.model))
+            warnings.warn("Attempting to download the model...")
+            try:
+                sp.cli.download(self.model)
+                self.nlp = sp.load(self.model, config=self.config)
+            except SystemExit:
+                raise SystemExit(
+                    "Could not download model {} - please check your model name!".format(
+                        self.model
+                    )
+                )
 
         # find which processors are available in model
         components = [component[0] for component in self.nlp.components]
