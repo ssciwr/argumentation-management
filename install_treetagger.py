@@ -28,7 +28,7 @@ def extract_binaries(filename: str) -> None:
     print(filename)
     if "windows" in filename:
         os.system("unzip {}".format(filename))
-    elif "MacOSX" or "linux" in filename:
+    elif "MacOSX" in filename or "linux" in filename:
         os.system("tar -zxf {}".format(filename))
     else:
         raise ValueError("unknown file to extract: {}".format(filename))                                                
