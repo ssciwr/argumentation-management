@@ -40,6 +40,12 @@ jobs:
         myurl: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data
       run: |
         python install_treetagger.py
+        pwd
+        cd ~/.treetagger
+        pwd
+        ls
+        ls cmd/
+        ls bin/
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
     - name: Get the models 
