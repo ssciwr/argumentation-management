@@ -2,15 +2,18 @@ import pytest
 import spacy as sp
 import nlpannotator.base as be
 import nlpannotator.mspacy as msp
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator.test")
 
 
 @pytest.fixture()
 def init():
     """Load the input dicts"""
 
-    mydict = be.PrepareRun.load_input_dict("test/data/input.json")
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
 
-    subdict_test = be.PrepareRun.load_input_dict("test/data/input_short.json")
+    subdict_test = be.PrepareRun.load_input_dict(pkg / "data" / "input_short.json")
     return mydict["spacy_dict"], subdict_test, mydict
 
 

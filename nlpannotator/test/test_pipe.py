@@ -1,13 +1,16 @@
 import pytest
 import nlpannotator.base as be
 import nlpannotator.pipe as pe
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator.test")
 
 procstring = "tokenize, pos, lemma"
 
 
 @pytest.fixture()
 def get_mydict():
-    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
     return mydict
 
 

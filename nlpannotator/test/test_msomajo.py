@@ -1,6 +1,9 @@
 import pytest
 import nlpannotator.base as be
 import nlpannotator.msomajo as mso
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator.test")
 
 test_out_en = [
     "<s>\n",
@@ -159,31 +162,31 @@ test_out_en_sentences = [
 
 @pytest.fixture
 def read_data_en():
-    return be.PrepareRun.get_text("test/data/example_en.txt")
+    return be.PrepareRun.get_text(pkg / "data" / "example_en.txt")
 
 
 @pytest.fixture
 def read_data_de():
-    return be.PrepareRun.get_text("test/data/example_de.txt")
+    return be.PrepareRun.get_text(pkg / "data" / "example_de.txt")
 
 
 @pytest.fixture
 def read_test_de():
-    with open("test/data/example_de_somajo.vrt", "r") as f:
+    with open(pkg / "data" / "example_de_somajo.vrt", "r") as f:
         data = f.read()
     return data
 
 
 @pytest.fixture
 def read_test_en():
-    with open("test/data/example_en_somajo.vrt", "r") as f:
+    with open(pkg / "data" / "example_en_somajo.vrt", "r") as f:
         data = f.read()
     return data
 
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
     mydict["somajo_dict"]["model"] = "en_PTB"
     mydict["somajo_dict"]["processors"] = "sentencize", "tokenize"
     return mydict

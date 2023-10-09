@@ -2,11 +2,14 @@ import os
 import pytest
 import nlpannotator.base as be
 import nlpannotator.mstanza as ma
+import importlib_resources
 
-mydict_en = be.PrepareRun.load_input_dict("./test/data/test_stanza_en.json")[
+pkg = importlib_resources.files("nlpannotator.test")
+
+mydict_en = be.PrepareRun.load_input_dict(pkg / "data" / "test_stanza_en.json")[
     "stanza_dict"
 ]
-mydict_de = be.PrepareRun.load_input_dict("./test/data/test_stanza_de.json")[
+mydict_de = be.PrepareRun.load_input_dict(pkg / "data" / "test_stanza_de.json")[
     "stanza_dict"
 ]
 
@@ -155,24 +158,24 @@ def test_outstanza_tok_pos_lemma(get_sample, get_out_sample):
 def test_outstanza_vrt(get_sample):
     text = get_sample
     procstring = "tokenize,pos,lemma"
-    outfile = "./test/data/example_en"
+    outfile = pkg / "data" / "example_en"
     obj = ma.MyStanza(mydict_en)
     docobj = obj.apply_to(text)
     # now call the postprocessing
     out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
     out = out_obj.assemble_output_sent()
     out = out_obj.assemble_output_tokens(out)
-    file_out = open(outfile + "_test.vrt", "r")
+    file_out = open(outfile.as_posix() + "_test.vrt", "r")
     # call vrt writing
-    ma.OutStanza.write_vrt(outfile, out)
-    file = open(outfile + ".vrt", "r")
-    print("wrote " + outfile + ".vrt")
+    ma.OutStanza.write_vrt(outfile.as_posix(), out)
+    file = open(outfile.as_posix() + ".vrt", "r")
+    print("wrote " + outfile.as_posix() + ".vrt")
     assert file.read() == file_out.read()
     file.close()
-    if os.path.exists(outfile + ".vrt"):
-        os.remove(outfile + ".vrt")
+    if os.path.exists(outfile.as_posix() + ".vrt"):
+        os.remove(outfile.as_posix() + ".vrt")
     else:
-        print("{} was not created during testing.".format(outfile + ".vrt"))
+        print("{} was not created during testing.".format(outfile.as_posix() + ".vrt"))
 
 
 @pytest.mark.lang("en")
@@ -185,8 +188,8 @@ def test_token_list(get_sample):
     token_list = []
     for sent in docobj.doc.sentences:
         token_list += out_obj.token_list(sent)
-
-    with open("./test/data/example_en_token_list.txt", "r") as file:
+    inputfile = pkg / "data" / "example_en_token_list.txt"
+    with open(inputfile.as_posix(), "r") as file:
         out_token_list = file.read()
 
     assert str(token_list) == out_token_list
@@ -202,8 +205,8 @@ def test_word_list(get_sample):
     word_list = []
     for sent in docobj.doc.sentences:
         word_list += out_obj.word_list(sent)
-
-    with open("./test/data/example_en_word_list.txt", "r") as file:
+    inputfile = pkg / "data" / "example_en_word_list.txt"
+    with open(inputfile.as_posix(), "r") as file:
         out_word_list = file.read()
 
     assert str(word_list) == out_word_list
@@ -217,7 +220,8 @@ def test_sentences(get_sample):
     docobj = obj.apply_to(text)
     out_obj = ma.OutStanza(docobj.doc, procstring, start=0)
     sentences = out_obj.sentences
-    with open("./test/data/example_en_sentences.txt", "r") as file:
+    inputfile = pkg / "data" / "example_en_sentences.txt"
+    with open(inputfile.as_posix(), "r") as file:
         out_sentences = file.read()
 
     assert str(sentences) == out_sentences

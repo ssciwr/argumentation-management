@@ -1,6 +1,9 @@
 import pytest
 import nlpannotator.base as be
 import nlpannotator.mtreetagger as mtt
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator.test")
 
 
 @pytest.mark.treetagger
@@ -40,7 +43,7 @@ def test_dict_doc():
 @pytest.mark.treetagger
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     return mydict["treetagger_dict"]
