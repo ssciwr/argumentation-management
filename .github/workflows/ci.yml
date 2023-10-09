@@ -41,6 +41,9 @@ jobs:
       run: |
         python install_treetagger.py
         cd ~/.treetagger
+        ls
+        ls bin
+        ls cmd
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
     - name: Get the models 
