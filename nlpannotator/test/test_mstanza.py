@@ -13,20 +13,30 @@ mydict_de = be.PrepareRun.load_input_dict(pkg / "data" / "test_stanza_de.json")[
     "stanza_dict"
 ]
 
-mydict_en = {"lang": "en", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
-mydict_de = {"lang": "de", "dir": "./test/models/", "processors": "tokenize,pos,lemma"}
+mydict_en = {
+    "lang": "en",
+    "dir": (pkg / "models").as_posix(),
+    "processors": "tokenize,pos,lemma",
+}
+mydict_de = {
+    "lang": "de",
+    "dir": (pkg / "models").as_posix(),
+    "processors": "tokenize,pos,lemma",
+}
 
 
 @pytest.fixture()
 def set_file_dict():
     text_dict = {
-        "en": "./test/data/example_en.txt",
-        "de": "./test/data/example_de.txt",
-        "test_en": "./test/data/example_en_stanza.txt",
-        "test_de": "./test/data/example_de_stanza.txt",
-        "tok": "./test/data/example_en_stanza_tok.txt",
-        "tok_pos": "./test/data/example_en_stanza_tok_pos.txt",
-        "tok_pos_lemma": "./test/data/example_en_stanza_tok_pos_lemma.txt",
+        "en": (pkg / "data" / "example_en.txt").as_posix(),
+        "de": (pkg / "data" / "example_de.txt").as_posix(),
+        "test_en": (pkg / "data" / "example_en_stanza.txt").as_posix(),
+        "test_de": (pkg / "data" / "example_de_stanza.txt").as_posix(),
+        "tok": (pkg / "data" / "example_en_stanza_tok.txt").as_posix(),
+        "tok_pos": (pkg / "data" / "example_en_stanza_tok_pos.txt").as_posix(),
+        "tok_pos_lemma": (
+            pkg / "data" / "example_en_stanza_tok_pos_lemma.txt"
+        ).as_posix(),
     }
     return text_dict
 
