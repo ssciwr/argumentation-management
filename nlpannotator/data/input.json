@@ -16,7 +16,7 @@
     },
     "stanza_dict": {
         "lang": "en",
-        "dir": "./test/models/",  
+        "dir": "stanza_resources",  
         "package": "default",
         "processors": [],  
         "logging_level": "INFO",  

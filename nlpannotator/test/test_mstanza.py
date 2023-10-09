@@ -15,12 +15,12 @@ mydict_de = be.PrepareRun.load_input_dict(pkg / "data" / "test_stanza_de.json")[
 
 mydict_en = {
     "lang": "en",
-    "dir": (pkg / "models").as_posix(),
+    "dir": "stanza_resources",
     "processors": "tokenize,pos,lemma",
 }
 mydict_de = {
     "lang": "de",
-    "dir": (pkg / "models").as_posix(),
+    "dir": "stanza_resources",
     "processors": "tokenize,pos,lemma",
 }
 

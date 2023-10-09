@@ -1,7 +1,7 @@
 {"stanza_dict":
     {
         "lang":"de",
-        "dir": "./test/models/",
+        "dir": "stanza_resources",
         "processors": "tokenize,pos,lemma",
         "stanza_tokenize": {  
             "_tokenize_comment": "Tokenizes the text and performs sentence segmentation, dependency: -",

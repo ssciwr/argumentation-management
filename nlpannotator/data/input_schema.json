@@ -109,7 +109,7 @@
             "type": "string"
           },
           "dir": {
-            "default": "./test/models",
+            "default": "stanza_resources",
             "description": "Directory where models are stored - this maynot work for pipeline",
             "title": "Model directory:",
             "type": "string"
