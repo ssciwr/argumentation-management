@@ -1,18 +1,25 @@
 import nlpannotator.base as be
 import nlpannotator.mtreetagger as mtt
 import pytest
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator.test")
 
 
 @pytest.mark.treetagger
-def test_integration_mtreetagger():
+def test_integration_mtreetagger(tmp_path):
     data = "This is a sentence."
-    mydict = be.PrepareRun.load_input_dict("data/input.json")
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
     mydict["tool"] = "treetagger"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
-    mydict["input"] = "./test/data/example_en.txt"
-    mydict["advanced_options"]["output_dir"] = "./test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
+    inputfile = pkg / "data" / "example_en.txt"
+    mydict["input"] = inputfile.as_posix()
+    outdir = tmp_path / "out"
+    corpusdir = tmp_path / "corpora"
+    registrydir = tmp_path / "registry"
+    mydict["advanced_options"]["output_dir"] = outdir.as_posix()
+    mydict["advanced_options"]["corpus_dir"] = corpusdir.as_posix()
+    mydict["advanced_options"]["registry_dir"] = registrydir.as_posix()
     treetagger_dict = mydict["treetagger_dict"]
     annotated = mtt.MyTreetagger(treetagger_dict)
     annotated = annotated.apply_to(data)

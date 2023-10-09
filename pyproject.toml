@@ -32,6 +32,9 @@ dependencies = [
 [tool.setuptools.package-data]
 # Include any *.json files found in the "data" subdirectory of "nlpannotator"
 "nlpannotator.data" = ["*.json"]
+# include test data
+"nlpannotator.test.data" = ["*.json","*.txt","*.vrt","*.xml"]
+
 
 [project.scripts]
 nlpannotator_run = "nlpannotator.main:run"

@@ -2,33 +2,34 @@ import pytest
 import nlpannotator.base as be
 import nlpannotator.pipe as pe
 import nlpannotator.mstanza as ma
-from tempfile import TemporaryDirectory
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator.test")
 
 
-@pytest.fixture()
-def load_data():
-    data = be.PrepareRun.get_text("test/data/example_de.txt")
-    return data
-
-
-def test_integration_mstanza(load_data):
+def test_integration_mstanza(tmp_path):
     # read in input.json
-    mydict = be.PrepareRun.load_input_dict("data/input.json")
-    mydict["input"] = "test/data/example_de.txt"
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
+    inputfile = pkg / "data" / "example_de.txt"
+    mydict["input"] = inputfile.as_posix()
     mydict["tool"] = "stanza, stanza, stanza, stanza"
     mydict["language"] = "de"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "manual"
     mydict["processing_type"] = "sentencize,tokenize,pos,lemma"
-    mydict["advanced_options"]["output_dir"] = "./test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
+    outdir = tmp_path / "out"
+    corpusdir = tmp_path / "corpora"
+    registrydir = tmp_path / "registry"
+    mydict["advanced_options"]["output_dir"] = outdir.as_posix()
+    mydict["advanced_options"]["corpus_dir"] = corpusdir.as_posix()
+    mydict["advanced_options"]["registry_dir"] = registrydir.as_posix()
     # validate the input dict
     be.PrepareRun.validate_input_dict(mydict)
     # load the pipe object for updating dict with settings
     obj = pe.SetConfig(mydict)
     stanza_dict = obj.mydict["stanza_dict"]
-    stanza_dict["dir"] = "./test/models/"
+    stanza_dir = pkg / "models"
+    stanza_dict["dir"] = stanza_dir.as_posix()
     data = be.PrepareRun.get_text(mydict["input"])
     # initialize the pipeline with the dict
     stanza_pipe = ma.MyStanza(stanza_dict)
