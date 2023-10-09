@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 import nlpannotator.base as be
 import nlpannotator.pipe as pe
 import nlpannotator.mstanza as ma
@@ -28,7 +29,7 @@ def test_integration_mstanza(tmp_path):
     # load the pipe object for updating dict with settings
     obj = pe.SetConfig(mydict)
     stanza_dict = obj.mydict["stanza_dict"]
-    stanza_dir = pkg / "models"
+    stanza_dir = Path.home() / "stanza_resources"
     stanza_dict["dir"] = stanza_dir.as_posix()
     data = be.PrepareRun.get_text(mydict["input"])
     # initialize the pipeline with the dict

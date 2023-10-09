@@ -2,6 +2,7 @@ import pytest
 import unittest.mock
 import json
 import os
+from pathlib import Path
 import nlpannotator.base as be
 import nlpannotator.mtreetagger as mtt
 import nlpannotator.mspacy as msp
@@ -98,32 +99,35 @@ def test_en_sentence2():
     return sentence
 
 
-test_dict = {
-    "input": "input.txt",
-    "tool": ["stanza", "stanza", "stanza"],
-    "corpus_name": "test",
-    "language": "en",
-    "document_type": "text",
-    "processing_option": "manual",
-    "processing_type": ["tokenize", "pos", "lemma"],
-    "advanced_options": {
-        "output_dir": "./out/",
-        "output_format": "STR",
-        "corpus_dir": "./corpora/",
-        "registry_dir": "./registry/",
-    },
-    "stanza_dict": {"processors": ["tokenize", "pos", "lemma"]},
-}
+@pytest.fixture
+def test_dict(tmp_path):
+    mydict = {
+        "input": "input.txt",
+        "tool": ["stanza", "stanza", "stanza"],
+        "corpus_name": "test",
+        "language": "en",
+        "document_type": "text",
+        "processing_option": "manual",
+        "processing_type": ["tokenize", "pos", "lemma"],
+        "advanced_options": {
+            "output_dir": Path(tmp_path / "out").as_posix(),
+            "output_format": "STR",
+            "corpus_dir": Path(tmp_path / "corpora").as_posix(),
+            "registry_dir": Path(tmp_path / "registry").as_posix(),
+        },
+        "stanza_dict": {"processors": ["tokenize", "pos", "lemma"]},
+    }
+    return mydict
 
 
 @pytest.fixture
-def get_obj_enc():
+def get_obj_enc(test_dict):
     obj = be.EncodeCorpus(test_dict)
     return obj
 
 
 @pytest.fixture
-def get_obj_dec():
+def get_obj_dec(test_dict):
     obj = be.DecodeCorpus(test_dict)
     return obj
 
@@ -222,7 +226,7 @@ def test_fix_path():
     assert be.EncodeCorpus.fix_path(path) == path + "/"
 
 
-def test_encode_corpus(get_obj_enc):
+def test_encode_corpus(get_obj_enc, test_dict):
     assert get_obj_enc.tool == test_dict["tool"]
     assert get_obj_enc.jobs == test_dict["processing_type"]
     path = test_dict["advanced_options"]["corpus_dir"]
