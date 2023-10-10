@@ -28,7 +28,7 @@ def extract_binaries(filename: str) -> None:
     print(filename)
     if "windows" in filename:
         os.system("unzip {}".format(filename))
-        os.system("mv TreeTagger .treetagger")
+        os.system("mv TreeTagger/* .")
     elif "MacOSX" in filename or "linux" in filename:
         os.system("tar -zxf {}".format(filename))
     else:

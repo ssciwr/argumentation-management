@@ -41,6 +41,8 @@ jobs:
       run: |
         python install_treetagger.py
         cd ~/.treetagger
+        echo "looking into .treetagger"
+        ls
         echo "looking into bin"
         ls bin
         echo "looking into cmd"
