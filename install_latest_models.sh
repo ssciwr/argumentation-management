@@ -1,6 +1,7 @@
 #!/bin/sh
 # install the latest spacy and stanza models for nlpannotator
 # this installs all implemented languages
+# the package will download these also on demand though
 
 # spacy
 python -m spacy download en_core_web_md 
