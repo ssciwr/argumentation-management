@@ -7,6 +7,7 @@ from pathlib import Path
 
 DIRECTORY = ".treetagger"
 TT_URL = "https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/"
+platform = platform.system()
 
 
 def install_windows():
@@ -35,8 +36,7 @@ def extract_binaries(filename: str) -> None:
         raise ValueError("unknown file to extract: {}".format(filename))
 
 
-if __name__ == "__main__":
-    platform = platform.system()
+def install_tagger():
     home = Path.home()
     Path(home / DIRECTORY).mkdir(parents=True, exist_ok=True)
     print("Installing treetagger into HOME/.treetagger...")

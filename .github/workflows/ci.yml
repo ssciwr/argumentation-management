@@ -39,15 +39,8 @@ jobs:
       env:
         myurl: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data
       run: |
-        python install_treetagger.py
+        treetagger_install
         cd ~/.treetagger
-        echo "looking into .treetagger"
-        ls
-        echo "looking into bin"
-        ls bin
-        echo "looking into cmd"
-        ls cmd
-        cp cmd/* bin/.
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
     - name: Get the spacy models 

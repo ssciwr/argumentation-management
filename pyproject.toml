@@ -38,6 +38,7 @@ dependencies = [
 
 [project.scripts]
 nlpannotator_run = "nlpannotator.main:run"
+treetagger_install = "nlpannotator.install_treetagger:install_tagger"
 
 [tool.setuptools]
 packages = ["nlpannotator"]
