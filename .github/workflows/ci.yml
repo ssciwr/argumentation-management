@@ -43,10 +43,6 @@ jobs:
         cd ~/.treetagger
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
-    - name: Get the spacy models 
-      run: |
-        python -m spacy download en_core_web_md
-        python -m spacy download de_core_news_md
     - name: Run pytest
       run: |
         cd nlpannotator
