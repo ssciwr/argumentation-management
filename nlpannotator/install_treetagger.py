@@ -7,6 +7,7 @@ from pathlib import Path
 
 DIRECTORY = ".treetagger"
 TT_URL = "https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/"
+platform = platform.system()
 
 
 def install_windows():
@@ -28,14 +29,14 @@ def extract_binaries(filename: str) -> None:
     print(filename)
     if "windows" in filename:
         os.system("unzip {}".format(filename))
+        os.system("mv TreeTagger/* .")
     elif "MacOSX" in filename or "linux" in filename:
         os.system("tar -zxf {}".format(filename))
     else:
-        raise ValueError("unknown file to extract: {}".format(filename))                                                
+        raise ValueError("unknown file to extract: {}".format(filename))
 
 
-if __name__ == "__main__":
-    platform = platform.system()
+def install_tagger():
     home = Path.home()
     Path(home / DIRECTORY).mkdir(parents=True, exist_ok=True)
     print("Installing treetagger into HOME/.treetagger...")
@@ -61,7 +62,7 @@ if __name__ == "__main__":
     # now go to treetagger dir and run install script
     os.chdir(home / DIRECTORY)
     # first unpack the binaries - since install_tagger script randomly changes
-    # versions and also does not include windows binary anymore, we have to do it 
+    # versions and also does not include windows binary anymore, we have to do it
     # here
     os.system("ls")
     extract_binaries(filename)

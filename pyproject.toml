@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nlpannotator"
-version = "1.0.4"
+version = "1.0.5"
 description = "Annotator combining different NLP pipelines"
 readme = "README.md"
 maintainers = [
@@ -32,9 +32,13 @@ dependencies = [
 [tool.setuptools.package-data]
 # Include any *.json files found in the "data" subdirectory of "nlpannotator"
 "nlpannotator.data" = ["*.json"]
+# include test data
+"nlpannotator.test.data" = ["*.json","*.txt","*.vrt","*.xml"]
+
 
 [project.scripts]
 nlpannotator_run = "nlpannotator.main:run"
+treetagger_install = "nlpannotator.install_treetagger:install_tagger"
 
 [tool.setuptools]
 packages = ["nlpannotator"]

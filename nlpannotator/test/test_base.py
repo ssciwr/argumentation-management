@@ -2,10 +2,13 @@ import pytest
 import unittest.mock
 import json
 import os
+from pathlib import Path
 import nlpannotator.base as be
 import nlpannotator.mtreetagger as mtt
 import nlpannotator.mspacy as msp
-import tempfile
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator.test")
 
 
 @pytest.fixture()
@@ -34,7 +37,7 @@ def data_en():
 
 @pytest.fixture
 def load_dict():
-    mydict = be.PrepareRun.load_input_dict("./test/data/input.json")
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
     mydict["treetagger_dict"]["lang"] = "en"
     mydict["treetagger_dict"]["processors"] = "tokenize", "pos", "lemma"
     print(mydict)
@@ -96,43 +99,46 @@ def test_en_sentence2():
     return sentence
 
 
-test_dict = {
-    "input": "input.txt",
-    "tool": ["stanza", "stanza", "stanza"],
-    "corpus_name": "test",
-    "language": "en",
-    "document_type": "text",
-    "processing_option": "manual",
-    "processing_type": ["tokenize", "pos", "lemma"],
-    "advanced_options": {
-        "output_dir": "./out/",
-        "output_format": "STR",
-        "corpus_dir": "./corpora/",
-        "registry_dir": "./registry/",
-    },
-    "stanza_dict": {"processors": ["tokenize", "pos", "lemma"]},
-}
+@pytest.fixture
+def test_dict(tmp_path):
+    mydict = {
+        "input": "input.txt",
+        "tool": ["stanza", "stanza", "stanza"],
+        "corpus_name": "test",
+        "language": "en",
+        "document_type": "text",
+        "processing_option": "manual",
+        "processing_type": ["tokenize", "pos", "lemma"],
+        "advanced_options": {
+            "output_dir": Path(tmp_path / "out").as_posix(),
+            "output_format": "STR",
+            "corpus_dir": Path(tmp_path / "corpora").as_posix(),
+            "registry_dir": Path(tmp_path / "registry").as_posix(),
+        },
+        "stanza_dict": {"processors": ["tokenize", "pos", "lemma"]},
+    }
+    return mydict
 
 
 @pytest.fixture
-def get_obj_enc():
+def get_obj_enc(test_dict):
     obj = be.EncodeCorpus(test_dict)
     return obj
 
 
 @pytest.fixture
-def get_obj_dec():
+def get_obj_dec(test_dict):
     obj = be.DecodeCorpus(test_dict)
     return obj
 
 
-@pytest.mark.dictname("./test/data/input.json")
+@pytest.mark.dictname(pkg / "data" / "input.json")
 def test_load_input_dict(init_dict):
-    mydict = be.PrepareRun.load_input_dict("./data/input.json")
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
     assert mydict == init_dict
 
 
-@pytest.mark.dictname("./test/data/input2.json")
+@pytest.mark.dictname(pkg / "data" / "input2.json")
 def test_validate_input_dict(init_dict):
     be.PrepareRun.validate_input_dict(init_dict)
 
@@ -194,22 +200,22 @@ def test_purge():
         assert be.OutObject.purge(input) == output
 
 
-def test_write_vrt():
+def test_write_vrt(tmp_path):
     mystring = "abcdefgh"
-    myfile = "test/out/test"
-    be.OutObject.write_vrt(myfile, [mystring])
-    test_string = be.PrepareRun.get_text(myfile + ".vrt")
+    myfile = tmp_path / "test"
+    be.OutObject.write_vrt(myfile.as_posix(), [mystring])
+    test_string = be.PrepareRun.get_text(myfile.as_posix() + ".vrt")
     assert test_string == mystring
 
 
-def test_write_xml():
+def test_write_xml(tmp_path):
     mystring = "abcdefgh"
-    myfile = "test/out/test"
-    be.OutObject.write_xml("test", myfile, [mystring])
+    myfile = tmp_path / "test"
+    be.OutObject.write_xml("test", myfile.as_posix(), [mystring])
     mystring2 = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?><corpus name="test"><text>"""
     mystring2 += mystring
     mystring2 += """</text></corpus>"""
-    test_string = be.PrepareRun.get_text(myfile + ".xml")
+    test_string = be.PrepareRun.get_text(myfile.as_posix() + ".xml")
     assert test_string == mystring2
 
 
@@ -220,7 +226,7 @@ def test_fix_path():
     assert be.EncodeCorpus.fix_path(path) == path + "/"
 
 
-def test_encode_corpus(get_obj_enc):
+def test_encode_corpus(get_obj_enc, test_dict):
     assert get_obj_enc.tool == test_dict["tool"]
     assert get_obj_enc.jobs == test_dict["processing_type"]
     path = test_dict["advanced_options"]["corpus_dir"]

@@ -1,5 +1,7 @@
 # the stanza class object for stanza nlp
 from collections import defaultdict
+import os
+from pathlib import Path
 import stanza as sa
 import nlpannotator.base as be
 
@@ -21,8 +23,30 @@ class MyStanza:
             self.jobs = self.subdict["processors"].split(",")
         else:
             self.jobs = self.subdict["processors"]
+        # download models if not found in given dir
+        self.get_models()
         # Initialize the pipeline
         self.nlp = sa.Pipeline(**self.subdict)
+
+    def get_models(self):
+        # check if model_dir is the default stanza_resources
+        if self.subdict["dir"] == "stanza_resources":
+            print("Downloading to default stanza model dir")
+            model_dir = Path.home() / Path(self.subdict["dir"])
+            print(model_dir)
+            # make sure complete path is given to the dir
+            self.subdict["dir"] = model_dir.as_posix()
+        else:
+            model_dir = Path(self.subdict["dir"])
+        lang_model_dir = model_dir / self.subdict["lang"]
+        if not os.path.exists(lang_model_dir):
+            # get the stanza language model
+            sa.download(
+                lang=self.subdict["lang"],
+                model_dir=model_dir.as_posix(),
+                logging_level="info",
+            )
+            print("Downloaded stanza model!")
 
     def apply_to(self, text: str) -> dict:
         """Funtion to apply pipeline to provided textual data.

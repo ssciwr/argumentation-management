@@ -2,24 +2,31 @@ import pytest
 import nlpannotator.base as be
 import nlpannotator.pipe as pe
 import nlpannotator.mspacy as msp
+import importlib_resources
+
+pkg = importlib_resources.files("nlpannotator.test")
 
 
 @pytest.fixture()
 def load_data():
-    data = be.PrepareRun.get_text("test/data/example_de.txt")
+    data = be.PrepareRun.get_text(pkg / "data" / "example_de.txt")
     return data
 
 
-def test_integration_mspacy(load_data):
-    mydict = be.PrepareRun.load_input_dict("data/input.json")
+def test_integration_mspacy(load_data, tmp_path):
+    mydict = be.PrepareRun.load_input_dict(pkg / "data" / "input.json")
     mydict["language"] = "en"
     mydict["document_type"] = "text"
     mydict["processing_option"] = "fast"
     mydict["processing_type"] = "sentencize, tokenize, pos, lemma"
-    mydict["input"] = "./test/data/example_en.txt"
-    mydict["advanced_options"]["output_dir"] = "./test/out/"
-    mydict["advanced_options"]["corpus_dir"] = "./test/corpora/"
-    mydict["advanced_options"]["registry_dir"] = "./test/registry/"
+    inputfile = pkg / "data" / "example_en.txt"
+    mydict["input"] = inputfile.as_posix()
+    outdir = tmp_path / "out"
+    corpusdir = tmp_path / "corpora"
+    registrydir = tmp_path / "registry"
+    mydict["advanced_options"]["output_dir"] = outdir.as_posix()
+    mydict["advanced_options"]["corpus_dir"] = corpusdir.as_posix()
+    mydict["advanced_options"]["registry_dir"] = registrydir.as_posix()
     be.PrepareRun.validate_input_dict(mydict)
     obj = pe.SetConfig(mydict)
     spacy_dict = obj.mydict["spacy_dict"]

@@ -31,6 +31,12 @@ pip install nlpannotator
 ```
 The language models need to be installed separately. You can make use of the convenience script [here](https://github.com/ssciwr/argumentation-management/blob/main/install_latest_models.sh) which installs all language models for all languages that have been implemented for spaCy and stanza.
 
+The package also makes use of [Treetagger](). You can use the `treetagger_install` command in your shell to install the dependency, or call it within Python
+```
+import nlpannotator.install_treetagger
+nlpannotator.install_treetagger.install_tagger()
+```
+
 ## Options
 
 All input options are provided in an input dictionary. Two pre-set toolchains can be used: `fast` using [spaCy](https://spacy.io/) for all annotations; `accurate` using [SoMaJo](https://github.com/tsproisl/SoMaJo) for sentencizing and tokenization, and [stanza](https://stanfordnlp.github.io/stanza/) for POS and lemma; and `manual` where any combination of spaCy, stanza, SoMaJo, [Flair](https://github.com/flairNLP/flair), [Treetagger](https://treetaggerwrapper.readthedocs.io/en/latest/) can be used, given the tool supports the selected annotation and language.

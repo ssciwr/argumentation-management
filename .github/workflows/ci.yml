@@ -39,34 +39,19 @@ jobs:
       env:
         myurl: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data
       run: |
-        python install_treetagger.py
+        treetagger_install
         cd ~/.treetagger
         export TAGDIR=$(pwd)
         echo "TAGDIR=$TAGDIR" >> $GITHUB_ENV
-    - name: Get the models 
-      run: |
-        source nlpannotator/test/setup_tests.sh
-        python -m spacy download en_core_web_md
-        python -m spacy download de_core_news_md
-    - name: Create test directories
-      run: |
-        mkdir nlpannotator/test/corpora
-        mkdir nlpannotator/test/registry
-        mkdir nlpannotator/test/out
     - name: Run pytest
       run: |
         cd nlpannotator
         export TAGDIR="${{ env.TAGDIR }}"
-        # don't run treetagger on windows due to "invalid binary"
-        if [ "$RUNNER_OS" = "Linux" ]; then
-          python -m pytest -s --cov=. --cov-report=xml
-        else 
-            echo "Windows or MacOS"
-            python -m pytest -s -m "not treetagger" --cov=. --cov-report=xml
-        fi
+        python -m pytest -s --cov=. --cov-report=xml
     - name: Upload coverage
       if: matrix.os == 'ubuntu-22.04' && matrix.python-version == '3.9'
       uses: codecov/codecov-action@v1
       with:
         fail_ci_if_error: true
         files: nlpannotator/coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
